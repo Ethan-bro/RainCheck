@@ -1,75 +1,109 @@
-Project Overview
-RainCheck is a Java Swing app that helps users plan tasks linked with real-time weather forecasts using the Visual Crossing Weather API. It follows Clean Architecture to keep code modular, testable, and scalable.
+Team Name: RainCheck 
 
-Architecture Layers & Responsibilities
-Layer / Folder	What it Does	Where to Work / Focus
-entities/	Core business data and rules (Task, User, etc.)	Define your data models & critical logic
-usecases/	Application logic (interactors handling tasks, weather)	Implement business rules, task & weather processing
-interfaces/	Input/output boundaries & gateway interfaces	Define interfaces for interactors, data access, and presenters
-controllers/	Receive UI input and call use case interactors	Connect UI actions to business logic
-presenters/	Format data for the UI	Prepare output from interactors for display
-dataaccess/	Data persistence implementations (file storage)	Read/write tasks to file, implement TaskGateway interface
-services/	External API wrappers (Visual Crossing Weather API)	Fetch and parse weather data
-views/	Swing UI components	Display tasks, weather info, and interact with user
-resources/	Static resources like icons, emojis, configs	Store any non-code assets
-Main.java	App entry point	Wire dependencies and start the UI
+Domain: Weather-Aware Task Planning 
 
-Development Checklist
-1. Setup & Folder Structure
-Create folders/files as per project structure.
+ 
 
-Add your API key to WeatherApiService.java.
+Software Specification: 
 
-2. Entities
-Define Task, User, Tag, and PriorityLevel.
+RainCheck is a Java Swing app that helps users plan their day by linking tasks to weather forecasts in a calendar-style interface. Weather data is displayed hour-by-hour across the timeline, independent of tasks. This means weather remains visible even when tasks are edited or deleted, offering consistent context for planning. 
 
-Keep entities free of UI/DB dependencies.
+Users can create, edit, delete, and mark tasks as completed. Each task is visually styled based on its priority level (High, Medium, Low), and users can assign a custom tag, which consists of a name and an emoji selected from a dropdown menu. 
 
-3. Data Access
-Implement TaskFileStorage to save/load tasks as JSON or CSV.
+Tasks can be added manually or via voice-to-text, which transcribes speech into editable text. 
 
-Ensure it implements the TaskGateway interface.
+Each user has a secure account with persistent, file-based task storage. Upon login, the app loads their personalized task list and weather data. 
 
-4. Services
-Build WeatherApiService to call Visual Crossing API and parse data.
+RainCheck uses the Visual Crossing Weather API to fetch hourly forecasts (temperature, conditions, precipitation, etc.) for the user’s location. Weather is always available on the calendar timeline, and tasks dynamically align with relevant weather based on their scheduled time. 
 
-5. Use Cases
-Write WeatherDisplayInteractor to get weather info per task.
+ 
 
-Write TaskManagementInteractor for creating/editing/deleting tasks.
+User Stories: 
 
-6. Interfaces
-Define input/output boundary interfaces for use cases.
+George sees a calendar with hourly weather forecasts. As he adds tasks, they appear next to the relevant hour. If he deletes or reschedules a task, the weather will remain unchanged. [Team story] 
 
-Define TaskGateway interface for data access.
+Based on a task’s priority, its display color changes to help George distinguish urgent items from less critical ones. [Sean’s/5th member’s story] 
 
-7. Controllers & Presenters
-Implement controllers to receive UI commands and call interactors.
+Users can create custom tags (e.g., 📚 School, 🏋️ Gym) with a name and an emoji chosen from a dropdown. Tags improve task categorization. [Sean’s story] 
 
-Implement presenters to format interactor responses for the UI.
+George adds tasks manually or using voice-to-text, which transcribes and previews input before saving. He can also assign priority levels when creating or editing tasks. [Brad’s story] 
 
-8. Views (Swing UI)
-Build MainView to display tasks with weather info in a list.
+George wants to edit, delete, and mark tasks as done. This helps him stay on track and organized. [Clara’s story] 
 
-Add UI components for adding/editing tasks (optional).
+George creates an account and logs in using a username and password. His tasks and weather preferences are saved securely. [Ethan’s story] 
 
-9. Main Program
-In Main.java, wire together all components (controllers, interactors, views, storage).
+ 
 
-Load tasks from file on start and display them.
+Proposed Entities for the Domain: 
 
-10. Testing
-Write unit tests for entities, interactors, and data access classes.
+PriorityLevel (Interface): 
 
-Test API integration with mock data or actual API calls.
+String HIGH 
 
-How It All Works Together
-User interacts with Swing UI (views/), clicking or adding tasks.
+String MEDIUM 
 
-UI calls Controllers (controllers/), which trigger Use Cases (usecases/).
+String LOW 
 
-Use cases manipulate Entities (entities/) and fetch weather via Services (services/).
+EmojiConstants (Interface): 
 
-Results are sent to Presenters (presenters/) which prepare data for UI display.
+List<String> ALL_EMOJIS – a list of all emojis 
 
-Data persistence is handled by Data Access (dataaccess/) classes implementing TaskGateway.
+Tag: 
+
+String name (e.g., "School") 
+
+String emoji (selected from dropdown, e.g., "📚") 
+
+Task: 
+
+String title 
+
+DateTime scheduledDateTime 
+
+boolean isCompleted 
+
+float temperature 
+
+PriorityLevel priority 
+
+Color displayColor 
+
+Tag tag 
+
+User: 
+
+String username 
+
+String passwordHash 
+
+List<Task> tasks 
+
+WeatherForecast: 
+
+DateTime forecastDateTime 
+
+String weatherDescription 
+
+float temperature 
+
+float precipitationChance 
+
+float windSpeed 
+
+String iconUrl (emoji like “rain” has the iconUrl pointing to ☔ for example) 
+
+ 
+
+Proposed API for the Project: 
+
+RainCheck uses the Visual Crossing Weather API to fetch weather data hourly. This data is continuously displayed in the calendar layout regardless of task presence. When a task is added, it aligns visually with the correct weather slot. 
+
+The API supports JSON responses and allows up to 1,000 calls per day under the free tier. Weather is retrieved via Java HTTP requests and parsed into the app's forecast system. 
+
+ 
+
+Scheduled Meeting Times + Mode of Communication: 
+
+Meeting Time: Thursdays, 5–6 PM (before tutorial) 
+
+Mode: Instagram group chat + in-person meetings 
