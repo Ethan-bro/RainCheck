@@ -1,3 +1,12 @@
 package entity;
 
-public class CommonUserFactory implements UserFactory {}
+/**
+ * Factory for creating CommonUser objects.
+ */
+public class CommonUserFactory implements UserFactory {
+
+    @Override
+    public User create(String name, String password_hash) {
+        return new CommonUser(name, password_hash);
+    }
+}
