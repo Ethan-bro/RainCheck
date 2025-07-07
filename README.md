@@ -72,23 +72,6 @@ RainCheck helps users schedule and manage daily tasks while providing context-aw
 
 ---
 
-## 🧠 Clean Architecture Overview
-
-| **Layer**        | **Purpose**                                                                 |
-|------------------|------------------------------------------------------------------------------|
-| `entities/`       | Domain models (`User`, `Task`, `Tag`, etc.)                                 |
-| `usecases/`       | Business logic for login, signup, task and weather features                 |
-| `interfaces/`     | Input/Output boundaries and data gateway interfaces                         |
-| `controllers/`    | Handle UI actions, call use case interactors                                |
-| `presenters/`     | Format use case results for the view                                        |
-| `views/`          | Java Swing UI components (e.g., calendar, task list, login form)            |
-| `dataaccess/`     | Implements data storage (e.g., `TaskFileStorage`, `FileUserDataAccessObject`)|
-| `services/`       | Communicates with external weather API                                      |
-| `resources/`      | Icons, emoji lists, static configuration                                    |
-| `Main.java`       | Application entry point and dependency wiring                               |
-
----
-
 ## 🧪 Project Focus by Feature/Member
 
 | **Member** | **Feature Responsibility**                                                        |
