@@ -1,4 +1,3 @@
 package main.java.view;
 
-public class LogginInView {
-}
+public class LogginInView { }

@@ -1,3 +1,14 @@
-package main.java.use_case.login;
+package use_case.login;
 
-public interface LoginInputBoundary {}
+/**
+ * Input boundary interface for the Login use case.
+ * This interface defines the method required to initiate a login attempt.
+ */
+public interface LoginInputBoundary {
+
+    /**
+     * Attempts to log a user in using the given input data.
+     * @param loginInputData An object containing the user's login credentials.
+     */
+    void execute(LoginInputData loginInputData);
+}
