@@ -1,3 +1,6 @@
-package main.java.entity;
+package entity;
 
+/**
+ * Interface representing a User entity.
+ */
 public interface User {}
