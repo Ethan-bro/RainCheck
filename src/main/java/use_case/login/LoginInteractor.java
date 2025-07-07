@@ -1,6 +1,7 @@
 package use_case.login;
 
 import entity.User;
+import services.PasswordHashingService;
 
 /**
  * The Login Interactor handles user login use case logic.
@@ -27,7 +28,7 @@ public class LoginInteractor implements LoginInputBoundary {
             loginPresenter.prepareFailView(username + ": Account does not exist.");
         } else {
             User user = userDataAccessObject.get(username);
-            String storedHash = user.getPassword();
+            String storedHash = user.getPasswordHash();
 
             if (!passwordHashingService.verify(password, storedHash)) {
                 loginPresenter.prepareFailView("Incorrect password for \"" + username + "\".");

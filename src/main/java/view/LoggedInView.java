@@ -15,7 +15,6 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import interface_adapter.logged_in.ChangePasswordController;
 import interface_adapter.logged_in.LoggedInState;
 import interface_adapter.logged_in.LoggedInViewModel;
 
@@ -27,19 +26,16 @@ public class LoggedInView extends JPanel implements ActionListener, PropertyChan
     private static final String viewName = "logged in";
     private final LoggedInViewModel loggedInViewModel;
     private final JLabel passwordErrorField = new JLabel();
-    private final ChangePasswordController changePasswordController;
 
     private final JLabel username;
 
     private final JButton logOut;
 
     private final JTextField passwordInputField = new JTextField(15);
-    private final JButton changePassword;
 
-    public LoggedInView(LoggedInViewModel loggedInViewModel, ChangePasswordController changePasswordController) {
+    public LoggedInView(LoggedInViewModel loggedInViewModel) {
         this.loggedInViewModel = loggedInViewModel;
         this.loggedInViewModel.addPropertyChangeListener(this);
-        this.changePasswordController = changePasswordController;
 
         final JLabel title = new JLabel("Logged In Screen");
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -53,9 +49,6 @@ public class LoggedInView extends JPanel implements ActionListener, PropertyChan
         final JPanel buttons = new JPanel();
         logOut = new JButton("Log Out");
         buttons.add(logOut);
-
-        changePassword = new JButton("Change Password");
-        buttons.add(changePassword);
 
         logOut.addActionListener(this);
 
@@ -84,20 +77,6 @@ public class LoggedInView extends JPanel implements ActionListener, PropertyChan
                 documentListenerHelper();
             }
         });
-
-        changePassword.addActionListener(
-                // This creates an anonymous subclass of ActionListener and instantiates it.
-                evt -> {
-                    if (evt.getSource().equals(changePassword)) {
-                        final LoggedInState currentState = loggedInViewModel.getState();
-
-                        this.changePasswordController.execute(
-                                currentState.getUsername(),
-                                currentState.getPassword()
-                        );
-                    }
-                }
-        );
 
         this.add(title);
         this.add(usernameInfo);

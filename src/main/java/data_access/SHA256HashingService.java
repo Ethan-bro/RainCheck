@@ -1,6 +1,6 @@
 package data_access;
 
-import main.java.use_case.login.PasswordHashingService;
+import services.PasswordHashingService;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
