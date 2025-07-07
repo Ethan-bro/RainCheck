@@ -2,7 +2,12 @@ package data_access;
 
 import entity.CommonUser;
 import entity.User;
+import entity.Task;
+
+import services.PasswordHashingService;
+
 import use_case.login.LoginUserDataAccessInterface;
+import use_case.signup.SignupUserDataAccessInterface;
 
 import org.json.JSONObject;
 
@@ -16,10 +21,19 @@ import java.nio.file.Paths;
  * Handles loading and saving User data as JSON files in the userdata directory.
  * This implementation reads user data from JSON files on disk.
  */
-public class FileUserDataAccessObject implements LoginUserDataAccessInterface {
+public class FileUserDataAccessObject implements LoginUserDataAccessInterface, SignupUserDataAccessInterface {
 
-    private static final String USER_DATA_FOLDER = "userdata";
+    private final String userDataFolder;
     private String currentUser = null;
+
+    /**
+     * Creates a FileUserDataAccessObject that loads user data from the given folder.
+     *
+     * @param userDataFolder the folder where user JSON files are stored (e.g., "userdata")
+     */
+    public FileUserDataAccessObject(String userDataFolder) {
+        this.userDataFolder = userDataFolder;
+    }
 
     /**
      * Checks if a user file exists for the given username.
@@ -28,7 +42,7 @@ public class FileUserDataAccessObject implements LoginUserDataAccessInterface {
      */
     @Override
     public boolean existsByName(String username) {
-        Path userFile = Paths.get(USER_DATA_FOLDER, username + ".json");
+        Path userFile = Paths.get(userDataFolder, username + ".json");
         return Files.exists(userFile);
     }
 
@@ -39,33 +53,25 @@ public class FileUserDataAccessObject implements LoginUserDataAccessInterface {
      */
     @Override
     public User get(String username) {
-        Path userFilePath = Paths.get(USER_DATA_FOLDER, username + ".json");
+        Path userFilePath = Paths.get(userDataFolder, username + ".json");
 
         if (!Files.exists(userFilePath)) {
             return null;
         }
 
         try {
-            // Read entire JSON content as a String
             String content = Files.readString(userFilePath);
-
-            // Parse JSON string into JSONObject
             JSONObject json = new JSONObject(content);
 
-            // Extract fields from JSON
             String userName = json.getString("username");
             String passwordHash = json.getString("passwordHash");
 
-            // TODO: Extend here to read the json and all that is needed
-
-            // Create and return a User instance from JSON data
             return new CommonUser(userName, passwordHash);
 
         } catch (IOException e) {
             System.err.println("Failed to read file for user '" + username + "': " + e.getMessage());
             return null;
-        } catch (org.json.JSONException _) {
-            // Malformed JSON file, print error and return null
+        } catch (org.json.JSONException e) {
             System.err.println("Malformed JSON for user: " + username);
             return null;
         }
@@ -73,12 +79,23 @@ public class FileUserDataAccessObject implements LoginUserDataAccessInterface {
 
     /**
      * Saves or updates the User data into a JSON file.
-     * Currently not implemented — to be added later.
      * @param user the User object to save
      */
     @Override
     public void save(User user) {
-        // TODO: Implement writing the User object back to JSON file
+        Path userFilePath = Paths.get(userDataFolder, user.getName() + ".json");
+        JSONObject json = new JSONObject();
+        json.put("username", user.getName());
+        json.put("passwordHash", user.getPasswordHash());
+
+        try {
+            // Ensure the directory exists
+            Files.createDirectories(userFilePath.getParent());
+            Files.writeString(userFilePath, json.toString(4)); // pretty print JSON with indentation
+        } catch (IOException e) {
+            System.err.println("Failed to save user '" + user.getName() + "': " + e.getMessage());
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -97,5 +114,24 @@ public class FileUserDataAccessObject implements LoginUserDataAccessInterface {
     @Override
     public String getCurrentUser() {
         return currentUser;
+    }
+
+    /**
+     * Checks if the username is valid (i.e., not already taken).
+     * @param username the username to check
+     * @return true if the username is available for registration; false otherwise
+     */
+    @Override
+    public boolean isUsernameValid(String username) {
+        return !existsByName(username);
+    }
+
+    /**
+     * Adds a task for the specified user.
+     * @param username the username to add the task for
+     * @param task the Task object representing the task to be added
+     */
+    public void addTask(String username, Task task) {
+        // TODO: Implement this method to save the task for the given user
     }
 }

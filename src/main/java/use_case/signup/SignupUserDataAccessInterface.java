@@ -19,4 +19,11 @@ public interface SignupUserDataAccessInterface {
      * @param user the user to save
      */
     void save(User user);
+
+    /**
+     * Checks if the username is valid (i.e., not already taken).
+     * @param username the username to check
+     * @return true if the username is available for registration; false if already exists
+     */
+    boolean isUsernameValid(String username);
 }
