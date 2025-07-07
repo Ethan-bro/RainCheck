@@ -1,3 +1,3 @@
-package main.java.entity;
+package entity;
 
 public class CommonUser implements User {}

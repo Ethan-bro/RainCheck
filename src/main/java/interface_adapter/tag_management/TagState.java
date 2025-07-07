@@ -1,3 +1,3 @@
-package main.java.interface_adapter.tag_management;
+package interface_adapter.tag_management;
 
 public class TagState {}

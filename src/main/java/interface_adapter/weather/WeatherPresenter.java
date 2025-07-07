@@ -1,3 +1,3 @@
-package main.java.interface_adapter.weather;
+package interface_adapter.weather;
 
 public class WeatherPresenter {}

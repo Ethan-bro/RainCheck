@@ -1,4 +1,4 @@
-package main.java.data_access;
+package data_access;
 
 import main.java.use_case.login.PasswordHashingService;
 

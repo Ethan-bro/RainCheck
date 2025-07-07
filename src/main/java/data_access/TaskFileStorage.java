@@ -1,3 +1,3 @@
-package main.java.data_access;
+package data_access;
 
 public class TaskFileStorage {}

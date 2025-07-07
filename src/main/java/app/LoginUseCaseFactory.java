@@ -1,3 +1,3 @@
-package main.java.app;
+package app;
 
 public class LoginUseCaseFactory {}

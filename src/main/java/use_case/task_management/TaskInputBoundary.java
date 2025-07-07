@@ -1,3 +1,3 @@
-package main.java.use_case.task_management;
+package use_case.task_management;
 
 public interface TaskInputBoundary {}
