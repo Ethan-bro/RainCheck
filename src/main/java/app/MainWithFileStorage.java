@@ -39,7 +39,7 @@ public class MainWithFileStorage {
         views.add(signupView, signupView.getViewName());
 
         final LoginView loginView = LoginUseCaseFactory.create(
-                viewManagerModel, loginViewModel, loggedInViewModel, userDataAccessObject);
+                viewManagerModel, loginViewModel, loggedInViewModel, signupViewModel, userDataAccessObject);
         views.add(loginView, loginView.getViewName());
 
         viewManagerModel.setState(signupView.getViewName());

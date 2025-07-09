@@ -18,4 +18,9 @@ public interface LoginOutputBoundary {
      * @param errorMessage A message describing why login failed (e.g., wrong password).
      */
     void prepareFailView(String errorMessage);
+
+    /**
+     * Switches to signup view
+     */
+    void switchToSignupView();
 }

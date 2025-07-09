@@ -11,4 +11,10 @@ public interface LoginInputBoundary {
      * @param loginInputData An object containing the user's login credentials.
      */
     void execute(LoginInputData loginInputData);
+
+    /**
+     * Switches to the signup view
+     */
+    void switchToSignupView();
+
 }

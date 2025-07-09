@@ -1,6 +1,7 @@
 package app;
 
 import data_access.SHA256HashingService;
+import interface_adapter.signup.SignupViewModel;
 import services.PasswordHashingService;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.logged_in.LoggedInViewModel;
@@ -35,10 +36,11 @@ public final class LoginUseCaseFactory {
             ViewManagerModel viewManagerModel,
             LoginViewModel loginViewModel,
             LoggedInViewModel loggedInViewModel,
+            SignupViewModel signupViewModel,
             LoginUserDataAccessInterface userDataAccessObject) {
 
         final LoginController loginController = createLoginUseCase(viewManagerModel, loginViewModel,
-                loggedInViewModel, userDataAccessObject);
+                loggedInViewModel, signupViewModel, userDataAccessObject);
         return new LoginView(loginViewModel, loginController);
 
     }
@@ -47,10 +49,11 @@ public final class LoginUseCaseFactory {
             ViewManagerModel viewManagerModel,
             LoginViewModel loginViewModel,
             LoggedInViewModel loggedInViewModel,
+            SignupViewModel signupViewModel,
             LoginUserDataAccessInterface userDataAccessObject) {
 
-        final LoginOutputBoundary loginOutputBoundary = new LoginPresenter(viewManagerModel,
-                loggedInViewModel, loginViewModel);
+        final LoginOutputBoundary loginOutputBoundary = new LoginPresenter(
+                viewManagerModel, loggedInViewModel, loginViewModel, signupViewModel);
 
         final PasswordHashingService passwordHashingService = new SHA256HashingService();
 
