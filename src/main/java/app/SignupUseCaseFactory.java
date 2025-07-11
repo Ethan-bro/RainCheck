@@ -1,6 +1,5 @@
 package app;
 
-import data_access.SHA256HashingService;
 import entity.CommonUserFactory;
 import entity.UserFactory;
 import interface_adapter.ViewManagerModel;
@@ -8,7 +7,6 @@ import interface_adapter.login.LoginViewModel;
 import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupPresenter;
 import interface_adapter.signup.SignupViewModel;
-import services.PasswordHashingService;
 import use_case.signup.SignupInputBoundary;
 import use_case.signup.SignupInteractor;
 import use_case.signup.SignupOutputBoundary;
@@ -53,9 +51,8 @@ public final class SignupUseCaseFactory {
                 signupViewModel, loginViewModel);
 
         final UserFactory userFactory = new CommonUserFactory();
-        final PasswordHashingService passwordHashingService = new SHA256HashingService();
         final SignupInputBoundary userSignupInteractor = new SignupInteractor(
-                userDataAccessObject, signupOutputBoundary, userFactory, passwordHashingService);
+                userDataAccessObject, signupOutputBoundary, userFactory);
 
         return new SignupController(userSignupInteractor);
     }

@@ -1,8 +1,6 @@
 package app;
 
-import data_access.SHA256HashingService;
 import interface_adapter.signup.SignupViewModel;
-import services.PasswordHashingService;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginController;
@@ -55,10 +53,8 @@ public final class LoginUseCaseFactory {
         final LoginOutputBoundary loginOutputBoundary = new LoginPresenter(
                 viewManagerModel, loggedInViewModel, loginViewModel, signupViewModel);
 
-        final PasswordHashingService passwordHashingService = new SHA256HashingService();
-
         final LoginInputBoundary loginInteractor = new LoginInteractor(
-                userDataAccessObject, loginOutputBoundary, passwordHashingService);
+                userDataAccessObject, loginOutputBoundary);
 
         return new LoginController(loginInteractor);
     }
