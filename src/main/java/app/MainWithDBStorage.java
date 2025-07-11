@@ -1,11 +1,8 @@
 package app;
 
-import java.awt.CardLayout;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.WindowConstants;
-
-import data_access.FileUserDataAccessObject;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import data_access.SupabaseUserDataAccessObject;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginViewModel;
@@ -14,9 +11,21 @@ import view.LoginView;
 import view.SignupView;
 import view.ViewManager;
 
-public class MainWithFileStorage {
-    public static void main(String[] args) {
+import javax.swing.*;
+import java.awt.CardLayout;
+import java.io.FileReader;
 
+public class MainWithDBStorage {
+    public static void main(String[] args) throws Exception {
+
+        // Load db config
+        JsonObject config = JsonParser.parseReader(new FileReader("config/supabasedb.json")).getAsJsonObject();
+        String dbUrl = config.get("database_url").getAsString();
+        String dbAnonKey = config.get("database_anon_key").getAsString();
+
+        SupabaseUserDataAccessObject userDao = new SupabaseUserDataAccessObject(dbUrl, dbAnonKey);
+
+        // --- GUI setup ---
         final JFrame application = new JFrame("RainCheck");
         application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
@@ -31,15 +40,12 @@ public class MainWithFileStorage {
         final LoggedInViewModel loggedInViewModel = new LoggedInViewModel();
         final SignupViewModel signupViewModel = new SignupViewModel();
 
-        final FileUserDataAccessObject userDataAccessObject =
-                new FileUserDataAccessObject("userdata");
-
         final SignupView signupView = SignupUseCaseFactory.create(
-                viewManagerModel, loginViewModel, signupViewModel, userDataAccessObject);
+                viewManagerModel, loginViewModel, signupViewModel, userDao);
         views.add(signupView, signupView.getViewName());
 
         final LoginView loginView = LoginUseCaseFactory.create(
-                viewManagerModel, loginViewModel, loggedInViewModel, signupViewModel, userDataAccessObject);
+                viewManagerModel, loginViewModel, loggedInViewModel, signupViewModel, userDao);
         views.add(loginView, loginView.getViewName());
 
         viewManagerModel.setState(signupView.getViewName());
