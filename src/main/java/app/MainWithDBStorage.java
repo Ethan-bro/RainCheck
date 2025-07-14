@@ -7,6 +7,7 @@ import interface_adapter.ViewManagerModel;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.signup.SignupViewModel;
+import view.LoggedInView;
 import view.LoginView;
 import view.SignupView;
 import view.ViewManager;
@@ -47,6 +48,9 @@ public class MainWithDBStorage {
         final LoginView loginView = LoginUseCaseFactory.create(
                 viewManagerModel, loginViewModel, loggedInViewModel, signupViewModel, userDao);
         views.add(loginView, loginView.getViewName());
+
+        final LoggedInView loggedInView = new LoggedInView(loggedInViewModel);
+        views.add(loggedInView, loggedInView.getViewName());
 
         viewManagerModel.setState(signupView.getViewName());
         viewManagerModel.firePropertyChanged();
