@@ -20,6 +20,9 @@ import interface_adapter.logged_in.LoggedInViewModel;
 
 /**
  * The View for when the user is logged into the program.
+ * TODO: This class is the main screen shown after login.
+ *       You should build the calendar UI and task display features here.
+ *       Remove the password field and add your own panels, tables, etc.
  */
 public class LoggedInView extends JPanel implements ActionListener, PropertyChangeListener {
 
