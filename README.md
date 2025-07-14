@@ -74,13 +74,13 @@ RainCheck helps users schedule and manage daily tasks while providing context-aw
 
 ## 🧪 Project Focus by Feature/Member
 
-| **Member** | **Feature Responsibility**                                                        |
-|------------|-----------------------------------------------------------------------------------|
-| Ethan      | User account creation, login, and secure task & weather data persistence          |
-| Brad       | Task input methods including manual entry and voice-to-text transcription         |
-| Kian       | Task priority visualization with dynamic color coding for urgency                  |
-| Sean       | Custom task tags with name and emoji selection from dropdown                       |
-| Clara      | Task management: editing, deleting, and marking tasks as completed                 |
+| **Member** | **Feature Responsibility**                                                           |
+|------------|--------------------------------------------------------------------------------------|
+| Ethan      | User account creation and login                                                      |
+| Brad       | Task input methods including manual entry                                            |
+| Kian       | Task priority visualization with dynamic color coding for urgency                    |
+| Sean       | Custom task tags with name and emoji selection from dropdown                         |
+| Clara      | Task management: editing, deleting, and marking tasks as completed                   |
 | Team       | Display of hourly weather forecasts and integration with Visual Crossing Weather API |
 
 ---
