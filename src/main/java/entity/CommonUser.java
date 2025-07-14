@@ -6,11 +6,11 @@ package entity;
 public class CommonUser implements User {
 
     private final String name;
-    private final String passwordHash;
+    private final String password;
 
-    public CommonUser(String name, String passwordHash) {
+    public CommonUser(String name, String password) {
         this.name = name;
-        this.passwordHash = passwordHash;
+        this.password = password;
     }
 
     @Override
@@ -19,7 +19,7 @@ public class CommonUser implements User {
     }
 
     @Override
-    public String getPasswordHash() {
-        return passwordHash;
+    public String getPassword() {
+        return password;
     }
 }
