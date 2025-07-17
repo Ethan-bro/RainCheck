@@ -52,13 +52,18 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
         final LabelTextPanel repeatPasswordInfo = new LabelTextPanel(
                 new JLabel(SignupViewModel.REPEAT_PASSWORD_LABEL), repeatPasswordInputField);
 
-        final JPanel buttons = new JPanel();
-        toLogin = new JButton(SignupViewModel.TO_LOGIN_BUTTON_LABEL);
-        buttons.add(toLogin);
         signUp = new JButton(SignupViewModel.SIGNUP_BUTTON_LABEL);
-        buttons.add(signUp);
         cancel = new JButton(SignupViewModel.CANCEL_BUTTON_LABEL);
-        buttons.add(cancel);
+        toLogin = new JButton(SignupViewModel.TO_LOGIN_BUTTON_LABEL);
+
+        final JPanel signupCancelPanel = new JPanel();
+        signupCancelPanel.add(signUp);
+        signupCancelPanel.add(cancel);
+
+        final JPanel loginPanel = new JPanel();
+        loginPanel.add(new JLabel("Already a user?"));
+        loginPanel.add(toLogin);
+
 
         signUp.addActionListener(
                 // This creates an anonymous subclass of ActionListener and instantiates it.
@@ -91,7 +96,8 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
         this.add(usernameInfo);
         this.add(passwordInfo);
         this.add(repeatPasswordInfo);
-        this.add(buttons);
+        this.add(signupCancelPanel);
+        this.add(loginPanel);
     }
 
     private void addUsernameListener() {
@@ -175,7 +181,7 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
     @Override
     public void actionPerformed(ActionEvent evt) {
         if (evt.getSource() == cancel) {
-            signupController.switchToLoginView();
+            System.exit(0);
         }
     }
 

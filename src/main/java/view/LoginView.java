@@ -35,6 +35,7 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
 
     private final JButton logIn;
     private final JButton cancel;
+    private final JButton signUp;
     private final LoginController loginController;
 
     public LoginView(LoginViewModel loginViewModel, LoginController controller) {
@@ -51,11 +52,17 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
         final LabelTextPanel passwordInfo = new LabelTextPanel(
                 new JLabel("Password"), passwordInputField);
 
-        final JPanel buttons = new JPanel();
         logIn = new JButton("log in");
-        buttons.add(logIn);
         cancel = new JButton("cancel");
-        buttons.add(cancel);
+        signUp = new JButton("sign up");
+
+        final JPanel loginCancelPanel = new JPanel();
+        loginCancelPanel.add(logIn);
+        loginCancelPanel.add(cancel);
+
+        final JPanel signupPanel = new JPanel();
+        signupPanel.add(new JLabel("Already have an account?"));
+        signupPanel.add(signUp);
 
         logIn.addActionListener(
                 evt -> {
@@ -72,8 +79,11 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
 
         cancel.addActionListener(this);
 
-        usernameInputField.getDocument().addDocumentListener(new DocumentListener() {
+        signUp.addActionListener(
+                evt -> loginController.switchToSignupView()
+        );
 
+        usernameInputField.getDocument().addDocumentListener(new DocumentListener() {
             private void documentListenerHelper() {
                 final LoginState currentState = loginViewModel.getState();
                 currentState.setUsername(usernameInputField.getText());
@@ -81,25 +91,14 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
             }
 
             @Override
-            public void insertUpdate(DocumentEvent e) {
-                documentListenerHelper();
-            }
-
+            public void insertUpdate(DocumentEvent e) { documentListenerHelper(); }
             @Override
-            public void removeUpdate(DocumentEvent e) {
-                documentListenerHelper();
-            }
-
+            public void removeUpdate(DocumentEvent e) { documentListenerHelper(); }
             @Override
-            public void changedUpdate(DocumentEvent e) {
-                documentListenerHelper();
-            }
+            public void changedUpdate(DocumentEvent e) { documentListenerHelper(); }
         });
 
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
         passwordInputField.getDocument().addDocumentListener(new DocumentListener() {
-
             private void documentListenerHelper() {
                 final LoginState currentState = loginViewModel.getState();
                 currentState.setPassword(new String(passwordInputField.getPassword()));
@@ -107,26 +106,22 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
             }
 
             @Override
-            public void insertUpdate(DocumentEvent e) {
-                documentListenerHelper();
-            }
-
+            public void insertUpdate(DocumentEvent e) { documentListenerHelper(); }
             @Override
-            public void removeUpdate(DocumentEvent e) {
-                documentListenerHelper();
-            }
-
+            public void removeUpdate(DocumentEvent e) { documentListenerHelper(); }
             @Override
-            public void changedUpdate(DocumentEvent e) {
-                documentListenerHelper();
-            }
+            public void changedUpdate(DocumentEvent e) { documentListenerHelper(); }
         });
+
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         this.add(title);
         this.add(usernameInfo);
         this.add(usernameErrorField);
         this.add(passwordInfo);
-        this.add(buttons);
+        this.add(passwordErrorField);
+        this.add(loginCancelPanel);
+        this.add(signupPanel);
     }
 
     /**
@@ -136,7 +131,7 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
     @Override
     public void actionPerformed(ActionEvent evt) {
         if (evt.getSource() == cancel) {
-            loginController.switchToSignupView();
+            System.exit(0);
         }
     }
 
