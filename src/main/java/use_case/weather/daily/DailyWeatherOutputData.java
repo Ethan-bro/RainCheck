@@ -1,22 +1,23 @@
 package use_case.weather.daily;
 
 public class DailyWeatherOutputData {
-    private final double tempMax;
-    private final double tempMin;
+
+    private final double high;
+    private final double low;
     private final double feelsLike;
 
-    public DailyWeatherOutputData(double tempMax, double tempMin, double feelsLike) {
-        this.tempMax = tempMax;
-        this.tempMin = tempMin;
+    public DailyWeatherOutputData(double high, double low, double feelsLike) {
+        this.high = high;
+        this.low = low;
         this.feelsLike = feelsLike;
     }
 
-    public double getTempMax() {
-        return tempMax;
+    public double getHigh() {
+        return high;
     }
 
-    public double getTempMin() {
-        return tempMin;
+    public double getLow() {
+        return low;
     }
 
     public double getFeelsLike() {
