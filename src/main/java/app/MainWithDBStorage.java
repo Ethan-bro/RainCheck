@@ -20,7 +20,7 @@ public class MainWithDBStorage {
     public static void main(String[] args) throws Exception {
 
         // Load db config
-        JsonObject config = JsonParser.parseReader(new FileReader("config/supabasedb.json")).getAsJsonObject();
+        JsonObject config = JsonParser.parseReader(new FileReader("config/secrets.json")).getAsJsonObject();
         String dbUrl = config.get("database_url").getAsString();
         String dbAnonKey = config.get("database_anon_key").getAsString();
 
