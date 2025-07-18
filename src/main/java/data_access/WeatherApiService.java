@@ -2,12 +2,15 @@ package data_access;
 
 import com.google.gson.*;
 import okhttp3.*;
+import use_case.weather.daily.DailyWeatherDataAccessInterface;
+import use_case.weather.hourly.HourlyWeatherDataAccessInterface;
+
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 
-public class WeatherApiService {
+public class WeatherApiService implements DailyWeatherDataAccessInterface, HourlyWeatherDataAccessInterface {
 
     private final String apiKey;
     private final OkHttpClient client = new OkHttpClient();
@@ -32,7 +35,8 @@ public class WeatherApiService {
         Map<String, Object> result = new HashMap<>();
         result.put("tempmax", day.get("tempmax").getAsDouble());
         result.put("tempmin", day.get("tempmin").getAsDouble());
-        result.put("feelslike", day.get("feelslikeday").getAsDouble());
+        result.put("feelslikemax", day.has("feelslikemax") && !day.get("feelslikemax").isJsonNull() ? day.get("feelslikemax").getAsDouble() : null);
+        result.put("feelslikemin", day.has("feelslikemin") && !day.get("feelslikemin").isJsonNull() ? day.get("feelslikemin").getAsDouble() : null);
 
         return result;
     }
