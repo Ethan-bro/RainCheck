@@ -15,7 +15,21 @@ Example:
 ```java
 WeatherApiService apiService = new WeatherApiService();
 Map<String, Object> daily = apiService.getDailyWeather("Toronto", LocalDate.now());
+
+System.out.println("=== Daily Weather ===");
+System.out.println("High: " + daily.get("tempmax") + "°C");
+System.out.println("Low: " + daily.get("tempmin") + "°C");
+System.out.println("Feels Like High: " + daily.get("feelslikemax") + "°C");
+System.out.println("Feels Like Low: " + daily.get("feelslikemin") + "°C");
+System.out.println("=====================\n");
 ```
+
+> === Daily Weather ===<br />
+> High: 21.2°C<br />
+> Low: 17.6°C<br />
+> Feels Like High: 21.2°C<br />
+> Feels Like Low: 17.6°C<br />
+> =====================
 
 ### What it returns
 
@@ -25,17 +39,6 @@ A `Map<String, Object>` containing these keys:
 - `"tempmin"`: lowest actual temperature (°C)
 - `"feelslikemax"`: highest feels like temperature (°C)
 - `"feelslikemin"`: lowest feels like temperature (°C)
-
-### Example
-```java
-WeatherApiService apiService = new WeatherApiService();
-Map<String, Object> daily = apiService.getDailyWeather("Toronto", LocalDate.now());
-
-System.out.println("High: " + daily.get("tempmax") + "°C");
-System.out.println("Low: " + daily.get("tempmin") + "°C");
-System.out.println("Feels Like High: " + daily.get("feelslikemax") + "°C");
-System.out.println("Feels Like Low: " + daily.get("feelslikemin") + "°C");
-```
 ---
 
 ## 2. getHourlyWeather(location, date, startHour, endHour)
@@ -48,7 +51,19 @@ Example:
 ```java
 WeatherApiService apiService = new WeatherApiService();
 List<Map<String, String>> hourly = apiService.getHourlyWeather("Toronto", LocalDate.now(), 9, 12);
+
+for (Map<String, String> hour : hourly) {
+        System.out.println(hour.get("time") + ":" +
+        hour.get("feelslike") + ", " +
+        hour.get("description"));
+        }
 ```
+
+> 09:00:00: 18.4°C, Clear<br />
+> 10:00:00: 18.4°C, Clear<br />
+> 11:00:00: 18.9°C, Clear<br />
+> 12:00:00: 19.5°C, Clear
+
 ### What it returns
 
 A `List<Map<String, String>>`, each map containing:
@@ -56,15 +71,3 @@ A `List<Map<String, String>>`, each map containing:
 - `"time"`: timestamp for the hour (e.g., "2025-07-18T10:00:00-04:00")
 - `"feelslike"`: feels like temperature at that hour (°C)
 - `"description"`: brief weather description for the hour (e.g., "24°C, cloudy")
-
-### Example
-```java
-WeatherApiService apiService = new WeatherApiService();
-List<Map<String, String>> hourly = apiService.getHourlyWeather("Toronto", LocalDate.now(), 9, 12);
-
-for (Map<String, String> hour : hourly) {
-    System.out.println(hour.get("time") + " — " +
-    hour.get("feelslike") + ", " +
-    hour.get("description"));
-}
-```
