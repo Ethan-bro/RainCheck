@@ -16,20 +16,16 @@ Example:
 WeatherApiService apiService = new WeatherApiService();
 Map<String, Object> daily = apiService.getDailyWeather("Toronto", LocalDate.now());
 
-System.out.println("=== Daily Weather ===");
 System.out.println("High: " + daily.get("tempmax") + "°C");
 System.out.println("Low: " + daily.get("tempmin") + "°C");
 System.out.println("Feels Like High: " + daily.get("feelslikemax") + "°C");
 System.out.println("Feels Like Low: " + daily.get("feelslikemin") + "°C");
-System.out.println("=====================\n");
 ```
 
-> === Daily Weather ===<br />
 > High: 21.2°C<br />
 > Low: 17.6°C<br />
 > Feels Like High: 21.2°C<br />
 > Feels Like Low: 17.6°C<br />
-> =====================
 
 ### What it returns
 
