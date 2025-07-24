@@ -13,7 +13,6 @@ import java.util.Objects;
  * The View for a single task box.
  */
 public class TaskBox extends JPanel implements PropertyChangeListener {
-    private final String viewName = "task card";
     private final TaskViewModel taskViewModel;
     private final TaskController taskController;
     private final JLabel tagNameLabel;
@@ -148,7 +147,7 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
 
 
     /**
-     * Updates the colour of the task card (main panel) based on priority and completion.
+     * Updates the colour of the task box (main panel) based on priority and completion.
      */
     private void updateDisplayColour() {
         if (taskViewModel.isCompleted()) {
@@ -159,7 +158,7 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
     }
 
     /**
-     * @param evt Updating task card to updated task based on changes in
+     * @param evt Updating task box to updated task based on changes in
      *            TaskViewModel.
      */
     @Override
@@ -180,5 +179,3 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         repaint();
     }
 }
-
-
