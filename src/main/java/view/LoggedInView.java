@@ -1,117 +1,95 @@
 package view;
 
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import javax.swing.*;
+import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.TextStyle;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 import interface_adapter.logged_in.LoggedInState;
 import interface_adapter.logged_in.LoggedInViewModel;
+import data_access.WeatherApiService;
 
-/**
- * The View for when the user is logged into the program.
- * TODO: This class is the main screen shown after login.
- *       You should build the calendar UI and task display features here.
- *       Remove the password field and add your own panels, tables, etc.
- */
-public class LoggedInView extends JPanel implements ActionListener, PropertyChangeListener {
+public class LoggedInView extends JPanel implements PropertyChangeListener {
 
     private static final String viewName = "logged in";
     private final LoggedInViewModel loggedInViewModel;
-    private final JLabel passwordErrorField = new JLabel();
+    private final JLabel usernameLabel;
 
-    private final JLabel username;
-
-    private final JButton logOut;
-
-    private final JTextField passwordInputField = new JTextField(15);
-
-    public LoggedInView(LoggedInViewModel loggedInViewModel) {
+    public LoggedInView(LoggedInViewModel loggedInViewModel) throws IOException {
         this.loggedInViewModel = loggedInViewModel;
         this.loggedInViewModel.addPropertyChangeListener(this);
 
-        final JLabel title = new JLabel("Logged In Screen");
+        setLayout(new BorderLayout());
+
+        // --- Top Panel: Title + Username + Month-Year (no weather row here) ---
+        JPanel topPanel = new JPanel();
+        topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
+
+        JLabel title = new JLabel("RainCheck Calendar");
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
+        title.setFont(title.getFont().deriveFont(Font.BOLD, 18f));
 
-        final LabelTextPanel passwordInfo = new LabelTextPanel(
-                new JLabel("Password"), passwordInputField);
+        usernameLabel = new JLabel();
+        usernameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        usernameLabel.setFont(usernameLabel.getFont().deriveFont(Font.PLAIN, 14f));
 
-        final JLabel usernameInfo = new JLabel("Currently logged in: ");
-        username = new JLabel();
+        LocalDate today = LocalDate.now();
+        JLabel monthYearLabel = new JLabel(today.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH) + " " + today.getYear());
+        monthYearLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        monthYearLabel.setFont(monthYearLabel.getFont().deriveFont(Font.ITALIC, 15f));
 
-        final JPanel buttons = new JPanel();
-        logOut = new JButton("Log Out");
-        buttons.add(logOut);
+        topPanel.add(title);
+        topPanel.add(usernameLabel);
+        topPanel.add(monthYearLabel);
 
-        logOut.addActionListener(this);
+        add(topPanel, BorderLayout.NORTH);
 
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        // --- Center Panel: Scrollable calendar with weather integrated in header ---
+        JPanel centerPanel = new JPanel();
+        centerPanel.setLayout(new BorderLayout());
 
-        passwordInputField.getDocument().addDocumentListener(new DocumentListener() {
+        CalendarData calendarData = new CalendarData();
+        WeatherApiService weatherService = new WeatherApiService();
 
-            private void documentListenerHelper() {
-                final LoggedInState currentState = loggedInViewModel.getState();
-                currentState.setPassword(passwordInputField.getText());
-                loggedInViewModel.setState(currentState);
-            }
+        // Fetch weather for the week once and store in a map
+        Map<LocalDate, Map<String, Object>> weatherMap = new HashMap<>();
+        for (LocalDate date : calendarData.getWeekDates()) {
+            weatherMap.put(date, weatherService.getDailyWeather("Toronto", date));
+        }
 
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                documentListenerHelper();
-            }
+        CalendarGrid calendarGrid = new CalendarGrid(calendarData, weatherMap);
+        ScrollableCalendar scrollableCalendar = new ScrollableCalendar(calendarGrid);
+        centerPanel.add(scrollableCalendar, BorderLayout.CENTER);
 
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                documentListenerHelper();
-            }
+        add(centerPanel, BorderLayout.CENTER);
 
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                documentListenerHelper();
-            }
+        // --- Bottom: Logout Button ---
+        JButton logoutButton = new JButton("Log Out");
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.add(logoutButton);
+        add(bottomPanel, BorderLayout.SOUTH);
+
+        logoutButton.addActionListener(e -> {
+            // TODO: Connect logout button to controller logic
+            System.out.println("Logout clicked (hook this up to controller)");
         });
-
-        this.add(title);
-        this.add(usernameInfo);
-        this.add(username);
-
-        this.add(passwordInfo);
-        this.add(passwordErrorField);
-        this.add(buttons);
-    }
-
-    /**
-     * React to a button click that results in evt.
-     * @param evt the ActionEvent to react to
-     */
-    public void actionPerformed(ActionEvent evt) {
-        System.out.println("Click " + evt.getActionCommand());
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getPropertyName().equals("state")) {
-            final LoggedInState state = (LoggedInState) evt.getNewValue();
-            username.setText(state.getUsername());
+        if ("state".equals(evt.getPropertyName())) {
+            LoggedInState state = (LoggedInState) evt.getNewValue();
+            usernameLabel.setText("Signed in as: " + state.getUsername());
         }
-        else if (evt.getPropertyName().equals("password")) {
-            final LoggedInState state = (LoggedInState) evt.getNewValue();
-            JOptionPane.showMessageDialog(null, "password updated for " + state.getUsername());
-        }
-
     }
 
-    public String getViewName() {
+    public static String getViewName() {
         return viewName;
     }
 }
