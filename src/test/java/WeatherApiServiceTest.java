@@ -20,12 +20,14 @@ public class WeatherApiServiceTest {
         assertTrue("Should contain tempmin", daily.containsKey("tempmin"));
         assertTrue("Should contain feelslikemax", daily.containsKey("feelslikemax"));
         assertTrue("Should contain feelslikemin", daily.containsKey("feelslikemin"));
+        assertTrue("Should contain icon", daily.containsKey("icon"));
 
         System.out.println("=== Daily Weather ===");
         System.out.println("High: " + daily.get("tempmax") + "°C");
         System.out.println("Low: " + daily.get("tempmin") + "°C");
         System.out.println("Feels Like High: " + daily.get("feelslikemax") + "°C");
         System.out.println("Feels Like Low: " + daily.get("feelslikemin") + "°C");
+        System.out.println("Icon: " + daily.get("icon"));
         System.out.println("=====================\n");
 
         System.out.println("Daily weather test passed\n");
