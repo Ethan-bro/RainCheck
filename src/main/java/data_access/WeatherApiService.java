@@ -5,18 +5,22 @@ import okhttp3.*;
 import use_case.weather.daily.DailyWeatherDataAccessInterface;
 import use_case.weather.hourly.HourlyWeatherDataAccessInterface;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.List;
 
 public class WeatherApiService implements DailyWeatherDataAccessInterface, HourlyWeatherDataAccessInterface {
 
     private final String apiKey;
     private final OkHttpClient client = new OkHttpClient();
     private final Gson gson = new Gson();
+
     private static final String URL =
-            "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/%s/%s?unitGroup=metric&key=%s&contentType=json";
+            "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/%s/%s?unitGroup=metric&iconSet=icons2&key=%s&contentType=json";
 
     public WeatherApiService() throws IOException {
         JsonObject config = JsonParser.parseReader(new FileReader("config/secrets.json")).getAsJsonObject();
@@ -38,7 +42,31 @@ public class WeatherApiService implements DailyWeatherDataAccessInterface, Hourl
         result.put("feelslikemax", day.has("feelslikemax") && !day.get("feelslikemax").isJsonNull() ? day.get("feelslikemax").getAsDouble() : null);
         result.put("feelslikemin", day.has("feelslikemin") && !day.get("feelslikemin").isJsonNull() ? day.get("feelslikemin").getAsDouble() : null);
 
+        String iconName = day.get("icon").getAsString(); // e.g. clear-day, thunder-rain, showers-night
+        ImageIcon icon = getWeatherImageIcon(iconName);
+        result.put("icon", icon);
+
         return result;
+    }
+
+    private ImageIcon getWeatherImageIcon(String iconName) {
+        String iconPath = "/images/weatherIcons/" + iconName + ".png";
+
+        ImageIcon icon = null;
+        try {
+            java.net.URL imgURL = getClass().getResource(iconPath);
+            if (imgURL != null) {
+                Image img = new ImageIcon(imgURL).getImage();
+                Image scaledImg = img.getScaledInstance(40, 40, Image.SCALE_SMOOTH);
+                icon = new ImageIcon(scaledImg);
+            } else {
+                System.err.println("Couldn't find icon: " + iconPath);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return icon;
     }
 
     public List<Map<String, String>> getHourlyWeather(String location, LocalDate date, int startHour, int endHour) throws IOException {
