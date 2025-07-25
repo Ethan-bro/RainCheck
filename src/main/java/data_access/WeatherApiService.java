@@ -50,7 +50,7 @@ public class WeatherApiService implements DailyWeatherDataAccessInterface, Hourl
     }
 
     private ImageIcon getWeatherImageIcon(String iconName) {
-        String iconPath = "/images/weatherIcons/" + iconName + ".png";
+        String iconPath = "/weatherIcons/" + iconName + ".png";
 
         ImageIcon icon = null;
         try {
