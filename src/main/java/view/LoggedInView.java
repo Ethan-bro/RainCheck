@@ -10,6 +10,7 @@ import java.time.format.TextStyle;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import interface_adapter.logged_in.LoggedInState;
 import interface_adapter.logged_in.LoggedInViewModel;
@@ -55,13 +56,7 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         centerPanel.setLayout(new BorderLayout());
 
         CalendarData calendarData = new CalendarData();
-        WeatherApiService weatherService = new WeatherApiService();
-
-        // Fetch weather for the week once and store in a map
-        Map<LocalDate, Map<String, Object>> weatherMap = new HashMap<>();
-        for (LocalDate date : calendarData.getWeekDates()) {
-            weatherMap.put(date, weatherService.getDailyWeather("Toronto", date));
-        }
+        Map<LocalDate, Map<String, Object>> weatherMap = getWeatherMapForCalendarData(calendarData);
 
         CalendarGrid calendarGrid = new CalendarGrid(calendarData, weatherMap);
         ScrollableCalendar scrollableCalendar = new ScrollableCalendar(calendarGrid);
@@ -79,6 +74,34 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
             // TODO: Connect logout button to controller logic
             System.out.println("Logout clicked (hook this up to controller)");
         });
+    }
+
+    private Map<LocalDate, Map<String, Object>> getWeatherMapForCalendarData(CalendarData calendarData) {
+        // Simulated weather map with dummy weather data for each date
+        Map<LocalDate, Map<String, Object>> weatherMap = new HashMap<>();
+
+        // TODO: Add back:
+//        WeatherApiService weatherService = new WeatherApiService();
+
+//        // Fetch weather for the week once and store in a map
+//        for (LocalDate date : calendarData.getWeekDates()) {
+//            weatherMap.put(date, weatherService.getDailyWeather("Toronto", date));
+//        }
+        // return weatherMap;
+
+        // TODO: ...and remove the following:
+        // Load a dummy icon once from resource path (adjust path as needed)
+        ImageIcon dummyIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/weatherIcons/clear-day.png")));
+
+        for (LocalDate date : calendarData.getWeekDates()) {
+            Map<String, Object> fakeWeather = new HashMap<>();
+            fakeWeather.put("tempmin", 10.0);  // dummy low temp
+            fakeWeather.put("tempmax", 20.0);  // dummy high temp
+            fakeWeather.put("icon", dummyIcon); // always the dummy icon
+
+            weatherMap.put(date, fakeWeather);
+        }
+        return weatherMap;
     }
 
     @Override
