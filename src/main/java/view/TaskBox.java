@@ -30,7 +30,7 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
 
         // Creating main panel
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        this.setMaximumSize(new Dimension(800, Integer.MAX_VALUE));
+        this.setMaximumSize(new Dimension(260, Integer.MAX_VALUE));
 
         // Creating the topmost panel with the tag, tag emoji, edit button, and delete button
         JPanel topPanel = new JPanel();
@@ -54,7 +54,12 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
 
         ImageIcon pencilIcon = new ImageIcon(Objects.requireNonNull(getClass()
                 .getResource("/images/pencil.png")));
-        JButton editButton = new JButton(pencilIcon);
+        ImageIcon scaledPencilIcon = new ImageIcon(pencilIcon.getImage()
+                .getScaledInstance(20, 20, Image.SCALE_SMOOTH));
+        JButton editButton = new JButton(scaledPencilIcon);
+        editButton.setPreferredSize(new Dimension(24, 24));
+        editButton.setMaximumSize(new Dimension(24, 24));
+        editButton.setMargin(new Insets(0, 0, 0, 0));
         editButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent evt) {
@@ -64,21 +69,14 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         );
         buttonPanel.add(editButton);
 
-        ImageIcon checkmarkIcon = new ImageIcon(Objects.requireNonNull(getClass()
-                .getResource("/images/checkmark.png")));
-        JButton checkmarkButton = new JButton(checkmarkIcon);
-        checkmarkButton.addActionListener(
-                new ActionListener() {
-                    public void actionPerformed(ActionEvent evt) {
-                        taskController.markAsComplete(taskViewModel.getTaskId());
-                    }
-                }
-        );
-        buttonPanel.add(checkmarkButton);
-
         ImageIcon trashIcon = new ImageIcon(Objects.requireNonNull(getClass()
                 .getResource("/images/trash.png")));
-        JButton deleteButton = new JButton(trashIcon);
+        ImageIcon scaledTrashIcon = new ImageIcon(trashIcon.getImage()
+                .getScaledInstance(20, 20, Image.SCALE_SMOOTH));
+        JButton deleteButton = new JButton(scaledTrashIcon);
+        deleteButton.setPreferredSize(new Dimension(24, 24));
+        deleteButton.setMaximumSize(new Dimension(24, 24));
+        deleteButton.setMargin(new Insets(0, 0, 0, 0));
         deleteButton.addActionListener(
                 new ActionListener() {
                     public void actionPerformed(ActionEvent evt) {
@@ -87,6 +85,23 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
                 }
         );
         buttonPanel.add(deleteButton);
+
+        ImageIcon checkmarkIcon = new ImageIcon(Objects.requireNonNull(getClass()
+                .getResource("/images/checkmark.png")));
+        ImageIcon scaledCheckmarkIcon = new ImageIcon(checkmarkIcon.getImage()
+                .getScaledInstance(20, 20, Image.SCALE_SMOOTH));
+        JButton checkmarkButton = new JButton(scaledCheckmarkIcon);
+        checkmarkButton.setPreferredSize(new Dimension(24, 24));
+        checkmarkButton.setMaximumSize(new Dimension(24, 24));
+        checkmarkButton.setMargin(new Insets(0, 0, 0, 0));
+        checkmarkButton.addActionListener(
+                new ActionListener() {
+                    public void actionPerformed(ActionEvent evt) {
+                        taskController.markAsComplete(taskViewModel.getTaskId());
+                    }
+                }
+        );
+        buttonPanel.add(checkmarkButton);
 
         topPanel.add(tagPanel);
         topPanel.add(Box.createHorizontalGlue());
