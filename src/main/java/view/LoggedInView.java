@@ -14,6 +14,7 @@ import java.util.Objects;
 
 import interface_adapter.logged_in.LoggedInState;
 import interface_adapter.logged_in.LoggedInViewModel;
+import interface_adapter.logout.LogoutController;
 import data_access.WeatherApiService;
 
 public class LoggedInView extends JPanel implements PropertyChangeListener {
@@ -21,10 +22,12 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     private static final String viewName = "logged in";
     private final LoggedInViewModel loggedInViewModel;
     private final JLabel usernameLabel;
+    private LogoutController logoutController;
 
-    public LoggedInView(LoggedInViewModel loggedInViewModel) throws IOException {
+    public LoggedInView(LoggedInViewModel loggedInViewModel, LogoutController logoutController) throws IOException {
         this.loggedInViewModel = loggedInViewModel;
         this.loggedInViewModel.addPropertyChangeListener(this);
+        this.logoutController = logoutController;
 
         setLayout(new BorderLayout());
 
@@ -64,44 +67,53 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
 
         add(centerPanel, BorderLayout.CENTER);
 
-        // --- Bottom: Logout Button ---
+        // --- Bottom: Logout + Add Task Buttons ---
         JButton logoutButton = new JButton("Log Out");
+        JButton addTaskButton = new JButton("+ Add Task");
+
         JPanel bottomPanel = new JPanel();
-        bottomPanel.add(logoutButton);
+        bottomPanel.setLayout(new BorderLayout());
+
+        // Left side: Log Out button
+        JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        leftPanel.add(logoutButton);
+
+        // Right side: + Add Task button
+        JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        rightPanel.add(addTaskButton);
+
+        bottomPanel.add(leftPanel, BorderLayout.WEST);
+        bottomPanel.add(rightPanel, BorderLayout.EAST);
+
         add(bottomPanel, BorderLayout.SOUTH);
 
+        // Button ActionListeners:
         logoutButton.addActionListener(e -> {
-            // TODO: Connect logout button to controller logic
-            System.out.println("Logout clicked (hook this up to controller)");
+            if (e.getSource().equals(logoutButton)) {
+                final LoggedInState currentState = loggedInViewModel.getState();
+
+                logoutController.execute(
+                        currentState.getUsername());
+            }
         });
+
+        addTaskButton.addActionListener(e -> {
+            System.out.println("Add Task clicked");
+            // TODO: add task
+        });
+
     }
 
-    private Map<LocalDate, Map<String, Object>> getWeatherMapForCalendarData(CalendarData calendarData) {
-        // Simulated weather map with dummy weather data for each date
+    private Map<LocalDate, Map<String, Object>> getWeatherMapForCalendarData(CalendarData calendarData) throws IOException {
         Map<LocalDate, Map<String, Object>> weatherMap = new HashMap<>();
 
-        // TODO: Add back:
-//        WeatherApiService weatherService = new WeatherApiService();
+        WeatherApiService weatherService = new WeatherApiService();
 
-//        // Fetch weather for the week once and store in a map
-//        for (LocalDate date : calendarData.getWeekDates()) {
-//            weatherMap.put(date, weatherService.getDailyWeather("Toronto", date));
-//        }
-        // return weatherMap;
-
-        // TODO: ...and remove the following:
-        // Load a dummy icon once from resource path (adjust path as needed)
-        ImageIcon dummyIcon = new ImageIcon(Objects.requireNonNull(getClass().getResource("/weatherIcons/clear-day.png")));
-
+        // Fetch weather for the week once and store in a map
         for (LocalDate date : calendarData.getWeekDates()) {
-            Map<String, Object> fakeWeather = new HashMap<>();
-            fakeWeather.put("tempmin", 10.0);  // dummy low temp
-            fakeWeather.put("tempmax", 20.0);  // dummy high temp
-            fakeWeather.put("icon", dummyIcon); // always the dummy icon
-
-            weatherMap.put(date, fakeWeather);
+            weatherMap.put(date, weatherService.getDailyWeather("Toronto", date));
         }
-        return weatherMap;
+         return weatherMap;
     }
 
     @Override
