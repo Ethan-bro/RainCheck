@@ -1,3 +1,5 @@
+package use_case.weatherApiCall;
+
 import data_access.WeatherApiService;
 import org.junit.Test;
 
