@@ -30,11 +30,11 @@
             <version>4.12.0</version>
         </dependency>
 
-        <!-- JUnit 4 -->
+        <!-- JUnit 5 -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.1</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.8.1</version>
             <scope>test</scope>
         </dependency>
 
