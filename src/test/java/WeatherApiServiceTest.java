@@ -1,6 +1,7 @@
 import data_access.WeatherApiService;
 import org.junit.Test;
 
+import javax.swing.*;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,12 @@ public class WeatherApiServiceTest {
         assertTrue("Should contain tempmin", daily.containsKey("tempmin"));
         assertTrue("Should contain feelslikemax", daily.containsKey("feelslikemax"));
         assertTrue("Should contain feelslikemin", daily.containsKey("feelslikemin"));
+        assertTrue("Should contain icon", daily.containsKey("icon"));
+
+        Object iconObj = daily.get("icon");
+
+        assertTrue("Icon should be null or an instance of ImageIcon",
+                iconObj == null || iconObj instanceof ImageIcon);
 
         System.out.println("=== Daily Weather ===");
         System.out.println("High: " + daily.get("tempmax") + "°C");

@@ -21,6 +21,11 @@ System.out.println("Low: " + daily.get("tempmin") + "°C");
 System.out.println("Feels Like High: " + daily.get("feelslikemax") + "°C");
 System.out.println("Feels Like Low: " + daily.get("feelslikemin") + "°C");
 ```
+To display the weather icon (as an `ImageIcon`):
+```java
+ImageIcon icon = (ImageIcon) daily.get("icon");
+... // do something with the icon
+```
 
 > High: 21.2°C<br />
 > Low: 17.6°C<br />
@@ -35,6 +40,7 @@ A `Map<String, Object>` containing these keys:
 - `"tempmin"`: lowest actual temperature (°C)
 - `"feelslikemax"`: highest feels like temperature (°C)
 - `"feelslikemin"`: lowest feels like temperature (°C)
+- `icon` :	A scaled ImageIcon representing the weather	ImageIcon (or null)
 ---
 
 ## 2. getHourlyWeather(location, date, startHour, endHour)
