@@ -5,12 +5,15 @@ import entity.CommonUser;
 import entity.User;
 import okhttp3.*;
 import use_case.login.LoginUserDataAccessInterface;
+import use_case.logout.LogoutUserDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
 
 import java.io.IOException;
 import java.util.Collections;
 
-public class SupabaseUserDataAccessObject implements LoginUserDataAccessInterface, SignupUserDataAccessInterface {
+public class SupabaseUserDataAccessObject implements LoginUserDataAccessInterface,
+        SignupUserDataAccessInterface,
+        LogoutUserDataAccessInterface {
 
     private final OkHttpClient client = new OkHttpClient();
     private final Gson gson = new Gson();
@@ -109,4 +112,15 @@ public class SupabaseUserDataAccessObject implements LoginUserDataAccessInterfac
     public boolean isUsernameValid(String username) {
         return !existsByName(username);
     }
+
+    @Override
+    public void setCurrentUsername(String username) {
+        setCurrentUser(username);
+    }
+
+    @Override
+    public String getCurrentUsername() {
+        return getCurrentUser();
+    }
+
 }
