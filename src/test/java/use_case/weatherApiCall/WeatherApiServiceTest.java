@@ -1,34 +1,34 @@
 package use_case.weatherApiCall;
 
 import data_access.WeatherApiService;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import javax.swing.*;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class WeatherApiServiceTest {
+class WeatherApiServiceTest {
 
     @Test
-    public void testGetDailyWeather() throws Exception {
+    void testGetDailyWeather() throws Exception {
         WeatherApiService apiService = new WeatherApiService();
 
         Map<String, Object> daily = apiService.getDailyWeather("Toronto", LocalDate.now());
 
-        assertNotNull("Daily weather should not be null", daily);
-        assertTrue("Should contain tempmax", daily.containsKey("tempmax"));
-        assertTrue("Should contain tempmin", daily.containsKey("tempmin"));
-        assertTrue("Should contain feelslikemax", daily.containsKey("feelslikemax"));
-        assertTrue("Should contain feelslikemin", daily.containsKey("feelslikemin"));
-        assertTrue("Should contain icon", daily.containsKey("icon"));
+        assertNotNull(daily, "Daily weather should not be null");
+        assertTrue(daily.containsKey("tempmax"), "Should contain tempmax");
+        assertTrue(daily.containsKey("tempmin"), "Should contain tempmin");
+        assertTrue(daily.containsKey("feelslikemax"), "Should contain feelslikemax");
+        assertTrue(daily.containsKey("feelslikemin"), "Should contain feelslikemin");
+        assertTrue(daily.containsKey("icon"), "Should contain icon");
 
         Object iconObj = daily.get("icon");
 
-        assertTrue("Icon should be null or an instance of ImageIcon",
-                iconObj == null || iconObj instanceof ImageIcon);
+        assertTrue(iconObj == null || iconObj instanceof ImageIcon,
+                "Icon should be null or an instance of ImageIcon");
 
         System.out.println("=== Daily Weather ===");
         System.out.println("High: " + daily.get("tempmax") + "°C");
@@ -41,19 +41,19 @@ public class WeatherApiServiceTest {
     }
 
     @Test
-    public void testGetHourlyWeather() throws Exception {
+    void testGetHourlyWeather() throws Exception {
         WeatherApiService apiService = new WeatherApiService();
 
         List<Map<String, String>> hourly = apiService.getHourlyWeather("Toronto", LocalDate.now(), 9, 12);
 
-        assertNotNull("Hourly weather should not be null", hourly);
-        assertFalse("Hourly weather should not be empty", hourly.isEmpty());
+        assertNotNull(hourly, "Hourly weather should not be null");
+        assertFalse(hourly.isEmpty(), "Hourly weather should not be empty");
 
         System.out.println("=== Hourly Weather ===");
         for (Map<String, String> hour : hourly) {
-            assertTrue("Each hour should contain time", hour.containsKey("time"));
-            assertTrue("Each hour should contain description", hour.containsKey("description"));
-            assertTrue("Each hour should contain feelslike", hour.containsKey("feelslike"));
+            assertTrue(hour.containsKey("time"), "Each hour should contain time");
+            assertTrue(hour.containsKey("description"), "Each hour should contain description");
+            assertTrue(hour.containsKey("feelslike"), "Each hour should contain feelslike");
 
             System.out.println(hour.get("time") + " — " +
                     hour.get("feelslike") + ", " +
