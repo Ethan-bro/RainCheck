@@ -14,8 +14,8 @@ public class CalendarGrid extends JPanel {
             rowPanel.setLayout(new GridLayout(1, 8)); // Each row has 8 columns
 
             // Set custom height for the second row
-            int rowHeight = (row == 1) ? 80 : 40;
-            rowPanel.setPreferredSize(new Dimension(800, rowHeight));
+            int rowHeight = (row == 1) ? 80 : 60;
+            rowPanel.setPreferredSize(new Dimension(2080, rowHeight));
 
             for (int col = 0; col < 8; col++) {
                 JPanel cell = new JPanel();
