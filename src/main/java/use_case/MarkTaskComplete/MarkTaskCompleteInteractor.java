@@ -18,7 +18,7 @@ public class MarkTaskCompleteInteractor implements MarkTaskCompleteInputBoundary
 
     @Override
     public void execute(MarkTaskCompleteInputData inputData) throws IOException {
-        // Retrieve the task by username and task ID
+        // Retrieving the task
         Task task = dataAccess.getTaskById(inputData.getUsername(), inputData.getTaskId());
 
         if (task == null) {
@@ -26,7 +26,7 @@ public class MarkTaskCompleteInteractor implements MarkTaskCompleteInputBoundary
             return;
         }
 
-        // Mark task as complete
+        // Marking the task as complete
         task.setCompleted(true);
 
         // Update the task in the data source

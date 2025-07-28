@@ -5,6 +5,7 @@ import entity.CommonUser;
 import entity.User;
 import entity.Task;
 import okhttp3.*;
+import use_case.DeleteTask.DeleteTaskDataAccessInterface;
 import use_case.MarkTaskComplete.MarkTaskCompleteDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.logout.LogoutUserDataAccessInterface;
@@ -16,7 +17,8 @@ import java.util.Collections;
 public class SupabaseUserDataAccessObject implements LoginUserDataAccessInterface,
         SignupUserDataAccessInterface,
         LogoutUserDataAccessInterface,
-        MarkTaskCompleteDataAccessInterface {
+        MarkTaskCompleteDataAccessInterface,
+        DeleteTaskDataAccessInterface {
 
     private final OkHttpClient client = new OkHttpClient();
     private final Gson gson = new Gson();
@@ -159,7 +161,8 @@ public class SupabaseUserDataAccessObject implements LoginUserDataAccessInterfac
     }
 
     @Override
-    public Task getTaskById(String username, int taskId) throws IOException {
+    public Task getTaskById(String username, int taskId) throws IOException{
+
         JsonArray tasks = getUsersTasks(username);
         for (JsonElement element : tasks) {
             JsonObject jsonTask = element.getAsJsonObject();
@@ -172,8 +175,10 @@ public class SupabaseUserDataAccessObject implements LoginUserDataAccessInterfac
 
     public void updateUsersTasks(String username, Task updatedTask) {
         try {
+            // Getting all users tasks
             JsonArray tasks = getUsersTasks(username);
 
+            // Looping through tasks, and updating the task if it has same id as updated task
             for (int i = 0; i < tasks.size(); i++) {
                 JsonObject task = tasks.get(i).getAsJsonObject();
                 if (task.get("id").getAsInt() == updatedTask.getId()) {
@@ -181,6 +186,7 @@ public class SupabaseUserDataAccessObject implements LoginUserDataAccessInterfac
                     break;
                 }
             }
+
 
             JsonObject userUpdate = new JsonObject();
             userUpdate.add("tasks", tasks);
@@ -209,14 +215,58 @@ public class SupabaseUserDataAccessObject implements LoginUserDataAccessInterfac
         }
     }
 
+
     @Override
     public void markAsComplete(String username, int taskId) throws IOException {
+
+        // Retrieving task by id if it exists
         Task task = getTaskById(username, taskId);
         if (task == null) {
             throw new IllegalArgumentException("Task not found.");
         }
 
+        // Setting task as completed
         task.setCompleted(true);
+
+        // Updating status of the task completion in database
         updateUsersTasks(username, task);
+    }
+
+
+    @Override
+    public void deleteTask(String username, int taskId) throws IOException {
+
+        // Deleting task locally
+        JsonArray tasks = getUsersTasks(username);
+        for (int i = 0; i < tasks.size(); i++) {
+            JsonObject task = tasks.get(i).getAsJsonObject();
+            if (task.get("id").getAsInt() == taskId) {
+                tasks.remove(i);
+                break;
+            }
+        }
+
+        //  Updating tasks array in Supabase
+        JsonObject userUpdate = new JsonObject();
+        userUpdate.add("tasks", tasks);
+
+        RequestBody body = RequestBody.create(
+                userUpdate.toString(),
+                MediaType.get("application/json")
+        );
+
+        Request request = new Request.Builder()
+                .url(baseUrl + "/rest/v1/users?username=eq." + username)
+                .addHeader("apikey", apiKey)
+                .addHeader("Authorization", "Bearer " + apiKey)
+                .addHeader("Content-Type", "application/json")
+                .patch(body)
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                throw new IOException("Delete failed: " + response.message());
+            }
+        }
     }
 }
