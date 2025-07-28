@@ -1,18 +1,18 @@
 package data_access;
 
 import com.google.gson.*;
-import use_case.createCustomTag.customTagDataAccessInterface;
 import okhttp3.*;
+import use_case.createCustomTag.customTagDataAccessInterface;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
- * SupabaseTagDataAccessObject implements methods defined in customTagDataAccessInterface.
- * These methods are required to be implemented to support tag storage/retrieval
- * for each user using Supabase's REST API and the custom_tags column.
+ * SupabaseTagDataAccessObject implements methods defined in TagDataAccessInterface.
+ * These methods support tag storage/retrieval for each user using Supabase REST API
+ * where custom_tags is stored as a JSONB dictionary: tagName → emoji.
  */
 public class SupabaseTagDataAccessObject implements customTagDataAccessInterface {
 
@@ -27,7 +27,7 @@ public class SupabaseTagDataAccessObject implements customTagDataAccessInterface
     }
 
     @Override
-    public List<String> getCustomTags(String username) {
+    public Map<String, String> getCustomTags(String username) {
         try {
             HttpUrl url = HttpUrl.parse(baseUrl + "/rest/v1/users")
                     .newBuilder()
@@ -48,41 +48,44 @@ public class SupabaseTagDataAccessObject implements customTagDataAccessInterface
             String responseBody = Objects.requireNonNull(response.body()).string();
             JsonArray jsonArray = JsonParser.parseString(responseBody).getAsJsonArray();
 
-            if (jsonArray.isEmpty()) return new ArrayList<>();
+            if (jsonArray.isEmpty()) return new HashMap<>();
 
-            JsonArray tagsArray = jsonArray.get(0).getAsJsonObject().getAsJsonArray("custom_tags");
+            JsonObject tagsObject = jsonArray.get(0).getAsJsonObject().getAsJsonObject("custom_tags");
+            Map<String, String> tags = new HashMap<>();
 
-            List<String> tags = new ArrayList<>();
-            for (JsonElement tag : tagsArray) {
-                tags.add(tag.getAsString());
+            if (tagsObject != null) {
+                for (Map.Entry<String, JsonElement> entry : tagsObject.entrySet()) {
+                    tags.put(entry.getKey(), entry.getValue().getAsString());
+                }
             }
+
             return tags;
 
         } catch (Exception e) {
             e.printStackTrace();
-            return new ArrayList<>();
+            return new HashMap<>();
         }
     }
 
     @Override
-    public void addCustomTag(String username, String newTag) {
-        List<String> tags = getCustomTags(username);
-        if (!tags.contains(newTag)) tags.add(newTag);
+    public void addCustomTag(String username, String tagName, String emoji) {
+        Map<String, String> tags = getCustomTags(username);
+        tags.put(tagName, emoji);
         patchTags(username, tags);
     }
 
     @Override
-    public void deleteCustomTag(String username, String tagToRemove) {
-        List<String> tags = getCustomTags(username);
-        tags.removeIf(tag -> tag.equals(tagToRemove));
+    public void deleteCustomTag(String username, String tagName) {
+        Map<String, String> tags = getCustomTags(username);
+        tags.remove(tagName);
         patchTags(username, tags);
     }
 
-    private void patchTags(String username, List<String> tags) {
+    private void patchTags(String username, Map<String, String> tags) {
         try {
-            JsonArray jsonTags = new JsonArray();
-            for (String tag : tags) {
-                jsonTags.add(tag);
+            JsonObject jsonTags = new JsonObject();
+            for (Map.Entry<String, String> entry : tags.entrySet()) {
+                jsonTags.addProperty(entry.getKey(), entry.getValue());
             }
 
             JsonObject update = new JsonObject();
