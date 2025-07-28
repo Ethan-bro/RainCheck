@@ -10,11 +10,11 @@ import java.time.format.TextStyle;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 
 import interface_adapter.logged_in.LoggedInState;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.logout.LogoutController;
+import data_access.LocationService;
 import data_access.WeatherApiService;
 
 public class LoggedInView extends JPanel implements PropertyChangeListener {
@@ -107,11 +107,12 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     private Map<LocalDate, Map<String, Object>> getWeatherMapForCalendarData(CalendarData calendarData) throws IOException {
         Map<LocalDate, Map<String, Object>> weatherMap = new HashMap<>();
 
+        String city = LocationService.getUserCity(); // Fetching the user's current location (city e.g., Toronto)
         WeatherApiService weatherService = new WeatherApiService();
 
         // Fetch weather for the week once and store in a map
         for (LocalDate date : calendarData.getWeekDates()) {
-            weatherMap.put(date, weatherService.getDailyWeather("Toronto", date));
+            weatherMap.put(date, weatherService.getDailyWeather(city, date));
         }
          return weatherMap;
     }
