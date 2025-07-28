@@ -25,10 +25,9 @@ RainCheck helps users schedule and manage daily tasks while providing context-aw
   - ✅ **Created, edited, deleted, or marked as completed**
   - 🏷️ Assigned a **priority** (High, Medium, Low)
   - 🧠 Tagged with a **custom name + emoji**
-  - 🎤 **Added via voice-to-text input** *(optional enhancement)*
 - Secure **account-based login system** using local file storage
 - Weather data fetched from the **Visual Crossing Weather API**
-- Personalized task lists and weather context are loaded on login
+- Personalized task list and weather context are loaded on login
 
 ---
 
@@ -50,14 +49,11 @@ RainCheck helps users schedule and manage daily tasks while providing context-aw
 
 ## 📦 Domain Model: Proposed Entities
 
-| **Entity**         | **Attributes / Description**                                                                 |
-|--------------------|---------------------------------------------------------------------------------------------|
-| `User`             | `username`, `passwordHash`, `List<Task> tasks`                                              |
+| **Entity**         | **Attributes / Description**                                                                  |
+|--------------------|-----------------------------------------------------------------------------------------------|
+| `User`             | `username`, `password`                                                                        |
 | `Task`             | `title`, `scheduledDateTime`, `isCompleted`, `temperature`, `priority`, `displayColor`, `tag` |
-| `PriorityLevel`    | Interface with constants: `HIGH`, `MEDIUM`, `LOW`                                           |
-| `Tag`              | `name`, `emoji` (e.g., `"📚"`)                                                               |
-| `EmojiConstants`   | Interface with `List<String> ALL_EMOJIS`                                                    |
-| `WeatherForecast`  | `forecastDateTime`, `weatherDescription`, `temperature`, `precipitationChance`, `windSpeed`, `iconUrl` |
+| `Tag`              | `tagName`, `tagEmoji` (e.g., `"📚"`)                                                          |
 
 ---
 
