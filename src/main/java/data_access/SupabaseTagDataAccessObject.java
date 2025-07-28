@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * SupabaseTagDataAccessObject implements methods defined in TagDataAccessInterface.
+ * SupabaseTagDataAccessObject implements methods defined in customTagDataAccessInterface.
  * These methods support tag storage/retrieval for each user using Supabase REST API
  * where custom_tags is stored as a JSONB dictionary: tagName → emoji.
  */
