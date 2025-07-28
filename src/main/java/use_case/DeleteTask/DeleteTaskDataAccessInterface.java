@@ -1,12 +1,12 @@
-package use_case.MarkTaskComplete;
+package use_case.DeleteTask;
 
 import entity.Task;
 import java.io.IOException;
 
 /**
- * DAO for the MarkTaskComplete Use Case.
+ * DAO for the DeleteTask Use Case.
  */
-public interface MarkTaskCompleteDataAccessInterface {
+public interface DeleteTaskDataAccessInterface {
 
     /**
      * Retrieves the task with the given ID from the current user's task list.
@@ -23,5 +23,5 @@ public interface MarkTaskCompleteDataAccessInterface {
      */
     void updateUsersTasks(String username, Task task);
 
-    void markAsComplete(String username, int taskId) throws IOException;
+    void deleteTask(String username, int taskId) throws IOException;
 }
