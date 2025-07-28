@@ -2,6 +2,7 @@ package app;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import data_access.SupabaseTagDataAccessObject;
 import data_access.SupabaseUserDataAccessObject;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.logged_in.LoggedInViewModel;
@@ -24,7 +25,11 @@ public class AppBuilder {
     private final ViewManagerModel viewManagerModel = new ViewManagerModel();
     private final ViewManager viewManager = new ViewManager(cardPanel, cardLayout, viewManagerModel);
 
+    // databases:
     private SupabaseUserDataAccessObject userDao;
+    private SupabaseTagDataAccessObject tagDao;
+
+
     private LoginViewModel loginViewModel;
     private LoggedInViewModel loggedInViewModel;
     private SignupViewModel signupViewModel;
@@ -40,7 +45,10 @@ public class AppBuilder {
         JsonObject config = JsonParser.parseReader(new FileReader("config/secrets.json")).getAsJsonObject();
         String dbUrl = config.get("database_url").getAsString();
         String dbAnonKey = config.get("database_anon_key").getAsString();
+
         userDao = new SupabaseUserDataAccessObject(dbUrl, dbAnonKey);
+        tagDao = new SupabaseTagDataAccessObject(dbUrl, dbAnonKey);
+
         return this;
     }
 
