@@ -5,16 +5,17 @@ import entity.CommonUser;
 import entity.CustomTag;
 import entity.User;
 import okhttp3.*;
-import use_case.createCustomTag.customTagDataAccessInterface;
 import use_case.login.LoginUserDataAccessInterface;
+import use_case.logout.LogoutUserDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
 
 import javax.swing.*;
 import java.io.IOException;
 import java.util.Collections;
 
-public class SupabaseUserDataAccessObject implements LoginUserDataAccessInterface, SignupUserDataAccessInterface,
-        customTagDataAccessInterface {
+public class SupabaseUserDataAccessObject implements LoginUserDataAccessInterface,
+        SignupUserDataAccessInterface,
+        LogoutUserDataAccessInterface {
 
     private final OkHttpClient client = new OkHttpClient();
     private final Gson gson = new Gson();
@@ -114,20 +115,15 @@ public class SupabaseUserDataAccessObject implements LoginUserDataAccessInterfac
     public boolean isUsernameValid(String username) {
         return !existsByName(username);
     }
-
-    // CUSTOM TAG METHODS:
-
-    public boolean existsByTagName(String tagName) {
-        // search through all existing tags
-
-        return false;
+          
+    @Override
+    public void setCurrentUsername(String username) {
+        setCurrentUser(username);
     }
 
-    public boolean existsByTagIcon(ImageIcon tagIcon) {
-        return false;
+    @Override
+    public String getCurrentUsername() {
+        return getCurrentUser();
     }
 
-    public void saveTag(CustomTag tag) {
-
-    }
 }

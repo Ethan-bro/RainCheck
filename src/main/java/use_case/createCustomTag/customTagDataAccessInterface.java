@@ -2,14 +2,8 @@ package use_case.createCustomTag;
 
 import entity.CustomTag;
 
-import javax.swing.*;
-
 public interface customTagDataAccessInterface {
-
-    boolean existsByTagName(String tagName);
-
-    boolean existsByTagIcon(ImageIcon tagIcon);
-
-    // add user as a parameter
-    void saveTag(CustomTag finalTag);
+    Map<String, String> getCustomTags(String username);
+    void addCustomTag(String username, CustomTag tagToAdd);
+    void deleteCustomTag(String username, CustomTag tagToDelete);
 }

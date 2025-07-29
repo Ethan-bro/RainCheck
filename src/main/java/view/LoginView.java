@@ -1,17 +1,12 @@
 package view;
 
-import java.awt.Component;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -20,68 +15,134 @@ import interface_adapter.login.LoginState;
 import interface_adapter.login.LoginViewModel;
 
 /**
- * The View for when the user is logging into the program.
+ * Polished Login View matching the Signup View style.
  */
 public class LoginView extends JPanel implements ActionListener, PropertyChangeListener {
 
     private final String viewName = "log in";
+
     private final LoginViewModel loginViewModel;
+    private final LoginController loginController;
 
-    private final JTextField usernameInputField = new JTextField(15);
-    private final JLabel usernameErrorField = new JLabel();
+    private final JTextField usernameInputField = new JTextField(20);
+    private final JPasswordField passwordInputField = new JPasswordField(20);
 
-    private final JPasswordField passwordInputField = new JPasswordField(15);
-    private final JLabel passwordErrorField = new JLabel();
+    private final JLabel usernameErrorLabel = new JLabel();
 
     private final JButton logIn;
     private final JButton cancel;
     private final JButton signUp;
-    private final LoginController loginController;
 
     public LoginView(LoginViewModel loginViewModel, LoginController controller) {
-
-        this.loginController = controller;
         this.loginViewModel = loginViewModel;
+        this.loginController = controller;
         this.loginViewModel.addPropertyChangeListener(this);
 
-        final JLabel title = new JLabel("Login Screen");
-        title.setAlignmentX(Component.CENTER_ALIGNMENT);
+        setLayout(new BorderLayout());
+        setBorder(BorderFactory.createEmptyBorder(30, 40, 30, 40));
+        setBackground(Color.WHITE);
 
-        final LabelTextPanel usernameInfo = new LabelTextPanel(
-                new JLabel("Username"), usernameInputField);
-        final LabelTextPanel passwordInfo = new LabelTextPanel(
-                new JLabel("Password"), passwordInputField);
+        // Title
+        JLabel title = new JLabel("Login");
+        title.setFont(new Font("Segoe UI", Font.BOLD, 26));
+        title.setHorizontalAlignment(SwingConstants.CENTER);
+        add(title, BorderLayout.NORTH);
 
-        logIn = new JButton("log in");
-        cancel = new JButton("cancel");
-        signUp = new JButton("sign up");
+        // Form panel
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setOpaque(false);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(12, 12, 8, 12);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        final JPanel loginCancelPanel = new JPanel();
-        loginCancelPanel.add(logIn);
-        loginCancelPanel.add(cancel);
+        // Username Label
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 0.3;
+        JLabel usernameLabel = new JLabel("Username:");
+        usernameLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        formPanel.add(usernameLabel, gbc);
 
-        final JPanel signupPanel = new JPanel();
-        signupPanel.add(new JLabel("Already have an account?"));
+        // Username Input
+        gbc.gridx = 1;
+        gbc.weightx = 0.7;
+        formPanel.add(usernameInputField, gbc);
+
+        // Username Error
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        usernameErrorLabel.setForeground(Color.RED);
+        usernameErrorLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        formPanel.add(usernameErrorLabel, gbc);
+
+        // Password Label
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.weightx = 0.3;
+        JLabel passwordLabel = new JLabel("Password:");
+        passwordLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        formPanel.add(passwordLabel, gbc);
+
+        // Password Input
+        gbc.gridx = 1;
+        gbc.weightx = 0.7;
+        formPanel.add(passwordInputField, gbc);
+
+        add(formPanel, BorderLayout.CENTER);
+
+        // Buttons panel (Log In + Cancel)
+        JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 25, 10));
+        buttonsPanel.setOpaque(false);
+
+        logIn = new JButton("Log In");
+        logIn.setPreferredSize(new Dimension(120, 35));
+        logIn.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        logIn.setBackground(new Color(34, 139, 34)); // green
+        logIn.setForeground(Color.WHITE);
+        logIn.setFocusPainted(false);
+
+        cancel = new JButton("Cancel");
+        cancel.setPreferredSize(new Dimension(120, 35));
+        cancel.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        cancel.setBackground(new Color(178, 34, 34)); // red
+        cancel.setForeground(Color.WHITE);
+        cancel.setFocusPainted(false);
+
+        buttonsPanel.add(logIn);
+        buttonsPanel.add(cancel);
+
+        // Signup panel ("Don't have an account?" + Sign Up)
+        JPanel signupPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        signupPanel.setOpaque(false);
+        signupPanel.add(new JLabel("Don't have an account? "));
+        signUp = new JButton("Sign Up");
+        signUp.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        signUp.setBorderPainted(false);
+        signUp.setContentAreaFilled(false);
+        signUp.setForeground(new Color(30, 144, 255));  // blue link style
+        signUp.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         signupPanel.add(signUp);
 
-        logIn.addActionListener(
-                evt -> {
-                    if (evt.getSource().equals(logIn)) {
-                        final LoginState currentState = loginViewModel.getState();
+        // Combine buttonsPanel and signupPanel vertically
+        JPanel combinedPanel = new JPanel();
+        combinedPanel.setLayout(new BoxLayout(combinedPanel, BoxLayout.Y_AXIS));
+        combinedPanel.setOpaque(false);
+        combinedPanel.add(buttonsPanel);
+        combinedPanel.add(signupPanel);
 
-                        loginController.execute(
-                                currentState.getUsername(),
-                                currentState.getPassword()
-                        );
-                    }
-                }
-        );
+        add(combinedPanel, BorderLayout.SOUTH);
+
+        // Listeners
+        logIn.addActionListener(evt -> {
+            if (evt.getSource().equals(logIn)) {
+                LoginState currentState = loginViewModel.getState();
+                loginController.execute(currentState.getUsername(), currentState.getPassword());
+            }
+        });
 
         cancel.addActionListener(this);
 
-        signUp.addActionListener(
-                evt -> loginController.switchToSignupView()
-        );
+        signUp.addActionListener(e -> loginController.switchToSignupView());
 
         usernameInputField.getDocument().addDocumentListener(new DocumentListener() {
             private void documentListenerHelper() {
@@ -91,11 +152,19 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
             }
 
             @Override
-            public void insertUpdate(DocumentEvent e) { documentListenerHelper(); }
+            public void insertUpdate(DocumentEvent e) {
+                documentListenerHelper();
+            }
+
             @Override
-            public void removeUpdate(DocumentEvent e) { documentListenerHelper(); }
+            public void removeUpdate(DocumentEvent e) {
+                documentListenerHelper();
+            }
+
             @Override
-            public void changedUpdate(DocumentEvent e) { documentListenerHelper(); }
+            public void changedUpdate(DocumentEvent e) {
+                documentListenerHelper();
+            }
         });
 
         passwordInputField.getDocument().addDocumentListener(new DocumentListener() {
@@ -106,28 +175,22 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
             }
 
             @Override
-            public void insertUpdate(DocumentEvent e) { documentListenerHelper(); }
+            public void insertUpdate(DocumentEvent e) {
+                documentListenerHelper();
+            }
+
             @Override
-            public void removeUpdate(DocumentEvent e) { documentListenerHelper(); }
+            public void removeUpdate(DocumentEvent e) {
+                documentListenerHelper();
+            }
+
             @Override
-            public void changedUpdate(DocumentEvent e) { documentListenerHelper(); }
+            public void changedUpdate(DocumentEvent e) {
+                documentListenerHelper();
+            }
         });
-
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-
-        this.add(title);
-        this.add(usernameInfo);
-        this.add(usernameErrorField);
-        this.add(passwordInfo);
-        this.add(passwordErrorField);
-        this.add(loginCancelPanel);
-        this.add(signupPanel);
     }
 
-    /**
-     * React to a button click that results in evt.
-     * @param evt the ActionEvent to react to
-     */
     @Override
     public void actionPerformed(ActionEvent evt) {
         if (evt.getSource() == cancel) {
@@ -137,16 +200,16 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        final LoginState state = (LoginState) evt.getNewValue();
-        setFields(state);
-        usernameErrorField.setText(state.getLoginError());
-    }
-
-    private void setFields(LoginState state) {
-        usernameInputField.setText(state.getUsername());
+        if ("state".equals(evt.getPropertyName())) {
+            LoginState state = (LoginState) evt.getNewValue();
+            usernameInputField.setText(state.getUsername());
+            passwordInputField.setText(state.getPassword() != null ? state.getPassword() : "");
+            usernameErrorLabel.setText(state.getLoginError() != null ? state.getLoginError() : "");
+        }
     }
 
     public String getViewName() {
         return viewName;
     }
+
 }
