@@ -8,14 +8,17 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import interface_adapter.calendar.TaskClickListener;
 import interface_adapter.logged_in.LoggedInState;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.logout.LogoutController;
 import data_access.LocationService;
 import data_access.WeatherApiService;
+import okhttp3.internal.concurrent.Task;
 
 public class LoggedInView extends JPanel implements PropertyChangeListener {
 
@@ -23,6 +26,9 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     private final LoggedInViewModel loggedInViewModel;
     private final JLabel usernameLabel;
     private LogoutController logoutController;
+    private final JPanel centerPanel;
+    private CalendarData calendarData;
+    private Map<LocalDate, Map<String, Object>> weatherMap;
 
     public LoggedInView(LoggedInViewModel loggedInViewModel, LogoutController logoutController) throws IOException {
         this.loggedInViewModel = loggedInViewModel;
@@ -55,17 +61,13 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         add(topPanel, BorderLayout.NORTH);
 
         // --- Center Panel: Scrollable calendar with weather integrated in header ---
-        JPanel centerPanel = new JPanel();
-        centerPanel.setLayout(new BorderLayout());
-
-        CalendarData calendarData = new CalendarData();
-        Map<LocalDate, Map<String, Object>> weatherMap = getWeatherMapForCalendarData(calendarData);
-
-        CalendarGrid calendarGrid = new CalendarGrid(calendarData, weatherMap);
-        ScrollableCalendar scrollableCalendar = new ScrollableCalendar(calendarGrid);
-        centerPanel.add(scrollableCalendar, BorderLayout.CENTER);
-
+        this.centerPanel = new JPanel(new BorderLayout());
         add(centerPanel, BorderLayout.CENTER);
+
+        this.calendarData = new CalendarData();
+        this.weatherMap = getWeatherMapForCalendarData(calendarData);
+
+        rebuildCalendarWithTasks(List.of());
 
         // --- Bottom: Logout + Add Task Buttons ---
         JButton logoutButton = new JButton("Log Out");
@@ -117,11 +119,34 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
          return weatherMap;
     }
 
+    private void rebuildCalendarWithTasks(List<Task> tasks) {
+        centerPanel.removeAll();
+
+        TaskClickListener clicker = task -> {
+            TaskViewModel taskViewModel = new TaskViewModel(task);
+            TaskController taskController = new TaskController(TaskInteractor);
+            TaskBox taskBox = new TaskBox(taskViewModel, taskController);
+            JOptionPane.showMessageDialog(this, box, "Task Details",
+                    JOptionPane.PLAIN_MESSAGE);
+        };
+
+        CalendarGrid grid = new CalendarGrid(calendarData, weatherMap, tasks, clicker);
+        ScrollableCalendar scrollableCalendar = new ScrollableCalendar(grid);
+
+        centerPanel.add(scrollableCalendar, BorderLayout.CENTER);
+        centerPanel.revalidate();
+        centerPanel.repaint();
+    }
+
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if ("state".equals(evt.getPropertyName())) {
             LoggedInState state = (LoggedInState) evt.getNewValue();
             usernameLabel.setText("Signed in as: " + state.getUsername());
+        }
+        else if ("weekTasks".equals(evt.getPropertyName())) {
+            List<Task> tasks = loggedInViewModel.getState().getWeekTasks();
+            rebuildCalendarWithTasks(tasks);
         }
     }
 

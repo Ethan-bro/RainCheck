@@ -2,22 +2,26 @@ package app;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import data_access.SupaBaseTaskDataAccessObject;
 import data_access.SupabaseTagDataAccessObject;
 import data_access.SupabaseUserDataAccessObject;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.logged_in.ListTasksPresenter;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.logout.LogoutController;
 import interface_adapter.signup.SignupViewModel;
-import view.LoggedInView;
-import view.LoginView;
-import view.SignupView;
-import view.ViewManager;
+import use_case.task.ListTasksInputBoundary;
+import use_case.task.ListTasksInteractor;
+import use_case.task.ListTasksOutputBoundary;
+import use_case.task.TaskDataAccessInterface;
+import view.*;
 
 import javax.swing.*;
 import java.awt.CardLayout;
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.LocalDate;
 
 public class AppBuilder {
     private final JPanel cardPanel = new JPanel();
@@ -28,6 +32,7 @@ public class AppBuilder {
     // databases:
     private SupabaseUserDataAccessObject userDao;
     private SupabaseTagDataAccessObject tagDao;
+    private SupaBaseTaskDataAccessObject taskDao;
 
 
     private LoginViewModel loginViewModel;
@@ -48,6 +53,7 @@ public class AppBuilder {
 
         userDao = new SupabaseUserDataAccessObject(dbUrl, dbAnonKey);
         tagDao = new SupabaseTagDataAccessObject(dbUrl, dbAnonKey);
+        taskDao = new SupaBaseTaskDataAccessObject(dbUrl, dbAnonKey);
 
         return this;
     }
@@ -71,10 +77,22 @@ public class AppBuilder {
         return this;
     }
 
+    public AppBuilder addListTasksUseCase() {
+        ListTasksOutputBoundary listTasksPresenter = new ListTasksPresenter(loggedInViewModel);
+        ListTasksInputBoundary listTasksInteractor = new ListTasksInteractor(taskDao, listTasksPresenter);
+        loggedInViewModel.setListTasksInteractor(listTasksInteractor);
+        return this;
+    }
+
     public AppBuilder addLoggedInView() throws IOException {
 
         LogoutController logoutController = LogoutUseCaseFactory.create(
                 viewManagerModel, loggedInViewModel, loginViewModel, userDao);
+
+        CalendarData calData = new CalendarData();
+        LocalDate startDate = calData.getWeekDates().get(0);
+        LocalDate endDate = startDate.plusDays(7);
+        loggedInViewModel.loadTasksForWeek(startDate,endDate);
 
         loggedInView = new LoggedInView(loggedInViewModel, logoutController);
 
