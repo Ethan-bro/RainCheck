@@ -1,6 +1,6 @@
 package use_case.addTask;
 
-import data_access.SupabaseUserDataAccessObject;
+import data_access.SupabaseTaskDataAccessObject;
 import entity.Task;
 import entity.TaskID;
 import entity.TaskInfo;
@@ -9,11 +9,11 @@ import interface_adapter.addTask.TaskIDGenerator;
 
 public class AddTaskInteractor implements AddTaskInputBoundary {
 
-    private final SupabaseUserDataAccessObject dao;
+    private final SupabaseTaskDataAccessObject dao;
     private final AddTaskOutputBoundary addTaskPresenter;
     private final TaskIDGenerator taskIDGenerator;
 
-    public AddTaskInteractor(SupabaseUserDataAccessObject dao, TaskIDGenerator taskIDGenerator,
+    public AddTaskInteractor(SupabaseTaskDataAccessObject dao, TaskIDGenerator taskIDGenerator,
                              AddTaskOutputBoundary addTaskPresenter) {
         this.dao = dao;
         this.taskIDGenerator = taskIDGenerator;
