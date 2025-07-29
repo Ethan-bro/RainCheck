@@ -3,7 +3,7 @@ package app;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import data_access.SupaBaseTaskDataAccessObject;
+import data_access.SupabaseTaskDataAccessObject;
 import data_access.SupabaseTagDataAccessObject;
 import data_access.SupabaseUserDataAccessObject;
 
@@ -19,10 +19,10 @@ import interface_adapter.login.LoginViewModel;
 import interface_adapter.logout.LogoutController;
 import interface_adapter.signup.SignupViewModel;
 
-import use_case.task.ListTasksInputBoundary;
-import use_case.task.ListTasksInteractor;
-import use_case.task.ListTasksOutputBoundary;
-import use_case.task.TaskDataAccessInterface;
+import use_case.listTasks.ListTasksInputBoundary;
+import use_case.listTasks.ListTasksInteractor;
+import use_case.listTasks.ListTasksOutputBoundary;
+import use_case.listTasks.TaskDataAccessInterface;
 import use_case.addTask.AddTaskInputBoundary;
 import use_case.addTask.AddTaskInteractor;
 import view.*;
@@ -42,7 +42,7 @@ public class AppBuilder {
     // databases:
     private SupabaseUserDataAccessObject userDao;
     private SupabaseTagDataAccessObject tagDao;
-    private SupaBaseTaskDataAccessObject taskDao;
+    private SupabaseTaskDataAccessObject taskDao;
 
 
     private LoginViewModel loginViewModel;
@@ -65,7 +65,7 @@ public class AppBuilder {
 
         userDao = new SupabaseUserDataAccessObject(dbUrl, dbAnonKey);
         tagDao = new SupabaseTagDataAccessObject(dbUrl, dbAnonKey);
-        taskDao = new SupaBaseTaskDataAccessObject(dbUrl, dbAnonKey);
+        taskDao = new SupabaseTaskDataAccessObject(dbUrl, dbAnonKey);
 
         return this;
     }
@@ -102,14 +102,9 @@ public class AppBuilder {
         LogoutController logoutController = LogoutUseCaseFactory.create(
                 viewManagerModel, loggedInViewModel, loginViewModel, userDao);
 
-        CalendarData calData = new CalendarData();
-        LocalDate startDate = calData.getWeekDates().get(0);
-        LocalDate endDate = startDate.plusDays(7);
-        loggedInViewModel.loadTasksForWeek(startDate,endDate);
+        loggedInView = new LoggedInView(loggedInViewModel, logoutController, viewManagerModel);
 
-        loggedInView = new LoggedInView(loggedInViewModel, logoutController);
-
-        cardPanel.add(loggedInView, loggedInView.getViewName());
+        cardPanel.add(loggedInView, LoggedInView.getViewName());
         return this;
     }
 
@@ -118,7 +113,7 @@ public class AppBuilder {
         //addTask wiring: will condense to AddTaskUseCaseFactory later
 
         final AddTaskPresenter addTaskPresenter =
-                new AddTaskPresenter(addTaskViewModel, viewManagerModel, loggedInView.getViewName());
+                new AddTaskPresenter(addTaskViewModel, viewManagerModel, LoggedInView.getViewName());
 
         final AddTaskInputBoundary addTaskInteractor = new AddTaskInteractor(userDao, new UUIDGenerator(),
                         addTaskPresenter);
@@ -127,8 +122,8 @@ public class AppBuilder {
                         addTaskInteractor);
         //
 
-        addTaskView = new AddTaskView(addTaskController, addTaskViewModel);
-        cardPanel.add(addTaskView, addTaskView.getViewName());
+        addTaskView = new AddTaskView(addTaskController, addTaskViewModel, viewManagerModel);
+        cardPanel.add(addTaskView, AddTaskView.getViewName());
         return this;
     }
 
@@ -137,7 +132,7 @@ public class AppBuilder {
         application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         application.add(cardPanel);
 
-        viewManagerModel.setState(signupView.getViewName());
+        viewManagerModel.setState(SignupView.getViewName());
         viewManagerModel.firePropertyChanged();
 
         return application;
