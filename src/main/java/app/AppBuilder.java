@@ -115,7 +115,7 @@ public class AppBuilder {
         final AddTaskPresenter addTaskPresenter =
                 new AddTaskPresenter(addTaskViewModel, viewManagerModel, LoggedInView.getViewName());
 
-        final AddTaskInputBoundary addTaskInteractor = new AddTaskInteractor(userDao, new UUIDGenerator(),
+        final AddTaskInputBoundary addTaskInteractor = new AddTaskInteractor(taskDao, new UUIDGenerator(),
                         addTaskPresenter);
 
         final AddTaskController addTaskController = new AddTaskController(userDao.getCurrentUser(),
