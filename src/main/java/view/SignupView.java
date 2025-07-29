@@ -18,7 +18,7 @@ import interface_adapter.signup.SignupViewModel;
  * Polished Signup View matching the Login View style.
  */
 public class SignupView extends JPanel implements ActionListener, PropertyChangeListener {
-    private final String viewName = "sign up";
+    private static final String viewName = "sign up";
 
     private final SignupViewModel signupViewModel;
     private final SignupController signupController;
@@ -208,7 +208,7 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
         }
     }
 
-    public String getViewName() {
+    public static String getViewName() {
         return viewName;
     }
 }
