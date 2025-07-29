@@ -1,5 +1,6 @@
-package use_case.task;
+package use_case.listTasks;
 
+import entity.Task;
 import java.time.LocalDate;
 import java.util.List;
 

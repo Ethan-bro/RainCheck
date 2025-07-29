@@ -1,4 +1,4 @@
-package use_case.task;
+package use_case.listTasks;
 
 import entity.Task;
 
@@ -7,5 +7,9 @@ import java.util.List;
 
 public interface TaskDataAccessInterface {
 
-    List<okhttp3.internal.concurrent.Task> getTasksByDateRange(String username, LocalDate startDate, LocalDate endDate);
+    List<Task> getTasksByDateRange(String username, LocalDate startDate, LocalDate endDate);
+
+    void addTask(String username, Task task);
+
+
 }
