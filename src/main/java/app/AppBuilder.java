@@ -44,11 +44,12 @@ public class AppBuilder {
     private SupabaseTagDataAccessObject tagDao;
     private SupabaseTaskDataAccessObject taskDao;
 
-
     private LoginViewModel loginViewModel;
     private LoggedInViewModel loggedInViewModel;
     private SignupViewModel signupViewModel;
     private AddTaskViewModel addTaskViewModel;
+    private ListTasksUseCaseFactory listTasksFactory;
+
     private LoginView loginView;
     private SignupView signupView;
     private LoggedInView loggedInView;
@@ -91,9 +92,8 @@ public class AppBuilder {
     }
 
     public AppBuilder addListTasksUseCase() {
-        ListTasksOutputBoundary listTasksPresenter = new ListTasksPresenter(loggedInViewModel);
-        ListTasksInputBoundary listTasksInteractor = new ListTasksInteractor(taskDao, listTasksPresenter);
-        loggedInViewModel.setListTasksInteractor(listTasksInteractor);
+        listTasksFactory = new ListTasksUseCaseFactory(taskDao, loggedInViewModel);
+        listTasksFactory.create();
         return this;
     }
 
