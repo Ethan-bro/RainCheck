@@ -36,7 +36,7 @@ public class ListTasksPresenter implements ListTasksOutputBoundary {
 
         // Defensive check: even if null, set empty list
         if (tasks == null) {
-            tasks = List.of(); // or Collections.emptyList()
+            tasks = List.of();
         }
 
         currentState.setWeekTasks(tasks);
