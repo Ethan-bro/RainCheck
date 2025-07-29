@@ -1,7 +1,7 @@
 package view;
 
 import interface_adapter.calendar.TaskClickListener;
-import okhttp3.internal.concurrent.Task;
+import entity.Task;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,8 +19,8 @@ public class CalendarGrid extends JPanel {
 
         Map<LocalDate, Map<Integer, List<Task>>> taskMap = new HashMap<>();
         for (Task t : tasks) {
-            LocalDate date = t.getTaskInfo.getStartDateTime.toLocalDate();
-            int hour = t.getTaskInfo.getStartDateTime.getHour();
+            LocalDate date = t.getTaskInfo().getStartDateTime().toLocalDate();
+            int hour = t.getTaskInfo().getStartDateTime().getHour();
             taskMap
                     .computeIfAbsent(date, d -> new HashMap<>())
                     .computeIfAbsent(hour, h -> new ArrayList<>())
@@ -98,7 +98,7 @@ public class CalendarGrid extends JPanel {
                     if (!cellTasks.isEmpty()) {
                         cell.setLayout(new FlowLayout(FlowLayout.LEFT, 2, 2));
                         for (Task t : cellTasks) {
-                            JButton button = new JButton(t.getTaskInfo.getTaskName());
+                            JButton button = new JButton(t.getTaskInfo().getTaskName());
                             button.setMargin(new Insets(2, 4, 2, 4));
                             button.setFont(button.getFont().deriveFont(12f));
                             button.addActionListener(e -> taskClickListener.onTaskClick(t));
@@ -109,12 +109,10 @@ public class CalendarGrid extends JPanel {
                 }
                 else {
                     cell.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-                    if (col == 0) {
-                        cell.setLayout(new BoxLayout(cell, BoxLayout.Y_AXIS));
-                        JLabel hourLabel = new JLabel(CalendarData.HOURS_OF_DAY[row - 2]);
-                        hourLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-                        cell.add(hourLabel);
-                    }
+                    cell.setLayout(new BoxLayout(cell, BoxLayout.Y_AXIS));
+                    JLabel hourLabel = new JLabel(CalendarData.HOURS_OF_DAY[row - 2]);
+                    hourLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+                    cell.add(hourLabel);
                 }
 
                 rowPanel.add(cell);
