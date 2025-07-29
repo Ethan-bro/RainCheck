@@ -3,8 +3,6 @@ package view;
 import javax.swing.*;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Objects;
@@ -61,11 +59,7 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         editButton.setMaximumSize(new Dimension(24, 24));
         editButton.setMargin(new Insets(0, 0, 0, 0));
         editButton.addActionListener(
-                new ActionListener() {
-                    public void actionPerformed(ActionEvent evt) {
-                        taskController.switchToEditTaskView();
-                    }
-                }
+                evt -> taskController.switchToEditTaskView()
         );
         buttonPanel.add(editButton);
 
@@ -78,11 +72,7 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         deleteButton.setMaximumSize(new Dimension(24, 24));
         deleteButton.setMargin(new Insets(0, 0, 0, 0));
         deleteButton.addActionListener(
-                new ActionListener() {
-                    public void actionPerformed(ActionEvent evt) {
-                        taskController.deleteTask(taskViewModel.getTaskId());
-                    }
-                }
+                evt -> taskController.deleteTask(taskViewModel.getTaskId())
         );
         buttonPanel.add(deleteButton);
 
@@ -95,11 +85,7 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         checkmarkButton.setMaximumSize(new Dimension(24, 24));
         checkmarkButton.setMargin(new Insets(0, 0, 0, 0));
         checkmarkButton.addActionListener(
-                new ActionListener() {
-                    public void actionPerformed(ActionEvent evt) {
-                        taskController.markAsComplete(taskViewModel.getTaskId());
-                    }
-                }
+                evt -> taskController.markAsComplete(taskViewModel.getTaskId())
         );
         buttonPanel.add(checkmarkButton);
 
