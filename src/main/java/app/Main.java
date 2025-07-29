@@ -11,6 +11,7 @@ public class Main {
                     .addSignupView()
                     .addLoginView()
                     .addLoggedInView()
+                    .addAddTaskView()
                     .build();
 
             int appWidth = 860;
