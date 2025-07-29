@@ -1,3 +1,6 @@
+// TODO: Uncomment all these lines ONLY after both TaskViewModel and TaskController have been created
+//TODO:   If they are not done, then uncommenting the following lines of code will cause the program to not compile
+// TODO:   Also delete these TODOs
 //package view;
 //
 //import javax.swing.*;
