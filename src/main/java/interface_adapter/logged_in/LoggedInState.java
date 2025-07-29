@@ -1,5 +1,8 @@
 package interface_adapter.logged_in;
 
+import entity.Task;
+import java.util.List;
+
 /**
  * The State information representing the logged-in user.
  */
@@ -8,6 +11,7 @@ public class LoggedInState {
 
     private String password = "";
     private String passwordError;
+    private List<Task> weekTasks = List.of();
 
     public LoggedInState(LoggedInState copy) {
         username = copy.username;
@@ -39,4 +43,8 @@ public class LoggedInState {
     public String getPassword() {
         return password;
     }
+
+    public List<Task> getWeekTasks() {return weekTasks;}
+
+    public void setWeekTasks(List<Task> weekTasks) {this.weekTasks = weekTasks;}
 }
