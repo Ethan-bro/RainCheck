@@ -2,19 +2,29 @@ package app;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
 import data_access.SupaBaseTaskDataAccessObject;
 import data_access.SupabaseTagDataAccessObject;
 import data_access.SupabaseUserDataAccessObject;
+
 import interface_adapter.ViewManagerModel;
-import interface_adapter.logged_in.ListTasksPresenter;
+import interface_adapter.addTask.AddTaskController;
+import interface_adapter.addTask.AddTaskPresenter;
+import interface_adapter.addTask.AddTaskViewModel;
+import interface_adapter.addTask.UUIDGenerator;
+
 import interface_adapter.logged_in.LoggedInViewModel;
+import interface_adapter.logged_in.ListTasksPresenter;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.logout.LogoutController;
 import interface_adapter.signup.SignupViewModel;
+
 import use_case.task.ListTasksInputBoundary;
 import use_case.task.ListTasksInteractor;
 import use_case.task.ListTasksOutputBoundary;
 import use_case.task.TaskDataAccessInterface;
+import use_case.addTask.AddTaskInputBoundary;
+import use_case.addTask.AddTaskInteractor;
 import view.*;
 
 import javax.swing.*;
@@ -38,9 +48,11 @@ public class AppBuilder {
     private LoginViewModel loginViewModel;
     private LoggedInViewModel loggedInViewModel;
     private SignupViewModel signupViewModel;
+    private AddTaskViewModel addTaskViewModel;
     private LoginView loginView;
     private SignupView signupView;
     private LoggedInView loggedInView;
+    private AddTaskView addTaskView;
 
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
@@ -62,6 +74,7 @@ public class AppBuilder {
         loginViewModel = new LoginViewModel();
         loggedInViewModel = new LoggedInViewModel();
         signupViewModel = new SignupViewModel();
+        addTaskViewModel = new AddTaskViewModel();
         return this;
     }
 
@@ -97,6 +110,25 @@ public class AppBuilder {
         loggedInView = new LoggedInView(loggedInViewModel, logoutController);
 
         cardPanel.add(loggedInView, loggedInView.getViewName());
+        return this;
+    }
+
+    public AppBuilder addAddTaskView() {
+
+        //addTask wiring: will condense to AddTaskUseCaseFactory later
+
+        final AddTaskPresenter addTaskPresenter =
+                new AddTaskPresenter(addTaskViewModel, viewManagerModel, loggedInView.getViewName());
+
+        final AddTaskInputBoundary addTaskInteractor = new AddTaskInteractor(userDao, new UUIDGenerator(),
+                        addTaskPresenter);
+
+        final AddTaskController addTaskController = new AddTaskController(userDao.getCurrentUser(),
+                        addTaskInteractor);
+        //
+
+        addTaskView = new AddTaskView(addTaskController, addTaskViewModel);
+        cardPanel.add(addTaskView, addTaskView.getViewName());
         return this;
     }
 
