@@ -80,7 +80,7 @@ public class AppBuilder {
 
     public AppBuilder addSignupView() {
         signupView = SignupUseCaseFactory.create(viewManagerModel, loginViewModel, signupViewModel, userDao);
-        cardPanel.add(signupView, signupView.getViewName());
+        cardPanel.add(signupView, SignupView.getViewName());
         return this;
     }
 
@@ -110,19 +110,14 @@ public class AppBuilder {
 
     public AppBuilder addAddTaskView() {
 
-        //addTask wiring: will condense to AddTaskUseCaseFactory later
+        addTaskView = AddTaskUseCaseFactory.create(
+                viewManagerModel,
+                addTaskViewModel,
+                taskDao,
+                userDao.getCurrentUser(),
+                LoggedInView.getViewName()
+        );
 
-        final AddTaskPresenter addTaskPresenter =
-                new AddTaskPresenter(addTaskViewModel, viewManagerModel, LoggedInView.getViewName());
-
-        final AddTaskInputBoundary addTaskInteractor = new AddTaskInteractor(taskDao, new UUIDGenerator(),
-                        addTaskPresenter);
-
-        final AddTaskController addTaskController = new AddTaskController(userDao.getCurrentUser(),
-                        addTaskInteractor);
-        //
-
-        addTaskView = new AddTaskView(addTaskController, addTaskViewModel, viewManagerModel);
         cardPanel.add(addTaskView, AddTaskView.getViewName());
         return this;
     }
