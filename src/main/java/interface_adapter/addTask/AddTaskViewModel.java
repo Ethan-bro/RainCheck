@@ -11,9 +11,4 @@ public class AddTaskViewModel extends ViewModel<AddTaskState> {
         setState(new AddTaskState());
     }
 
-    @Override
-    public AddTaskState getState() {
-        return super.getState();
-    }
-
 }

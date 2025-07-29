@@ -4,7 +4,9 @@ public class AddTaskState {
     private String errorMessage = "";
     private boolean success = false;
 
-    public AddTaskState() {}
+    public AddTaskState() {
+        // empty constructor
+    }
 
     public String getErrorMessage(){
         return errorMessage;
