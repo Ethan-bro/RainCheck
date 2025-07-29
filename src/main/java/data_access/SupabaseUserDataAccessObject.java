@@ -2,12 +2,14 @@ package data_access;
 
 import com.google.gson.*;
 import entity.CommonUser;
+import entity.CustomTag;
 import entity.User;
 import okhttp3.*;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.logout.LogoutUserDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.util.Collections;
 
@@ -76,6 +78,7 @@ public class SupabaseUserDataAccessObject implements LoginUserDataAccessInterfac
         newUser.addProperty("username", user.getName());
         newUser.addProperty("password", user.getPassword());
         newUser.add("tasks", new JsonArray()); // placeholder for now
+        newUser.add("tags", new JsonArray());
 
         String json = gson.toJson(Collections.singletonList(newUser));
         RequestBody body = RequestBody.create(json, MediaType.get("application/json"));
@@ -112,7 +115,7 @@ public class SupabaseUserDataAccessObject implements LoginUserDataAccessInterfac
     public boolean isUsernameValid(String username) {
         return !existsByName(username);
     }
-
+          
     @Override
     public void setCurrentUsername(String username) {
         setCurrentUser(username);

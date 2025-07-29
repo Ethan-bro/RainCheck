@@ -1,16 +1,13 @@
-package use_case.createCustomTag;
+package entity;
 
 import javax.swing.*;
 
-/**
- * The input data required for creating a custom tag.
- */
-public class createCustomTagInputData {
+public class CustomTag {
 
     private String tagName;
     private ImageIcon tagIcon;
 
-    public createCustomTagInputData(String tagName, String tagIcon) {
+    public CustomTag(String tagName, ImageIcon tagIcon) {
         this.tagName = tagName;
         this.tagIcon = tagIcon;
     }
@@ -19,15 +16,15 @@ public class createCustomTagInputData {
         return tagName;
     }
 
+    public void setTagName(String tagName) {
+        this.tagName = tagName;
+    }
+
     public ImageIcon getTagIcon() {
         return tagIcon;
     }
 
     public void setTagIcon(ImageIcon tagIcon) {
         this.tagIcon = tagIcon;
-    }
-
-    public void setTagName(String tagName) {
-        this.tagName = tagName;
     }
 }
