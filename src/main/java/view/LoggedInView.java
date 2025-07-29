@@ -12,27 +12,32 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import entity.Task;
+import interface_adapter.ViewManagerModel;
 import interface_adapter.calendar.TaskClickListener;
 import interface_adapter.logged_in.LoggedInState;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.logout.LogoutController;
 import data_access.LocationService;
 import data_access.WeatherApiService;
-import okhttp3.internal.concurrent.Task;
 
 public class LoggedInView extends JPanel implements PropertyChangeListener {
 
     private static final String viewName = "logged in";
     private final LoggedInViewModel loggedInViewModel;
+    private final ViewManagerModel viewManagerModel;
     private final JLabel usernameLabel;
     private LogoutController logoutController;
     private final JPanel centerPanel;
-    private CalendarData calendarData;
-    private Map<LocalDate, Map<String, Object>> weatherMap;
+    private final CalendarData calendarData;
+    private final Map<LocalDate, Map<String, Object>> weatherMap;
 
-    public LoggedInView(LoggedInViewModel loggedInViewModel, LogoutController logoutController) throws IOException {
+    public LoggedInView(LoggedInViewModel loggedInViewModel,
+                        LogoutController logoutController,
+                        ViewManagerModel viewManagerModel) throws IOException {
         this.loggedInViewModel = loggedInViewModel;
         this.loggedInViewModel.addPropertyChangeListener(this);
+        this.viewManagerModel = viewManagerModel;
         this.logoutController = logoutController;
 
         setLayout(new BorderLayout());
@@ -67,7 +72,9 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         this.calendarData = new CalendarData();
         this.weatherMap = getWeatherMapForCalendarData(calendarData);
 
-        rebuildCalendarWithTasks(List.of());
+        LocalDate startDate = this.calendarData.getWeekDates().getFirst();
+        LocalDate endDate = startDate.plusDays(7);
+        loggedInViewModel.loadTasksForWeek(startDate,endDate);
 
         // --- Bottom: Logout + Add Task Buttons ---
         JButton logoutButton = new JButton("Log Out");
@@ -100,34 +107,39 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         });
 
         addTaskButton.addActionListener(e -> {
-            System.out.println("Add Task clicked");
-            // TODO: add task
+            viewManagerModel.setState(AddTaskView.getViewName());
+            viewManagerModel.firePropertyChanged();
         });
 
     }
 
     private Map<LocalDate, Map<String, Object>> getWeatherMapForCalendarData(CalendarData calendarData) throws IOException {
-        Map<LocalDate, Map<String, Object>> weatherMap = new HashMap<>();
+        Map<LocalDate, Map<String, Object>> map = new HashMap<>();
 
         String city = LocationService.getUserCity(); // Fetching the user's current location (city e.g., Toronto)
         WeatherApiService weatherService = new WeatherApiService();
 
         // Fetch weather for the week once and store in a map
         for (LocalDate date : calendarData.getWeekDates()) {
-            weatherMap.put(date, weatherService.getDailyWeather(city, date));
+            map.put(date, weatherService.getDailyWeather(city, date));
         }
-         return weatherMap;
+         return map;
     }
 
     private void rebuildCalendarWithTasks(List<Task> tasks) {
         centerPanel.removeAll();
 
+        System.out.println("RECEIVED TASKS:");
+        for (Task task : tasks) {
+            System.out.println(task.getTaskInfo().getTaskName());
+        }
+
         TaskClickListener clicker = task -> {
-            TaskViewModel taskViewModel = new TaskViewModel(task);
-            TaskController taskController = new TaskController(TaskInteractor);
-            TaskBox taskBox = new TaskBox(taskViewModel, taskController);
-            JOptionPane.showMessageDialog(this, box, "Task Details",
-                    JOptionPane.PLAIN_MESSAGE);
+//            TaskViewModel taskViewModel = new TaskViewModel(task);
+//            TaskController taskController = new TaskController(TaskInteractor);
+//            TaskBox taskBox = new TaskBox(taskViewModel, taskController);
+//            JOptionPane.showMessageDialog(this, box, "Task Details",
+//                    JOptionPane.PLAIN_MESSAGE);
         };
 
         CalendarGrid grid = new CalendarGrid(calendarData, weatherMap, tasks, clicker);
