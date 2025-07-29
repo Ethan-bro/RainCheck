@@ -40,7 +40,7 @@ public class ListTasksPresenter implements ListTasksOutputBoundary {
         }
 
         currentState.setWeekTasks(tasks);
-        viewModel.setState(currentState); // optional if your ViewModel.setState fires internally
+        viewModel.setState(currentState);
 
         // Notify the view that task list has changed
         viewModel.firePropertyChanged("weekTasks");
