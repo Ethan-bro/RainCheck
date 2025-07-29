@@ -7,7 +7,6 @@ import interface_adapter.ViewManagerModel;
 import interface_adapter.addTask.AddTaskController;
 import interface_adapter.addTask.AddTaskViewModel;
 import interface_adapter.addTask.AddTaskState;
-import use_case.addTask.AddTaskInputData;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,7 +25,7 @@ public class AddTaskView extends JPanel
     private final AddTaskViewModel  viewModel;
     private final ViewManagerModel viewManagerModel;
     private final String mainViewKey;
-    private final String viewName = "Add Task";
+    private static final String viewName = "Add Task";
 
     // Form fields
     private final JTextField            nameField;
@@ -40,12 +39,13 @@ public class AddTaskView extends JPanel
     private final JLabel                errorLabel;
 
     public AddTaskView(AddTaskController controller,
-                       AddTaskViewModel viewModel) {
+                       AddTaskViewModel viewModel,
+                       ViewManagerModel viewManagerModel) {
         this.controller = controller;
         this.viewModel  = viewModel;
         this.viewModel.addPropertyChangeListener(this);
         this.viewManagerModel = viewManagerModel;
-        this.mainViewKey = "LoggedInView";
+        this.mainViewKey = LoggedInView.getViewName();
         this.viewModel.addPropertyChangeListener(this);
 
         // Initialize components
@@ -53,8 +53,27 @@ public class AddTaskView extends JPanel
         startSpinner    = makeDateTimeSpinner();
         endSpinner      = makeDateTimeSpinner();
         priorityCombo   = new JComboBox<>(Priority.values());
-        customTagCombo = new JComboBox<>(        );
-        reminderCombo   = new JComboBox<>(        );
+
+        // TODO: Populate customTagCombo with user's tags loaded from database or some defaults.
+        // Example:
+        // CustomTag[] defaultTags = {
+        //     new CustomTag("Work", "💼"),
+        //     new CustomTag("Study", "📚"),
+        //     new CustomTag("Chill", "😎")
+        // };
+        // customTagCombo = new JComboBox<>(defaultTags);
+        customTagCombo = new JComboBox<>();
+
+        // TODO: Populate reminderCombo with typical reminder intervals or user preferences.
+        // Example:
+        // Reminder[] defaultReminders = {
+        //     new Reminder(5),    // 5 minutes before
+        //     new Reminder(10),   // 10 minutes before
+        //     new Reminder(30)    // 30 minutes before
+        // };
+        // reminderCombo = new JComboBox<>(defaultReminders);
+        reminderCombo = new JComboBox<>();
+
         saveButton      = new JButton("Save");
         cancelButton = new JButton("Cancel");
         errorLabel      = new JLabel();
@@ -170,5 +189,5 @@ public class AddTaskView extends JPanel
         errorLabel.setVisible(false);
     }
 
-    public String getViewName() {return viewName;}
+    public static String getViewName() {return viewName;}
 }
