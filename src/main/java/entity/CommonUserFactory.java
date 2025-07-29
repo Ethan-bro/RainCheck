@@ -6,7 +6,7 @@ package entity;
 public class CommonUserFactory implements UserFactory {
 
     @Override
-    public User create(String name, String passwordhash) {
-        return new CommonUser(name, passwordhash);
+    public User create(String name, String password) {
+        return new CommonUser(name, password);
     }
 }
