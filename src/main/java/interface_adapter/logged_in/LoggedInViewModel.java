@@ -1,7 +1,7 @@
 package interface_adapter.logged_in;
 
 import interface_adapter.ViewModel;
-import use_case.task.ListTasksInputBoundary;
+import use_case.listTasks.ListTasksInputBoundary;
 
 import java.time.LocalDate;
 
