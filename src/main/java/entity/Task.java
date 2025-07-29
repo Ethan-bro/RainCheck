@@ -1,9 +1,13 @@
 package entity;
 
 public class Task {
-    private TaskInfo taskInfo;
+    private final TaskInfo taskInfo;
 
     public Task(TaskInfo taskInfo) {
         this.taskInfo = taskInfo;
+    }
+
+    public TaskInfo getTaskInfo() {
+        return taskInfo;
     }
 }
