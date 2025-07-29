@@ -3,6 +3,7 @@ package data_access;
 import com.google.gson.*;
 import okhttp3.*;
 import use_case.createCustomTag.customTagDataAccessInterface;
+import entity.CustomTag;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -11,7 +12,7 @@ import java.util.Objects;
 
 /**
  * SupabaseTagDataAccessObject implements methods defined in customTagDataAccessInterface.
- * These methods support tag storage/retrieval for each user using Supabase REST API
+ * These methods support tag storage/retrieval for each user using Supabase REST API,
  * where custom_tags is stored as a JSONB dictionary: tagName → emoji.
  */
 public class SupabaseTagDataAccessObject implements customTagDataAccessInterface {
@@ -26,6 +27,9 @@ public class SupabaseTagDataAccessObject implements customTagDataAccessInterface
         this.apiKey = apiKey;
     }
 
+    /**
+     * Fetches all custom tags (as a map of tagName → emoji) for a given user.
+     */
     @Override
     public Map<String, String> getCustomTags(String username) {
         try {
@@ -67,20 +71,29 @@ public class SupabaseTagDataAccessObject implements customTagDataAccessInterface
         }
     }
 
+    /**
+     * Adds or replaces a custom tag for the user.
+     */
     @Override
-    public void addCustomTag(String username, String tagName, String emoji) {
+    public void addCustomTag(String username, CustomTag tagToAdd) {
         Map<String, String> tags = getCustomTags(username);
-        tags.put(tagName, emoji);
+        tags.put(tagToAdd.getTagName(), tagToAdd.getTagEmoji());
         patchTags(username, tags);
     }
 
+    /**
+     * Deletes a tag by name for the user.
+     */
     @Override
-    public void deleteCustomTag(String username, String tagName) {
+    public void deleteCustomTag(String username, CustomTag tagToDelete) {
         Map<String, String> tags = getCustomTags(username);
-        tags.remove(tagName);
+        tags.remove(tagToDelete.getTagName());
         patchTags(username, tags);
     }
 
+    /**
+     * Helper method to update the Supabase user's custom_tags column with the provided map.
+     */
     private void patchTags(String username, Map<String, String> tags) {
         try {
             JsonObject jsonTags = new JsonObject();

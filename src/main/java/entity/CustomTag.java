@@ -1,15 +1,13 @@
 package entity;
 
-import javax.swing.*;
-
 public class CustomTag {
 
     private String tagName;
-    private ImageIcon tagIcon;
+    private String tagEmoji;
 
-    public CustomTag(String tagName, ImageIcon tagIcon) {
+    public CustomTag(String tagName, String tagEmoji) {
         this.tagName = tagName;
-        this.tagIcon = tagIcon;
+        this.tagEmoji = tagEmoji;
     }
 
     public String getTagName() {
@@ -20,11 +18,11 @@ public class CustomTag {
         this.tagName = tagName;
     }
 
-    public ImageIcon getTagIcon() {
-        return tagIcon;
+    public String getTagEmoji() {
+        return tagEmoji;
     }
 
-    public void setTagIcon(ImageIcon tagIcon) {
-        this.tagIcon = tagIcon;
+    public void setTagEmoji(String tagEmoji) {
+        this.tagEmoji = tagEmoji;
     }
 }

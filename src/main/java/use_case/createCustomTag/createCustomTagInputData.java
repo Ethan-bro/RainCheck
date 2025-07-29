@@ -1,30 +1,28 @@
 package use_case.createCustomTag;
 
-import javax.swing.*;
-
 /**
  * The input data required for creating a custom tag.
  */
 public class createCustomTagInputData {
 
     private String tagName;
-    private ImageIcon tagIcon;
+    private String tagEmoji;
 
-    public createCustomTagInputData(String tagName, String tagIcon) {
+    public createCustomTagInputData(String tagName, String tagEmoji) {
         this.tagName = tagName;
-        this.tagIcon = tagIcon;
+        this.tagEmoji = tagEmoji;
     }
 
     public String getTagName() {
         return tagName;
     }
 
-    public ImageIcon getTagIcon() {
-        return tagIcon;
+    public String getTagEmoji() {
+        return tagEmoji;
     }
 
-    public void setTagIcon(ImageIcon tagIcon) {
-        this.tagIcon = tagIcon;
+    public void setTagEmoji(String tagEmoji) {
+        this.tagEmoji = tagEmoji;
     }
 
     public void setTagName(String tagName) {
