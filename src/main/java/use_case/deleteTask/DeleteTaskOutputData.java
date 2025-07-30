@@ -1,21 +1,19 @@
-package use_case.deleteTask;
-
-import entity.TaskID;
+package use_case.DeleteTask;
 
 /**
- * Output Data for the deleteTask use case.
+ * Output Data for the DeleteTask use case.
  */
 public class DeleteTaskOutputData {
 
-    private final TaskID taskId;
+    private final int taskId;
     private final boolean useCaseFailed;
 
-    public DeleteTaskOutputData(TaskID taskId, boolean useCaseFailed) {
+    public DeleteTaskOutputData(int taskId, boolean useCaseFailed) {
         this.taskId = taskId;
         this.useCaseFailed = useCaseFailed;
     }
 
-    public TaskID getTaskId() {
+    public int getTaskId() {
         return taskId;
     }
 

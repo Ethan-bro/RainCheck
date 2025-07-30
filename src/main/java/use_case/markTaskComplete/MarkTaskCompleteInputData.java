@@ -1,19 +1,23 @@
-package use_case.markTaskComplete;
-
-import entity.TaskID;
+package use_case.MarkTaskComplete;
 
 /**
- * The Input Data for the markTaskComplete Use Case.
+ * The Input Data for the MarkTaskComplete Use Case.
  */
 public class MarkTaskCompleteInputData {
 
-    private final TaskID taskId;
+    private final String username;
+    private final int taskId;
 
-    public MarkTaskCompleteInputData(TaskID taskId) {
+    public MarkTaskCompleteInputData(String username, int taskId) {
+        this.username = username;
         this.taskId = taskId;
     }
 
-    public TaskID getTaskId() {
+    public String getUsername() {
+        return username;
+    }
+
+    public int getTaskId() {
         return taskId;
     }
 }

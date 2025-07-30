@@ -1,20 +1,18 @@
-package use_case.markTaskComplete;
-
-import entity.TaskID;
+package use_case.MarkTaskComplete;
 
 /**
- * Output Data for the markTaskComplete Use Case.
+ * Output Data for the MarkTaskComplete Use Case.
  */
 public class MarkTaskCompleteOutputData {
-     private final TaskID taskId;
+     private final int taskId;
      private final boolean useCaseFailed;
 
-     public MarkTaskCompleteOutputData(TaskID taskId, boolean useCaseFailed) {
+     public MarkTaskCompleteOutputData(int taskId, boolean useCaseFailed) {
          this.taskId = taskId;
          this.useCaseFailed = useCaseFailed;
      }
 
-     public TaskID getTaskId() {
+     public int getTaskId() {
          return taskId;
      }
 

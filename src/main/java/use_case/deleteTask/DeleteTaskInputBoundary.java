@@ -1,9 +1,15 @@
-package use_case.deleteTask;
+package use_case.DeleteTask;
+
+import java.io.IOException;
 
 /**
  * Input Boundary for actions which are related to deleting a task.
  */
 public interface DeleteTaskInputBoundary {
 
-    void execute(String username, DeleteTaskInputData deleteTaskInputData);
+    /**
+     * Executes the DeleteTask use case.
+     * @param deleteTaskInputData the input data
+     */
+    void execute(DeleteTaskInputData deleteTaskInputData) throws IOException;
 }
