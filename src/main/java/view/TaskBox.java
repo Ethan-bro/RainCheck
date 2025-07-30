@@ -8,7 +8,9 @@ import java.beans.PropertyChangeListener;
 import java.util.Objects;
 
 import entity.Priority;
+import entity.Task;
 import entity.TaskInfo;
+import interface_adapter.ViewManagerModel;
 import interface_adapter.deleteTask.DeleteTaskController;
 import interface_adapter.markTaskComplete.MarkTaskCompleteController;
 import interface_adapter.editTask.EditTaskController;
@@ -27,16 +29,19 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
     private final DeleteTaskController deleteTaskController;
     private final EditTaskController editTaskController;
     private final TaskInfo taskInfo;
+    private final ViewManagerModel viewManagerModel;
 
 
     public TaskBox(TaskInfo taskInfo,
                    MarkTaskCompleteController markTaskCompleteController,
                    DeleteTaskController deleteTaskController,
-                   EditTaskController editTaskController, EditTaskController editTaskController1) {
+                   EditTaskController editTaskController,
+                   ViewManagerModel viewManagerModel) {
         this.taskInfo = taskInfo;
-        this.editTaskController = editTaskController1;
+        this.editTaskController = editTaskController;
         this.markTaskCompleteController = markTaskCompleteController;
         this.deleteTaskController = deleteTaskController;
+        this.viewManagerModel = viewManagerModel;
         taskInfo.addPropertyChangeListener(this);
 
         // Creating main panel
@@ -71,9 +76,10 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         editButton.setPreferredSize(new Dimension(24, 24));
         editButton.setMaximumSize(new Dimension(24, 24));
         editButton.setMargin(new Insets(0, 0, 0, 0));
-        editButton.addActionListener(
-                evt -> editTaskController.switchToEditTaskView()
-        );
+        editButton.addActionListener(evt -> {
+                    editTaskController.setCurrentTask(new Task(taskInfo));
+                    editTaskController.switchToEditTaskView(viewManagerModel);
+                });
         buttonPanel.add(editButton);
 
         ImageIcon trashIcon = new ImageIcon(Objects.requireNonNull(getClass()
@@ -212,5 +218,9 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
 
     public EditTaskController getEditTaskController() {
         return editTaskController;
+    }
+
+    public ViewManagerModel getViewManagerModel() {
+        return viewManagerModel;
     }
 }
