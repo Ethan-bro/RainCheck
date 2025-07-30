@@ -81,8 +81,8 @@ public class SupabaseUserDataAccessObject implements
         newUser.addProperty("username", user.getName());
         newUser.addProperty("password", user.getPassword());
         newUser.addProperty("email", user.getEmail());
-        newUser.add("tasks", new JsonArray()); // placeholder
-        newUser.add("tags", new JsonArray());  // placeholder
+        newUser.add("tasks", new JsonArray()); // []
+        newUser.add("custom_tags", new JsonObject()); // {}
 
         String json = gson.toJson(Collections.singletonList(newUser));
         RequestBody body = RequestBody.create(json, MediaType.get("application/json"));
@@ -98,7 +98,8 @@ public class SupabaseUserDataAccessObject implements
 
         try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful()) {
-                throw new RuntimeException("Save failed: " + response.code() + " - " + response.message());
+                String errorDetails = response.body() != null ? response.body().string() : "No response body";
+                throw new RuntimeException("Save failed: " + response.code() + " - " + response.message() + " - " + errorDetails);
             }
         } catch (IOException e) {
             throw new RuntimeException("Failed to save user", e);
