@@ -56,7 +56,7 @@ public class AppBuilder {
     private AddTaskView addTaskView;
 
     public AppBuilder() {
-        cardPanel.setLayout(cardLayout);
+        cardPanel.setLayoutsim(cardLayout);
     }
 
     public AppBuilder addDatabase() throws Exception {
