@@ -26,13 +26,14 @@ public class LoginInteractor implements LoginInputBoundary {
         }
 
         User user = userDataAccessObject.get(username);
-        String storedPassword = user.getPassword(); // assumed to be stored in plain text
+        String storedPassword = user.getPassword();
+        String email = user.getEmail();
 
         if (!password.equals(storedPassword)) {
             loginPresenter.prepareFailView("Incorrect password for \"" + username + "\".");
         } else {
             userDataAccessObject.setCurrentUser(username);
-            LoginOutputData outputData = new LoginOutputData(username, false);
+            LoginOutputData outputData = new LoginOutputData(username, email, false);
             loginPresenter.prepareSuccessView(outputData);
         }
     }

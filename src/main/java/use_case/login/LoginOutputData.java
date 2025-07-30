@@ -7,15 +7,19 @@ package use_case.login;
 public class LoginOutputData {
 
     private final String username;
+    private final String email;
     private final boolean useCaseFailed;
 
     /**
      * Constructs a new LoginOutputData object.
+     *
      * @param username       The username of the user attempting to log in.
+     * @param email          The user's email address.
      * @param useCaseFailed  Indicates whether the login use case failed (e.g., wrong password).
      */
-    public LoginOutputData(String username, boolean useCaseFailed) {
+    public LoginOutputData(String username, String email, boolean useCaseFailed) {
         this.username = username;
+        this.email = email;
         this.useCaseFailed = useCaseFailed;
     }
 
@@ -24,6 +28,13 @@ public class LoginOutputData {
      */
     public String getUsername() {
         return username;
+    }
+
+    /**
+     * @return The email.
+     */
+    public String getEmail() {
+        return email;
     }
 
     /**
