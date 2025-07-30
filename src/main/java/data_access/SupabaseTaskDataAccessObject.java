@@ -3,13 +3,20 @@ package data_access;
 import com.google.gson.*;
 import entity.*;
 import okhttp3.*;
+import use_case.deleteTask.DeleteTaskDataAccessInterface;
+import use_case.editTask.EditTaskDataAccessInterface;
 import use_case.listTasks.TaskDataAccessInterface;
+import use_case.markTaskComplete.MarkTaskCompleteDataAccessInterface;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
-public class SupabaseTaskDataAccessObject implements TaskDataAccessInterface {
+public class SupabaseTaskDataAccessObject implements
+        TaskDataAccessInterface,
+        EditTaskDataAccessInterface,
+        DeleteTaskDataAccessInterface,
+        MarkTaskCompleteDataAccessInterface {
 
     private final String baseUrl;
     private final String apiKey;
@@ -109,9 +116,101 @@ public class SupabaseTaskDataAccessObject implements TaskDataAccessInterface {
         }
     }
 
+    @Override
+    public Task getTaskById(String username, TaskID taskId) {
+        List<Task> tasks = getTasks(username);
+        for (Task task : tasks) {
+            if (task.getTaskInfo().getId().equals(taskId)) {
+                return task;
+            }
+        }
+        return null;
+    }
+
+    public void updateTask(String username, Task updatedTask) {
+        try {
+            List<Task> tasks = getTasks(username);
+
+            // Replace the matching task
+            for (int i = 0; i < tasks.size(); i++) {
+                if (tasks.get(i).getTaskInfo().getId().equals(updatedTask.getTaskInfo().getId())) {
+                    tasks.set(i, updatedTask);
+                    break;
+                }
+            }
+
+            // Update task in Supabase
+            patchTasks(username, tasks);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error updating task", e);
+        }
+    }
+
+    @Override
+    public void markAsComplete (String username, TaskID taskId) {
+
+        // Retrieving task by id if it exists
+        Task task = getTaskById(username, taskId);
+        if (task == null) {
+            throw new IllegalArgumentException("Task not found.");
+        }
+
+        // Setting task as completed
+        task.getTaskInfo().setTaskStatus("Complete");
+
+        // Updating status of the task completion in database
+        updateTask(username, task);
+    }
+
+    @Override
+    public void deleteTask(String username, TaskID taskId) {
+
+        // Get user's current tasks
+        List<Task> tasks = getTasks(username);
+
+        // Remove the task that matches the taskId
+        for (int i = 0; i < tasks.size(); i++) {
+            if (tasks.get(i).getTaskInfo().getId().equals(taskId)) {
+                tasks.remove(i);
+                break;
+            }
+        }
+
+        // Convert updated task list to JSON
+        JsonArray taskArray = new JsonArray();
+        for (Task task : tasks) {
+            taskArray.add(taskToJson(task));
+        }
+
+        JsonObject userUpdate = new JsonObject();
+        userUpdate.add("tasks", taskArray);
+
+        RequestBody body = RequestBody.create(
+                userUpdate.toString(),
+                MediaType.get("application/json")
+        );
+
+        Request request = new Request.Builder()
+                .url(baseUrl + "/rest/v1/users?username=eq." + username)
+                .addHeader("apikey", apiKey)
+                .addHeader("Authorization", "Bearer " + apiKey)
+                .addHeader("Content-Type", "application/json")
+                .patch(body)
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                throw new RuntimeException("Delete failed: " + response.message());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     // ---------------------- Helper Conversion ----------------------
 
-    private JsonObject taskToJson(Task task) {
+    private JsonObject taskToJson (Task task){
         JsonObject json = new JsonObject();
         TaskInfo info = task.getTaskInfo();
 
@@ -136,7 +235,7 @@ public class SupabaseTaskDataAccessObject implements TaskDataAccessInterface {
         return json;
     }
 
-    private Task jsonToTask(JsonObject json) {
+    private Task jsonToTask (JsonObject json){
         String idStr = json.get("id").getAsString();
         String taskName = json.get("taskName").getAsString();
         LocalDateTime start = LocalDateTime.parse(json.get("startDateTime").getAsString());
