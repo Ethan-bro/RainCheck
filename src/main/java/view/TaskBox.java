@@ -68,46 +68,43 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
         buttonPanel.setAlignmentX(Component.RIGHT_ALIGNMENT);
 
-        ImageIcon pencilIcon = new ImageIcon(Objects.requireNonNull(getClass()
-                .getResource("/images/pencil.png")));
-        ImageIcon scaledPencilIcon = new ImageIcon(pencilIcon.getImage()
-                .getScaledInstance(20, 20, Image.SCALE_SMOOTH));
-        JButton editButton = new JButton(scaledPencilIcon);
-        editButton.setPreferredSize(new Dimension(24, 24));
-        editButton.setMaximumSize(new Dimension(24, 24));
+        // Edit button with pencil emoji
+        JButton editButton = new JButton("✏️");
+        editButton.setPreferredSize(new Dimension(30, 30));
+        editButton.setFont(editButton.getFont().deriveFont(18f));
         editButton.setMargin(new Insets(0, 0, 0, 0));
+        editButton.setFocusPainted(false);
+        editButton.setContentAreaFilled(false);
+        editButton.setBorderPainted(false);
+        editButton.setOpaque(false);
         editButton.addActionListener(evt -> {
-                    editTaskController.setCurrentTask(new Task(taskInfo));
-                    editTaskController.switchToEditTaskView(viewManagerModel);
-                });
+            editTaskController.setCurrentTask(new Task(taskInfo));
+            editTaskController.switchToEditTaskView(viewManagerModel);
+        });
         buttonPanel.add(editButton);
 
-        ImageIcon trashIcon = new ImageIcon(Objects.requireNonNull(getClass()
-                .getResource("/images/trash.png")));
-        ImageIcon scaledTrashIcon = new ImageIcon(trashIcon.getImage()
-                .getScaledInstance(20, 20, Image.SCALE_SMOOTH));
-        JButton deleteButton = new JButton(scaledTrashIcon);
-        deleteButton.setPreferredSize(new Dimension(24, 24));
-        deleteButton.setMaximumSize(new Dimension(24, 24));
+        // Delete button with trash emoji
+        JButton deleteButton = new JButton("🗑️");
+        deleteButton.setPreferredSize(new Dimension(30, 30));
+        deleteButton.setFont(deleteButton.getFont().deriveFont(18f));
         deleteButton.setMargin(new Insets(0, 0, 0, 0));
-        deleteButton.addActionListener(
-                evt -> deleteTaskController.deleteTask(taskInfo.getId())
-        );
+        deleteButton.setFocusPainted(false);
+        deleteButton.setContentAreaFilled(false);
+        deleteButton.setBorderPainted(false);
+        deleteButton.setOpaque(false);
+        deleteButton.addActionListener(evt -> deleteTaskController.deleteTask(taskInfo.getId()));
         buttonPanel.add(deleteButton);
 
-        ImageIcon checkmarkIcon = new ImageIcon(Objects.requireNonNull(getClass()
-                .getResource("/images/checkmark.png")));
-        ImageIcon scaledCheckmarkIcon = new ImageIcon(checkmarkIcon.getImage()
-                .getScaledInstance(20, 20, Image.SCALE_SMOOTH));
-        JButton checkmarkButton = new JButton(scaledCheckmarkIcon);
-        checkmarkButton.setPreferredSize(new Dimension(24, 24));
-        checkmarkButton.setMaximumSize(new Dimension(24, 24));
+        // Checkmark button with checkmark emoji
+        JButton checkmarkButton = new JButton("✔️");
+        checkmarkButton.setPreferredSize(new Dimension(30, 30));
+        checkmarkButton.setFont(checkmarkButton.getFont().deriveFont(18f));
         checkmarkButton.setMargin(new Insets(0, 0, 0, 0));
-        checkmarkButton.addActionListener(
-                evt -> {
-                        markTaskCompleteController.markAsComplete(taskInfo.getId());
-                    }
-        );
+        checkmarkButton.setFocusPainted(false);
+        checkmarkButton.setContentAreaFilled(false);
+        checkmarkButton.setBorderPainted(false);
+        checkmarkButton.setOpaque(false);
+        checkmarkButton.addActionListener(evt -> markTaskCompleteController.markAsComplete(taskInfo.getId()));
         buttonPanel.add(checkmarkButton);
 
         topPanel.add(tagPanel);
