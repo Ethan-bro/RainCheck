@@ -8,17 +8,17 @@ import java.util.List;
  */
 public class LoggedInState {
     private String username = "";
-    private String email = "";           // ← ADDED
+    private String email = "";
     private String password = "";
     private String passwordError;
     private List<Task> weekTasks = List.of();
 
     public LoggedInState(LoggedInState copy) {
         username = copy.username;
-        email = copy.email;             // ← ADDED
+        email = copy.email;
         password = copy.password;
         passwordError = copy.passwordError;
-        weekTasks = copy.weekTasks;     // ← Also copy weekTasks
+        weekTasks = copy.weekTasks;
     }
 
     // Because of the previous copy constructor, the default constructor must be explicit.
