@@ -1,8 +1,8 @@
 package interface_adapter.markTaskComplete;
 
 import entity.TaskID;
-import use_case.markTaskComplete.MarkTaskCompleteInputBoundary;
-import use_case.markTaskComplete.MarkTaskCompleteInputData;
+import use_case.MarkTaskComplete.MarkTaskCompleteInputBoundary;
+import use_case.MarkTaskComplete.MarkTaskCompleteInputData;
 
 public class MarkTaskCompleteController {
 

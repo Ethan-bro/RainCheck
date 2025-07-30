@@ -1,8 +1,8 @@
 package interface_adapter.deleteTask;
 
 import entity.TaskID;
-import use_case.deleteTask.DeleteTaskInputBoundary;
-import use_case.deleteTask.DeleteTaskInputData;
+import use_case.DeleteTask.DeleteTaskInputBoundary;
+import use_case.DeleteTask.DeleteTaskInputData;
 
 public class DeleteTaskController {
     private final DeleteTaskInputBoundary deleteTaskInputInteractor;

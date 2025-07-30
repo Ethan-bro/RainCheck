@@ -1,7 +1,7 @@
 package interface_adapter.deleteTask;
 
-import use_case.deleteTask.DeleteTaskOutputBoundary;
-import use_case.deleteTask.DeleteTaskOutputData;
+import use_case.DeleteTask.DeleteTaskOutputBoundary;
+import use_case.DeleteTask.DeleteTaskOutputData;
 
 public class DeleteTaskPresenter implements DeleteTaskOutputBoundary {
 
