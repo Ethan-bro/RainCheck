@@ -2,18 +2,17 @@ package data_access;
 
 import com.google.gson.*;
 import entity.CommonUser;
-import entity.CustomTag;
 import entity.User;
 import okhttp3.*;
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.logout.LogoutUserDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.util.Collections;
 
-public class SupabaseUserDataAccessObject implements LoginUserDataAccessInterface,
+public class SupabaseUserDataAccessObject implements
+        LoginUserDataAccessInterface,
         SignupUserDataAccessInterface,
         LogoutUserDataAccessInterface {
 
@@ -52,7 +51,7 @@ public class SupabaseUserDataAccessObject implements LoginUserDataAccessInterfac
     @Override
     public User get(String username) {
         Request request = new Request.Builder()
-                .url(baseUrl + "/rest/v1/users?username=eq." + username + "&select=username,password")
+                .url(baseUrl + "/rest/v1/users?username=eq." + username + "&select=username,password,email")
                 .addHeader("apikey", apiKey)
                 .addHeader("Authorization", "Bearer " + apiKey)
                 .build();
@@ -65,7 +64,11 @@ public class SupabaseUserDataAccessObject implements LoginUserDataAccessInterfac
             if (users.isEmpty()) return null;
 
             JsonObject user = users.get(0).getAsJsonObject();
-            return new CommonUser(user.get("username").getAsString(), user.get("password").getAsString());
+            return new CommonUser(
+                    user.get("username").getAsString(),
+                    user.get("password").getAsString(),
+                    user.get("email").getAsString()
+            );
 
         } catch (IOException e) {
             throw new RuntimeException("Failed to get user", e);
@@ -77,8 +80,9 @@ public class SupabaseUserDataAccessObject implements LoginUserDataAccessInterfac
         JsonObject newUser = new JsonObject();
         newUser.addProperty("username", user.getName());
         newUser.addProperty("password", user.getPassword());
-        newUser.add("tasks", new JsonArray()); // placeholder for now
-        newUser.add("tags", new JsonArray());
+        newUser.addProperty("email", user.getEmail());
+        newUser.add("tasks", new JsonArray()); // placeholder
+        newUser.add("tags", new JsonArray());  // placeholder
 
         String json = gson.toJson(Collections.singletonList(newUser));
         RequestBody body = RequestBody.create(json, MediaType.get("application/json"));
@@ -115,7 +119,7 @@ public class SupabaseUserDataAccessObject implements LoginUserDataAccessInterfac
     public boolean isUsernameValid(String username) {
         return !existsByName(username);
     }
-          
+
     @Override
     public void setCurrentUsername(String username) {
         setCurrentUser(username);
@@ -125,5 +129,4 @@ public class SupabaseUserDataAccessObject implements LoginUserDataAccessInterfac
     public String getCurrentUsername() {
         return getCurrentUser();
     }
-
 }
