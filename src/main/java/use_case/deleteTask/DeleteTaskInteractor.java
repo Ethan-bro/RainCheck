@@ -1,6 +1,4 @@
-package use_case.DeleteTask;
-
-import java.io.IOException;
+package use_case.deleteTask;
 
 public class DeleteTaskInteractor implements DeleteTaskInputBoundary {
 
@@ -13,15 +11,15 @@ public class DeleteTaskInteractor implements DeleteTaskInputBoundary {
     }
 
     @Override
-    public void execute(DeleteTaskInputData inputData) throws IOException {
+    public void execute(String username, DeleteTaskInputData inputData) {
         // Confirm the task exists first
-        if (dataAccess.getTaskById(inputData.getUsername(), inputData.getTaskId()) == null) {
+        if (dataAccess.getTaskById(username, inputData.getTaskId()) == null) {
             presenter.prepareFailView("Task not found.");
             return;
         }
 
         // Delete the task
-        dataAccess.deleteTask(inputData.getUsername(), inputData.getTaskId());
+        dataAccess.deleteTask(username, inputData.getTaskId());
 
         // Success response
         DeleteTaskOutputData outputData = new DeleteTaskOutputData(inputData.getTaskId(), false);

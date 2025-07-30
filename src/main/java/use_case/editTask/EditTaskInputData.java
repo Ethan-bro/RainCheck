@@ -1,4 +1,4 @@
-package use_case.EditTask;
+package use_case.editTask;
 
 import entity.Task;
 

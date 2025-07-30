@@ -1,9 +1,6 @@
-package use_case.MarkTaskComplete;
+package use_case.markTaskComplete;
 
 import entity.Task;
-import com.google.gson.JsonObject;
-
-import java.io.IOException;
 
 public class MarkTaskCompleteInteractor implements MarkTaskCompleteInputBoundary {
 
@@ -17,9 +14,9 @@ public class MarkTaskCompleteInteractor implements MarkTaskCompleteInputBoundary
     }
 
     @Override
-    public void execute(MarkTaskCompleteInputData inputData) throws IOException {
+    public void execute(String username, MarkTaskCompleteInputData inputData) {
         // Retrieving the task
-        Task task = dataAccess.getTaskById(inputData.getUsername(), inputData.getTaskId());
+        Task task = dataAccess.getTaskById(username, inputData.getTaskId());
 
         if (task == null) {
             presenter.prepareFailView("Task not found.");
@@ -27,15 +24,16 @@ public class MarkTaskCompleteInteractor implements MarkTaskCompleteInputBoundary
         }
 
         // Marking the task as complete
-        task.setCompleted(true);
+        dataAccess.markAsComplete(username, inputData.getTaskId());
 
-        // Update the task in the data source
-        dataAccess.updateUsersTasks(inputData.getUsername(), task);
+        // Updating the task in the database
+        dataAccess.updateTask(username, task);
 
-        // Return a success view
+        // Returning a success view
         MarkTaskCompleteOutputData outputData = new MarkTaskCompleteOutputData(
-                task.getId(),
+                task.getTaskInfo().getId(),
                 false  // useCaseFailed = false (meaning success)
         );
         presenter.prepareSuccessView(outputData);
-    }}
+    }
+}
