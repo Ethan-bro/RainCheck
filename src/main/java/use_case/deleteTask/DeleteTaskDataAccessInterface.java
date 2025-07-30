@@ -3,8 +3,6 @@ package use_case.deleteTask;
 import entity.Task;
 import entity.TaskID;
 
-import java.io.IOException;
-
 /**
  * DAO for the DeleteTask Use Case.
  */

@@ -3,8 +3,6 @@ package use_case.markTaskComplete;
 import entity.Task;
 import entity.TaskID;
 
-import java.io.IOException;
-
 /**
  * DAO for the MarkTaskComplete Use Case.
  */

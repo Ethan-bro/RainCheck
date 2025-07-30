@@ -6,7 +6,7 @@ import entity.TaskID;
  * Output Data for the MarkTaskComplete Use Case.
  */
 public class MarkTaskCompleteOutputData {
-     private final int taskId;
+     private final TaskID taskId;
      private final boolean useCaseFailed;
 
      public MarkTaskCompleteOutputData(TaskID taskId, boolean useCaseFailed) {

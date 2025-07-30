@@ -1,6 +1,5 @@
 package use_case.deleteTask;
 
-
 public class DeleteTaskInteractor implements DeleteTaskInputBoundary {
 
     private final DeleteTaskDataAccessInterface dataAccess;
