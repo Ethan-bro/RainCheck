@@ -8,13 +8,13 @@ public class DeleteTaskController {
     private final DeleteTaskInputBoundary deleteTaskInputInteractor;
     private final String username;
 
-    public DeleteTaskController(DeleteTaskInputBoundary deleteTaskInputInteractor, String username) {
+    public DeleteTaskController(String username, DeleteTaskInputBoundary deleteTaskInputInteractor) {
         this.deleteTaskInputInteractor = deleteTaskInputInteractor;
         this.username = username;
     }
 
     public void deleteTask(TaskID taskId) {
-        DeleteTaskInputData inputData = new DeleteTaskInputData(taskId);
+        DeleteTaskInputData inputData = new DeleteTaskInputData(username, taskId);
         deleteTaskInputInteractor.execute(username, inputData);
     }
 }

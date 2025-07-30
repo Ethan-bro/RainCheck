@@ -1,4 +1,4 @@
-package use_case.MarkTaskComplete;
+package use_case.markTaskComplete;
 
 import java.io.IOException;
 
@@ -7,9 +7,5 @@ import java.io.IOException;
  */
 public interface MarkTaskCompleteInputBoundary {
 
-    /**
-     * Executes the MarkTaskComplete use case.
-     * @param markTaskCompleteInputData the input data
-     */
-    void execute(MarkTaskCompleteInputData markTaskCompleteInputData) throws IOException;
+    void execute(String username, MarkTaskCompleteInputData inputData);
 }

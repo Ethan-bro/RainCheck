@@ -1,5 +1,6 @@
-package use_case.DeleteTask;
+package use_case.deleteTask;
 
+import entity.TaskID;
 
 /**
  * Input Data for the DeleteTask use case.
@@ -7,9 +8,9 @@ package use_case.DeleteTask;
 public class DeleteTaskInputData {
 
     private final String username;
-    private final int taskId;
+    private final TaskID taskId;
 
-    public DeleteTaskInputData(String username, int taskId) {
+    public DeleteTaskInputData(String username, TaskID taskId) {
         this.username = username;
         this.taskId = taskId;
     }
@@ -18,7 +19,7 @@ public class DeleteTaskInputData {
         return username;
     }
 
-    public int getTaskId() {
+    public TaskID getTaskId() {
         return taskId;
     }
 }

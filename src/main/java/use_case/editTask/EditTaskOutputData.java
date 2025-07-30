@@ -7,7 +7,7 @@ import entity.TaskID;
  */
 public class EditTaskOutputData {
 
-    private final int taskId;
+    private final TaskID taskId;
     private final boolean useCaseFailed;
 
     public EditTaskOutputData(TaskID taskId, boolean useCaseFailed) {
@@ -15,7 +15,7 @@ public class EditTaskOutputData {
         this.useCaseFailed = useCaseFailed;
     }
 
-    public int getTaskId() {
+    public TaskID getTaskId() {
         return taskId;
     }
 

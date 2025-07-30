@@ -3,10 +3,8 @@ package data_access;
 import com.google.gson.*;
 import entity.CommonUser;
 import entity.User;
-import entity.Task;
 import okhttp3.*;
-import use_case.deleteTask.DeleteTaskDataAccessInterface;
-import use_case.markTaskComplete.MarkTaskCompleteDataAccessInterface;
+
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.logout.LogoutUserDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;

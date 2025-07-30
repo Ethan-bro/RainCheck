@@ -15,7 +15,7 @@ public class MarkTaskCompleteController {
     }
 
     public void markAsComplete(TaskID taskId) {
-        MarkTaskCompleteInputData inputData = new MarkTaskCompleteInputData(taskId);
+        MarkTaskCompleteInputData inputData = new MarkTaskCompleteInputData(username, taskId);
         markTaskCompleteInteractor.execute(username, inputData);
     }
 }
