@@ -154,7 +154,8 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent evt) {
         if ("state".equals(evt.getPropertyName())) {
             LoggedInState state = (LoggedInState) evt.getNewValue();
-            usernameLabel.setText("Signed in as: " + state.getUsername() + ", Email: " + state.getEmail());
+            usernameLabel.setText("Signed in as: " + state.getUsername());
+            // TODO: Brad, this is how you get the email: 'state.getEmail()'
         }
         else if ("weekTasks".equals(evt.getPropertyName())) {
             List<Task> tasks = loggedInViewModel.getState().getWeekTasks();
