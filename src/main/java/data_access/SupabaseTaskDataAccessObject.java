@@ -3,10 +3,10 @@ package data_access;
 import com.google.gson.*;
 import entity.*;
 import okhttp3.*;
-import use_case.deleteTask.DeleteTaskDataAccessInterface;
+import use_case.DeleteTask.DeleteTaskDataAccessInterface;
 import use_case.editTask.EditTaskDataAccessInterface;
 import use_case.listTasks.TaskDataAccessInterface;
-import use_case.markTaskComplete.MarkTaskCompleteDataAccessInterface;
+import use_case.MarkTaskComplete.MarkTaskCompleteDataAccessInterface;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
