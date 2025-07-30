@@ -11,13 +11,11 @@ import interface_adapter.editTask.EditTaskViewModel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
-public class EditTaskView extends JPanel implements ActionListener {
+public class EditTaskView extends JPanel {
 
     private final Task existingTask;
     private final EditTaskController controller;
@@ -46,7 +44,6 @@ public class EditTaskView extends JPanel implements ActionListener {
         this.viewModel = viewModel;
         this.viewManagerModel = viewManagerModel;
         this.mainViewKey = mainViewKey;
-
         this.existingTask = controller.getCurrentTask();
 
         nameField = new JTextField(existingTask.getTaskInfo().getTaskName(), 30);
@@ -56,26 +53,38 @@ public class EditTaskView extends JPanel implements ActionListener {
         priorityCombo = new JComboBox<>(Priority.values());
         priorityCombo.setSelectedItem(existingTask.getTaskInfo().getPriority());
 
+        // TODO: Populate customTagCombo with user's tags loaded from database or some defaults.
+        // Example:
+        // CustomTag[] defaultTags = {
+        //     new CustomTag("Work", "💼"),
+        //     new CustomTag("Study", "📚"),
+        //     new CustomTag("Chill", "😎")
+        // };
+        // customTagCombo = new JComboBox<>(defaultTags);
         customTagCombo = new JComboBox<>();
-        if (existingTask.getTaskInfo().getCategory() != null) {
-            customTagCombo.addItem(existingTask.getTaskInfo().getCategory());
-            customTagCombo.setSelectedItem(existingTask.getTaskInfo().getCategory());
-        }
 
+        // TODO: Populate reminderCombo with typical reminder intervals or user preferences.
+        // Example:
+        // Reminder[] defaultReminders = {
+        //     new Reminder(5),    // 5 minutes before
+        //     new Reminder(10),   // 10 minutes before
+        //     new Reminder(30)    // 30 minutes before
+        // };
+        // reminderCombo = new JComboBox<>(defaultReminders);
         reminderCombo = new JComboBox<>();
-        if (existingTask.getTaskInfo().getReminder() != null) {
-            reminderCombo.addItem(existingTask.getTaskInfo().getReminder());
-            reminderCombo.setSelectedItem(existingTask.getTaskInfo().getReminder());
-        }
 
         saveButton = new JButton("Save Changes");
+        saveButton.addActionListener(evt -> {
+            Task updatedTask = buildUpdatedTask();
+            controller.editTask(updatedTask);
+                });
         cancelButton = new JButton("Cancel");
+        cancelButton.addActionListener(evt -> {
+                    viewManagerModel.setState(mainViewKey);
+                });
         errorLabel = new JLabel();
         errorLabel.setForeground(Color.RED);
         errorLabel.setVisible(false);
-
-        saveButton.addActionListener(this);
-        cancelButton.addActionListener(this);
 
         // Layout
         setLayout(new GridBagLayout());
@@ -146,21 +155,23 @@ public class EditTaskView extends JPanel implements ActionListener {
         return new Task(updatedInfo);
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == saveButton) {
-            Task updatedTask = buildUpdatedTask();
-            controller.editTask(updatedTask);
-        } else if (e.getSource() == cancelButton) {
-            viewManagerModel.setState(mainViewKey);
-        }
-    }
-
     public static String getViewName() {
         return viewName;
     }
 
     public EditTaskViewModel getViewModel() {
         return viewModel;
+    }
+
+    public EditTaskController getController() {
+        return controller;
+    }
+
+    public ViewManagerModel getViewManagerModel() {
+        return viewManagerModel;
+    }
+
+    public String getMainViewKey() {
+        return mainViewKey;
     }
 }
