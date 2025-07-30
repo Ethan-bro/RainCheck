@@ -1,4 +1,4 @@
-package use_case.deleteTask;
+package use_case.DeleteTask;
 
 /**
  * Input Boundary for actions which are related to deleting a task.

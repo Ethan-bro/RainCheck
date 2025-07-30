@@ -1,4 +1,4 @@
-package use_case.deleteTask;
+package use_case.DeleteTask;
 
 public class DeleteTaskInteractor implements DeleteTaskInputBoundary {
 
