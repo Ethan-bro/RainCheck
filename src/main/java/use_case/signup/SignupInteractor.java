@@ -26,6 +26,13 @@ public class SignupInteractor implements SignupInputBoundary {
         String username = signupInputData.getUsername();
         String password = signupInputData.getPassword();
         String repeatPassword = signupInputData.getRepeatPassword();
+        String email = signupInputData.getEmail();
+
+        if (email.isEmpty()) {
+            errorMessages.append("Email cannot be empty.\n");
+        } else if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+            errorMessages.append("Invalid email format.\n");
+        }
 
         if (username.isEmpty()) {
             errorMessages.append("Username cannot be empty.\n");
@@ -46,7 +53,7 @@ public class SignupInteractor implements SignupInputBoundary {
         if (!errorMessages.isEmpty()) {
             userPresenter.prepareFailView(errorMessages.toString());
         } else {
-            User user = userFactory.create(username, password);
+            User user = userFactory.create(username, password, email);
             userDataAccessObject.save(user);
 
             SignupOutputData signupOutputData = new SignupOutputData(user.getName(), false);
