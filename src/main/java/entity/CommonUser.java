@@ -7,10 +7,12 @@ public class CommonUser implements User {
 
     private final String name;
     private final String password;
+    private final String email;
 
-    public CommonUser(String name, String password) {
+    public CommonUser(String name, String password, String email) {
         this.name = name;
         this.password = password;
+        this.email = email;
     }
 
     @Override
@@ -22,4 +24,7 @@ public class CommonUser implements User {
     public String getPassword() {
         return password;
     }
+
+    @Override
+    public String getEmail() { return email; }
 }

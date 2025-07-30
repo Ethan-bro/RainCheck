@@ -12,7 +12,8 @@ import use_case.signup.SignupUserDataAccessInterface;
 import java.io.IOException;
 import java.util.Collections;
 
-public class SupabaseUserDataAccessObject implements LoginUserDataAccessInterface,
+public class SupabaseUserDataAccessObject implements
+        LoginUserDataAccessInterface,
         SignupUserDataAccessInterface,
         LogoutUserDataAccessInterface {
 
@@ -51,7 +52,7 @@ public class SupabaseUserDataAccessObject implements LoginUserDataAccessInterfac
     @Override
     public User get(String username) {
         Request request = new Request.Builder()
-                .url(baseUrl + "/rest/v1/users?username=eq." + username + "&select=username,password")
+                .url(baseUrl + "/rest/v1/users?username=eq." + username + "&select=username,password,email")
                 .addHeader("apikey", apiKey)
                 .addHeader("Authorization", "Bearer " + apiKey)
                 .build();
@@ -64,7 +65,11 @@ public class SupabaseUserDataAccessObject implements LoginUserDataAccessInterfac
             if (users.isEmpty()) return null;
 
             JsonObject user = users.get(0).getAsJsonObject();
-            return new CommonUser(user.get("username").getAsString(), user.get("password").getAsString());
+            return new CommonUser(
+                    user.get("username").getAsString(),
+                    user.get("password").getAsString(),
+                    user.get("email").getAsString()
+            );
 
         } catch (IOException e) {
             throw new RuntimeException("Failed to get user", e);
@@ -76,8 +81,9 @@ public class SupabaseUserDataAccessObject implements LoginUserDataAccessInterfac
         JsonObject newUser = new JsonObject();
         newUser.addProperty("username", user.getName());
         newUser.addProperty("password", user.getPassword());
-        newUser.add("tasks", new JsonArray()); // placeholder for now
-        newUser.add("tags", new JsonArray());
+        newUser.addProperty("email", user.getEmail());
+        newUser.add("tasks", new JsonArray()); // []
+        newUser.add("custom_tags", new JsonObject()); // {}
 
         String json = gson.toJson(Collections.singletonList(newUser));
         RequestBody body = RequestBody.create(json, MediaType.get("application/json"));
@@ -93,7 +99,8 @@ public class SupabaseUserDataAccessObject implements LoginUserDataAccessInterfac
 
         try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful()) {
-                throw new RuntimeException("Save failed: " + response.code() + " - " + response.message());
+                String errorDetails = response.body() != null ? response.body().string() : "No response body";
+                throw new RuntimeException("Save failed: " + response.code() + " - " + response.message() + " - " + errorDetails);
             }
         } catch (IOException e) {
             throw new RuntimeException("Failed to save user", e);
@@ -114,7 +121,7 @@ public class SupabaseUserDataAccessObject implements LoginUserDataAccessInterfac
     public boolean isUsernameValid(String username) {
         return !existsByName(username);
     }
-          
+
     @Override
     public void setCurrentUsername(String username) {
         setCurrentUser(username);

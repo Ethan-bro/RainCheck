@@ -12,7 +12,7 @@ class LogoutInteractorTest {
     void successfulLogout() {
         InMemoryUserDataAccessObject dao = new InMemoryUserDataAccessObject();
         UserFactory factory = new CommonUserFactory();
-        dao.save(factory.create("Carol", "pass"));
+        dao.save(factory.create("Carol", "pass", "caroline.stevens@gmail.com"));
         dao.setCurrentUsername("Carol");
 
         LogoutInputData input = new LogoutInputData("Carol");
