@@ -19,7 +19,7 @@ public class createCustomTagPresenter implements createCustomTagOutputBoundary {
         customTagState.setErrorMsg(outputData.getErrorMessage());
         customTagState.setCurrTagName(null);    // clear prior tag
         customTagState.setCurrTagEmoji("");
-        createCustomTagViewModel.firePropertyChanged();
+        createCustomTagViewModel.firePropertyChanged("Failed");
     }
 
     @Override
@@ -28,6 +28,6 @@ public class createCustomTagPresenter implements createCustomTagOutputBoundary {
         customTagState.setErrorMsg(null);
         customTagState.setCurrTagName(outputData.getCreatedTag().getTagName());
         customTagState.setCurrTagEmoji(outputData.getCreatedTag().getTagEmoji());
-        createCustomTagViewModel.firePropertyChanged();
+        createCustomTagViewModel.firePropertyChanged("Success");
     }
 }
