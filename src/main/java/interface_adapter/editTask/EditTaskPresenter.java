@@ -16,6 +16,8 @@ public class EditTaskPresenter implements EditTaskOutputBoundary {
         EditTaskState newState = new EditTaskState();
         newState.setSuccess(true);
         viewModel.setState(newState);
+        viewModel.firePropertyChanged();
+
     }
 
     @Override
@@ -24,5 +26,6 @@ public class EditTaskPresenter implements EditTaskOutputBoundary {
         newState.setSuccess(false);
         newState.setError(errorMessage);
         viewModel.setState(newState);
+        viewModel.firePropertyChanged();
     }
 }

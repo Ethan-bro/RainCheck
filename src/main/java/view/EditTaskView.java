@@ -7,15 +7,18 @@ import entity.Task;
 import entity.TaskInfo;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.editTask.EditTaskController;
+import interface_adapter.editTask.EditTaskState;
 import interface_adapter.editTask.EditTaskViewModel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
-public class EditTaskView extends JPanel {
+public class EditTaskView extends JPanel implements PropertyChangeListener {
 
     private final Task existingTask;
     private final EditTaskController controller;
@@ -52,6 +55,8 @@ public class EditTaskView extends JPanel {
 
         priorityCombo = new JComboBox<>(Priority.values());
         priorityCombo.setSelectedItem(existingTask.getTaskInfo().getPriority());
+
+        viewModel.addPropertyChangeListener(this);
 
         // TODO: Populate customTagCombo with user's tags loaded from database or some defaults.
         // Example:
@@ -173,5 +178,23 @@ public class EditTaskView extends JPanel {
 
     public String getMainViewKey() {
         return mainViewKey;
+    }
+
+    /**
+     * @param evt A PropertyChangeEvent object describing the event source
+     *            and the property that has changed.
+     */
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+
+        EditTaskState state = viewModel.getState();
+
+        if (state.isSuccess()) {
+            viewManagerModel.setState(mainViewKey);
+            viewManagerModel.firePropertyChanged("state");
+        } else if (state.getError() != null) {
+            errorLabel.setText(state.getError());
+            errorLabel.setVisible(true);
+        }
     }
 }

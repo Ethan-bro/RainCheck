@@ -16,6 +16,7 @@ public class DeleteTaskPresenter implements DeleteTaskOutputBoundary {
         DeleteTaskState newState = new DeleteTaskState();
         newState.setSuccess(true);
         viewModel.setState(newState);
+        viewModel.firePropertyChanged();
     }
 
     @Override
@@ -24,5 +25,6 @@ public class DeleteTaskPresenter implements DeleteTaskOutputBoundary {
         newState.setSuccess(false);
         newState.setError(errorMessage);
         viewModel.setState(newState);
+        viewModel.firePropertyChanged();
     }
 }
