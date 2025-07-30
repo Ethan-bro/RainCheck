@@ -12,9 +12,9 @@ class LoginInteractorTest {
     void successfulLogin() {
         InMemoryUserDataAccessObject dao = new InMemoryUserDataAccessObject();
         UserFactory factory = new CommonUserFactory();
-        dao.save(factory.create("Bob", "abc123"));
+        dao.save(factory.create("Bob", "abc123", "bob@example.com"));
 
-        LoginInputData input = new LoginInputData("Bob", "abc123");
+        LoginInputData input = new LoginInputData("Bob", "abc123", "bob@example.com");
 
         LoginOutputBoundary presenter = new LoginOutputBoundary() {
             @Override
@@ -30,7 +30,7 @@ class LoginInteractorTest {
 
             @Override
             public void switchToSignupView() {
-                // we do not need to provide an implementation for this method
+                // Not needed for this test
             }
         };
 
@@ -42,9 +42,9 @@ class LoginInteractorTest {
     void wrongPasswordFails() {
         InMemoryUserDataAccessObject dao = new InMemoryUserDataAccessObject();
         UserFactory factory = new CommonUserFactory();
-        dao.save(factory.create("Bob", "abc123"));
+        dao.save(factory.create("Bob", "abc123", "bob@example.com"));
 
-        LoginInputData input = new LoginInputData("Bob", "wrong");
+        LoginInputData input = new LoginInputData("Bob", "wrong", "bob@example.com");
 
         LoginOutputBoundary presenter = new LoginOutputBoundary() {
             @Override
@@ -59,7 +59,7 @@ class LoginInteractorTest {
 
             @Override
             public void switchToSignupView() {
-                // we do not need to provide an implementation for this method
+                // Not needed for this test
             }
         };
 
@@ -70,7 +70,7 @@ class LoginInteractorTest {
     @Test
     void userNotFoundFails() {
         InMemoryUserDataAccessObject dao = new InMemoryUserDataAccessObject();
-        LoginInputData input = new LoginInputData("Ghost", "123");
+        LoginInputData input = new LoginInputData("Ghost", "123", "ghost@unknown.com");
 
         LoginOutputBoundary presenter = new LoginOutputBoundary() {
             @Override
@@ -85,7 +85,7 @@ class LoginInteractorTest {
 
             @Override
             public void switchToSignupView() {
-                // we do not need to provide an implementation for this method
+                // Not needed for this test
             }
         };
 
