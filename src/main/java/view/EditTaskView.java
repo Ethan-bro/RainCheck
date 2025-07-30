@@ -47,7 +47,7 @@ public class EditTaskView extends JPanel implements ActionListener {
         this.viewManagerModel = viewManagerModel;
         this.mainViewKey = mainViewKey;
 
-        this.existingTask = controller.getCurrentTask(); // ✅ Grab current task
+        this.existingTask = controller.getCurrentTask();
 
         nameField = new JTextField(existingTask.getTaskInfo().getTaskName(), 30);
         startSpinner = makeDateTimeSpinner(existingTask.getTaskInfo().getStartDateTime());
