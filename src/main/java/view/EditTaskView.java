@@ -74,15 +74,15 @@ public class EditTaskView extends JPanel implements PropertyChangeListener {
         });
 
         // setting up reminders
-        Reminder[] defaultReminders = new Reminder[] {
-                new Reminder("No Reminder"),
-                new Reminder("5 minutes before"),
-                new Reminder("10 minutes before"),
-                new Reminder("30 minutes before"),
-                new Reminder("1 hour before"),
-                new Reminder("1 day before")
-            };
-        reminderCombo = new JComboBox<>(defaultReminders);
+        Reminder[] reminderOptions = {
+                Reminder.NONE,
+                new Reminder(0),
+                new Reminder(10),
+                new Reminder(30),
+                new Reminder(60),
+                new Reminder(1440)
+        };
+        reminderCombo = new JComboBox<>(reminderOptions);
 
         if (existingTask.getTaskInfo().getReminder() != null) {
             reminderCombo.setSelectedItem(existingTask.getTaskInfo().getReminder());

@@ -18,12 +18,5 @@ public interface DeleteTaskDataAccessInterface {
      */
     Task getTaskById(String username, TaskID taskId) throws IOException;
 
-    /**
-     * Retrieves the task with the given ID from the current user's task list.
-     * @param username the username of the user whose task list is being updated
-     * @param task the modified task
-     */
-    void updateUsersTasks(String username, Task task);
-
     void deleteTask(String username, TaskID taskId);
 }

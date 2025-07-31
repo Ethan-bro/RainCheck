@@ -173,8 +173,13 @@ public class SupabaseTaskDataAccessObject implements
 
         if (info.getReminder() != null) {
             JsonObject reminder = new JsonObject();
-            reminder.addProperty("remindDateTime", info.getReminder().getRemindDateTime().toString());
-            reminder.addProperty("message", info.getReminder().getMessage());
+
+            int minutesBefore = info.getReminder().getMinutesBefore();
+
+            LocalDateTime reminderTime = info.getStartDateTime()
+                    .minusMinutes(minutesBefore);
+
+            reminder.addProperty("remindDateTime", reminderTime.toString());
             json.add("reminder", reminder);
         }
 
@@ -207,8 +212,9 @@ public class SupabaseTaskDataAccessObject implements
         if (json.has("reminder") && json.get("reminder").isJsonObject()) {
             JsonObject reminderJson = json.getAsJsonObject("reminder");
             LocalDateTime remindTime = LocalDateTime.parse(reminderJson.get("remindDateTime").getAsString());
-            String message = reminderJson.get("message").getAsString();
-            reminder = new Reminder(remindTime, message);
+
+            long minutesBefore = java.time.Duration.between(remindTime, start).toMinutes();
+            reminder = new Reminder((int) minutesBefore);
         }
 
         String weatherDescription = json.has("weatherDescription") ? json.get("weatherDescription").getAsString() : null;
