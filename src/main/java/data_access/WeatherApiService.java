@@ -21,6 +21,8 @@ public class WeatherApiService implements DailyWeatherDataAccessInterface, Hourl
     private final Gson gson = new Gson();
     private final Map<String, JsonObject> weeklyWeatherCache = new HashMap<>();
 
+    private final boolean USE_FAKE_DATA = true; // Set to true for testing
+
     private static final String URL =
             "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/%s/%s?unitGroup=metric&iconSet=icons2&key=%s&contentType=json";
 
@@ -30,6 +32,17 @@ public class WeatherApiService implements DailyWeatherDataAccessInterface, Hourl
     }
 
     public Map<String, Object> getDailyWeather(String location, LocalDate date) throws IOException {
+        if (USE_FAKE_DATA) {
+            System.out.println("Using fake data");
+            Map<String, Object> result = new HashMap<>();
+            result.put("tempmax", 25.0);
+            result.put("tempmin", 18.0);
+            result.put("feelslikemax", 26.0);
+            result.put("feelslikemin", 17.0);
+            result.put("icon", getWeatherImageIcon("clear-day")); // use any default
+            return result;
+        }
+
         JsonObject body = getVisualCrossingJSONBody(location, date);
 
         if (body == null) {
@@ -72,6 +85,19 @@ public class WeatherApiService implements DailyWeatherDataAccessInterface, Hourl
     }
 
     public List<Map<String, String>> getHourlyWeather(String location, LocalDate date, int startHour, int endHour) throws IOException {
+        if (USE_FAKE_DATA) {
+            System.out.println("Using fake data");
+            List<Map<String, String>> result = new ArrayList<>();
+            for (int i = startHour; i <= endHour; i++) {
+                Map<String, String> mock = new HashMap<>();
+                mock.put("time", String.format("%02d:00", i));
+                mock.put("description", "Sunny");
+                mock.put("feelslike", "22°C");
+                result.add(mock);
+            }
+            return result;
+        }
+
         JsonObject body = getVisualCrossingJSONBody(location, date);
 
         if (body == null) {
