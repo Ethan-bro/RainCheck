@@ -24,6 +24,10 @@ public class AddTaskViewModel extends ViewModel<AddTaskState> {
         refreshTags();
     }
 
+    public String getUsername() {
+        return username;
+    }
+
     public void refreshTags() {
         firePropertyChange("refreshTagOptions", null, getTagOptions());
     }

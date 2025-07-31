@@ -11,5 +11,4 @@ public interface TaskDataAccessInterface {
 
     void addTask(String username, Task task);
 
-
 }

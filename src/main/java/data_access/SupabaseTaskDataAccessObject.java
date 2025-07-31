@@ -86,6 +86,7 @@ public class SupabaseTaskDataAccessObject implements
     }
 
     private void patchTasks(String username, List<Task> tasks) {
+
         try {
             JsonArray taskArray = new JsonArray();
             for (Task task : tasks) {
@@ -102,11 +103,15 @@ public class SupabaseTaskDataAccessObject implements
                     .url(baseUrl + "/rest/v1/users?username=eq." + username)
                     .addHeader("apikey", apiKey)
                     .addHeader("Authorization", "Bearer " + apiKey)
-                    .addHeader("Prefer", "return=minimal")
+                    .addHeader("Prefer", "return=representation")
                     .patch(body)
                     .build();
 
-            client.newCall(request).execute().close();
+            try (Response response = client.newCall(request).execute()) {
+                String resp = Objects.requireNonNull(response.body()).string();
+                System.out.println("PATCH Response: " + resp);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }

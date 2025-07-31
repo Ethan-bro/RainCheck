@@ -21,7 +21,6 @@ public final class AddTaskUseCaseFactory {
             AddTaskViewModel addTaskViewModel,
             TaskDataAccessInterface taskDao,
             WeatherApiService weatherApiService,
-            String currentUser,
             String mainViewKey) {
 
         AddTaskPresenter addTaskPresenter = new AddTaskPresenter(addTaskViewModel, viewManagerModel, mainViewKey);
@@ -29,8 +28,8 @@ public final class AddTaskUseCaseFactory {
         AddTaskInputBoundary addTaskInteractor = new AddTaskInteractor(taskDao, new UUIDGenerator(), addTaskPresenter,
                 weatherApiService);
 
-        AddTaskController addTaskController = new AddTaskController(currentUser, addTaskInteractor,
-                viewManagerModel);
+        AddTaskController addTaskController = new AddTaskController(addTaskInteractor,
+                viewManagerModel, addTaskViewModel);
 
         return new AddTaskView(addTaskController, addTaskViewModel, viewManagerModel);
     }

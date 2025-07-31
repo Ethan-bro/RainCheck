@@ -12,24 +12,33 @@ import java.time.LocalDateTime;
 public class AddTaskController {
 
     private final AddTaskInputBoundary addTaskInteractor;
-    private final String username;
     private final ViewManagerModel viewManagerModel;
+    private final AddTaskViewModel addTaskViewModel;
 
-    public AddTaskController(String username, AddTaskInputBoundary addTaskInteractor, ViewManagerModel viewManagerModel) {
+    public AddTaskController(AddTaskInputBoundary addTaskInteractor,
+                             ViewManagerModel viewManagerModel,
+                             AddTaskViewModel addTaskViewModel) {
         this.addTaskInteractor = addTaskInteractor;
-        this.username = username;
         this.viewManagerModel = viewManagerModel;
+        this.addTaskViewModel = addTaskViewModel;
     }
 
     public void execute(String taskName, LocalDateTime startDateTime, LocalDateTime endDateTime,
-                        Priority priority, CustomTag customTag, Reminder reminder){
+                        Priority priority, CustomTag customTag, Reminder reminder) {
+
+        String username = addTaskViewModel.getUsername();
+
+        if (username == null) {
+            System.err.println("AddTaskController Error: Username is null. Aborting task creation.");
+            return;
+        }
 
         AddTaskInputData inputData = new AddTaskInputData(taskName, startDateTime, endDateTime,
                 priority, customTag, reminder);
         addTaskInteractor.execute(inputData, username);
     }
 
-    public void createCustomTag(){
+    public void createCustomTag() {
         viewManagerModel.setState("createCustomTag");
     }
 }
