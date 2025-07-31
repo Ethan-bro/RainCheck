@@ -102,7 +102,7 @@ public class AppBuilder {
         LogoutController logoutController = LogoutUseCaseFactory.create(
                 viewManagerModel, loggedInViewModel, loginViewModel, userDao);
 
-        loggedInView = new LoggedInView(loggedInViewModel, logoutController, viewManagerModel);
+        loggedInView = new LoggedInView(loggedInViewModel, logoutController, viewManagerModel, tagDao);
 
         cardPanel.add(loggedInView, LoggedInView.getViewName());
         return this;

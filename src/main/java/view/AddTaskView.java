@@ -139,16 +139,18 @@ public class AddTaskView extends JPanel
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() != saveButton) return;
+        if (e.getSource() == saveButton) {
+            String name     = nameField.getText().trim();
+            LocalDateTime start = toLocalDateTime((Date) startSpinner.getValue());
+            LocalDateTime end   = toLocalDateTime((Date) endSpinner.getValue());
+            Priority priority = (Priority) priorityCombo.getSelectedItem();
+            CustomTag customTag = (CustomTag) customTagCombo.getSelectedItem();
+            Reminder reminder = (Reminder) reminderCombo.getSelectedItem();
 
-        String name     = nameField.getText().trim();
-        LocalDateTime start = toLocalDateTime((Date) startSpinner.getValue());
-        LocalDateTime end   = toLocalDateTime((Date) endSpinner.getValue());
-        Priority priority = (Priority) priorityCombo.getSelectedItem();
-        CustomTag customTag = (CustomTag) customTagCombo.getSelectedItem();
-        Reminder reminder = (Reminder) reminderCombo.getSelectedItem();
-
-        controller.execute(name, start, end, priority, customTag, reminder);
+            controller.execute(name, start, end, priority, customTag, reminder);
+        } else if (e.getSource() == cancelButton) {
+            goBackToCalendarView();
+        }
     }
 
     private LocalDateTime toLocalDateTime(Date d) {
@@ -175,7 +177,7 @@ public class AddTaskView extends JPanel
                         JOptionPane.INFORMATION_MESSAGE
                 );
                 resetForm();
-                viewManagerModel.setState(mainViewKey);
+                goBackToCalendarView();
             }
         }
     }
@@ -187,6 +189,11 @@ public class AddTaskView extends JPanel
         customTagCombo.setSelectedIndex(0);
         reminderCombo.setSelectedIndex(0);
         errorLabel.setVisible(false);
+    }
+
+    private void goBackToCalendarView() {
+        viewManagerModel.setState(mainViewKey);
+        viewManagerModel.firePropertyChanged();
     }
 
     public static String getViewName() {return viewName;}
