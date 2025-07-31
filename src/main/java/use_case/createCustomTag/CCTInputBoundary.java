@@ -1,11 +1,11 @@
 package use_case.createCustomTag;
 
-public interface createCustomTagInputBoundary {
+public interface CCTInputBoundary {
 
     /**
      * Executes the createCustomTag use case.
      * @param CustomTagInputData the input data
      * @param  username the currently signed in user's username
      */
-    void execute(createCustomTagInputData CustomTagInputData, String username);
+    void execute(CCTInputData CustomTagInputData, String username);
 }
