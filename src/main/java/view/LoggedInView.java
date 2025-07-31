@@ -2,6 +2,7 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
@@ -12,14 +13,19 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import data_access.SupabaseTagDataAccessObject;
 import entity.Task;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.calendar.TaskClickListener;
+import interface_adapter.create_customTag.createCustomTagController;
+import interface_adapter.create_customTag.createCustomTagPresenter;
+import interface_adapter.create_customTag.createCustomTagViewModel;
 import interface_adapter.logged_in.LoggedInState;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.logout.LogoutController;
 import data_access.LocationService;
 import data_access.WeatherApiService;
+import use_case.createCustomTag.createCustomTagInteractor;
 
 public class LoggedInView extends JPanel implements PropertyChangeListener {
 
@@ -31,14 +37,23 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     private final JPanel centerPanel;
     private final CalendarData calendarData;
     private final Map<LocalDate, Map<String, Object>> weatherMap;
+    private final SupabaseTagDataAccessObject tagDao;
+
+    private ActionListener logoutAction;
+    private ActionListener addTaskAction;
+    private ActionListener manageCategoriesAction;
 
     public LoggedInView(LoggedInViewModel loggedInViewModel,
                         LogoutController logoutController,
-                        ViewManagerModel viewManagerModel) throws IOException {
+                        ViewManagerModel viewManagerModel,
+                        SupabaseTagDataAccessObject tagDao) throws IOException {
         this.loggedInViewModel = loggedInViewModel;
         this.loggedInViewModel.addPropertyChangeListener(this);
         this.viewManagerModel = viewManagerModel;
         this.logoutController = logoutController;
+        this.tagDao = tagDao;
+
+        setupActionListeners();
 
         setLayout(new BorderLayout());
 
@@ -113,6 +128,29 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
 
     }
 
+    private void setupActionListeners() {
+
+        logoutAction = e -> {
+            final LoggedInState currentState = loggedInViewModel.getState();
+            logoutController.execute(currentState.getUsername());
+        };
+
+        addTaskAction = e -> {
+            viewManagerModel.setState(AddTaskView.getViewName());
+            viewManagerModel.firePropertyChanged();
+        };
+
+        manageCategoriesAction = e -> {
+            createCustomTagViewModel viewModel = new createCustomTagViewModel();
+            createCustomTagPresenter presenter = new createCustomTagPresenter(viewModel);
+            createCustomTagInteractor interactor = new createCustomTagInteractor(tagDao, presenter);
+            createCustomTagController controller = new createCustomTagController(interactor);
+
+            new createCustomTagView(viewModel, controller, loggedInViewModel);
+        };
+
+    }
+
     private Map<LocalDate, Map<String, Object>> getWeatherMapForCalendarData(CalendarData calendarData) throws IOException {
         Map<LocalDate, Map<String, Object>> map = new HashMap<>();
 
@@ -134,7 +172,7 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
             System.out.println(task.getTaskInfo().getTaskName());
         }
 
-        TaskClickListener clicker = task -> {
+        TaskClickListener taskClickListener = task -> {
 //            TaskViewModel taskViewModel = new TaskViewModel(task);
 //            TaskController taskController = new TaskController(TaskInteractor);
 //            TaskBox taskBox = new TaskBox(taskViewModel, taskController);
@@ -142,7 +180,13 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
 //                    JOptionPane.PLAIN_MESSAGE);
         };
 
-        CalendarGrid grid = new CalendarGrid(calendarData, weatherMap, tasks, clicker);
+        CalendarGrid grid = new CalendarGrid(
+                calendarData,
+                weatherMap,
+                tasks,
+                taskClickListener,
+                addTaskListener,
+                );
         ScrollableCalendar scrollableCalendar = new ScrollableCalendar(grid);
 
         centerPanel.add(scrollableCalendar, BorderLayout.CENTER);
