@@ -4,8 +4,6 @@ import entity.CustomTag;
 import interface_adapter.create_customTag.createCustomTagController;
 import interface_adapter.create_customTag.createCustomTagViewModel;
 import interface_adapter.logged_in.LoggedInViewModel;
-import use_case.createCustomTag.createCustomTagInputBoundary;
-import use_case.createCustomTag.createCustomTagInputData;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,7 +21,7 @@ public class createCustomTagView extends JPanel implements ActionListener, Prope
     private LoggedInViewModel loggedInViewModel = null;
 
     public createCustomTagView(createCustomTagViewModel model, createCustomTagController
-            createCustomTagController, LoggedInView loggedInView) {
+            createCustomTagController, LoggedInViewModel loggedInViewModel) {
         this.createCustomTagViewModel = model;
         this.createCustomTagViewModel.addPropertyChangeListener(this);
         this.createCustomTagController = createCustomTagController;
@@ -32,7 +30,7 @@ public class createCustomTagView extends JPanel implements ActionListener, Prope
         // UI CONSTRUCTION:
 
         // Main Frame:
-        final JFrame mainFrame = new JFrame(viewName); 
+        final JFrame mainFrame = new JFrame(viewName);
         mainFrame.setTitle(viewName);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setSize(700, 700);
@@ -136,7 +134,7 @@ public class createCustomTagView extends JPanel implements ActionListener, Prope
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
+        // method is empty
     }
 
     @Override
