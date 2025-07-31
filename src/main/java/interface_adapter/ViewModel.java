@@ -42,6 +42,22 @@ public class ViewModel<T> {
     }
 
     /**
+     * Fires a property change event with the specified property name and value change.
+     * <p>
+     * This method allows precise control over what is considered changed by providing both
+     * the old and new values. Property change listeners can use this information to determine
+     * whether and how to respond to the change.
+     * </p>
+     *
+     * @param propertyName the name of the property that changed
+     * @param oldValue     the old value of the property (may be {@code null})
+     * @param newValue     the new value of the property (may be {@code null})
+     */
+    public void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
+        this.support.firePropertyChange(propertyName, oldValue, newValue);
+    }
+
+    /**
      * Fires a property changed event for the state of this ViewModel, which
      * allows the user to specify a different propertyName. This can be useful
      * when a class is listening for multiple kinds of property changes.

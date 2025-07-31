@@ -54,37 +54,28 @@ public class AddTaskView extends JPanel
         endSpinner      = makeDateTimeSpinner();
         priorityCombo   = new JComboBox<>(Priority.values());
 
-        // TODO: Populate customTagCombo with user's tags loaded from database or some defaults.
-        // Example:
-        // CustomTag[] defaultTags = {
-        //     new CustomTag("Work", "💼"),
-        //     new CustomTag("Study", "📚"),
-        //     new CustomTag("Chill", "😎")
-        // };
-        // customTagCombo = new JComboBox<>(defaultTags);
-        List<Object> options = viewModel.getTagOptions();
-        customTagCombo = new JComboBox<>(options.toArray());
+        // Dynamically load user's tags from ViewModel
+        java.util.List<Object> tagOptions = viewModel.getTagOptions();
+        customTagCombo = new JComboBox<>(tagOptions.toArray());
+
         customTagCombo.addActionListener(e -> {
             Object selectedItem = customTagCombo.getSelectedItem();
-            if ("Create New Tag...".equals(selectedItem)) {
+            if (selectedItem instanceof String && selectedItem.equals("Create New Tag...")) {
                 controller.createCustomTag();
-                customTagCombo.setModel(
-                        new DefaultComboBoxModel<>(viewModel.getTagOptions().toArray())
-                );
+                java.util.List<Object> updatedTags = viewModel.getTagOptions();
+                customTagCombo.setModel(new DefaultComboBoxModel<>(updatedTags.toArray()));
             }
         });
 
-
-
-        // TODO: Populate reminderCombo with typical reminder intervals or user preferences.
-        // Example:
-        // Reminder[] defaultReminders = {
-        //     new Reminder(5),    // 5 minutes before
-        //     new Reminder(10),   // 10 minutes before
-        //     new Reminder(30)    // 30 minutes before
-        // };
-        // reminderCombo = new JComboBox<>(defaultReminders);
-        reminderCombo = new JComboBox<>();
+        Reminder[] defaultReminders = new Reminder[] {
+                new Reminder("No Reminder"),
+                new Reminder("5 minutes before"),
+                new Reminder("10 minutes before"),
+                new Reminder("30 minutes before"),
+                new Reminder("1 hour before"),
+                new Reminder("1 day before")
+        };
+        reminderCombo = new JComboBox<>(defaultReminders);
 
         saveButton      = new JButton("Save");
         cancelButton = new JButton("Cancel");

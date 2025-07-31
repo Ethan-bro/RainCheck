@@ -28,7 +28,8 @@ public class TaskViewModel extends ViewModel<TaskState> {
         st.setEnd(task.getTaskInfo().getEndDateTime());
         st.setPriority(task.getTaskInfo().getPriority().name());
         st.setTag(task.getTaskInfo().getTag() != null ? task.getTaskInfo().getTag() : null);
-        st.setReminderMinutes(task.getTaskInfo().getReminder() != null ? task.getTaskInfo().getReminder().getMinutes() : null);
+        st.setReminderMinutes(task.getTaskInfo().getReminder() != null ?
+                task.getTaskInfo().getReminder().getMinutes(task.getTaskInfo().getStartDateTime()) : null);
         st.setCompleted("Complete".equalsIgnoreCase(task.getTaskInfo().getTaskStatus()));
 
         st.setWeatherDescription(task.getTaskInfo().getWeatherDescription());

@@ -10,13 +10,22 @@ import java.util.stream.Collectors;
 
 public class AddTaskViewModel extends ViewModel<AddTaskState> {
     private final CustomTagDataAccessInterface tagDao;
-    private final String username;
+    private String username;
 
     public AddTaskViewModel(CustomTagDataAccessInterface tagDao, String username) {
         super("Add New Task");
         this.tagDao = tagDao;
-        this.username = username;
+        setUsername(username);
         setState(new AddTaskState());
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+        refreshTags();
+    }
+
+    public void refreshTags() {
+        firePropertyChange("refreshTagOptions", null, getTagOptions());
     }
 
     public List<Object> getTagOptions() {
@@ -26,6 +35,11 @@ public class AddTaskViewModel extends ViewModel<AddTaskState> {
                 .collect(Collectors.toList());
         tags.add("Create New Tag...");
         return tags;
+    }
+
+    @Override
+    public AddTaskState getState() {
+        return super.getState();
     }
 
 }
