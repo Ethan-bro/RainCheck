@@ -5,6 +5,7 @@ import entity.Priority;
 import entity.Reminder;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class AddTaskInputData {
 
@@ -16,88 +17,12 @@ public class AddTaskInputData {
     private String taskStatus;
     private Reminder reminder;
 
-    public AddTaskInputData(String taskName, LocalDateTime startDateTime, LocalDateTime endDateTime) {
-        this.taskName = taskName;
-        this.startDateTime = startDateTime;
-        this.endDateTime = endDateTime;
-        this.priority = null;
-        this.customTag = null;
-        this.taskStatus = "Incomplete";
-        this.reminder = null;
-    }
-
-    public AddTaskInputData(String taskName, LocalDateTime startDateTime, LocalDateTime endDateTime,
-                            Priority priority) {
-        this.taskName = taskName;
-        this.startDateTime = startDateTime;
-        this.endDateTime = endDateTime;
-        this.priority = priority;
-        this.customTag = null;
-        this.taskStatus = "Incomplete";
-        this.reminder = null;
-    }
-
-    public AddTaskInputData(String taskName, LocalDateTime startDateTime, LocalDateTime endDateTime,
-                            CustomTag customTag) {
-        this.taskName = taskName;
-        this.startDateTime = startDateTime;
-        this.endDateTime = endDateTime;
-        this.priority = null;
-        this.customTag = customTag;
-        this.taskStatus = "Incomplete";
-        this.reminder = null;
-    }
-
-    public AddTaskInputData(String taskName, LocalDateTime startDateTime, LocalDateTime endDateTime,
-                            Reminder reminder) {
-        this.taskName = taskName;
-        this.startDateTime = startDateTime;
-        this.endDateTime = endDateTime;
-        this.priority = null;
-        this.customTag = null;
-        this.taskStatus = "Incomplete";
-        this.reminder = reminder;
-    }
-
-    public AddTaskInputData(String taskName, LocalDateTime startDateTime, LocalDateTime endDateTime,
-                            Priority priority, CustomTag customTag) {
-        this.taskName = taskName;
-        this.startDateTime = startDateTime;
-        this.endDateTime = endDateTime;
-        this.priority = priority;
-        this.customTag = customTag;
-        this.taskStatus = "Incomplete";
-        this.reminder = null;
-    }
-
-    public AddTaskInputData(String taskName, LocalDateTime startDateTime, LocalDateTime endDateTime,
-                            Priority priority, Reminder reminder) {
-        this.taskName = taskName;
-        this.startDateTime = startDateTime;
-        this.endDateTime = endDateTime;
-        this.priority = priority;
-        this.customTag = null;
-        this.taskStatus = "Incomplete";
-        this.reminder = reminder;
-    }
-
-    public AddTaskInputData(String taskName, LocalDateTime startDateTime, LocalDateTime endDateTime,
-                            CustomTag customTag, Reminder reminder) {
-        this.taskName = taskName;
-        this.startDateTime = startDateTime;
-        this.endDateTime = endDateTime;
-        this.priority = null;
-        this.customTag = customTag;
-        this.taskStatus = "Incomplete";
-        this.reminder = reminder;
-    }
-
     public AddTaskInputData(String taskName, LocalDateTime startDateTime, LocalDateTime endDateTime,
                             Priority priority, CustomTag customTag, Reminder reminder) {
-        this.taskName = taskName;
-        this.startDateTime = startDateTime;
-        this.endDateTime = endDateTime;
-        this.priority = priority;
+        this.taskName = Objects.requireNonNull(taskName);
+        this.startDateTime = Objects.requireNonNull(startDateTime);
+        this.endDateTime = Objects.requireNonNull(endDateTime);
+        this.priority = (priority != null) ? priority : Priority.LOW;
         this.customTag = customTag;
         this.taskStatus = "Incomplete";
         this.reminder = reminder;
@@ -119,9 +44,9 @@ public class AddTaskInputData {
 
     public void setPriority(Priority priority) {this.priority = priority;}
 
-    public CustomTag getCustomTag() {return customTag;}
+    public CustomTag getTag() {return customTag;}
 
-    public void setCategory(CustomTag customTag) {this.customTag = customTag;}
+    public void setTag(CustomTag customTag) {this.customTag = customTag;}
 
     public String getTaskStatus() {return taskStatus;}
 

@@ -229,10 +229,10 @@ public class SupabaseTaskDataAccessObject implements
         if (info.getPriority() != null)
             json.addProperty("priority", info.getPriority().name());
 
-        if (info.getCategory() != null) {
+        if (info.getTag() != null) {
             JsonObject tag = new JsonObject();
-            tag.addProperty("tagName", info.getCategory().getTagName());
-            tag.addProperty("tagEmoji", info.getCategory().getTagEmoji());
+            tag.addProperty("tagName", info.getTag().getTagName());
+            tag.addProperty("tagEmoji", info.getTag().getTagEmoji());
             json.add("customTag", tag);
         }
 
