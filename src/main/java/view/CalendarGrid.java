@@ -15,7 +15,7 @@ import java.util.List;
 public class CalendarGrid extends JPanel {
 
     private final ActionListener addTaskListener;
-    private final ActionListener manageCategoriesListener;
+    private final ActionListener manageTagsListener;
     private final ActionListener logoutListener;
 
     public CalendarGrid(CalendarData data,
@@ -23,11 +23,11 @@ public class CalendarGrid extends JPanel {
                         List<Task> tasks,
                         TaskClickListener taskClickListener,
                         ActionListener addTaskListener,
-                        ActionListener manageCategoriesListener,
+                        ActionListener manageTagsListener,
                         ActionListener logoutListener) {
 
         this.addTaskListener = addTaskListener;
-        this.manageCategoriesListener = manageCategoriesListener;
+        this.manageTagsListener = manageTagsListener;
         this.logoutListener = logoutListener;
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -169,15 +169,15 @@ public class CalendarGrid extends JPanel {
         JPopupMenu sideMenu = new JPopupMenu();
 
         JMenuItem addTaskItem = new JMenuItem("Add Task");
-        JMenuItem manageCategoriesItem = new JMenuItem("Manage Tags");
+        JMenuItem manageTagsItem = new JMenuItem("Manage Tags");
         JMenuItem logoutItem = new JMenuItem("Log Out");
 
         addTaskItem.addActionListener(addTaskListener);
-        manageCategoriesItem.addActionListener(manageCategoriesListener);
+        manageTagsItem.addActionListener(manageTagsListener);
         logoutItem.addActionListener(logoutListener);
 
         sideMenu.add(addTaskItem);
-        sideMenu.add(manageCategoriesItem);
+        sideMenu.add(manageTagsItem);
         sideMenu.add(logoutItem);
 
         sideMenu.show(invoker, 0, invoker.getHeight());
