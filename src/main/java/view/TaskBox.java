@@ -5,6 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
 import java.util.Objects;
 
 import entity.Priority;
@@ -96,7 +97,13 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         deleteButton.setBorderPainted(false);
         deleteButton.setOpaque(false);
         deleteButton.addActionListener(evt ->
-                deleteTaskController.deleteTask(taskViewModel.getTask().getTaskInfo().getId()));
+        {
+            try {
+                deleteTaskController.deleteTask(taskViewModel.getTask().getTaskInfo().getId());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
         buttonPanel.add(deleteButton);
 
         // Checkmark button with checkmark emoji
