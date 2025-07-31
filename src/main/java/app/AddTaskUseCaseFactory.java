@@ -20,7 +20,6 @@ public final class AddTaskUseCaseFactory {
             ViewManagerModel viewManagerModel,
             AddTaskViewModel addTaskViewModel,
             TaskDataAccessInterface taskDao,
-            CustomTagDataAccessInterface tagDao,
             WeatherApiService weatherApiService,
             String currentUser,
             String mainViewKey) {
@@ -31,7 +30,7 @@ public final class AddTaskUseCaseFactory {
                 weatherApiService);
 
         AddTaskController addTaskController = new AddTaskController(currentUser, addTaskInteractor,
-                tagDao, viewManagerModel);
+                viewManagerModel);
 
         return new AddTaskView(addTaskController, addTaskViewModel, viewManagerModel);
     }

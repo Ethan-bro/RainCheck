@@ -14,6 +14,7 @@ import interface_adapter.addTask.AddTaskPresenter;
 import interface_adapter.addTask.AddTaskViewModel;
 import interface_adapter.addTask.UUIDGenerator;
 
+import interface_adapter.create_customTag.CCTViewModel;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.logged_in.ListTasksPresenter;
 import interface_adapter.login.LoginViewModel;
@@ -49,12 +50,14 @@ public class AppBuilder {
     private LoggedInViewModel loggedInViewModel;
     private SignupViewModel signupViewModel;
     private AddTaskViewModel addTaskViewModel;
+    private CCTViewModel cctViewModel;
     private ListTasksUseCaseFactory listTasksFactory;
 
     private LoginView loginView;
     private SignupView signupView;
     private LoggedInView loggedInView;
     private AddTaskView addTaskView;
+    private CCTView cctView;
 
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
@@ -116,7 +119,6 @@ public class AppBuilder {
                     viewManagerModel,
                     addTaskViewModel,
                     taskDao,
-                    tagDao,
                     new WeatherApiService(),
                     userDao.getCurrentUser(),
                     LoggedInView.getViewName()
@@ -126,6 +128,20 @@ public class AppBuilder {
         }
 
         cardPanel.add(addTaskView, AddTaskView.getViewName());
+        return this;
+    }
+
+    public AppBuilder addCCTView() {
+        cctViewModel = new CCTViewModel();
+
+        cctView = CCTUseCaseFactory.create(
+                viewManagerModel,
+                cctViewModel,
+                tagDao,
+                loggedInViewModel
+        );
+
+        cardPanel.add(cctView, CCTView.getViewName());
         return this;
     }
 
