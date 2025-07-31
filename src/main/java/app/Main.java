@@ -10,7 +10,9 @@ public class Main {
                     .addViewModels()
                     .addSignupView()
                     .addLoginView()
+                    .addListTasksUseCase()
                     .addLoggedInView()
+                    .addAddTaskView()
                     .build();
 
             int appWidth = 860;

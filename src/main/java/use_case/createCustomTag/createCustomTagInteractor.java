@@ -2,6 +2,8 @@ package use_case.createCustomTag;
 
 import entity.CustomTag;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -48,5 +50,17 @@ public class createCustomTagInteractor implements createCustomTagInputBoundary {
 
         createCustomTagOutputData outputData = new createCustomTagOutputData(finalTag);
         createCustomTagPresenter.prepareSuccessView(outputData);
+    }
+
+    /**
+     * Fetch all tags for the user and return as a list of CustomTag entities.
+     */
+    public List<CustomTag> fetchTags(String username) {
+        Map<String, String> tagsMap = dao.getCustomTags(username);
+        List<CustomTag> tags = new ArrayList<>();
+        for (Map.Entry<String, String> entry : tagsMap.entrySet()) {
+            tags.add(new CustomTag(entry.getKey(), entry.getValue()));
+        }
+        return tags;
     }
 }

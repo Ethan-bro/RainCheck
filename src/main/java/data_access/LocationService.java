@@ -9,6 +9,7 @@ import okhttp3.Response;
 public class LocationService {
 
     private static final String GEOLOCATION_API_URL = "https://ipapi.co/json/";
+    private static final String fallbackCity = "Toronto";
     private static final OkHttpClient client = new OkHttpClient();
 
     private LocationService() {
@@ -28,6 +29,11 @@ public class LocationService {
                     .build();
 
             try (Response response = client.newCall(request).execute()) {
+                if (response.code() == 429) {
+                    System.err.println("Rate limit exceeded. Using fallback city.");
+                    return fallbackCity;
+                }
+
                 if (!response.isSuccessful()) {
                     throw new RuntimeException("Unexpected code " + response);
                 }
@@ -41,7 +47,7 @@ public class LocationService {
 
         } catch (Exception e) {
             e.printStackTrace();
-            return "Toronto"; // fallback if request fails
+            return fallbackCity;
         }
     }
 }

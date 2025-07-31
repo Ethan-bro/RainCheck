@@ -2,22 +2,36 @@ package app;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import data_access.SupabaseTaskDataAccessObject;
 import data_access.SupabaseTagDataAccessObject;
 import data_access.SupabaseUserDataAccessObject;
+
 import interface_adapter.ViewManagerModel;
+import interface_adapter.addTask.AddTaskController;
+import interface_adapter.addTask.AddTaskPresenter;
+import interface_adapter.addTask.AddTaskViewModel;
+import interface_adapter.addTask.UUIDGenerator;
+
 import interface_adapter.logged_in.LoggedInViewModel;
+import interface_adapter.logged_in.ListTasksPresenter;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.logout.LogoutController;
 import interface_adapter.signup.SignupViewModel;
-import view.LoggedInView;
-import view.LoginView;
-import view.SignupView;
-import view.ViewManager;
+
+import use_case.listTasks.ListTasksInputBoundary;
+import use_case.listTasks.ListTasksInteractor;
+import use_case.listTasks.ListTasksOutputBoundary;
+import use_case.listTasks.TaskDataAccessInterface;
+import use_case.addTask.AddTaskInputBoundary;
+import use_case.addTask.AddTaskInteractor;
+import view.*;
 
 import javax.swing.*;
 import java.awt.CardLayout;
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.LocalDate;
 
 public class AppBuilder {
     private final JPanel cardPanel = new JPanel();
@@ -28,14 +42,18 @@ public class AppBuilder {
     // databases:
     private SupabaseUserDataAccessObject userDao;
     private SupabaseTagDataAccessObject tagDao;
-
+    private SupabaseTaskDataAccessObject taskDao;
 
     private LoginViewModel loginViewModel;
     private LoggedInViewModel loggedInViewModel;
     private SignupViewModel signupViewModel;
+    private AddTaskViewModel addTaskViewModel;
+    private ListTasksUseCaseFactory listTasksFactory;
+
     private LoginView loginView;
     private SignupView signupView;
     private LoggedInView loggedInView;
+    private AddTaskView addTaskView;
 
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
@@ -48,6 +66,7 @@ public class AppBuilder {
 
         userDao = new SupabaseUserDataAccessObject(dbUrl, dbAnonKey);
         tagDao = new SupabaseTagDataAccessObject(dbUrl, dbAnonKey);
+        taskDao = new SupabaseTaskDataAccessObject(dbUrl, dbAnonKey);
 
         return this;
     }
@@ -56,12 +75,13 @@ public class AppBuilder {
         loginViewModel = new LoginViewModel();
         loggedInViewModel = new LoggedInViewModel();
         signupViewModel = new SignupViewModel();
+        addTaskViewModel = new AddTaskViewModel();
         return this;
     }
 
     public AppBuilder addSignupView() {
         signupView = SignupUseCaseFactory.create(viewManagerModel, loginViewModel, signupViewModel, userDao);
-        cardPanel.add(signupView, signupView.getViewName());
+        cardPanel.add(signupView, SignupView.getViewName());
         return this;
     }
 
@@ -71,14 +91,34 @@ public class AppBuilder {
         return this;
     }
 
+    public AppBuilder addListTasksUseCase() {
+        listTasksFactory = new ListTasksUseCaseFactory(taskDao, loggedInViewModel);
+        listTasksFactory.create();
+        return this;
+    }
+
     public AppBuilder addLoggedInView() throws IOException {
 
         LogoutController logoutController = LogoutUseCaseFactory.create(
                 viewManagerModel, loggedInViewModel, loginViewModel, userDao);
 
-        loggedInView = new LoggedInView(loggedInViewModel, logoutController);
+        loggedInView = new LoggedInView(loggedInViewModel, logoutController, viewManagerModel);
 
-        cardPanel.add(loggedInView, loggedInView.getViewName());
+        cardPanel.add(loggedInView, LoggedInView.getViewName());
+        return this;
+    }
+
+    public AppBuilder addAddTaskView() {
+
+        addTaskView = AddTaskUseCaseFactory.create(
+                viewManagerModel,
+                addTaskViewModel,
+                taskDao,
+                userDao.getCurrentUser(),
+                LoggedInView.getViewName()
+        );
+
+        cardPanel.add(addTaskView, AddTaskView.getViewName());
         return this;
     }
 
@@ -87,7 +127,7 @@ public class AppBuilder {
         application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         application.add(cardPanel);
 
-        viewManagerModel.setState(signupView.getViewName());
+        viewManagerModel.setState(SignupView.getViewName());
         viewManagerModel.firePropertyChanged();
 
         return application;

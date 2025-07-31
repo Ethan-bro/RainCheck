@@ -9,7 +9,8 @@ public interface UserFactory {
      *
      * @param username The username.
      * @param password The password.
+     * @param email The email.
      * @return A new User.
      */
-    User create(String username, String password);
+    User create(String username, String password, String email);
 }

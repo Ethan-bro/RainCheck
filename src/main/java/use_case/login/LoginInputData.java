@@ -7,15 +7,18 @@ package use_case.login;
 public class LoginInputData {
     private final String username;
     private final String password;
+    private final String email;
 
     /**
      * Constructs a new LoginInputData object.
      * @param username The user's entered username.
      * @param password The user's entered password (in plain text).
+     * @param email The user's entered email
      */
-    public LoginInputData(String username, String password) {
+    public LoginInputData(String username, String password, String email) {
         this.username = username;
         this.password = password;
+        this.email = email;
     }
 
     /**
@@ -31,4 +34,9 @@ public class LoginInputData {
     public String getPassword() {
         return password;
     }
+
+    /**
+     * @return The entered email
+     */
+    public String getEmail() { return email; }
 }

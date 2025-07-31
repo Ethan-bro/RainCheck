@@ -18,11 +18,12 @@ import interface_adapter.signup.SignupViewModel;
  * Polished Signup View matching the Login View style.
  */
 public class SignupView extends JPanel implements ActionListener, PropertyChangeListener {
-    private final String viewName = "sign up";
+    private static final String viewName = "sign up";
 
     private final SignupViewModel signupViewModel;
     private final SignupController signupController;
 
+    private final JTextField emailInputField = new JTextField(20);
     private final JTextField usernameInputField = new JTextField(20);
     private final JPasswordField passwordInputField = new JPasswordField(20);
     private final JPasswordField repeatPasswordInputField = new JPasswordField(20);
@@ -53,9 +54,21 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
         gbc.insets = new Insets(12, 12, 12, 12);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        // Username
+        // Email
         gbc.gridx = 0;
         gbc.gridy = 0;
+        gbc.weightx = 0.3;
+        JLabel emailLabel = new JLabel(SignupViewModel.EMAIL_LABEL);
+        emailLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        formPanel.add(emailLabel, gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 0.7;
+        formPanel.add(emailInputField, gbc);
+
+        // Username
+        gbc.gridx = 0;
+        gbc.gridy = 1;
         gbc.weightx = 0.3;
         JLabel usernameLabel = new JLabel(SignupViewModel.USERNAME_LABEL);
         usernameLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
@@ -67,7 +80,7 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
 
         // Password
         gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc.gridy = 2;
         gbc.weightx = 0.3;
         JLabel passwordLabel = new JLabel(SignupViewModel.PASSWORD_LABEL);
         passwordLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
@@ -79,7 +92,7 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
 
         // Repeat Password
         gbc.gridx = 0;
-        gbc.gridy = 2;
+        gbc.gridy = 3;
         gbc.weightx = 0.3;
         JLabel repeatPasswordLabel = new JLabel(SignupViewModel.REPEAT_PASSWORD_LABEL);
         repeatPasswordLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
@@ -139,16 +152,32 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
             signupController.execute(
                     currentState.getUsername(),
                     currentState.getPassword(),
-                    currentState.getRepeatPassword()
+                    currentState.getRepeatPassword(),
+                    currentState.getEmail()
             );
         });
 
         cancel.addActionListener(this);
         toLogin.addActionListener(evt -> signupController.switchToLoginView());
 
+        addEmailListener();
         addUsernameListener();
         addPasswordListener();
         addRepeatPasswordListener();
+    }
+
+    private void addEmailListener() {
+        emailInputField.getDocument().addDocumentListener(new DocumentListener() {
+            private void documentListenerHelper() {
+                SignupState currentState = signupViewModel.getState();
+                currentState.setEmail(emailInputField.getText());
+                signupViewModel.setState(currentState);
+            }
+
+            @Override public void insertUpdate(DocumentEvent e) { documentListenerHelper(); }
+            @Override public void removeUpdate(DocumentEvent e) { documentListenerHelper(); }
+            @Override public void changedUpdate(DocumentEvent e) { documentListenerHelper(); }
+        });
     }
 
     private void addUsernameListener() {
@@ -208,7 +237,7 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
         }
     }
 
-    public String getViewName() {
+    public static String getViewName() {
         return viewName;
     }
 }

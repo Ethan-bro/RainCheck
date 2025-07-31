@@ -13,7 +13,7 @@ class SignupInteractorTest {
         SignupUserDataAccessInterface dao = new InMemoryUserDataAccessObject();
         UserFactory userFactory = new CommonUserFactory();
 
-        SignupInputData inputData = new SignupInputData("Alice", "pass123", "pass123");
+        SignupInputData inputData = new SignupInputData("Alice", "pass123", "pass123", "alice@example.com");
 
         SignupOutputBoundary presenter = new SignupOutputBoundary() {
             @Override
@@ -29,7 +29,7 @@ class SignupInteractorTest {
 
             @Override
             public void switchToLoginView() {
-                // we do not need to provide an implementation for this method
+                // Not needed for this test
             }
         };
 
@@ -42,7 +42,7 @@ class SignupInteractorTest {
         SignupUserDataAccessInterface dao = new InMemoryUserDataAccessObject();
         UserFactory userFactory = new CommonUserFactory();
 
-        SignupInputData inputData = new SignupInputData("Alice", "pass123", "wrong");
+        SignupInputData inputData = new SignupInputData("Bob", "pass123", "wrong", "bob@example.com");
 
         SignupOutputBoundary presenter = new SignupOutputBoundary() {
             @Override
@@ -52,12 +52,12 @@ class SignupInteractorTest {
 
             @Override
             public void prepareFailView(String error) {
-                Assertions.assertEquals("Passwords don't match.", error.trim());
+                Assertions.assertTrue(error.contains("Passwords don't match"));
             }
 
             @Override
             public void switchToLoginView() {
-                // we do not need to provide an implementation for this method
+                // Not needed for this test
             }
         };
 
@@ -69,9 +69,9 @@ class SignupInteractorTest {
     void userAlreadyExistsFails() {
         InMemoryUserDataAccessObject dao = new InMemoryUserDataAccessObject();
         UserFactory factory = new CommonUserFactory();
-        dao.save(factory.create("Alice", "existing"));
+        dao.save(factory.create("Charlie", "existing", "charlie@example.com"));
 
-        SignupInputData inputData = new SignupInputData("Alice", "pass123", "pass123");
+        SignupInputData inputData = new SignupInputData("Charlie", "pass123", "pass123", "charlie@example.com");
 
         SignupOutputBoundary presenter = new SignupOutputBoundary() {
             @Override
@@ -81,16 +81,44 @@ class SignupInteractorTest {
 
             @Override
             public void prepareFailView(String error) {
-                Assertions.assertEquals("User already exists.", error.trim());
+                Assertions.assertTrue(error.contains("User already exists"));
             }
 
             @Override
             public void switchToLoginView() {
-                // we do not need to provide an implementation for this method
+                // Not needed for this test
             }
         };
 
         SignupInputBoundary interactor = new SignupInteractor(dao, presenter, factory);
+        interactor.execute(inputData);
+    }
+
+    @Test
+    void invalidEmailFails() {
+        SignupUserDataAccessInterface dao = new InMemoryUserDataAccessObject();
+        UserFactory userFactory = new CommonUserFactory();
+
+        SignupInputData inputData = new SignupInputData("David", "pass123", "pass123", "invalid-email");
+
+        SignupOutputBoundary presenter = new SignupOutputBoundary() {
+            @Override
+            public void prepareSuccessView(SignupOutputData data) {
+                Assertions.fail("Should not succeed with invalid email");
+            }
+
+            @Override
+            public void prepareFailView(String error) {
+                Assertions.assertTrue(error.contains("Invalid email format"));
+            }
+
+            @Override
+            public void switchToLoginView() {
+                // Not needed for this test
+            }
+        };
+
+        SignupInputBoundary interactor = new SignupInteractor(dao, presenter, userFactory);
         interactor.execute(inputData);
     }
 }

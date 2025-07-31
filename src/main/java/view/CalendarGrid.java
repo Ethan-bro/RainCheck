@@ -1,18 +1,31 @@
 package view;
 
+import interface_adapter.calendar.TaskClickListener;
+import entity.Task;
+
 import javax.swing.*;
 import java.awt.*;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
+import java.util.*;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 public class CalendarGrid extends JPanel {
 
-    public CalendarGrid(CalendarData data, Map<LocalDate, Map<String, Object>> weatherMap) {
+    public CalendarGrid(CalendarData data, Map<LocalDate, Map<String, Object>> weatherMap,
+                        List<Task> tasks, TaskClickListener taskClickListener) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         List<LocalDate> weekDates = data.getWeekDates();
+
+        Map<LocalDate, Map<Integer, List<Task>>> taskMap = new HashMap<>();
+        for (Task t : tasks) {
+            LocalDate date = t.getTaskInfo().getStartDateTime().toLocalDate();
+            int hour = t.getTaskInfo().getStartDateTime().getHour();
+            taskMap
+                    .computeIfAbsent(date, d -> new HashMap<>())
+                    .computeIfAbsent(hour, h -> new ArrayList<>())
+                    .add(t);
+        }
 
         for (int row = 0; row < 26; row++) {
             JPanel rowPanel = new JPanel();
@@ -75,14 +88,31 @@ public class CalendarGrid extends JPanel {
 
                         cell.add(tempsPanel, BorderLayout.SOUTH);
                     }
-                } else {
-                    cell.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-                    if (col == 0) {
-                        cell.setLayout(new BoxLayout(cell, BoxLayout.Y_AXIS));
-                        JLabel hourLabel = new JLabel(CalendarData.HOURS_OF_DAY[row - 2]);
-                        hourLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-                        cell.add(hourLabel);
+                } else if (col > 0){
+                    LocalDate date = weekDates.get(col - 1);
+                    int hour = row - 2;
+                    List<Task> cellTasks =
+                            taskMap.getOrDefault(date, Collections.emptyMap())
+                            .getOrDefault(hour, Collections.emptyList());
+
+                    if (!cellTasks.isEmpty()) {
+                        cell.setLayout(new FlowLayout(FlowLayout.LEFT, 2, 2));
+                        for (Task t : cellTasks) {
+                            JButton button = new JButton(t.getTaskInfo().getTaskName());
+                            button.setMargin(new Insets(2, 4, 2, 4));
+                            button.setFont(button.getFont().deriveFont(12f));
+                            button.addActionListener(e -> taskClickListener.onTaskClick(t));
+                            cell.add(button);
+                        }
                     }
+                    cell.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                }
+                else {
+                    cell.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                    cell.setLayout(new BoxLayout(cell, BoxLayout.Y_AXIS));
+                    JLabel hourLabel = new JLabel(CalendarData.HOURS_OF_DAY[row - 2]);
+                    hourLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+                    cell.add(hourLabel);
                 }
 
                 rowPanel.add(cell);
