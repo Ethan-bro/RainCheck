@@ -32,7 +32,7 @@ public class createCustomTagView extends JPanel implements ActionListener, Prope
         // UI CONSTRUCTION:
 
         // Main Frame:
-        final JFrame mainFrame = new JFrame(viewName);
+        final JFrame mainFrame = new JFrame(viewName); 
         mainFrame.setTitle(viewName);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setSize(700, 700);
