@@ -32,7 +32,7 @@ public class EditTaskView extends JPanel implements PropertyChangeListener {
     private final JSpinner startSpinner;
     private final JSpinner endSpinner;
     private final JComboBox<Priority> priorityCombo;
-    private final JComboBox<CustomTag> customTagCombo;
+    private final JComboBox<Object> customTagCombo;
     private final JComboBox<Reminder> reminderCombo;
     private final JButton saveButton;
     private final JButton cancelButton;
@@ -45,6 +45,7 @@ public class EditTaskView extends JPanel implements PropertyChangeListener {
 
         this.controller = controller;
         this.viewModel = viewModel;
+        this.viewModel.addPropertyChangeListener(this);
         this.viewManagerModel = viewManagerModel;
         this.mainViewKey = mainViewKey;
         this.existingTask = controller.getCurrentTask();
@@ -52,31 +53,40 @@ public class EditTaskView extends JPanel implements PropertyChangeListener {
         nameField = new JTextField(existingTask.getTaskInfo().getTaskName(), 30);
         startSpinner = makeDateTimeSpinner(existingTask.getTaskInfo().getStartDateTime());
         endSpinner = makeDateTimeSpinner(existingTask.getTaskInfo().getEndDateTime());
-
         priorityCombo = new JComboBox<>(Priority.values());
         priorityCombo.setSelectedItem(existingTask.getTaskInfo().getPriority());
 
-        viewModel.addPropertyChangeListener(this);
+        // setting up tags
+        java.util.List<Object> tagOptions = viewModel.getTagOptions();
+        customTagCombo = new JComboBox<>(tagOptions.toArray());
 
-        // TODO: Populate customTagCombo with user's tags loaded from database or some defaults.
-        // Example:
-        // CustomTag[] defaultTags = {
-        //     new CustomTag("Work", "💼"),
-        //     new CustomTag("Study", "📚"),
-        //     new CustomTag("Chill", "😎")
-        // };
-        // customTagCombo = new JComboBox<>(defaultTags);
-        customTagCombo = new JComboBox<>();
+        if (existingTask.getTaskInfo().getTag() != null) {
+            customTagCombo.setSelectedItem(existingTask.getTaskInfo().getTag());
+        }
 
-        // TODO: Populate reminderCombo with typical reminder intervals or user preferences.
-        // Example:
-        // Reminder[] defaultReminders = {
-        //     new Reminder(5),    // 5 minutes before
-        //     new Reminder(10),   // 10 minutes before
-        //     new Reminder(30)    // 30 minutes before
-        // };
-        // reminderCombo = new JComboBox<>(defaultReminders);
-        reminderCombo = new JComboBox<>();
+        customTagCombo.addActionListener(e -> {
+            Object selectedItem = customTagCombo.getSelectedItem();
+            if (selectedItem instanceof String && selectedItem.equals("Create New Tag...")) {
+                controller.createCustomTag();
+                java.util.List<Object> updatedTags = viewModel.getTagOptions();
+                customTagCombo.setModel(new DefaultComboBoxModel<>(updatedTags.toArray()));
+            }
+        });
+
+        // setting up reminders
+        Reminder[] defaultReminders = new Reminder[] {
+                new Reminder("No Reminder"),
+                new Reminder("5 minutes before"),
+                new Reminder("10 minutes before"),
+                new Reminder("30 minutes before"),
+                new Reminder("1 hour before"),
+                new Reminder("1 day before")
+            };
+        reminderCombo = new JComboBox<>(defaultReminders);
+
+        if (existingTask.getTaskInfo().getReminder() != null) {
+            reminderCombo.setSelectedItem(existingTask.getTaskInfo().getReminder());
+        }
 
         saveButton = new JButton("Save Changes");
         saveButton.addActionListener(evt -> {
@@ -91,7 +101,7 @@ public class EditTaskView extends JPanel implements PropertyChangeListener {
         errorLabel.setForeground(Color.RED);
         errorLabel.setVisible(false);
 
-        // Layout
+        // Layout with GridBagLayout
         setLayout(new GridBagLayout());
         setBorder(BorderFactory.createTitledBorder("Edit Task"));
         GridBagConstraints gbc = new GridBagConstraints();

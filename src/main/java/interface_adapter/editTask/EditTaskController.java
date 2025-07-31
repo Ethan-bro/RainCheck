@@ -9,10 +9,13 @@ public class EditTaskController {
     private final EditTaskInputBoundary editTaskInputInteractor;
     private final String username;
     private Task currentTask;
+    private final ViewManagerModel viewManagerModel;
 
-    public EditTaskController(EditTaskInputBoundary editTaskInputInteractor, String username) {
+
+    public EditTaskController(EditTaskInputBoundary editTaskInputInteractor, String username, ViewManagerModel viewManagerModel) {
         this.editTaskInputInteractor = editTaskInputInteractor;
         this.username = username;
+        this.viewManagerModel = viewManagerModel;
     }
 
     public void editTask(Task updatedTask) {
@@ -31,5 +34,9 @@ public class EditTaskController {
 
     public void setCurrentTask(Task currentTask) {
         this.currentTask = currentTask;
+    }
+
+    public void createCustomTag() {
+        viewManagerModel.setState("createCustomTag");
     }
 }
