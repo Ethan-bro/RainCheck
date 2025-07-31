@@ -16,6 +16,7 @@ import java.util.Map;
 import data_access.SupabaseTagDataAccessObject;
 import entity.Task;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.addTask.AddTaskViewModel;
 import interface_adapter.calendar.TaskClickListener;
 import interface_adapter.create_customTag.CCTController;
 import interface_adapter.create_customTag.CCTPresenter;
@@ -31,7 +32,9 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
 
     private static final String viewName = "logged in";
     private final LoggedInViewModel loggedInViewModel;
+    private final AddTaskViewModel addTaskViewModel;
     private final ViewManagerModel viewManagerModel;
+    private String loggedInUsername;
     private final JLabel usernameLabel;
     private LogoutController logoutController;
     private final JPanel centerPanel;
@@ -47,12 +50,14 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     public LoggedInView(LoggedInViewModel loggedInViewModel,
                         LogoutController logoutController,
                         ViewManagerModel viewManagerModel,
-                        SupabaseTagDataAccessObject tagDao) throws IOException {
+                        SupabaseTagDataAccessObject tagDao,
+                        AddTaskViewModel addTaskViewModel) throws IOException {
         this.loggedInViewModel = loggedInViewModel;
         this.loggedInViewModel.addPropertyChangeListener(this);
         this.viewManagerModel = viewManagerModel;
         this.logoutController = logoutController;
         this.tagDao = tagDao;
+        this.addTaskViewModel = addTaskViewModel;
 
         setupActionListeners();
 
@@ -131,6 +136,7 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         };
 
         addTaskAction = e -> {
+            addTaskViewModel.setUsername(this.loggedInUsername);
             viewManagerModel.setState(AddTaskView.getViewName());
             viewManagerModel.firePropertyChanged();
         };
@@ -210,7 +216,8 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent evt) {
         if ("state".equals(evt.getPropertyName())) {
             LoggedInState state = (LoggedInState) evt.getNewValue();
-            usernameLabel.setText("Signed in as: " + state.getUsername());
+            this.loggedInUsername = state.getUsername();
+            usernameLabel.setText("Signed in as: " + this.loggedInUsername);
             // TODO: Brad, this is how you get the email: 'state.getEmail()'
         }
         else if ("weekTasks".equals(evt.getPropertyName())) {

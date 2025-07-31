@@ -183,6 +183,12 @@ public class AddTaskView extends JPanel
                 goBackToCalendarView();
             }
         }
+        if ("refreshTagOptions".equals(propertyName)) {
+            Object newValue = evt.getNewValue();
+            if (newValue instanceof java.util.List<?> updatedTagsRaw) {
+                customTagCombo.setModel(new DefaultComboBoxModel<>(updatedTagsRaw.toArray()));
+            }
+        }
     }
     private void resetForm() {
         nameField.setText("");
