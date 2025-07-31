@@ -123,11 +123,6 @@ public class SupabaseTaskDataAccessObject implements
     }
 
     @Override
-    public void updateUsersTasks(String username, Task task) {
-        updateTask(username, task);
-    }
-
-    @Override
     public void updateTask(String username, Task updatedTask) {
         List<Task> tasks = getTasks(username);
         for (int i = 0; i < tasks.size(); i++) {
