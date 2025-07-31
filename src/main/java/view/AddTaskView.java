@@ -32,7 +32,7 @@ public class AddTaskView extends JPanel
     private final JSpinner              startSpinner;
     private final JSpinner              endSpinner;
     private final JComboBox<Priority>     priorityCombo;
-    private final JComboBox<CustomTag> customTagCombo;
+    private final JComboBox<Object> customTagCombo;
     private final JComboBox<Reminder>    reminderCombo;
     private final JButton               saveButton;
     private final JButton               cancelButton;
@@ -62,7 +62,19 @@ public class AddTaskView extends JPanel
         //     new CustomTag("Chill", "😎")
         // };
         // customTagCombo = new JComboBox<>(defaultTags);
-        customTagCombo = new JComboBox<>();
+        List<Object> options = viewModel.getTagOptions();
+        customTagCombo = new JComboBox<>(options.toArray());
+        customTagCombo.addActionListener(e -> {
+            Object selectedItem = customTagCombo.getSelectedItem();
+            if ("Create New Tag...".equals(selectedItem)) {
+                controller.createCustomTag();
+                customTagCombo.setModel(
+                        new DefaultComboBoxModel<>(viewModel.getTagOptions().toArray())
+                );
+            }
+        });
+
+
 
         // TODO: Populate reminderCombo with typical reminder intervals or user preferences.
         // Example:

@@ -1,6 +1,7 @@
 package entity;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class TaskInfo {
     private TaskID id;
@@ -12,99 +13,24 @@ public class TaskInfo {
     private String taskStatus;
     private Reminder reminder;
 
-    public TaskInfo(TaskID id, String taskName, LocalDateTime startDateTime, LocalDateTime endDateTime) {
-        this.id = id;
-        this.taskName = taskName;
-        this.startDateTime = startDateTime;
-        this.endDateTime = endDateTime;
-        this.priority = null;
-        this.customTag = null;
-        this.taskStatus = "Incomplete";
-        this.reminder = null;
-    }
+    private String weatherDescription;
+    private String weatherEmoji;
+    private String temperature;
 
     public TaskInfo(TaskID id, String taskName, LocalDateTime startDateTime, LocalDateTime endDateTime,
-                    Priority priority) {
-        this.id = id;
-        this.taskName = taskName;
-        this.startDateTime = startDateTime;
-        this.endDateTime = endDateTime;
-        this.priority = priority;
-        this.customTag = null;
-        this.taskStatus = "Incomplete";
-        this.reminder = null;
-    }
-
-    public TaskInfo(TaskID id, String taskName, LocalDateTime startDateTime, LocalDateTime endDateTime,
-                    CustomTag customTag) {
-        this.id = id;
-        this.taskName = taskName;
-        this.startDateTime = startDateTime;
-        this.endDateTime = endDateTime;
-        this.priority = null;
-        this.customTag = customTag;
-        this.taskStatus = "Incomplete";
-        this.reminder = null;
-    }
-
-    public TaskInfo(TaskID id, String taskName, LocalDateTime startDateTime, LocalDateTime endDateTime,
-                    Reminder reminder) {
-        this.id = id;
-        this.taskName = taskName;
-        this.startDateTime = startDateTime;
-        this.endDateTime = endDateTime;
-        this.priority = null;
-        this.customTag = null;
-        this.taskStatus = "Incomplete";
-        this.reminder = reminder;
-    }
-
-    public TaskInfo(TaskID id, String taskName, LocalDateTime startDateTime, LocalDateTime endDateTime,
-                    Priority priority, CustomTag customTag) {
-        this.id = id;
-        this.taskName = taskName;
-        this.startDateTime = startDateTime;
-        this.endDateTime = endDateTime;
-        this.priority = priority;
-        this.customTag = customTag;
-        this.taskStatus = "Incomplete";
-        this.reminder = null;
-    }
-
-    public TaskInfo(TaskID id, String taskName, LocalDateTime startDateTime, LocalDateTime endDateTime,
-                    Priority priority, Reminder reminder) {
-        this.id = id;
-        this.taskName = taskName;
-        this.startDateTime = startDateTime;
-        this.endDateTime = endDateTime;
-        this.priority = priority;
-        this.customTag = null;
-        this.taskStatus = "Incomplete";
-        this.reminder = reminder;
-    }
-
-    public TaskInfo(TaskID id, String taskName, LocalDateTime startDateTime, LocalDateTime endDateTime,
-                    CustomTag customTag, Reminder reminder) {
-        this.id = id;
-        this.taskName = taskName;
-        this.startDateTime = startDateTime;
-        this.endDateTime = endDateTime;
-        this.priority = null;
+                    Priority priority, CustomTag customTag, Reminder reminder, String weatherDescription,
+                    String weatherEmoji, String temperature) {
+        this.id = Objects.requireNonNull(id);
+        this.taskName = Objects.requireNonNull(taskName);
+        this.startDateTime = Objects.requireNonNull(startDateTime);
+        this.endDateTime = Objects.requireNonNull(endDateTime);
+        this.priority = (priority != null) ? priority : Priority.LOW;
         this.customTag = customTag;
         this.taskStatus = "Incomplete";
         this.reminder = reminder;
-    }
-
-    public TaskInfo(TaskID id, String taskName, LocalDateTime startDateTime, LocalDateTime endDateTime,
-                    Priority priority, CustomTag customTag, Reminder reminder) {
-        this.id = id;
-        this.taskName = taskName;
-        this.startDateTime = startDateTime;
-        this.endDateTime = endDateTime;
-        this.priority = priority;
-        this.customTag = customTag;
-        this.taskStatus = "Incomplete";
-        this.reminder = reminder;
+        this.weatherDescription = weatherDescription;
+        this.weatherEmoji = weatherEmoji;
+        this.temperature = temperature;
     }
 
     public TaskID getId() {return id;}
@@ -127,9 +53,9 @@ public class TaskInfo {
 
     public void setPriority(Priority priority) {this.priority = priority;}
 
-    public CustomTag getCategory() {return customTag;}
+    public CustomTag getTag() {return customTag;}
 
-    public void setCategory(CustomTag customTag) {this.customTag = customTag;}
+    public void setTag(CustomTag customTag) {this.customTag = customTag;}
 
     public String getTaskStatus() {return taskStatus;}
 
@@ -138,4 +64,25 @@ public class TaskInfo {
     public Reminder getReminder() {return reminder;}
 
     public void setReminder(Reminder reminder) {this.reminder = reminder;}
+
+    public String getWeatherDescription() {
+        return weatherDescription;
+    }
+    public void setWeatherDescription(String weatherDescription) {
+        this.weatherDescription = weatherDescription;
+    }
+
+    public String getWeatherEmoji() {
+        return weatherEmoji;
+    }
+    public void setWeatherEmoji(String weatherEmoji) {
+        this.weatherEmoji = weatherEmoji;
+    }
+
+    public String getTemperature() {
+        return temperature;
+    }
+    public void setTemperature(String temperature) {
+        this.temperature = temperature;
+    }
 }

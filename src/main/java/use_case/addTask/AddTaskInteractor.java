@@ -1,23 +1,35 @@
 package use_case.addTask;
 
+import data_access.LocationService;
 import data_access.SupabaseTaskDataAccessObject;
+import data_access.WeatherApiService;
 import entity.Task;
 import entity.TaskID;
 import entity.TaskInfo;
 import interface_adapter.addTask.Constants;
 import interface_adapter.addTask.TaskIDGenerator;
+import use_case.listTasks.TaskDataAccessInterface;
+
+import javax.swing.*;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 public class AddTaskInteractor implements AddTaskInputBoundary {
 
-    private final SupabaseTaskDataAccessObject dao;
+    private final TaskDataAccessInterface dao;
     private final AddTaskOutputBoundary addTaskPresenter;
     private final TaskIDGenerator taskIDGenerator;
+    private final WeatherApiService weatherApiService;
 
-    public AddTaskInteractor(SupabaseTaskDataAccessObject dao, TaskIDGenerator taskIDGenerator,
-                             AddTaskOutputBoundary addTaskPresenter) {
+    public AddTaskInteractor(TaskDataAccessInterface dao, TaskIDGenerator taskIDGenerator,
+                             AddTaskOutputBoundary addTaskPresenter, WeatherApiService weatherApiService) {
         this.dao = dao;
         this.taskIDGenerator = taskIDGenerator;
         this.addTaskPresenter = addTaskPresenter;
+        this.weatherApiService = weatherApiService;
     }
 
     @Override
@@ -48,9 +60,35 @@ public class AddTaskInteractor implements AddTaskInputBoundary {
 
         TaskID newID = taskIDGenerator.generateTaskID();
 
+        String description = "";
+        String feels = "";
+        String emoji = "";
+        try {
+            LocalDateTime startDateTime = inputData.getStartDateTime();
+            LocalDate date = startDateTime.toLocalDate();
+            int hour = startDateTime.getHour();
+
+            List<Map<String,String>> hourly = weatherApiService.getHourlyWeather(LocationService.getUserCity(),
+                    date, hour, hour);
+
+            if (!hourly.isEmpty()){
+                Map<String, String> hourlyMap = hourly.get(0);
+                description = hourlyMap.get("description");
+                feels = hourlyMap.get("feels");
+                Map<String, Object> daily = weatherApiService.getDailyWeather(LocationService.getUserCity(),
+                        date);
+                ImageIcon icon = (ImageIcon) daily.get("icon");
+                emoji = (icon != null) ? icon.toString() : "";
+            }
+        } catch (IOException e) {
+            System.err.println("Weather Lookup Failed: " + e.getMessage());
+        }
+        String temp = feels;
+
+
         TaskInfo newTaskInfo = new TaskInfo(newID, inputData.getTaskName(), inputData.getStartDateTime(),
-                inputData.getEndDateTime(), inputData.getPriority(), inputData.getCustomTag(),
-                inputData.getReminder()
+                inputData.getEndDateTime(), inputData.getPriority(), inputData.getTag(),
+                inputData.getReminder(), description, emoji, temp
                 );
 
         Task newTask = new Task(newTaskInfo);

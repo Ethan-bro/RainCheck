@@ -7,6 +7,7 @@ import data_access.SupabaseTaskDataAccessObject;
 import data_access.SupabaseTagDataAccessObject;
 import data_access.SupabaseUserDataAccessObject;
 
+import data_access.WeatherApiService;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.addTask.AddTaskController;
 import interface_adapter.addTask.AddTaskPresenter;
@@ -75,7 +76,7 @@ public class AppBuilder {
         loginViewModel = new LoginViewModel();
         loggedInViewModel = new LoggedInViewModel();
         signupViewModel = new SignupViewModel();
-        addTaskViewModel = new AddTaskViewModel();
+        addTaskViewModel = new AddTaskViewModel(tagDao, userDao.getCurrentUsername());
         return this;
     }
 
@@ -110,13 +111,19 @@ public class AppBuilder {
 
     public AppBuilder addAddTaskView() {
 
-        addTaskView = AddTaskUseCaseFactory.create(
-                viewManagerModel,
-                addTaskViewModel,
-                taskDao,
-                userDao.getCurrentUser(),
-                LoggedInView.getViewName()
-        );
+        try {
+            addTaskView = AddTaskUseCaseFactory.create(
+                    viewManagerModel,
+                    addTaskViewModel,
+                    taskDao,
+                    tagDao,
+                    new WeatherApiService(),
+                    userDao.getCurrentUser(),
+                    LoggedInView.getViewName()
+            );
+        } catch (IOException e) {
+            System.err.println("Weather Lookup Failed: " + e.getMessage());
+        }
 
         cardPanel.add(addTaskView, AddTaskView.getViewName());
         return this;

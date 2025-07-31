@@ -2,6 +2,7 @@ package view;
 
 import interface_adapter.calendar.TaskClickListener;
 import entity.Task;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -115,10 +116,7 @@ public class CalendarGrid extends JPanel {
                     if (!cellTasks.isEmpty()) {
                         cell.setLayout(new FlowLayout(FlowLayout.LEFT, 2, 2));
                         for (Task t : cellTasks) {
-                            JButton button = new JButton(t.getTaskInfo().getTaskName());
-                            button.setMargin(new Insets(2, 4, 2, 4));
-                            button.setFont(button.getFont().deriveFont(12f));
-                            button.addActionListener(e -> taskClickListener.onTaskClick(t));
+                            JButton button = getJButton(taskClickListener, t);
                             cell.add(button);
                         }
                     }
@@ -137,6 +135,34 @@ public class CalendarGrid extends JPanel {
 
             add(rowPanel);
         }
+    }
+
+    @NotNull
+    private static JButton getJButton(TaskClickListener taskClickListener, Task t) {
+        String text = t.getTaskInfo().getTaskName();
+        if (t.getTaskInfo().getTag() != null && t.getTaskInfo().getTag().getTagEmoji() != null) {
+            text += " " + t.getTaskInfo().getTag().getTagEmoji();
+        }
+        JButton button = new JButton(text);
+        button.setMargin(new Insets(2, 4, 2, 4));
+        button.setFont(button.getFont().deriveFont(12f));
+
+        button.setOpaque(true);
+        button.setBorderPainted(false);
+        switch (t.getTaskInfo().getPriority()) {
+            case HIGH:
+                button.setBackground(Color.RED);
+                break;
+            case MEDIUM:
+                button.setBackground(Color.ORANGE);
+                break;
+            case LOW:
+                button.setBackground(Color.YELLOW);
+                break;
+        }
+
+        button.addActionListener(e -> taskClickListener.onTaskClick(t));
+        return button;
     }
 
     private void showSideMenu(Component invoker) {
