@@ -20,12 +20,14 @@ public class CCTView extends JPanel implements ActionListener, PropertyChangeLis
     private static final String viewName = "Create Custom Tag";
     private final CCTViewModel createCustomTagViewModel;
     private final CCTController createCustomTagController;
+    private final LoggedInViewModel loggedInViewModel;
 
     public CCTView(CCTViewModel model, CCTController
-            createCustomTagController) {
+            createCustomTagController, LoggedInViewModel loggedInViewModel) {
         this.createCustomTagViewModel = model;
         this.createCustomTagViewModel.addPropertyChangeListener(this);
         this.createCustomTagController = createCustomTagController;
+        this.loggedInViewModel = loggedInViewModel;
 
         // UI CONSTRUCTION:
 
@@ -161,5 +163,9 @@ public class CCTView extends JPanel implements ActionListener, PropertyChangeLis
                     JOptionPane.ERROR_MESSAGE
             );
         }
+    }
+
+    public static String getViewName() {
+        return viewName;
     }
 }
