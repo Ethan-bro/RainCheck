@@ -9,31 +9,20 @@ import data_access.SupabaseUserDataAccessObject;
 
 import data_access.WeatherApiService;
 import interface_adapter.ViewManagerModel;
-import interface_adapter.addTask.AddTaskController;
-import interface_adapter.addTask.AddTaskPresenter;
 import interface_adapter.addTask.AddTaskViewModel;
-import interface_adapter.addTask.UUIDGenerator;
 
 import interface_adapter.create_customTag.CCTViewModel;
 import interface_adapter.logged_in.LoggedInViewModel;
-import interface_adapter.logged_in.ListTasksPresenter;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.logout.LogoutController;
 import interface_adapter.signup.SignupViewModel;
 
-import use_case.listTasks.ListTasksInputBoundary;
-import use_case.listTasks.ListTasksInteractor;
-import use_case.listTasks.ListTasksOutputBoundary;
-import use_case.listTasks.TaskDataAccessInterface;
-import use_case.addTask.AddTaskInputBoundary;
-import use_case.addTask.AddTaskInteractor;
 import view.*;
 
 import javax.swing.*;
 import java.awt.CardLayout;
 import java.io.FileReader;
 import java.io.IOException;
-import java.time.LocalDate;
 
 public class AppBuilder {
     private final JPanel cardPanel = new JPanel();
@@ -50,14 +39,12 @@ public class AppBuilder {
     private LoggedInViewModel loggedInViewModel;
     private SignupViewModel signupViewModel;
     private AddTaskViewModel addTaskViewModel;
-    private CCTViewModel cctViewModel;
     private ListTasksUseCaseFactory listTasksFactory;
 
     private LoginView loginView;
     private SignupView signupView;
     private LoggedInView loggedInView;
     private AddTaskView addTaskView;
-    private CCTView cctView;
 
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
@@ -80,7 +67,6 @@ public class AppBuilder {
         loggedInViewModel = new LoggedInViewModel();
         signupViewModel = new SignupViewModel();
         addTaskViewModel = new AddTaskViewModel(tagDao, userDao.getCurrentUsername());
-        cctViewModel = new CCTViewModel();
         return this;
     }
 
@@ -129,19 +115,6 @@ public class AppBuilder {
         }
 
         cardPanel.add(addTaskView, AddTaskView.getViewName());
-        return this;
-    }
-
-    public AppBuilder addCCTView() {
-
-        cctView = CCTUseCaseFactory.create(
-                viewManagerModel,
-                cctViewModel,
-                tagDao,
-                loggedInViewModel
-        );
-
-        cardPanel.add(cctView, CCTView.getViewName());
         return this;
     }
 
