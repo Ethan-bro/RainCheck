@@ -17,15 +17,15 @@ import data_access.SupabaseTagDataAccessObject;
 import entity.Task;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.calendar.TaskClickListener;
-import interface_adapter.create_customTag.createCustomTagController;
-import interface_adapter.create_customTag.createCustomTagPresenter;
-import interface_adapter.create_customTag.createCustomTagViewModel;
+import interface_adapter.create_customTag.CCTController;
+import interface_adapter.create_customTag.CCTPresenter;
+import interface_adapter.create_customTag.CCTViewModel;
 import interface_adapter.logged_in.LoggedInState;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.logout.LogoutController;
 import data_access.LocationService;
 import data_access.WeatherApiService;
-import use_case.createCustomTag.createCustomTagInteractor;
+import use_case.createCustomTag.CCTInteractor;
 
 public class LoggedInView extends JPanel implements PropertyChangeListener {
 
@@ -130,12 +130,12 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         };
 
         manageCategoriesAction = e -> {
-            createCustomTagViewModel viewModel = new createCustomTagViewModel();
-            createCustomTagPresenter presenter = new createCustomTagPresenter(viewModel);
-            createCustomTagInteractor interactor = new createCustomTagInteractor(tagDao, presenter);
-            createCustomTagController controller = new createCustomTagController(interactor);
+            CCTViewModel viewModel = new CCTViewModel();
+            CCTPresenter presenter = new CCTPresenter(viewModel);
+            CCTInteractor interactor = new CCTInteractor(tagDao, presenter);
+            CCTController controller = new CCTController(interactor);
 
-            new createCustomTagView(viewModel, controller, loggedInViewModel);
+            new CCTView(viewModel, controller);
         };
 
     }

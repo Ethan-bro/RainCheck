@@ -2,8 +2,8 @@ package use_case.createCustomTag;
 
 import java.util.List;
 
-public class TagIcons {
-    private TagIcons() {}
+public class CustomTagIcons {
+    private CustomTagIcons() {}
 
     public static final String BOOKS = "📚";
     public static final String PLANE = "✈️";

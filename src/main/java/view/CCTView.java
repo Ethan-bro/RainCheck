@@ -1,8 +1,8 @@
 package view;
 
 import entity.CustomTag;
-import interface_adapter.create_customTag.createCustomTagController;
-import interface_adapter.create_customTag.createCustomTagViewModel;
+import interface_adapter.create_customTag.CCTController;
+import interface_adapter.create_customTag.CCTViewModel;
 import interface_adapter.logged_in.LoggedInViewModel;
 
 import javax.swing.*;
@@ -11,23 +11,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import static use_case.createCustomTag.TagIcons.IconList;
+import static use_case.createCustomTag.CustomTagIcons.IconList;
 
-public class createCustomTagView extends JPanel implements ActionListener, PropertyChangeListener {
+public class CCTView extends JPanel implements ActionListener, PropertyChangeListener {
 
     private final JFrame mainFrame;
 
     private static final String viewName = "Create Custom Tag";
-    private final createCustomTagViewModel createCustomTagViewModel;
-    private final createCustomTagController createCustomTagController;
-    private LoggedInViewModel loggedInViewModel = null;
+    private final CCTViewModel createCustomTagViewModel;
+    private final CCTController createCustomTagController;
 
-    public createCustomTagView(createCustomTagViewModel model, createCustomTagController
-            createCustomTagController, LoggedInViewModel loggedInViewModel) {
+    public CCTView(CCTViewModel model, CCTController
+            createCustomTagController) {
         this.createCustomTagViewModel = model;
         this.createCustomTagViewModel.addPropertyChangeListener(this);
         this.createCustomTagController = createCustomTagController;
-        this.loggedInViewModel = loggedInViewModel;
 
         // UI CONSTRUCTION:
 

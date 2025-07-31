@@ -4,7 +4,7 @@ import entity.CustomTag;
 
 import java.util.Map;
 
-public interface customTagDataAccessInterface {
+public interface CustomTagDataAccessInterface {
 
     Map<String, String> getCustomTags(String username);
 

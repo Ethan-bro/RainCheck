@@ -1,18 +1,18 @@
 package interface_adapter.create_customTag;
 
-public class createCustomTagState {
+public class CCTState {
     private String currTagName = "Custom Tag";
     private String currTagEmoji;
     private String errorMsg = "";
 
-    public createCustomTagState(createCustomTagState copy) {
+    public CCTState(CCTState copy) {
         currTagName = copy.currTagName;
         currTagEmoji = copy.currTagEmoji;
         errorMsg = copy.errorMsg;
     }
 
     // Because of the previous copy constructor, the default constructor must be explicit.
-    public createCustomTagState() {
+    public CCTState() {
 
     }
 
