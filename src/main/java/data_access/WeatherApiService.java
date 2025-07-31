@@ -1,5 +1,6 @@
 package data_access;
 
+import app.Main;
 import com.google.gson.*;
 import okhttp3.*;
 import use_case.weather.daily.DailyWeatherDataAccessInterface;
@@ -105,12 +106,14 @@ public class WeatherApiService implements DailyWeatherDataAccessInterface, Hourl
             return weeklyWeatherCache.get(key);
         }
 
-        System.out.println("Making an API call for " + location);
+        System.out.println("Making an API call for " + location + ", count = " + Main.getNumOfAPIcallsMade());
 
         String url = String.format(URL, location, date, apiKey);
 
         Request request = new Request.Builder().url(url).build();
         Response response = client.newCall(request).execute();
+
+        Main.incrementNumOfAPIcallsMade();
 
         if (!response.isSuccessful()) throw new IOException("Unexpected code: " + response);
 
