@@ -112,19 +112,8 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         add(bottomPanel, BorderLayout.SOUTH);
 
         // Button ActionListeners:
-        logoutButton.addActionListener(e -> {
-            if (e.getSource().equals(logoutButton)) {
-                final LoggedInState currentState = loggedInViewModel.getState();
-
-                logoutController.execute(
-                        currentState.getUsername());
-            }
-        });
-
-        addTaskButton.addActionListener(e -> {
-            viewManagerModel.setState(AddTaskView.getViewName());
-            viewManagerModel.firePropertyChanged();
-        });
+        logoutButton.addActionListener(logoutAction);
+        addTaskButton.addActionListener(addTaskAction);
 
     }
 
@@ -185,8 +174,11 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
                 weatherMap,
                 tasks,
                 taskClickListener,
-                addTaskListener,
+                addTaskAction,
+                manageCategoriesAction,
+                logoutAction
                 );
+
         ScrollableCalendar scrollableCalendar = new ScrollableCalendar(grid);
 
         centerPanel.add(scrollableCalendar, BorderLayout.CENTER);
