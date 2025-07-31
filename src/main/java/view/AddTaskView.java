@@ -149,8 +149,7 @@ public class AddTaskView extends JPanel
 
             controller.execute(name, start, end, priority, customTag, reminder);
         } else if (e.getSource() == cancelButton) {
-            // Switch back to calendar view
-            viewManagerModel.setState(LoggedInView.getViewName());
+            goBackToCalendarView();
         }
     }
 
@@ -178,7 +177,7 @@ public class AddTaskView extends JPanel
                         JOptionPane.INFORMATION_MESSAGE
                 );
                 resetForm();
-                viewManagerModel.setState(mainViewKey);
+                goBackToCalendarView();
             }
         }
     }
@@ -190,6 +189,11 @@ public class AddTaskView extends JPanel
         customTagCombo.setSelectedIndex(0);
         reminderCombo.setSelectedIndex(0);
         errorLabel.setVisible(false);
+    }
+
+    private void goBackToCalendarView() {
+        viewManagerModel.setState(mainViewKey);
+        viewManagerModel.firePropertyChanged();
     }
 
     public static String getViewName() {return viewName;}
