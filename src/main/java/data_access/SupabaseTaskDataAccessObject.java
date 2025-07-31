@@ -39,14 +39,12 @@ public class SupabaseTaskDataAccessObject implements
     public List<Task> getTasksByDateRange(String username, LocalDate start, LocalDate end) {
         List<Task> all = getTasks(username);
         List<Task> filtered = new ArrayList<>();
-
         for (Task t : all) {
             LocalDate date = t.getTaskInfo().getStartDateTime().toLocalDate();
             if (!date.isBefore(start) && !date.isAfter(end)) {
                 filtered.add(t);
             }
         }
-
         return filtered;
     }
 
@@ -65,24 +63,22 @@ public class SupabaseTaskDataAccessObject implements
                     .addHeader("Accept", "application/json")
                     .build();
 
-            Response response = client.newCall(request).execute();
-            if (!response.isSuccessful()) return new ArrayList<>();
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) return new ArrayList<>();
+                String body = Objects.requireNonNull(response.body()).string();
+                JsonArray array = JsonParser.parseString(body).getAsJsonArray();
+                if (array.isEmpty()) return new ArrayList<>();
 
-            String body = Objects.requireNonNull(response.body()).string();
-            JsonArray array = JsonParser.parseString(body).getAsJsonArray();
-            if (array.isEmpty()) return new ArrayList<>();
+                JsonObject user = array.get(0).getAsJsonObject();
+                if (!user.has("tasks") || user.get("tasks").isJsonNull()) return new ArrayList<>();
 
-            JsonObject user = array.get(0).getAsJsonObject();
-            if (!user.has("tasks") || user.get("tasks").isJsonNull()) return new ArrayList<>();
-
-            JsonArray taskArray = user.getAsJsonArray("tasks");
-            List<Task> result = new ArrayList<>();
-
-            for (JsonElement el : taskArray) {
-                result.add(jsonToTask(el.getAsJsonObject()));
+                JsonArray taskArray = user.getAsJsonArray("tasks");
+                List<Task> result = new ArrayList<>();
+                for (JsonElement el : taskArray) {
+                    result.add(jsonToTask(el.getAsJsonObject()));
+                }
+                return result;
             }
-
-            return result;
         } catch (Exception e) {
             e.printStackTrace();
             return new ArrayList<>();
@@ -118,8 +114,7 @@ public class SupabaseTaskDataAccessObject implements
 
     @Override
     public Task getTaskById(String username, TaskID taskId) {
-        List<Task> tasks = getTasks(username);
-        for (Task task : tasks) {
+        for (Task task : getTasks(username)) {
             if (task.getTaskInfo().getId().equals(taskId)) {
                 return task;
             }
@@ -134,91 +129,36 @@ public class SupabaseTaskDataAccessObject implements
 
     @Override
     public void updateTask(String username, Task updatedTask) {
-        try {
-            List<Task> tasks = getTasks(username);
-
-            // Replace the matching task
-            for (int i = 0; i < tasks.size(); i++) {
-                if (tasks.get(i).getTaskInfo().getId().equals(updatedTask.getTaskInfo().getId())) {
-                    tasks.set(i, updatedTask);
-                    break;
-                }
+        List<Task> tasks = getTasks(username);
+        for (int i = 0; i < tasks.size(); i++) {
+            if (tasks.get(i).getTaskInfo().getId().equals(updatedTask.getTaskInfo().getId())) {
+                tasks.set(i, updatedTask);
+                break;
             }
-
-            // Update task in Supabase
-            patchTasks(username, tasks);
-
-        } catch (Exception e) {
-            throw new RuntimeException("Error updating task", e);
         }
+        patchTasks(username, tasks);
     }
 
     @Override
-    public void markAsComplete (String username, TaskID taskId) {
-
-        // Retrieving task by id if it exists
+    public void markAsComplete(String username, TaskID taskId) {
         Task task = getTaskById(username, taskId);
-        if (task == null) {
-            throw new IllegalArgumentException("Task not found.");
-        }
-
-        // Setting task as completed
+        if (task == null) throw new IllegalArgumentException("Task not found.");
         task.getTaskInfo().setTaskStatus("Complete");
-
-        // Updating status of the task completion in database
         updateTask(username, task);
     }
 
     @Override
     public void deleteTask(String username, TaskID taskId) {
-
-        // Get user's current tasks
         List<Task> tasks = getTasks(username);
-
-        // Remove the task that matches the taskId
-        for (int i = 0; i < tasks.size(); i++) {
-            if (tasks.get(i).getTaskInfo().getId().equals(taskId)) {
-                tasks.remove(i);
-                break;
-            }
-        }
-
-        // Convert updated task list to JSON
-        JsonArray taskArray = new JsonArray();
-        for (Task task : tasks) {
-            taskArray.add(taskToJson(task));
-        }
-
-        JsonObject userUpdate = new JsonObject();
-        userUpdate.add("tasks", taskArray);
-
-        RequestBody body = RequestBody.create(
-                userUpdate.toString(),
-                MediaType.get("application/json")
-        );
-
-        Request request = new Request.Builder()
-                .url(baseUrl + "/rest/v1/users?username=eq." + username)
-                .addHeader("apikey", apiKey)
-                .addHeader("Authorization", "Bearer " + apiKey)
-                .addHeader("Content-Type", "application/json")
-                .patch(body)
-                .build();
-
-        try (Response response = client.newCall(request).execute()) {
-            if (!response.isSuccessful()) {
-                throw new RuntimeException("Delete failed: " + response.message());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        tasks.removeIf(t -> t.getTaskInfo().getId().equals(taskId));
+        patchTasks(username, tasks);
     }
 
     // ---------------------- Helper Conversion ----------------------
 
-    private JsonObject taskToJson (Task task){
-        JsonObject json = new JsonObject();
+    private JsonObject taskToJson(Task task) {
         TaskInfo info = task.getTaskInfo();
+        JsonObject json = new JsonObject();
 
         json.addProperty("id", info.getId().getIDValue().toString());
         json.addProperty("taskName", info.getTaskName());
@@ -236,12 +176,21 @@ public class SupabaseTaskDataAccessObject implements
             json.add("customTag", tag);
         }
 
-        // TODO: Reminder support
+        if (info.getReminder() != null) {
+            JsonObject reminder = new JsonObject();
+            reminder.addProperty("remindDateTime", info.getReminder().getRemindDateTime().toString());
+            reminder.addProperty("message", info.getReminder().getMessage());
+            json.add("reminder", reminder);
+        }
+
+        json.addProperty("weatherDescription", info.getWeatherDescription());
+        json.addProperty("weatherEmoji", info.getWeatherEmoji());
+        json.addProperty("temperature", info.getTemperature());
 
         return json;
     }
 
-    private Task jsonToTask (JsonObject json){
+    private Task jsonToTask(JsonObject json) {
         String idStr = json.get("id").getAsString();
         String taskName = json.get("taskName").getAsString();
         LocalDateTime start = LocalDateTime.parse(json.get("startDateTime").getAsString());
@@ -259,7 +208,30 @@ public class SupabaseTaskDataAccessObject implements
             tag = new CustomTag(tagJson.get("tagName").getAsString(), tagJson.get("tagEmoji").getAsString());
         }
 
-        TaskInfo info = new TaskInfo(TaskID.from(UUID.fromString(idStr)), taskName, start, end, priority, tag, null);
+        Reminder reminder = null;
+        if (json.has("reminder") && json.get("reminder").isJsonObject()) {
+            JsonObject reminderJson = json.getAsJsonObject("reminder");
+            LocalDateTime remindTime = LocalDateTime.parse(reminderJson.get("remindDateTime").getAsString());
+            String message = reminderJson.get("message").getAsString();
+            reminder = new Reminder(remindTime, message);
+        }
+
+        String weatherDescription = json.has("weatherDescription") ? json.get("weatherDescription").getAsString() : null;
+        String weatherEmoji = json.has("weatherEmoji") ? json.get("weatherEmoji").getAsString() : null;
+        String temperature = json.has("temperature") ? json.get("temperature").getAsString() : null;
+
+        TaskInfo info = new TaskInfo(
+                TaskID.from(UUID.fromString(idStr)),
+                taskName,
+                start,
+                end,
+                priority,
+                tag,
+                reminder,
+                weatherDescription,
+                weatherEmoji,
+                temperature
+        );
         info.setTaskStatus(status);
 
         return new Task(info);
