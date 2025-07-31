@@ -169,7 +169,7 @@ public class CalendarGrid extends JPanel {
         JPopupMenu sideMenu = new JPopupMenu();
 
         JMenuItem addTaskItem = new JMenuItem("Add Task");
-        JMenuItem manageCategoriesItem = new JMenuItem("Manage Categories");
+        JMenuItem manageCategoriesItem = new JMenuItem("Manage Tags");
         JMenuItem logoutItem = new JMenuItem("Log Out");
 
         addTaskItem.addActionListener(addTaskListener);
