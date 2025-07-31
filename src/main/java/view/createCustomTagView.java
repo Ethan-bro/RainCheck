@@ -143,7 +143,14 @@ public class createCustomTagView extends JPanel implements ActionListener, Prope
     public void propertyChange(PropertyChangeEvent evt) {
         String prop = evt.getPropertyName();
         if ("Success".equals(prop)) {
-            // close the window
+            // Show success message dialog first
+            JOptionPane.showMessageDialog(
+                    mainFrame,
+                    "Custom tag created successfully!",
+                    "Success",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+            // Then close the window
             mainFrame.dispose();
         }
         else if ("Failed".equals(prop)) {
