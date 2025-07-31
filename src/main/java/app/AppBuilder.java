@@ -80,6 +80,7 @@ public class AppBuilder {
         loggedInViewModel = new LoggedInViewModel();
         signupViewModel = new SignupViewModel();
         addTaskViewModel = new AddTaskViewModel(tagDao, userDao.getCurrentUsername());
+        cctViewModel = new CCTViewModel();
         return this;
     }
 
@@ -132,7 +133,6 @@ public class AppBuilder {
     }
 
     public AppBuilder addCCTView() {
-        cctViewModel = new CCTViewModel();
 
         cctView = CCTUseCaseFactory.create(
                 viewManagerModel,
