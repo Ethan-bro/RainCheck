@@ -17,6 +17,7 @@ import java.beans.PropertyChangeListener;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
 
 public class AddTaskView extends JPanel
         implements ActionListener, PropertyChangeListener {
@@ -55,31 +56,36 @@ public class AddTaskView extends JPanel
         priorityCombo   = new JComboBox<>(Priority.values());
 
         // Dynamically load user's tags from ViewModel
-        java.util.List<Object> tagOptions = viewModel.getTagOptions();
-        customTagCombo = new JComboBox<>(tagOptions.toArray());
-
+        List<Object> options = viewModel.getTagOptions();
+        customTagCombo = new JComboBox<>(options.toArray());
         customTagCombo.addActionListener(e -> {
             Object selectedItem = customTagCombo.getSelectedItem();
-            if (selectedItem instanceof String && selectedItem.equals("Create New Tag...")) {
+            if ("Create New Tag...".equals(selectedItem)) {
                 controller.createCustomTag();
-                java.util.List<Object> updatedTags = viewModel.getTagOptions();
-                customTagCombo.setModel(new DefaultComboBoxModel<>(updatedTags.toArray()));
+                customTagCombo.setModel(
+                        new DefaultComboBoxModel<>(viewModel.getTagOptions().toArray())
+                );
             }
         });
 
-        Reminder[] defaultReminders = new Reminder[] {
-                new Reminder("No Reminder"),
-                new Reminder("5 minutes before"),
-                new Reminder("10 minutes before"),
-                new Reminder("30 minutes before"),
-                new Reminder("1 hour before"),
-                new Reminder("1 day before")
+
+        Reminder[] reminderOptions = {
+                Reminder.NONE,
+                new Reminder(0),
+                new Reminder(10),
+                new Reminder(30),
+                new Reminder(60),
+                new Reminder(1440)
         };
-        reminderCombo = new JComboBox<>(defaultReminders);
+
+        reminderCombo = new JComboBox<>(reminderOptions);
+        reminderCombo.setSelectedItem(Reminder.NONE);
 
         saveButton      = new JButton("Save");
         cancelButton = new JButton("Cancel");
         errorLabel      = new JLabel();
+        errorLabel.setForeground(Color.RED);
+        errorLabel.setVisible(false);
         errorLabel.setForeground(Color.RED);
         errorLabel.setVisible(false);
 

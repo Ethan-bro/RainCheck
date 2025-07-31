@@ -1,69 +1,37 @@
 package entity;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.Objects;
-
 public class Reminder {
-    private LocalDateTime remindDateTime;
-    private String message;
+    public static final Reminder NONE = new Reminder(-1);
 
-    // Full constructor
-    public Reminder(LocalDateTime remindDateTime, String message) {
-        this.remindDateTime = Objects.requireNonNull(remindDateTime);
-        this.message = Objects.requireNonNull(message);
+    private final int minutesBefore;
+
+    public Reminder(int minutesBefore) {
+        if (minutesBefore < -1) throw new IllegalArgumentException("Reminder must be >= -1");
+        this.minutesBefore = minutesBefore;
     }
 
-    // Constructor for relative time (e.g., 10 minutes before task)
-    public Reminder(int minutesBefore, LocalDateTime taskStartTime, String message) {
-        this.remindDateTime = taskStartTime.minusMinutes(minutesBefore);
-        this.message = message;
-    }
-
-    // Constructor with just message, time can be set later
-    public Reminder(String message) {
-        this.remindDateTime = null;
-        this.message = Objects.requireNonNull(message);
-    }
-
-    public LocalDateTime getRemindDateTime() {
-        return remindDateTime;
-    }
-
-    public void setRemindDateTime(LocalDateTime remindDateTime) {
-        this.remindDateTime = remindDateTime;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    /**
-     * Calculates how many minutes before the given task start time the reminder is set.
-     * @param taskStartTime The LocalDateTime the task starts.
-     * @return Number of minutes before taskStartTime.
-     */
-    public Integer getMinutes(LocalDateTime taskStartTime) {
-        if (remindDateTime == null || taskStartTime == null) return null;
-
-        long minutes = Duration.between(remindDateTime, taskStartTime).toMinutes();
-
-        if (minutes > Integer.MAX_VALUE) return Integer.MAX_VALUE;
-        if (minutes < Integer.MIN_VALUE) return Integer.MIN_VALUE;
-
-        return (int) minutes;
-    }
-
-    public boolean isDue(LocalDateTime now) {
-        return remindDateTime != null && !now.isBefore(remindDateTime);
-    }
+    public int getMinutesBefore() {return minutesBefore;}
 
     @Override
     public String toString() {
-        return (remindDateTime != null ? "[" + remindDateTime + "] " : "") + message;
+        return switch (minutesBefore) {
+            case -1 -> "No reminder";
+            case 0 -> "At event (0 minutes)";
+            case 10 -> "10 minutes";
+            case 30 -> "30 minutes";
+            case 60 -> "1 hour";
+            case 1440 -> "1 day";
+            default -> minutesBefore + " min before";
+        };
     }
+
+    public boolean equals(Object o) {
+        return o instanceof Reminder r && r.minutesBefore == minutesBefore;
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(minutesBefore);
+    }
+
 }
