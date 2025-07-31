@@ -25,4 +25,9 @@ public class CustomTag {
     public void setTagEmoji(String tagEmoji) {
         this.tagEmoji = tagEmoji;
     }
+
+    @Override
+    public String toString() {
+        return tagEmoji + "  " + tagName;
+    }
 }
