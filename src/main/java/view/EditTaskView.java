@@ -143,19 +143,29 @@ public class EditTaskView extends JPanel implements PropertyChangeListener {
     }
 
     private Task buildUpdatedTask() {
-        String name;
-        name = nameField.getText().trim();
+        String name = nameField.getText().trim();
         LocalDateTime start = toLocalDateTime((Date) startSpinner.getValue());
         LocalDateTime end = toLocalDateTime((Date) endSpinner.getValue());
         Priority priority = (Priority) priorityCombo.getSelectedItem();
         CustomTag tag = (CustomTag) customTagCombo.getSelectedItem();
         Reminder reminder = (Reminder) reminderCombo.getSelectedItem();
 
+        TaskInfo oldInfo = existingTask.getTaskInfo();
+
         TaskInfo updatedInfo = new TaskInfo(
-                existingTask.getTaskInfo().getId(),
-                name, start, end, priority, tag, reminder
+                oldInfo.getId(),
+                name,
+                start,
+                end,
+                priority,
+                tag,
+                reminder,
+                oldInfo.getWeatherDescription(),
+                oldInfo.getWeatherEmoji(),
+                oldInfo.getTemperature()
         );
-        updatedInfo.setTaskStatus(existingTask.getTaskInfo().getTaskStatus());
+
+        updatedInfo.setTaskStatus(oldInfo.getTaskStatus());
 
         return new Task(updatedInfo);
     }
