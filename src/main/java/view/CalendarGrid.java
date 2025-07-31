@@ -5,6 +5,7 @@ import entity.Task;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.*;
@@ -12,8 +13,22 @@ import java.util.List;
 
 public class CalendarGrid extends JPanel {
 
-    public CalendarGrid(CalendarData data, Map<LocalDate, Map<String, Object>> weatherMap,
-                        List<Task> tasks, TaskClickListener taskClickListener) {
+    private final ActionListener addTaskListener;
+    private final ActionListener manageCategoriesListener;
+    private final ActionListener logoutListener;
+
+    public CalendarGrid(CalendarData data,
+                        Map<LocalDate, Map<String, Object>> weatherMap,
+                        List<Task> tasks,
+                        TaskClickListener taskClickListener,
+                        ActionListener addTaskListener,
+                        ActionListener manageCategoriesListener,
+                        ActionListener logoutListener) {
+
+        this.addTaskListener = addTaskListener;
+        this.manageCategoriesListener = manageCategoriesListener;
+        this.logoutListener = logoutListener;
+
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         List<LocalDate> weekDates = data.getWeekDates();
 
@@ -44,7 +59,9 @@ public class CalendarGrid extends JPanel {
                 } else if (row == 1) {
                     cell.setBorder(BorderFactory.createLineBorder(Color.BLACK));
                     if (col == 0) {
-                        cell.add(new JButton("☰"));
+                        JButton menuButton = new JButton("☰");
+                        menuButton.addActionListener(e -> showSideMenu(menuButton));
+                        cell.add(menuButton);
                     } else {
                         LocalDate date = weekDates.get(col - 1);
                         Map<String, Object> weather = weatherMap.get(date);
@@ -120,6 +137,24 @@ public class CalendarGrid extends JPanel {
 
             add(rowPanel);
         }
+    }
+
+    private void showSideMenu(Component invoker) {
+        JPopupMenu sideMenu = new JPopupMenu();
+
+        JMenuItem addTaskItem = new JMenuItem("Add Task");
+        JMenuItem manageCategoriesItem = new JMenuItem("Manage Categories");
+        JMenuItem logoutItem = new JMenuItem("Log Out");
+
+        addTaskItem.addActionListener(addTaskListener);
+        manageCategoriesItem.addActionListener(manageCategoriesListener);
+        logoutItem.addActionListener(logoutListener);
+
+        sideMenu.add(addTaskItem);
+        sideMenu.add(manageCategoriesItem);
+        sideMenu.add(logoutItem);
+
+        sideMenu.show(invoker, 0, invoker.getHeight());
     }
 
     private String getOrdinal(int number) {
