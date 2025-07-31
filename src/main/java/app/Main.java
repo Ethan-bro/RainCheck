@@ -3,6 +3,9 @@ package app;
 import javax.swing.*;
 
 public class Main {
+
+    public static int numOfAPIcallsMade = 0;
+
     public static void main(String[] args) {
         try {
             JFrame application = new AppBuilder()
@@ -22,5 +25,13 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void incrementNumOfAPIcallsMade() {
+        numOfAPIcallsMade ++;
+    }
+
+    public static int getNumOfAPIcallsMade() {
+        return numOfAPIcallsMade;
     }
 }

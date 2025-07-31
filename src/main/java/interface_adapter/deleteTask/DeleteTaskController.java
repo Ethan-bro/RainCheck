@@ -4,6 +4,8 @@ import entity.TaskID;
 import use_case.DeleteTask.DeleteTaskInputBoundary;
 import use_case.DeleteTask.DeleteTaskInputData;
 
+import java.io.IOException;
+
 public class DeleteTaskController {
     private final DeleteTaskInputBoundary deleteTaskInputInteractor;
     private final String username;
@@ -13,8 +15,8 @@ public class DeleteTaskController {
         this.username = username;
     }
 
-    public void deleteTask(TaskID taskId) {
+    public void deleteTask(TaskID taskId) throws IOException {
         DeleteTaskInputData inputData = new DeleteTaskInputData(username, taskId);
-        deleteTaskInputInteractor.execute(username, inputData);
+        deleteTaskInputInteractor.execute(inputData);
     }
 }

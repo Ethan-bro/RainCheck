@@ -1,5 +1,6 @@
 package data_access;
 
+import app.Main;
 import com.google.gson.*;
 import okhttp3.*;
 import use_case.weather.daily.DailyWeatherDataAccessInterface;
@@ -18,6 +19,7 @@ public class WeatherApiService implements DailyWeatherDataAccessInterface, Hourl
     private final String apiKey;
     private final OkHttpClient client = new OkHttpClient();
     private final Gson gson = new Gson();
+    private final Map<String, JsonObject> weeklyWeatherCache = new HashMap<>();
 
     private static final String URL =
             "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/%s/%s?unitGroup=metric&iconSet=icons2&key=%s&contentType=json";
@@ -98,20 +100,27 @@ public class WeatherApiService implements DailyWeatherDataAccessInterface, Hourl
     }
 
     private JsonObject getVisualCrossingJSONBody(String location, LocalDate date) throws IOException {
-        String url = String.format(
-                URL,
-                location,
-                date.toString(),
-                apiKey
-        );
+        String key = location + "-" + date.toString();
+
+        if (weeklyWeatherCache.containsKey(key)) {
+            return weeklyWeatherCache.get(key);
+        }
+
+        System.out.println("Making an API call for " + location + ", count = " + Main.getNumOfAPIcallsMade());
+
+        String url = String.format(URL, location, date, apiKey);
 
         Request request = new Request.Builder().url(url).build();
         Response response = client.newCall(request).execute();
 
+        Main.incrementNumOfAPIcallsMade();
+
         if (!response.isSuccessful()) throw new IOException("Unexpected code: " + response);
 
         if (response.body() != null) {
-            return JsonParser.parseString(response.body().string()).getAsJsonObject();
+            JsonObject json = JsonParser.parseString(response.body().string()).getAsJsonObject();
+            weeklyWeatherCache.put(key, json);
+            return json;
         }
 
         return null;
