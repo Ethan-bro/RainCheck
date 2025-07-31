@@ -15,6 +15,8 @@ import static use_case.createCustomTag.TagIcons.IconList;
 
 public class createCustomTagView extends JPanel implements ActionListener, PropertyChangeListener {
 
+    private final JFrame mainFrame;
+
     private static final String viewName = "Create Custom Tag";
     private final createCustomTagViewModel createCustomTagViewModel;
     private final createCustomTagController createCustomTagController;
@@ -30,7 +32,7 @@ public class createCustomTagView extends JPanel implements ActionListener, Prope
         // UI CONSTRUCTION:
 
         // Main Frame:
-        final JFrame mainFrame = new JFrame(viewName);
+        this.mainFrame = new JFrame(viewName);
         mainFrame.setTitle(viewName);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setSize(700, 700);
@@ -142,7 +144,7 @@ public class createCustomTagView extends JPanel implements ActionListener, Prope
         String prop = evt.getPropertyName();
         if ("Success".equals(prop)) {
             // close the window
-            SwingUtilities.getWindowAncestor(this).dispose();
+            mainFrame.dispose();
         }
         else if ("Failed".equals(prop)) {
             // model tells us why it failed
