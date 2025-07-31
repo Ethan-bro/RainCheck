@@ -8,8 +8,21 @@ public class Reminder {
     private LocalDateTime remindDateTime;
     private String message;
 
+    // Full constructor
     public Reminder(LocalDateTime remindDateTime, String message) {
         this.remindDateTime = Objects.requireNonNull(remindDateTime);
+        this.message = Objects.requireNonNull(message);
+    }
+
+    // Constructor for relative time (e.g., 10 minutes before task)
+    public Reminder(int minutesBefore, LocalDateTime taskStartTime, String message) {
+        this.remindDateTime = taskStartTime.minusMinutes(minutesBefore);
+        this.message = message;
+    }
+
+    // Constructor with just message, time can be set later
+    public Reminder(String message) {
+        this.remindDateTime = null;
         this.message = Objects.requireNonNull(message);
     }
 
@@ -51,6 +64,6 @@ public class Reminder {
 
     @Override
     public String toString() {
-        return "[" + remindDateTime.toString() + "] " + message;
+        return (remindDateTime != null ? "[" + remindDateTime + "] " : "") + message;
     }
 }
