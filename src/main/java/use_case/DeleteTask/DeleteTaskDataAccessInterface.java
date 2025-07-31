@@ -1,6 +1,8 @@
 package use_case.DeleteTask;
 
 import entity.Task;
+import entity.TaskID;
+
 import java.io.IOException;
 
 /**
@@ -14,7 +16,7 @@ public interface DeleteTaskDataAccessInterface {
      * @param taskId the unique identifier of the task to retrieve
      * @return the task as a JsonObject if found, otherwise null
      */
-    Task getTaskById(String username, int taskId) throws IOException;
+    Task getTaskById(String username, TaskID taskId) throws IOException;
 
     /**
      * Retrieves the task with the given ID from the current user's task list.
@@ -23,5 +25,5 @@ public interface DeleteTaskDataAccessInterface {
      */
     void updateUsersTasks(String username, Task task);
 
-    void deleteTask(String username, int taskId) throws IOException;
+    void deleteTask(String username, TaskID taskId);
 }

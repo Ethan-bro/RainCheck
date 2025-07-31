@@ -127,6 +127,12 @@ public class SupabaseTaskDataAccessObject implements
         return null;
     }
 
+    @Override
+    public void updateUsersTasks(String username, Task task) {
+        updateTask(username, task);
+    }
+
+    @Override
     public void updateTask(String username, Task updatedTask) {
         try {
             List<Task> tasks = getTasks(username);
