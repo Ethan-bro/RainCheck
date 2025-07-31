@@ -36,7 +36,8 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     private LogoutController logoutController;
     private final JPanel centerPanel;
     private final CalendarData calendarData;
-    private final Map<LocalDate, Map<String, Object>> weatherMap;
+    private Map<LocalDate, Map<String, Object>> weatherMap = null;
+    private Map<LocalDate, List<Map<String, String>>> hourlyWeatherMap = null;
     private final SupabaseTagDataAccessObject tagDao;
 
     private ActionListener logoutAction;
@@ -85,7 +86,12 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         add(centerPanel, BorderLayout.CENTER);
 
         this.calendarData = new CalendarData();
-        this.weatherMap = getWeatherMapForCalendarData(calendarData);
+        if (this.weatherMap == null) {
+            this.weatherMap = getDailyWeatherMapForCalendarData(calendarData);
+        }
+        if (hourlyWeatherMap == null) {
+            this.hourlyWeatherMap = getHourlyWeatherMapForCalendarData(calendarData);
+        }
 
         LocalDate startDate = this.calendarData.getWeekDates().getFirst();
         LocalDate endDate = startDate.plusDays(7);
@@ -140,7 +146,7 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
 
     }
 
-    private Map<LocalDate, Map<String, Object>> getWeatherMapForCalendarData(CalendarData calendarData) throws IOException {
+    private Map<LocalDate, Map<String, Object>> getDailyWeatherMapForCalendarData(CalendarData calendarData) throws IOException {
         Map<LocalDate, Map<String, Object>> map = new HashMap<>();
 
         String city = LocationService.getUserCity(); // Fetching the user's current location (city e.g., Toronto)
@@ -151,6 +157,20 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
             map.put(date, weatherService.getDailyWeather(city, date));
         }
          return map;
+    }
+
+    private Map<LocalDate, List<Map<String, String>>> getHourlyWeatherMapForCalendarData(CalendarData calendarData) throws IOException {
+        Map<LocalDate, List<Map<String, String>>> map = new HashMap<>();
+
+        String city = LocationService.getUserCity(); // Reuse location
+        WeatherApiService weatherService = new WeatherApiService();
+
+        for (LocalDate date : calendarData.getWeekDates()) {
+            List<Map<String, String>> hourlyData = weatherService.getHourlyWeather(city, date, 0, 23);
+            map.put(date, hourlyData);
+        }
+
+        return map;
     }
 
     private void rebuildCalendarWithTasks(List<Task> tasks) {
