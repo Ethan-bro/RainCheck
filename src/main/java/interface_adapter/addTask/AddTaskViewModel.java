@@ -4,7 +4,6 @@ import entity.CustomTag;
 import interface_adapter.ViewModel;
 import use_case.createCustomTag.CustomTagDataAccessInterface;
 
-import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -27,11 +26,6 @@ public class AddTaskViewModel extends ViewModel<AddTaskState> {
                 .collect(Collectors.toList());
         tags.add("Create New Tag...");
         return tags;
-    }
-
-    @Override
-    public AddTaskState getState() {
-        return super.getState();
     }
 
 }
