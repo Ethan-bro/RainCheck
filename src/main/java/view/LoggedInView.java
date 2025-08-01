@@ -51,17 +51,27 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     private ActionListener addTaskAL;
     private ActionListener manageTagsAL;
 
+    private MarkTaskCompleteController markTaskCompleteController;
+    private DeleteTaskController deleteTaskController;
+    private EditTaskController editTaskController;
+
     public LoggedInView(LoggedInViewModel loggedInViewModel,
                         LogoutController logoutController,
                         ViewManagerModel viewManagerModel,
                         SupabaseTagDataAccessObject tagDao,
-                        AddTaskViewModel addTaskViewModel) throws IOException {
+                        AddTaskViewModel addTaskViewModel,
+                        MarkTaskCompleteController markTaskCompleteController,
+                        DeleteTaskController deleteTaskController,
+                        EditTaskController editTaskController) throws IOException {
         this.loggedInViewModel = loggedInViewModel;
         this.loggedInViewModel.addPropertyChangeListener(this);
         this.viewManagerModel = viewManagerModel;
         this.logoutController = logoutController;
         this.tagDao = tagDao;
         this.addTaskViewModel = addTaskViewModel;
+        this.markTaskCompleteController = markTaskCompleteController;
+        this.deleteTaskController = deleteTaskController;
+        this.editTaskController = editTaskController;
 
         setupActionListeners();
 
@@ -194,16 +204,16 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
 
         TaskClickListener taskClickListener = task -> {
             TaskViewModel taskViewModel = new TaskViewModel(task);
-            TaskBox taskBox = new TaskBox(taskViewModel, taskController);
-            JOptionPane.showMessageDialog(this, box, "Task Details",
+            TaskBox taskBox = new TaskBox(
+                    taskViewModel,
+                    markTaskCompleteController,
+                    deleteTaskController,
+                    editTaskController,
+                    viewManagerModel
+            );
+            JOptionPane.showMessageDialog(this, taskBox, "Task Details",
                     JOptionPane.PLAIN_MESSAGE);
         };
-
-//         public TaskBox(TaskViewModel taskViewModel,
-//                MarkTaskCompleteController markTaskCompleteController,
-//                DeleteTaskController deleteTaskController,
-//                EditTaskController editTaskController,
-//                ViewManagerModel viewManagerModel) {
 
         CalendarGrid grid = new CalendarGrid(
                 calendarData,

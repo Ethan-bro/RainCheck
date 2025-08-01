@@ -13,8 +13,8 @@ public class EditTaskViewModel extends ViewModel<EditTaskState> {
     private final CustomTagDataAccessInterface tagDao;
     private String username;
 
-    public EditTaskViewModel(String viewName, CustomTagDataAccessInterface tagDao) {
-        super(viewName);
+    public EditTaskViewModel(CustomTagDataAccessInterface tagDao) {
+        super("Edit Task");
         this.tagDao = tagDao;
         setState(new EditTaskState());
     }

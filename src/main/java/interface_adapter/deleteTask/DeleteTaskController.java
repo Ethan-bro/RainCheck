@@ -8,10 +8,13 @@ import java.io.IOException;
 
 public class DeleteTaskController {
     private final DeleteTaskInputBoundary deleteTaskInputInteractor;
-    private final String username;
+    private String username;
 
-    public DeleteTaskController(String username, DeleteTaskInputBoundary deleteTaskInputInteractor) {
+    public DeleteTaskController(DeleteTaskInputBoundary deleteTaskInputInteractor) {
         this.deleteTaskInputInteractor = deleteTaskInputInteractor;
+    }
+
+    public void setUsername(String username) {
         this.username = username;
     }
 

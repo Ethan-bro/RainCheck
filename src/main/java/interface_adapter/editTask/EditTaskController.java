@@ -7,15 +7,18 @@ import interface_adapter.ViewManagerModel;
 public class EditTaskController {
 
     private final EditTaskInputBoundary editTaskInputInteractor;
-    private final String username;
+    private String username;
     private Task currentTask;
     private final ViewManagerModel viewManagerModel;
 
 
-    public EditTaskController(EditTaskInputBoundary editTaskInputInteractor, String username, ViewManagerModel viewManagerModel) {
+    public EditTaskController(EditTaskInputBoundary editTaskInputInteractor, ViewManagerModel viewManagerModel) {
         this.editTaskInputInteractor = editTaskInputInteractor;
-        this.username = username;
         this.viewManagerModel = viewManagerModel;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public void editTask(Task updatedTask) {
