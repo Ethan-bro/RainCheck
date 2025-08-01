@@ -232,4 +232,22 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
     public ViewManagerModel getViewManagerModel() {
         return viewManagerModel;
     }
+
+    private ImageIcon loadWeatherIcon(String iconName) {
+        String iconPath = "/weatherIcons/" + iconName + ".png"; // Make sure this matches your resource folder
+
+        try {
+            java.net.URL imgURL = getClass().getResource(iconPath);
+            if (imgURL != null) {
+                Image img = new ImageIcon(imgURL).getImage();
+                Image scaledImg = img.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+                return new ImageIcon(scaledImg);
+            } else {
+                System.err.println("Couldn't find icon: " + iconPath);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
