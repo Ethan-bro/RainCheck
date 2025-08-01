@@ -1,7 +1,6 @@
 package view;
 
 import javax.swing.*;
-
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -9,30 +8,25 @@ import java.io.IOException;
 import java.util.Objects;
 
 import entity.Priority;
-import entity.Task;
-import entity.TaskInfo;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.deleteTask.DeleteTaskController;
-import interface_adapter.markTaskComplete.MarkTaskCompleteController;
 import interface_adapter.editTask.EditTaskController;
+import interface_adapter.markTaskComplete.MarkTaskCompleteController;
 import interface_adapter.task.TaskViewModel;
 
-//*
-/* The View for a single task box.
-*/
 public class TaskBox extends JPanel implements PropertyChangeListener {
+
     private final JLabel tagNameLabel;
     private final JLabel tagEmojiLabel;
     private final JLabel titleLabel;
-    private final JLabel tempLabel;
     private final JLabel weatherDescriptionLabel;
     private final JLabel weatherEmojiLabel;
+
     private final MarkTaskCompleteController markTaskCompleteController;
     private final DeleteTaskController deleteTaskController;
     private final EditTaskController editTaskController;
     private final TaskViewModel taskViewModel;
     private final ViewManagerModel viewManagerModel;
-
 
     public TaskBox(TaskViewModel taskViewModel,
                    MarkTaskCompleteController markTaskCompleteController,
@@ -40,215 +34,168 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
                    EditTaskController editTaskController,
                    ViewManagerModel viewManagerModel) {
         this.taskViewModel = taskViewModel;
-        this.editTaskController = editTaskController;
         this.markTaskCompleteController = markTaskCompleteController;
         this.deleteTaskController = deleteTaskController;
+        this.editTaskController = editTaskController;
         this.viewManagerModel = viewManagerModel;
 
-        // Listen for state updates
         taskViewModel.addPropertyChangeListener(this);
 
-        // Creating main panel
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        this.setMaximumSize(new Dimension(260, Integer.MAX_VALUE));
+        setLayout(new BorderLayout(0, 5));
+        setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(200, 200, 200)),
+                BorderFactory.createEmptyBorder(15, 15, 15, 15)
+        ));
+        setPreferredSize(new Dimension(260, 160));
+        setOpaque(true);
+        updateDisplayColour();
 
-        // Creating the topmost panel with the tag, tag emoji, edit button, and delete button
-        JPanel topPanel = new JPanel();
-        topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
+        // TOP: Weather Panel (centered)
+        JPanel weatherPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
+        weatherPanel.setOpaque(false);
+        weatherEmojiLabel = new JLabel();
+        weatherEmojiLabel.setPreferredSize(new Dimension(30, 30));
+        weatherDescriptionLabel = new JLabel();
+        weatherDescriptionLabel.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        weatherPanel.add(weatherEmojiLabel);
+        weatherPanel.add(weatherDescriptionLabel);
+        add(weatherPanel, BorderLayout.NORTH);
 
-        // Creating the tag panel
-        JPanel tagPanel = new JPanel();
-        tagPanel.setLayout(new BoxLayout(tagPanel, BoxLayout.X_AXIS));
-        tagPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        // CENTER: Task Title and Tag (centered vertically)
+        JPanel centerPanel = new JPanel();
+        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
+        centerPanel.setOpaque(false);
 
-        tagNameLabel = new JLabel();
-        tagPanel.add(tagNameLabel);
+        // Add vertical glue to push content to center
+        centerPanel.add(Box.createVerticalGlue());
 
+        JPanel titleTagPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
+        titleTagPanel.setOpaque(false);
         tagEmojiLabel = new JLabel();
-        tagPanel.add(tagEmojiLabel);
+        tagNameLabel = new JLabel();
+        titleLabel = new JLabel(taskViewModel.getTask().getTaskInfo().getTaskName());
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        titleTagPanel.add(tagEmojiLabel);
+        titleTagPanel.add(tagNameLabel);
+        titleTagPanel.add(titleLabel);
 
-        // Creating the button panel
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-        buttonPanel.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        centerPanel.add(titleTagPanel);
+        centerPanel.add(Box.createVerticalGlue());
 
-        // Edit button with pencil emoji
-        JButton editButton = new JButton("✏️");
-        editButton.setPreferredSize(new Dimension(30, 30));
-        editButton.setFont(editButton.getFont().deriveFont(18f));
-        editButton.setMargin(new Insets(0, 0, 0, 0));
-        editButton.setFocusPainted(false);
-        editButton.setContentAreaFilled(false);
-        editButton.setBorderPainted(false);
-        editButton.setOpaque(false);
-        editButton.addActionListener(evt -> {
+        add(centerPanel, BorderLayout.CENTER);
+
+        // BOTTOM: Buttons Panel (centered)
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
+        buttonPanel.setOpaque(false);
+
+        JButton completeButton = createStyledButton("✔", "Complete", new Color(76, 175, 80), e ->
+                markTaskCompleteController.markAsComplete(taskViewModel.getTask().getTaskInfo().getId())
+        );
+
+        JButton editButton = createStyledButton("✎", "Edit", new Color(33, 150, 243), e -> {
             editTaskController.setCurrentTask(taskViewModel.getTask());
             editTaskController.switchToEditTaskView(viewManagerModel);
         });
-        buttonPanel.add(editButton);
 
-        // Delete button with trash emoji
-        JButton deleteButton = new JButton("🗑️");
-        deleteButton.setPreferredSize(new Dimension(30, 30));
-        deleteButton.setFont(deleteButton.getFont().deriveFont(18f));
-        deleteButton.setMargin(new Insets(0, 0, 0, 0));
-        deleteButton.setFocusPainted(false);
-        deleteButton.setContentAreaFilled(false);
-        deleteButton.setBorderPainted(false);
-        deleteButton.setOpaque(false);
-        deleteButton.addActionListener(evt ->
-        {
+        JButton deleteButton = createStyledButton("🗑", "Delete", new Color(244, 67, 54), e -> {
             try {
                 deleteTaskController.deleteTask(taskViewModel.getTask().getTaskInfo().getId());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            } catch (IOException ex) {
+                ex.printStackTrace();
             }
         });
+
+        buttonPanel.add(completeButton);
+        buttonPanel.add(editButton);
         buttonPanel.add(deleteButton);
+        add(buttonPanel, BorderLayout.SOUTH);
 
-        // Checkmark button with checkmark emoji
-        JButton checkmarkButton = new JButton("✔️");
-        checkmarkButton.setPreferredSize(new Dimension(30, 30));
-        checkmarkButton.setFont(checkmarkButton.getFont().deriveFont(18f));
-        checkmarkButton.setMargin(new Insets(0, 0, 0, 0));
-        checkmarkButton.setFocusPainted(false);
-        checkmarkButton.setContentAreaFilled(false);
-        checkmarkButton.setBorderPainted(false);
-        checkmarkButton.setOpaque(false);
-        checkmarkButton.addActionListener(evt ->
-                markTaskCompleteController.markAsComplete(taskViewModel.getTask().getTaskInfo().getId()));
-        buttonPanel.add(checkmarkButton);
-
-        topPanel.add(tagPanel);
-        topPanel.add(Box.createHorizontalGlue());
-        topPanel.add(buttonPanel);
-
-        // Creating the middle panel with title of the task left-aligned
-        JPanel middlePanel = new JPanel();
-        middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.X_AXIS));
-        middlePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-        titleLabel = new JLabel(taskViewModel.getTask().getTaskInfo().getTaskName());
-        middlePanel.add(titleLabel);
-        middlePanel.add(Box.createHorizontalGlue());
-
-        // Creating the bottom panel with the weather
-        JPanel bottomPanel = new JPanel();
-        bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
-
-        // Creating the temperature panel
-        JPanel tempPanel = new JPanel();
-        tempPanel.setLayout(new BoxLayout(tempPanel, BoxLayout.X_AXIS));
-        tempPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        tempLabel = new JLabel(taskViewModel.getTask().getTaskInfo().getTemperature());
-        tempPanel.add(tempLabel);
-
-        // Creating the weather panel with description and emoji
-        JPanel weatherPanel = new JPanel();
-        weatherPanel.setLayout(new BoxLayout(weatherPanel, BoxLayout.X_AXIS));
-        weatherPanel.setAlignmentX(Component.RIGHT_ALIGNMENT);
-        weatherDescriptionLabel = new JLabel(taskViewModel.getTask().getTaskInfo().getWeatherDescription());
-        weatherPanel.add(weatherDescriptionLabel);
-        weatherEmojiLabel = new JLabel(taskViewModel.getTask().getTaskInfo().getWeatherIconName());
-        weatherPanel.add(weatherEmojiLabel);
-
-        bottomPanel.add(tempPanel);
-        bottomPanel.add(Box.createHorizontalGlue());
-        bottomPanel.add(weatherPanel);
-
-        // Putting together all the panels
-        topPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        this.add(topPanel);
-        this.add(middlePanel);
-        bottomPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        this.add(bottomPanel);
-
-        updateDisplayColour();
-
-        tagPanel.setOpaque(false);
-        buttonPanel.setOpaque(false);
-        topPanel.setOpaque(false);
-        middlePanel.setOpaque(false);
-        tempPanel.setOpaque(false);
-        weatherPanel.setOpaque(false);
-        bottomPanel.setOpaque(false);
-        this.setOpaque(true);
-        this.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+        updateContents();
     }
 
-    /**
-     * Updates the colour of the task box (main panel) based on priority and completion.
-     */
+    private JButton createStyledButton(String text, String tooltip, Color bgColor, java.awt.event.ActionListener action) {
+        JButton button = new JButton(text);
+        button.setToolTipText(tooltip);
+        button.setFont(new Font("Segoe UI Symbol", Font.PLAIN, 14));
+        button.setFocusPainted(false);
+        button.setContentAreaFilled(false);
+        button.setOpaque(true);
+        button.setBackground(bgColor);
+        button.setForeground(Color.WHITE);
+        button.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(bgColor.darker()),
+                BorderFactory.createEmptyBorder(5, 10, 5, 10)
+        ));
+        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        button.addActionListener(action);
+
+        // Hover effects
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                button.setBackground(bgColor.brighter());
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                button.setBackground(bgColor);
+            }
+        });
+
+        return button;
+    }
+
     private void updateDisplayColour() {
-        if (Objects.equals(taskViewModel.getTask().getTaskInfo().getTaskStatus(), "Complete")) {
-        this.setBackground(Color.LIGHT_GRAY);
+        String status = taskViewModel.getTask().getTaskInfo().getTaskStatus();
+        Priority priority = taskViewModel.getTask().getTaskInfo().getPriority();
+
+        if (Objects.equals(status, "Complete")) {
+            setBackground(new Color(240, 240, 240));
+        } else if (priority == Priority.HIGH) {
+            setBackground(new Color(255, 235, 238)); // Lighter red
+        } else if (priority == Priority.MEDIUM) {
+            setBackground(new Color(255, 243, 224)); // Lighter orange
+        } else if (priority == Priority.LOW) {
+            setBackground(new Color(255, 253, 231)); // Lighter yellow
         } else {
-            if (taskViewModel.getTask().getTaskInfo().getPriority().equals(Priority.HIGH)) {
-                this.setBackground(Color.RED);
-            }
-            if (taskViewModel.getTask().getTaskInfo().getPriority().equals(Priority.MEDIUM)) {
-                this.setBackground(Color.ORANGE);
-            }
-            if (taskViewModel.getTask().getTaskInfo().getPriority().equals(Priority.LOW)) {
-                this.setBackground(Color.YELLOW);
-            }
+            setBackground(Color.WHITE);
         }
     }
 
-    /**
-     * @param evt Updating task box to updated task based on changes in
-     *            TaskViewModel.
-     */
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        if (taskViewModel.getTask().getTaskInfo().getTag() != null) {
-            tagNameLabel.setText(taskViewModel.getTask().getTaskInfo().getTag().getTagName());
-            tagEmojiLabel.setText(taskViewModel.getTask().getTaskInfo().getTag().getTagEmoji());
-        }
-        titleLabel.setText(taskViewModel.getTask().getTaskInfo().getTaskName());
-        tempLabel.setText(taskViewModel.getTask().getTaskInfo().getTemperature());
+    private void updateContents() {
+        var taskInfo = taskViewModel.getTask().getTaskInfo();
 
-        weatherDescriptionLabel.setText(taskViewModel.getTask().getTaskInfo().getWeatherDescription());
-        String iconName = taskViewModel.getTask().getTaskInfo().getWeatherIconName();
+        if (taskInfo.getTag() != null) {
+            tagNameLabel.setText(taskInfo.getTag().getTagName());
+            tagEmojiLabel.setText(taskInfo.getTag().getTagEmoji());
+            tagNameLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        } else {
+            tagNameLabel.setText("");
+            tagEmojiLabel.setText("");
+        }
+
+        titleLabel.setText(taskInfo.getTaskName());
+        weatherDescriptionLabel.setText(taskInfo.getWeatherDescription());
+
+        String iconName = taskInfo.getWeatherIconName();
         if (iconName != null && !iconName.isEmpty()) {
             ImageIcon icon = loadWeatherIcon(iconName);
             if (icon != null) {
                 weatherEmojiLabel.setIcon(icon);
-                weatherEmojiLabel.setText(""); // Clear leftover text
+                weatherEmojiLabel.setText("");
             } else {
-                weatherEmojiLabel.setText(iconName); // Fallback to text if not found
+                weatherEmojiLabel.setIcon(null);
+                weatherEmojiLabel.setText(iconName);
             }
         } else {
             weatherEmojiLabel.setIcon(null);
             weatherEmojiLabel.setText("");
         }
 
-
         updateDisplayColour();
-
         revalidate();
         repaint();
     }
 
-    public DeleteTaskController getDeleteTaskController() {
-        return deleteTaskController;
-    }
-
-    public MarkTaskCompleteController getMarkTaskCompleteController() {
-        return markTaskCompleteController;
-    }
-
-    public EditTaskController getEditTaskController() {
-        return editTaskController;
-    }
-
-    public ViewManagerModel getViewManagerModel() {
-        return viewManagerModel;
-    }
-
     private ImageIcon loadWeatherIcon(String iconName) {
-        String iconPath = "/weatherIcons/" + iconName + ".png"; // Make sure this matches your resource folder
-
+        String iconPath = "/weatherIcons/" + iconName + ".png";
         try {
             java.net.URL imgURL = getClass().getResource(iconPath);
             if (imgURL != null) {
@@ -256,11 +203,16 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
                 Image scaledImg = img.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
                 return new ImageIcon(scaledImg);
             } else {
-                System.err.println("Couldn't find icon: " + iconPath);
+                System.err.println("Could not find icon: " + iconPath);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        updateContents();
     }
 }
