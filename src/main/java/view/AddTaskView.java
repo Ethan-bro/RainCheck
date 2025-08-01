@@ -1,5 +1,6 @@
 package view;
 
+import app.CCTUseCaseFactory;
 import entity.CustomTag;
 import entity.Priority;
 import entity.Reminder;
@@ -7,7 +8,9 @@ import interface_adapter.ViewManagerModel;
 import interface_adapter.addTask.AddTaskController;
 import interface_adapter.addTask.AddTaskViewModel;
 import interface_adapter.addTask.AddTaskState;
+import interface_adapter.create_customTag.CCTViewModel;
 import interface_adapter.logged_in.LoggedInViewModel;
+import use_case.createCustomTag.CustomTagDataAccessInterface;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,6 +30,8 @@ public class AddTaskView extends JPanel
     private final AddTaskController controller;
     private final AddTaskViewModel  viewModel;
     private final LoggedInViewModel loggedInViewModel;
+    private final CCTViewModel cctViewModel;
+    private final CustomTagDataAccessInterface tagDao;
     private final ViewManagerModel viewManagerModel;
     private final String mainViewKey;
     private static final String viewName = "Add Task";
@@ -45,12 +50,16 @@ public class AddTaskView extends JPanel
     public AddTaskView(AddTaskController controller,
                        AddTaskViewModel viewModel,
                        LoggedInViewModel loggedInViewModel,
+                       CustomTagDataAccessInterface tagDao,
                        ViewManagerModel viewManagerModel) {
         this.controller = controller;
         this.viewModel  = viewModel;
         this.viewModel.addPropertyChangeListener(this);
         this.loggedInViewModel = loggedInViewModel;
         this.viewManagerModel = viewManagerModel;
+        this.cctViewModel = new CCTViewModel();
+        this.cctViewModel.addPropertyChangeListener(this);
+        this.tagDao = tagDao;
         this.mainViewKey = LoggedInView.getViewName();
         this.viewModel.addPropertyChangeListener(this);
 
@@ -66,7 +75,12 @@ public class AddTaskView extends JPanel
         customTagCombo.addActionListener(e -> {
             Object selectedItem = customTagCombo.getSelectedItem();
             if ("Create New Tag...".equals(selectedItem)) {
-                controller.createCustomTag();
+                CCTUseCaseFactory.create(
+                        viewManagerModel,
+                        cctViewModel,
+                        tagDao,
+                        loggedInViewModel);
+
                 customTagCombo.setModel(
                         new DefaultComboBoxModel<>(viewModel.getTagOptions().toArray())
                 );
