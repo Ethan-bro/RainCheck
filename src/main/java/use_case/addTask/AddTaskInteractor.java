@@ -3,6 +3,7 @@ package use_case.addTask;
 import data_access.LocationService;
 import data_access.SupabaseTaskDataAccessObject;
 import data_access.WeatherApiService;
+import entity.Reminder;
 import entity.Task;
 import entity.TaskID;
 import entity.TaskInfo;
@@ -17,19 +18,28 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+import use_case.notification.NotificationDataAccessInterface;
+import use_case.notification.ScheduleNotificationInputData;
+import use_case.notification.ScheduleNotificationInteractor;
+
+
 public class AddTaskInteractor implements AddTaskInputBoundary {
 
     private final TaskDataAccessInterface dao;
     private final AddTaskOutputBoundary addTaskPresenter;
     private final TaskIDGenerator taskIDGenerator;
     private final WeatherApiService weatherApiService;
+    private final ScheduleNotificationInteractor notificationInteractor;
+
 
     public AddTaskInteractor(TaskDataAccessInterface dao, TaskIDGenerator taskIDGenerator,
-                             AddTaskOutputBoundary addTaskPresenter, WeatherApiService weatherApiService) {
+                             AddTaskOutputBoundary addTaskPresenter, WeatherApiService weatherApiService,
+                              ScheduleNotificationInteractor notificationInteractor) {
         this.dao = dao;
         this.taskIDGenerator = taskIDGenerator;
         this.addTaskPresenter = addTaskPresenter;
         this.weatherApiService = weatherApiService;
+        this.notificationInteractor = notificationInteractor;
     }
 
     @Override
@@ -57,6 +67,7 @@ public class AddTaskInteractor implements AddTaskInputBoundary {
             addTaskPresenter.prepareFailView(failedOutput);
             return;
         }
+
 
         TaskID newID = taskIDGenerator.generateTaskID();
 
@@ -94,6 +105,16 @@ public class AddTaskInteractor implements AddTaskInputBoundary {
         Task newTask = new Task(newTaskInfo);
 
         dao.addTask(username, newTask);
+
+        if (!inputData.getReminder().equals(Reminder.NONE)) {
+            ScheduleNotificationInputData notificationInput = new ScheduleNotificationInputData(
+                    newTask.getTaskInfo().getId().toString(), // Use the newly created task
+                    username,
+                    inputData.getReminder()
+            );
+            notificationInteractor.scheduleNotification(notificationInput);
+        }
+
 
         AddTaskOutputData outputData = new AddTaskOutputData(newTask);
         addTaskPresenter.prepareSuccessView(outputData);
