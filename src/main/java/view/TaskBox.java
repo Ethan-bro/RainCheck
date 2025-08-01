@@ -15,7 +15,6 @@ import interface_adapter.markTaskComplete.MarkTaskCompleteController;
 import interface_adapter.task.TaskViewModel;
 
 public class TaskBox extends JPanel implements PropertyChangeListener {
-
     private final JLabel tagNameLabel;
     private final JLabel tagEmojiLabel;
     private final JLabel titleLabel;
@@ -50,7 +49,6 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         setOpaque(true);
         updateDisplayColour();
 
-        // TOP: Weather Panel (centered)
         JPanel weatherPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
         weatherPanel.setOpaque(false);
         weatherEmojiLabel = new JLabel();
@@ -61,12 +59,9 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         weatherPanel.add(weatherDescriptionLabel);
         add(weatherPanel, BorderLayout.NORTH);
 
-        // CENTER: Task Title and Tag (centered vertically)
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
         centerPanel.setOpaque(false);
-
-        // Add vertical glue to push content to center
         centerPanel.add(Box.createVerticalGlue());
 
         JPanel titleTagPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
@@ -81,23 +76,21 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
 
         centerPanel.add(titleTagPanel);
         centerPanel.add(Box.createVerticalGlue());
-
         add(centerPanel, BorderLayout.CENTER);
 
-        // BOTTOM: Buttons Panel (centered)
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
         buttonPanel.setOpaque(false);
 
-        JButton completeButton = createStyledButton("✔", "Complete", new Color(76, 175, 80), e ->
+        JButton completeButton = createImageButton("complete.png", "Complete", new Color(76, 175, 80), e ->
                 markTaskCompleteController.markAsComplete(taskViewModel.getTask().getTaskInfo().getId())
         );
 
-        JButton editButton = createStyledButton("✎", "Edit", new Color(33, 150, 243), e -> {
+        JButton editButton = createImageButton("edit.png", "Edit", new Color(33, 150, 243), e -> {
             editTaskController.setCurrentTask(taskViewModel.getTask());
             editTaskController.switchToEditTaskView(viewManagerModel);
         });
 
-        JButton deleteButton = createStyledButton("🗑", "Delete", new Color(244, 67, 54), e -> {
+        JButton deleteButton = createImageButton("delete.png", "Delete", new Color(244, 67, 54), e -> {
             try {
                 deleteTaskController.deleteTask(taskViewModel.getTask().getTaskInfo().getId());
             } catch (IOException ex) {
@@ -113,10 +106,17 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         updateContents();
     }
 
-    private JButton createStyledButton(String text, String tooltip, Color bgColor, java.awt.event.ActionListener action) {
-        JButton button = new JButton(text);
+    private JButton createImageButton(String iconName, String tooltip, Color bgColor, java.awt.event.ActionListener action) {
+        JButton button = new JButton();
         button.setToolTipText(tooltip);
-        button.setFont(new Font("Segoe UI Symbol", Font.PLAIN, 14));
+
+        ImageIcon icon = loadIcon("/TaskBoxIcons/" + iconName);
+        if (icon != null) {
+            button.setIcon(icon);
+        } else {
+            button.setText(tooltip);
+        }
+
         button.setFocusPainted(false);
         button.setContentAreaFilled(false);
         button.setOpaque(true);
@@ -129,7 +129,6 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         button.addActionListener(action);
 
-        // Hover effects
         button.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 button.setBackground(bgColor.brighter());
@@ -142,6 +141,20 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         return button;
     }
 
+    private ImageIcon loadIcon(String path) {
+        try {
+            java.net.URL imgURL = getClass().getResource(path);
+            if (imgURL != null) {
+                Image img = new ImageIcon(imgURL).getImage();
+                Image scaledImg = img.getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+                return new ImageIcon(scaledImg);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     private void updateDisplayColour() {
         String status = taskViewModel.getTask().getTaskInfo().getTaskStatus();
         Priority priority = taskViewModel.getTask().getTaskInfo().getPriority();
@@ -149,11 +162,11 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         if (Objects.equals(status, "Complete")) {
             setBackground(new Color(240, 240, 240));
         } else if (priority == Priority.HIGH) {
-            setBackground(new Color(255, 235, 238)); // Lighter red
+            setBackground(new Color(255, 235, 238));
         } else if (priority == Priority.MEDIUM) {
-            setBackground(new Color(255, 243, 224)); // Lighter orange
+            setBackground(new Color(255, 243, 224));
         } else if (priority == Priority.LOW) {
-            setBackground(new Color(255, 253, 231)); // Lighter yellow
+            setBackground(new Color(255, 253, 231));
         } else {
             setBackground(Color.WHITE);
         }
@@ -202,8 +215,6 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
                 Image img = new ImageIcon(imgURL).getImage();
                 Image scaledImg = img.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
                 return new ImageIcon(scaledImg);
-            } else {
-                System.err.println("Could not find icon: " + iconPath);
             }
         } catch (Exception e) {
             e.printStackTrace();
