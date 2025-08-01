@@ -209,7 +209,20 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         tempLabel.setText(taskViewModel.getTask().getTaskInfo().getTemperature());
 
         weatherDescriptionLabel.setText(taskViewModel.getTask().getTaskInfo().getWeatherDescription());
-        weatherEmojiLabel.setText(taskViewModel.getTask().getTaskInfo().getWeatherIconName());
+        String iconName = taskViewModel.getTask().getTaskInfo().getWeatherIconName();
+        if (iconName != null && !iconName.isEmpty()) {
+            ImageIcon icon = loadWeatherIcon(iconName);
+            if (icon != null) {
+                weatherEmojiLabel.setIcon(icon);
+                weatherEmojiLabel.setText(""); // Clear leftover text
+            } else {
+                weatherEmojiLabel.setText(iconName); // Fallback to text if not found
+            }
+        } else {
+            weatherEmojiLabel.setIcon(null);
+            weatherEmojiLabel.setText("");
+        }
+
 
         updateDisplayColour();
 
