@@ -96,7 +96,7 @@ public class EmailNotificationService implements EmailNotificationServiceInterfa
             case MEDIUM -> "#FFA500"; // Orange
             case LOW -> "#FFFF00"; // Yellow
         };
-
+        String weatherEmoji = getWeatherEmojiFromIcon(taskInfo.getWeatherIconName());
         return String.format("""
             <html>
             <body>
@@ -122,9 +122,31 @@ public class EmailNotificationService implements EmailNotificationServiceInterfa
                 priorityColor,
                 taskInfo.getPriority().toString(),
                 taskInfo.getTemperature(),
-                taskInfo.getWeatherEmoji(), // Use getWeatherEmoji()
+                weatherEmoji, // Use getWeatherEmoji()
                 taskInfo.getWeatherDescription(), // Use getWeatherDescription()
                 taskInfo.getTag() != null ? "<p><strong>Tag:</strong> " + taskInfo.getTag().toString() + "</p>" : ""
         );
     }
+
+    private String getWeatherEmojiFromIcon(String iconName) {
+        if (iconName == null || iconName.isEmpty()) {
+            return "🌤️";
+        }
+
+        return switch (iconName.toLowerCase()) {
+            case "clear-day", "clear" -> "☀️";
+            case "clear-night" -> "🌙";
+            case "rain" -> "🌧️";
+            case "snow" -> "❄️";
+            case "sleet" -> "🌨️";
+            case "wind" -> "💨";
+            case "fog" -> "🌫️";
+            case "cloudy" -> "☁️";
+            case "partly-cloudy-day" -> "⛅";
+            case "partly-cloudy-night" -> "🌙";
+            case "thunderstorm" -> "⛈️";
+            default -> "🌤️";
+        };
+    }
+
 }

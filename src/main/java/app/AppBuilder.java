@@ -16,12 +16,11 @@ import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.logout.LogoutController;
 import interface_adapter.signup.SignupViewModel;
-
-import use_case.editTask.EditTaskDataAccessInterface;
-import use_case.notification.NotificationDataAccessInterface;
 import use_case.notification.ScheduleNotificationInteractor;
-
 import use_case.notification.ScheduleNotificationOutputBoundary;
+import use_case.notification.NotificationDataAccessInterface;
+
+
 
 import view.*;
 
@@ -40,6 +39,7 @@ public class AppBuilder {
     private SupabaseUserDataAccessObject userDao;
     private SupabaseTagDataAccessObject tagDao;
     private SupabaseTaskDataAccessObject taskDao;
+    private NotificationDataAccessInterface notificationDataAccess;
 
     private LoginViewModel loginViewModel;
     private LoggedInViewModel loggedInViewModel;
@@ -108,6 +108,26 @@ public class AppBuilder {
     public AppBuilder addAddTaskView() {
 
         try {
+            // Create a simple output boundary for notifications (you may need to implement this properly)
+            ScheduleNotificationOutputBoundary notificationOutputBoundary = new ScheduleNotificationOutputBoundary() {
+                @Override
+                public void presentScheduleResult(use_case.notification.ScheduleNotificationOutputData outputData) {
+                    // Simple implementation - you can enhance this later
+                    if (outputData.isSuccess()) {
+                        System.out.println("Notification scheduled successfully: " + outputData.getNotificationId());
+                    } else {
+                        System.err.println("Failed to schedule notification: " + outputData.getMessage());
+                    }
+                }
+            };
+
+            // Create the notification interactor
+            ScheduleNotificationInteractor notificationInteractor = new ScheduleNotificationInteractor(
+                    notificationDataAccess,
+                    taskDao,  // taskDao should implement EditTaskDataAccessInterface
+                    notificationOutputBoundary
+            );
+
             addTaskView = AddTaskUseCaseFactory.create(
                     viewManagerModel,
                     addTaskViewModel,
@@ -115,6 +135,7 @@ public class AppBuilder {
                     taskDao,
                     tagDao,
                     new WeatherApiService(),
+                    notificationInteractor,
                     LoggedInView.getViewName()
             );
         } catch (IOException e) {
