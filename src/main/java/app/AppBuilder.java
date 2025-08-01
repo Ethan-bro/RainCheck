@@ -17,6 +17,12 @@ import interface_adapter.login.LoginViewModel;
 import interface_adapter.logout.LogoutController;
 import interface_adapter.signup.SignupViewModel;
 
+import use_case.editTask.EditTaskDataAccessInterface;
+import use_case.notification.NotificationDataAccessInterface;
+import use_case.notification.ScheduleNotificationInteractor;
+
+import use_case.notification.ScheduleNotificationOutputBoundary;
+
 import view.*;
 
 import javax.swing.*;
@@ -93,7 +99,7 @@ public class AppBuilder {
         LogoutController logoutController = LogoutUseCaseFactory.create(
                 viewManagerModel, loggedInViewModel, loginViewModel, userDao);
 
-        loggedInView = new LoggedInView(loggedInViewModel, logoutController, viewManagerModel, tagDao, addTaskViewModel);
+        loggedInView = LoggedInUseCaseFactory.createLoggedInView(loggedInViewModel, logoutController, viewManagerModel, addTaskViewModel, tagDao, taskDao);
 
         cardPanel.add(loggedInView, LoggedInView.getViewName());
         return this;
@@ -105,7 +111,9 @@ public class AppBuilder {
             addTaskView = AddTaskUseCaseFactory.create(
                     viewManagerModel,
                     addTaskViewModel,
+                    loggedInViewModel,
                     taskDao,
+                    tagDao,
                     new WeatherApiService(),
                     LoggedInView.getViewName()
             );

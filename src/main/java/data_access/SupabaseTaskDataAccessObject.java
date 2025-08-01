@@ -103,14 +103,11 @@ public class SupabaseTaskDataAccessObject implements
                     .url(baseUrl + "/rest/v1/users?username=eq." + username)
                     .addHeader("apikey", apiKey)
                     .addHeader("Authorization", "Bearer " + apiKey)
-                    .addHeader("Prefer", "return=representation")
+                    .addHeader("Prefer", "return=minimal")
                     .patch(body)
                     .build();
 
-            try (Response response = client.newCall(request).execute()) {
-                String resp = Objects.requireNonNull(response.body()).string();
-                System.out.println("PATCH Response: " + resp);
-            }
+            client.newCall(request).execute().close();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -189,7 +186,7 @@ public class SupabaseTaskDataAccessObject implements
         }
 
         json.addProperty("weatherDescription", info.getWeatherDescription());
-        json.addProperty("weatherEmoji", info.getWeatherEmoji());
+        json.addProperty("weatherIconName", info.getWeatherIconName());
         json.addProperty("temperature", info.getTemperature());
 
         return json;
@@ -223,7 +220,7 @@ public class SupabaseTaskDataAccessObject implements
         }
 
         String weatherDescription = json.has("weatherDescription") ? json.get("weatherDescription").getAsString() : null;
-        String weatherEmoji = json.has("weatherEmoji") ? json.get("weatherEmoji").getAsString() : null;
+        String weatherIconName = json.has("weatherIconName") ? json.get("weatherIconName").getAsString() : null;
         String temperature = json.has("temperature") ? json.get("temperature").getAsString() : null;
 
         TaskInfo info = new TaskInfo(
@@ -235,7 +232,7 @@ public class SupabaseTaskDataAccessObject implements
                 tag,
                 reminder,
                 weatherDescription,
-                weatherEmoji,
+                weatherIconName,
                 temperature
         );
         info.setTaskStatus(status);

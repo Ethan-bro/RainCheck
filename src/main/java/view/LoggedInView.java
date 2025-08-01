@@ -21,11 +21,15 @@ import interface_adapter.calendar.TaskClickListener;
 import interface_adapter.create_customTag.CCTController;
 import interface_adapter.create_customTag.CCTPresenter;
 import interface_adapter.create_customTag.CCTViewModel;
+import interface_adapter.deleteTask.DeleteTaskController;
+import interface_adapter.editTask.EditTaskController;
 import interface_adapter.logged_in.LoggedInState;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.logout.LogoutController;
 import data_access.LocationService;
 import data_access.WeatherApiService;
+import interface_adapter.markTaskComplete.MarkTaskCompleteController;
+import interface_adapter.task.TaskViewModel;
 import use_case.createCustomTag.CCTInteractor;
 
 public class LoggedInView extends JPanel implements PropertyChangeListener {
@@ -43,21 +47,31 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     private Map<LocalDate, List<Map<String, String>>> hourlyWeatherMap = null;
     private final SupabaseTagDataAccessObject tagDao;
 
-    private ActionListener logoutAction;
-    private ActionListener addTaskAction;
-    private ActionListener manageCategoriesAction;
+    private ActionListener logoutAL;
+    private ActionListener addTaskAL;
+    private ActionListener manageTagsAL;
+
+    private MarkTaskCompleteController markTaskCompleteController;
+    private DeleteTaskController deleteTaskController;
+    private EditTaskController editTaskController;
 
     public LoggedInView(LoggedInViewModel loggedInViewModel,
                         LogoutController logoutController,
                         ViewManagerModel viewManagerModel,
                         SupabaseTagDataAccessObject tagDao,
-                        AddTaskViewModel addTaskViewModel) throws IOException {
+                        AddTaskViewModel addTaskViewModel,
+                        MarkTaskCompleteController markTaskCompleteController,
+                        DeleteTaskController deleteTaskController,
+                        EditTaskController editTaskController) throws IOException {
         this.loggedInViewModel = loggedInViewModel;
         this.loggedInViewModel.addPropertyChangeListener(this);
         this.viewManagerModel = viewManagerModel;
         this.logoutController = logoutController;
         this.tagDao = tagDao;
         this.addTaskViewModel = addTaskViewModel;
+        this.markTaskCompleteController = markTaskCompleteController;
+        this.deleteTaskController = deleteTaskController;
+        this.editTaskController = editTaskController;
 
         setupActionListeners();
 
@@ -98,10 +112,6 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
             this.hourlyWeatherMap = getHourlyWeatherMapForCalendarData(calendarData);
         }
 
-        LocalDate startDate = this.calendarData.getWeekDates().getFirst();
-        LocalDate endDate = startDate.plusDays(7);
-        loggedInViewModel.loadTasksForWeek(startDate,endDate);
-
         // --- Bottom: Logout + Add Task Buttons ---
         JButton logoutButton = new JButton("Log Out");
         JButton addTaskButton = new JButton("+ Add Task");
@@ -123,25 +133,26 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         add(bottomPanel, BorderLayout.SOUTH);
 
         // Button ActionListeners:
-        logoutButton.addActionListener(logoutAction);
-        addTaskButton.addActionListener(addTaskAction);
+        logoutButton.addActionListener(logoutAL);
+        addTaskButton.addActionListener(addTaskAL);
 
     }
 
     private void setupActionListeners() {
 
-        logoutAction = e -> {
+        logoutAL = e -> {
             final LoggedInState currentState = loggedInViewModel.getState();
             logoutController.execute(currentState.getUsername());
         };
 
-        addTaskAction = e -> {
+        addTaskAL = e -> {
             addTaskViewModel.setUsername(this.loggedInUsername);
             viewManagerModel.setState(AddTaskView.getViewName());
             viewManagerModel.firePropertyChanged();
         };
 
-        manageCategoriesAction = e -> {
+        // TODO: Sean - wire to CCTUseCaseFactory.java
+        manageTagsAL = e -> {
             CCTViewModel viewModel = new CCTViewModel();
             CCTPresenter presenter = new CCTPresenter(viewManagerModel, viewModel);
             CCTInteractor interactor = new CCTInteractor(tagDao, presenter);
@@ -188,11 +199,16 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         }
 
         TaskClickListener taskClickListener = task -> {
-//            TaskViewModel taskViewModel = new TaskViewModel(task);
-//            TaskController taskController = new TaskController(TaskInteractor);
-//            TaskBox taskBox = new TaskBox(taskViewModel, taskController);
-//            JOptionPane.showMessageDialog(this, box, "Task Details",
-//                    JOptionPane.PLAIN_MESSAGE);
+            TaskViewModel taskViewModel = new TaskViewModel(task);
+            TaskBox taskBox = new TaskBox(
+                    taskViewModel,
+                    markTaskCompleteController,
+                    deleteTaskController,
+                    editTaskController,
+                    viewManagerModel
+            );
+            JOptionPane.showMessageDialog(this, taskBox, "Task Details",
+                    JOptionPane.PLAIN_MESSAGE);
         };
 
         CalendarGrid grid = new CalendarGrid(
@@ -200,9 +216,9 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
                 weatherMap,
                 tasks,
                 taskClickListener,
-                addTaskAction,
-                manageCategoriesAction,
-                logoutAction
+                addTaskAL,
+                manageTagsAL,
+                logoutAL
                 );
 
         ScrollableCalendar scrollableCalendar = new ScrollableCalendar(grid);
@@ -219,11 +235,24 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
             this.loggedInUsername = state.getUsername();
             usernameLabel.setText("Signed in as: " + this.loggedInUsername);
             // TODO: Brad, this is how you get the email: 'state.getEmail()'
+
+            System.out.println("Now loading tasks for: " + loggedInUsername);
+            reloadTasksForCurrentWeek();
         }
         else if ("weekTasks".equals(evt.getPropertyName())) {
             List<Task> tasks = loggedInViewModel.getState().getWeekTasks();
             rebuildCalendarWithTasks(tasks);
+        } else if ("taskAdded".equals(evt.getPropertyName())) {
+            System.out.println("Detected new task added. Reloading tasks...");
+            reloadTasksForCurrentWeek();
         }
+    }
+
+    private void reloadTasksForCurrentWeek() {
+        LocalDate startOfWeek = calendarData.getWeekDates().getFirst();
+        LocalDate endOfWeek = startOfWeek.plusDays(6);
+        System.out.println("Reloading tasks for week: " + startOfWeek + " to " + endOfWeek);
+        loggedInViewModel.loadTasksForWeek(startOfWeek, endOfWeek);
     }
 
     public static String getViewName() {

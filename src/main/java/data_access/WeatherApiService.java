@@ -40,6 +40,7 @@ public class WeatherApiService implements DailyWeatherDataAccessInterface, Hourl
             result.put("feelslikemax", 26.0);
             result.put("feelslikemin", 17.0);
             result.put("icon", getWeatherImageIcon("clear-day")); // use any default
+            result.put("iconName", "clear-day");
             return result;
         }
 
@@ -58,8 +59,8 @@ public class WeatherApiService implements DailyWeatherDataAccessInterface, Hourl
         result.put("feelslikemin", day.has("feelslikemin") && !day.get("feelslikemin").isJsonNull() ? day.get("feelslikemin").getAsDouble() : null);
 
         String iconName = day.get("icon").getAsString(); // e.g. clear-day, thunder-rain, showers-night
-        ImageIcon icon = getWeatherImageIcon(iconName);
-        result.put("icon", icon);
+        result.put("icon", getWeatherImageIcon(iconName));  // used in UI
+        result.put("iconName", iconName);                   // used for saving in DB
 
         return result;
     }
