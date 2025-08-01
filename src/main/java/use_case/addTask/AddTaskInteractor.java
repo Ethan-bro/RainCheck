@@ -62,7 +62,7 @@ public class AddTaskInteractor implements AddTaskInputBoundary {
 
         String description = "";
         String feels = "";
-        String emoji = "";
+        String iconName = "";
         try {
             LocalDateTime startDateTime = inputData.getStartDateTime();
             LocalDate date = startDateTime.toLocalDate();
@@ -77,8 +77,7 @@ public class AddTaskInteractor implements AddTaskInputBoundary {
                 feels = hourlyMap.get("feels");
                 Map<String, Object> daily = weatherApiService.getDailyWeather(LocationService.getUserCity(),
                         date);
-                ImageIcon icon = (ImageIcon) daily.get("icon");
-                emoji = (icon != null) ? icon.toString() : "";
+                iconName = daily.get("iconName") != null ? daily.get("iconName").toString() : "";
             }
         } catch (IOException e) {
             System.err.println("Weather Lookup Failed: " + e.getMessage());
@@ -88,7 +87,7 @@ public class AddTaskInteractor implements AddTaskInputBoundary {
 
         TaskInfo newTaskInfo = new TaskInfo(newID, inputData.getTaskName(), inputData.getStartDateTime(),
                 inputData.getEndDateTime(), inputData.getPriority(), inputData.getTag(),
-                inputData.getReminder(), description, emoji, temp
+                inputData.getReminder(), description, iconName, temp
                 );
 
         Task newTask = new Task(newTaskInfo);
