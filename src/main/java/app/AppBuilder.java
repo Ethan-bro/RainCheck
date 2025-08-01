@@ -107,6 +107,7 @@ public class AppBuilder {
                     addTaskViewModel,
                     loggedInViewModel,
                     taskDao,
+                    tagDao,
                     new WeatherApiService(),
                     LoggedInView.getViewName()
             );
