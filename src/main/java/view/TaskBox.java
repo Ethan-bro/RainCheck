@@ -209,7 +209,20 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         tempLabel.setText(taskViewModel.getTask().getTaskInfo().getTemperature());
 
         weatherDescriptionLabel.setText(taskViewModel.getTask().getTaskInfo().getWeatherDescription());
-        weatherEmojiLabel.setText(taskViewModel.getTask().getTaskInfo().getWeatherIconName());
+        String iconName = taskViewModel.getTask().getTaskInfo().getWeatherIconName();
+        if (iconName != null && !iconName.isEmpty()) {
+            ImageIcon icon = loadWeatherIcon(iconName);
+            if (icon != null) {
+                weatherEmojiLabel.setIcon(icon);
+                weatherEmojiLabel.setText(""); // Clear leftover text
+            } else {
+                weatherEmojiLabel.setText(iconName); // Fallback to text if not found
+            }
+        } else {
+            weatherEmojiLabel.setIcon(null);
+            weatherEmojiLabel.setText("");
+        }
+
 
         updateDisplayColour();
 
@@ -231,5 +244,23 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
 
     public ViewManagerModel getViewManagerModel() {
         return viewManagerModel;
+    }
+
+    private ImageIcon loadWeatherIcon(String iconName) {
+        String iconPath = "/weatherIcons/" + iconName + ".png"; // Make sure this matches your resource folder
+
+        try {
+            java.net.URL imgURL = getClass().getResource(iconPath);
+            if (imgURL != null) {
+                Image img = new ImageIcon(imgURL).getImage();
+                Image scaledImg = img.getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+                return new ImageIcon(scaledImg);
+            } else {
+                System.err.println("Couldn't find icon: " + iconPath);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
