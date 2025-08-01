@@ -6,6 +6,7 @@ import interface_adapter.addTask.AddTaskController;
 import interface_adapter.addTask.AddTaskPresenter;
 import interface_adapter.addTask.AddTaskViewModel;
 import interface_adapter.addTask.UUIDGenerator;
+import interface_adapter.logged_in.LoggedInViewModel;
 import use_case.addTask.AddTaskInputBoundary;
 import use_case.addTask.AddTaskInteractor;
 import data_access.SupabaseTaskDataAccessObject;
@@ -19,6 +20,7 @@ public final class AddTaskUseCaseFactory {
     public static AddTaskView create(
             ViewManagerModel viewManagerModel,
             AddTaskViewModel addTaskViewModel,
+            LoggedInViewModel loggedInViewModel,
             TaskDataAccessInterface taskDao,
             WeatherApiService weatherApiService,
             String mainViewKey) {
@@ -31,6 +33,6 @@ public final class AddTaskUseCaseFactory {
         AddTaskController addTaskController = new AddTaskController(addTaskInteractor,
                 viewManagerModel, addTaskViewModel);
 
-        return new AddTaskView(addTaskController, addTaskViewModel, viewManagerModel);
+        return new AddTaskView(addTaskController, addTaskViewModel, loggedInViewModel, viewManagerModel);
     }
 }

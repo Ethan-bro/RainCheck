@@ -105,6 +105,7 @@ public class AppBuilder {
             addTaskView = AddTaskUseCaseFactory.create(
                     viewManagerModel,
                     addTaskViewModel,
+                    loggedInViewModel,
                     taskDao,
                     new WeatherApiService(),
                     LoggedInView.getViewName()
