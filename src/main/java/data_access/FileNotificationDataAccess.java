@@ -116,7 +116,10 @@ public class FileNotificationDataAccess implements NotificationDataAccessInterfa
         File file = new File(filename);
         if (!file.exists()) {
             try {
-                file.getParentFile().mkdirs();
+                // Only create parent directories if parent exists
+                if (file.getParentFile() != null) {
+                    file.getParentFile().mkdirs();
+                }
                 file.createNewFile();
                 // Write empty JSON structure
                 if (filename.equals(emailConfigsFile)) {

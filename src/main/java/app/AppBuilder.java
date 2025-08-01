@@ -8,6 +8,9 @@ import data_access.SupabaseTagDataAccessObject;
 import data_access.SupabaseUserDataAccessObject;
 
 import data_access.WeatherApiService;
+import data_access.NotificationScheduler;
+import data_access.EmailNotificationService;
+import data_access.FileNotificationDataAccess;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.addTask.AddTaskViewModel;
 
@@ -19,6 +22,7 @@ import interface_adapter.signup.SignupViewModel;
 import use_case.notification.ScheduleNotificationInteractor;
 import use_case.notification.ScheduleNotificationOutputBoundary;
 import use_case.notification.NotificationDataAccessInterface;
+import use_case.notification.EmailNotificationServiceInterface;
 
 
 
@@ -46,6 +50,9 @@ public class AppBuilder {
     private SignupViewModel signupViewModel;
     private AddTaskViewModel addTaskViewModel;
     private ListTasksUseCaseFactory listTasksFactory;
+    private EmailNotificationServiceInterface emailService;  // Add this field
+    private NotificationScheduler notificationScheduler;
+
 
     private LoginView loginView;
     private SignupView signupView;
@@ -64,6 +71,32 @@ public class AppBuilder {
         userDao = new SupabaseUserDataAccessObject(dbUrl, dbAnonKey);
         tagDao = new SupabaseTagDataAccessObject(dbUrl, dbAnonKey);
         taskDao = new SupabaseTaskDataAccessObject(dbUrl, dbAnonKey);
+
+        // Store notification files in a data directory
+        notificationDataAccess = new FileNotificationDataAccess("data/email_configs.json", "data/scheduled_notifications.json");
+
+        // Check if email configuration exists in secrets.json
+        if (config.has("email_username") && config.has("email_password")) {
+            emailService = new EmailNotificationService(
+                    "smtp.gmail.com", // or your SMTP server
+                    "587",
+                    config.get("email_username").getAsString(),
+                    config.get("email_password").getAsString()
+            );
+        } else {
+            System.out.println("Warning: Email configuration missing. Email notifications will not work.");
+            // Provide a dummy email service to avoid null pointer exceptions
+            emailService = new EmailNotificationService(
+                    "smtp.example.com",
+                    "587",
+                    "dummy@example.com",
+                    "dummy_password"
+            );
+        }
+
+        // Initialize and start notification scheduler
+        notificationScheduler = new NotificationScheduler(notificationDataAccess, emailService, taskDao);
+        notificationScheduler.start();
 
         return this;
     }
@@ -150,6 +183,14 @@ public class AppBuilder {
         JFrame application = new JFrame("RainCheck");
         application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         application.add(cardPanel);
+
+        // Add shutdown hook to stop scheduler when app closes
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            if (notificationScheduler != null) {
+                notificationScheduler.stop();
+            }
+        }));
+
 
         viewManagerModel.setState(SignupView.getViewName());
         viewManagerModel.firePropertyChanged();
