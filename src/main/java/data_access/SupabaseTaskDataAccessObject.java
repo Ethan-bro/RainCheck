@@ -103,14 +103,11 @@ public class SupabaseTaskDataAccessObject implements
                     .url(baseUrl + "/rest/v1/users?username=eq." + username)
                     .addHeader("apikey", apiKey)
                     .addHeader("Authorization", "Bearer " + apiKey)
-                    .addHeader("Prefer", "return=representation")
+                    .addHeader("Prefer", "return=minimal")
                     .patch(body)
                     .build();
 
-            try (Response response = client.newCall(request).execute()) {
-                String resp = Objects.requireNonNull(response.body()).string();
-                System.out.println("PATCH Response: " + resp);
-            }
+            client.newCall(request).execute().close();
 
         } catch (Exception e) {
             e.printStackTrace();
