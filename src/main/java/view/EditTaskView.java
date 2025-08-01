@@ -171,7 +171,7 @@ public class EditTaskView extends JPanel implements PropertyChangeListener {
                 tag,
                 reminder,
                 oldInfo.getWeatherDescription(),
-                oldInfo.getWeatherEmoji(),
+                oldInfo.getWeatherIconName(),
                 oldInfo.getTemperature()
         );
 

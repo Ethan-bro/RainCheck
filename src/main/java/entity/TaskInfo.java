@@ -14,12 +14,12 @@ public class TaskInfo {
     private Reminder reminder;
 
     private String weatherDescription;
-    private String weatherEmoji;
+    private String weatherIconName;
     private String temperature;
 
     public TaskInfo(TaskID id, String taskName, LocalDateTime startDateTime, LocalDateTime endDateTime,
                     Priority priority, CustomTag customTag, Reminder reminder, String weatherDescription,
-                    String weatherEmoji, String temperature) {
+                    String weatherIconName, String temperature) {
         this.id = Objects.requireNonNull(id);
         this.taskName = Objects.requireNonNull(taskName);
         this.startDateTime = Objects.requireNonNull(startDateTime);
@@ -29,7 +29,7 @@ public class TaskInfo {
         this.taskStatus = "Incomplete";
         this.reminder = reminder;
         this.weatherDescription = weatherDescription;
-        this.weatherEmoji = weatherEmoji;
+        this.weatherIconName = weatherIconName;
         this.temperature = temperature;
     }
 
@@ -72,11 +72,11 @@ public class TaskInfo {
         this.weatherDescription = weatherDescription;
     }
 
-    public String getWeatherEmoji() {
-        return weatherEmoji;
+    public String getWeatherIconName() {
+        return weatherIconName;
     }
-    public void setWeatherEmoji(String weatherEmoji) {
-        this.weatherEmoji = weatherEmoji;
+    public void setWeatherIconName(String weatherIconName) {
+        this.weatherIconName = weatherIconName;
     }
 
     public String getTemperature() {

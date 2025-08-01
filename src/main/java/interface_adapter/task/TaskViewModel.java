@@ -33,7 +33,7 @@ public class TaskViewModel extends ViewModel<TaskState> {
         st.setCompleted("Complete".equalsIgnoreCase(task.getTaskInfo().getTaskStatus()));
 
         st.setWeatherDescription(task.getTaskInfo().getWeatherDescription());
-        st.setWeatherEmoji(task.getTaskInfo().getWeatherEmoji());
+        st.setWeatherEmoji(task.getTaskInfo().getWeatherIconName());
         st.setTemperature(task.getTaskInfo().getTemperature());
 
         firePropertyChanged("state");

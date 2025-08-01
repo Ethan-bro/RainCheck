@@ -149,7 +149,7 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         weatherPanel.setAlignmentX(Component.RIGHT_ALIGNMENT);
         weatherDescriptionLabel = new JLabel(taskViewModel.getTask().getTaskInfo().getWeatherDescription());
         weatherPanel.add(weatherDescriptionLabel);
-        weatherEmojiLabel = new JLabel(taskViewModel.getTask().getTaskInfo().getWeatherEmoji());
+        weatherEmojiLabel = new JLabel(taskViewModel.getTask().getTaskInfo().getWeatherIconName());
         weatherPanel.add(weatherEmojiLabel);
 
         bottomPanel.add(tempPanel);
@@ -209,7 +209,7 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         tempLabel.setText(taskViewModel.getTask().getTaskInfo().getTemperature());
 
         weatherDescriptionLabel.setText(taskViewModel.getTask().getTaskInfo().getWeatherDescription());
-        weatherEmojiLabel.setText(taskViewModel.getTask().getTaskInfo().getWeatherEmoji());
+        weatherEmojiLabel.setText(taskViewModel.getTask().getTaskInfo().getWeatherIconName());
 
         updateDisplayColour();
 

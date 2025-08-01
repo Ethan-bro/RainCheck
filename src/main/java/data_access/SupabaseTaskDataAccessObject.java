@@ -189,7 +189,7 @@ public class SupabaseTaskDataAccessObject implements
         }
 
         json.addProperty("weatherDescription", info.getWeatherDescription());
-        json.addProperty("weatherEmoji", info.getWeatherEmoji());
+        json.addProperty("weatherIconName", info.getWeatherIconName());
         json.addProperty("temperature", info.getTemperature());
 
         return json;
@@ -223,7 +223,7 @@ public class SupabaseTaskDataAccessObject implements
         }
 
         String weatherDescription = json.has("weatherDescription") ? json.get("weatherDescription").getAsString() : null;
-        String weatherEmoji = json.has("weatherEmoji") ? json.get("weatherEmoji").getAsString() : null;
+        String weatherIconName = json.has("weatherIconName") ? json.get("weatherIconName").getAsString() : null;
         String temperature = json.has("temperature") ? json.get("temperature").getAsString() : null;
 
         TaskInfo info = new TaskInfo(
@@ -235,7 +235,7 @@ public class SupabaseTaskDataAccessObject implements
                 tag,
                 reminder,
                 weatherDescription,
-                weatherEmoji,
+                weatherIconName,
                 temperature
         );
         info.setTaskStatus(status);
