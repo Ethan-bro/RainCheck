@@ -112,10 +112,6 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
             this.hourlyWeatherMap = getHourlyWeatherMapForCalendarData(calendarData);
         }
 
-        LocalDate startDate = this.calendarData.getWeekDates().getFirst();
-        LocalDate endDate = startDate.plusDays(7);
-        loggedInViewModel.loadTasksForWeek(startDate,endDate);
-
         // --- Bottom: Logout + Add Task Buttons ---
         JButton logoutButton = new JButton("Log Out");
         JButton addTaskButton = new JButton("+ Add Task");
@@ -239,11 +235,24 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
             this.loggedInUsername = state.getUsername();
             usernameLabel.setText("Signed in as: " + this.loggedInUsername);
             // TODO: Brad, this is how you get the email: 'state.getEmail()'
+
+            System.out.println("Now loading tasks for: " + loggedInUsername);
+            reloadTasksForCurrentWeek();
         }
         else if ("weekTasks".equals(evt.getPropertyName())) {
             List<Task> tasks = loggedInViewModel.getState().getWeekTasks();
             rebuildCalendarWithTasks(tasks);
+        } else if ("taskAdded".equals(evt.getPropertyName())) {
+            System.out.println("Detected new task added. Reloading tasks...");
+            reloadTasksForCurrentWeek();
         }
+    }
+
+    private void reloadTasksForCurrentWeek() {
+        LocalDate startOfWeek = calendarData.getWeekDates().getFirst();
+        LocalDate endOfWeek = startOfWeek.plusDays(6);
+        System.out.println("Reloading tasks for week: " + startOfWeek + " to " + endOfWeek);
+        loggedInViewModel.loadTasksForWeek(startOfWeek, endOfWeek);
     }
 
     public static String getViewName() {
