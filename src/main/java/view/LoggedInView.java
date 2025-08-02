@@ -193,11 +193,6 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     private void rebuildCalendarWithTasks(List<Task> tasks) {
         centerPanel.removeAll();
 
-        System.out.println("RECEIVED TASKS:");
-        for (Task task : tasks) {
-            System.out.println(task.getTaskInfo().getTaskName());
-        }
-
         TaskClickListener taskClickListener = task -> {
             TaskViewModel taskViewModel = new TaskViewModel(task);
             TaskBox taskBox = new TaskBox(
@@ -235,15 +230,12 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
             this.loggedInUsername = state.getUsername();
             usernameLabel.setText("Signed in as: " + this.loggedInUsername);
             // TODO: Brad, this is how you get the email: 'state.getEmail()'
-
-            System.out.println("Now loading tasks for: " + loggedInUsername);
             reloadTasksForCurrentWeek();
         }
         else if ("weekTasks".equals(evt.getPropertyName())) {
             List<Task> tasks = loggedInViewModel.getState().getWeekTasks();
             rebuildCalendarWithTasks(tasks);
         } else if ("taskAdded".equals(evt.getPropertyName())) {
-            System.out.println("Detected new task added. Reloading tasks...");
             reloadTasksForCurrentWeek();
         }
     }
@@ -251,7 +243,6 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     private void reloadTasksForCurrentWeek() {
         LocalDate startOfWeek = calendarData.getWeekDates().getFirst();
         LocalDate endOfWeek = startOfWeek.plusDays(6);
-        System.out.println("Reloading tasks for week: " + startOfWeek + " to " + endOfWeek);
         loggedInViewModel.loadTasksForWeek(startOfWeek, endOfWeek);
     }
 
