@@ -1,6 +1,5 @@
 package view;
 
-import app.CCTUseCaseFactory;
 import entity.CustomTag;
 import entity.Priority;
 import entity.Reminder;
@@ -71,21 +70,22 @@ public class AddTaskView extends JPanel
 
         // Dynamically load user's tags from ViewModel
         List<Object> options = viewModel.getTagOptions();
-        customTagCombo = new JComboBox<>(options.toArray());
-        customTagCombo.addActionListener(e -> {
-            Object selectedItem = customTagCombo.getSelectedItem();
-            if ("Create New Tag...".equals(selectedItem)) {
-                CCTUseCaseFactory.create(
-                        viewManagerModel,
-                        cctViewModel,
-                        tagDao,
-                        loggedInViewModel);
+        customTagCombo = new JComboBox<>(options.isEmpty() ? new Object[]{} : options.toArray());
 
-                customTagCombo.setModel(
-                        new DefaultComboBoxModel<>(viewModel.getTagOptions().toArray())
-                );
-            }
-        });
+        if (options.isEmpty()) {
+            customTagCombo.setRenderer(new DefaultListCellRenderer() {
+                @Override
+                public Component getListCellRendererComponent(JList<?> list, Object value,
+                                                              int index, boolean isSelected, boolean cellHasFocus) {
+                    super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                    if (value == null) {
+                        setText("No tags available - create one first");
+                        setForeground(Color.GRAY);
+                    }
+                    return this;
+                }
+            });
+        }
 
 
         Reminder[] reminderOptions = {

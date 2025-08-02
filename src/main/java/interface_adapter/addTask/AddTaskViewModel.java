@@ -34,11 +34,9 @@ public class AddTaskViewModel extends ViewModel<AddTaskState> {
 
     public List<Object> getTagOptions() {
         Map<String,String> raw = tagDao.getCustomTags(username);
-        List<Object> tags = raw.entrySet().stream()
+        return raw.entrySet().stream()
                 .map(e -> new CustomTag(e.getKey(), e.getValue()))
                 .collect(Collectors.toList());
-        tags.add("Create New Tag...");
-        return tags;
     }
 
     @Override

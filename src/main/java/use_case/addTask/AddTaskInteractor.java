@@ -58,6 +58,12 @@ public class AddTaskInteractor implements AddTaskInputBoundary {
             return;
         }
 
+        if (inputData.getTag() == null) {
+            AddTaskOutputData failedOutput = new AddTaskOutputData(AddTaskError.NO_TAG_SELECTED);
+            addTaskPresenter.prepareFailView(failedOutput);
+            return;
+        }
+
         TaskID newID = taskIDGenerator.generateTaskID();
 
         String description = "";
