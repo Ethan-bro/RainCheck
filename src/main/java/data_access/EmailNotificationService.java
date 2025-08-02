@@ -65,6 +65,9 @@ public class EmailNotificationService implements EmailNotificationServiceInterfa
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.smtp.host", smtpHost);
         props.put("mail.smtp.port", smtpPort);
+        props.put("mail.smtp.ssl.trust", smtpHost);
+        props.put("mail.smtp.ssl.protocols", "TLSv1.2");
+        props.put("mail.debug", "true"); // Enable for debugging
 
         Session session = Session.getInstance(props, new Authenticator() {
             @Override

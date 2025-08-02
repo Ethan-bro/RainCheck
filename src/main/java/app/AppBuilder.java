@@ -24,6 +24,12 @@ import use_case.notification.ScheduleNotificationOutputBoundary;
 import use_case.notification.NotificationDataAccessInterface;
 import use_case.notification.EmailNotificationServiceInterface;
 
+import javax.mail.Authenticator;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import java.util.Properties;
+
 
 
 import view.*;
@@ -77,21 +83,25 @@ public class AppBuilder {
 
         // Check if email configuration exists in secrets.json
         if (config.has("email_username") && config.has("email_password")) {
-            emailService = new EmailNotificationService(
-                    "smtp.gmail.com", // or your SMTP server
-                    "587",
-                    config.get("email_username").getAsString(),
-                    config.get("email_password").getAsString()
-            );
+            try {
+                emailService = new EmailNotificationService(
+                        "smtp.gmail.com", // Gmail SMTP server
+                        "587",  // TLS port for Gmail
+                        config.get("email_username").getAsString(),
+                        config.get("email_password").getAsString()
+                );
+
+                System.out.println("Email service initialized successfully");
+
+            } catch (Exception e) {
+                System.err.println("Email service configuration error: " + e.getMessage());
+                e.printStackTrace();
+                // Fall back to dummy service
+                emailService = createDummyEmailService();
+            }
         } else {
             System.out.println("Warning: Email configuration missing. Email notifications will not work.");
-            // Provide a dummy email service to avoid null pointer exceptions
-            emailService = new EmailNotificationService(
-                    "smtp.example.com",
-                    "587",
-                    "dummy@example.com",
-                    "dummy_password"
-            );
+            emailService = createDummyEmailService();
         }
 
         // Initialize and start notification scheduler
@@ -99,6 +109,15 @@ public class AppBuilder {
         notificationScheduler.start();
 
         return this;
+            }
+
+            private EmailNotificationService createDummyEmailService() {
+        return new EmailNotificationService(
+                "smtp.example.com",
+                "587",
+                "dummy@example.com",
+                "dummy_password"
+        );
     }
 
     public AppBuilder addViewModels() {
