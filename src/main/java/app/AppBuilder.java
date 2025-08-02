@@ -81,6 +81,9 @@ public class AppBuilder {
         // Store notification files in a data directory
         notificationDataAccess = new FileNotificationDataAccess("data/email_configs.json", "data/scheduled_notifications.json");
 
+        // Set up default email configuration for the current user
+        setupDefaultEmailConfig(config);
+
         // Check if email configuration exists in secrets.json
         if (config.has("email_username") && config.has("email_password")) {
             try {
@@ -118,6 +121,30 @@ public class AppBuilder {
                 "dummy@example.com",
                 "dummy_password"
         );
+    }
+
+    private void setupDefaultEmailConfig(JsonObject config) {
+        try {
+            // Check if current user exists
+            String currentUsername = userDao.getCurrentUsername();
+            if (currentUsername == null || currentUsername.isEmpty()) {
+                System.out.println("No user logged in, skipping email config setup");
+                return;
+            }
+
+            // Check if email config exists for current user
+            entity.EmailNotificationConfig emailConfig = notificationDataAccess.getEmailConfig(currentUsername);
+
+            if (emailConfig == null && config.has("email_username")) {
+                // Create email config for the current user
+                String email = config.get("email_username").getAsString();
+                entity.EmailNotificationConfig newConfig = new entity.EmailNotificationConfig(email, true);
+                notificationDataAccess.saveEmailConfig(currentUsername, newConfig);
+                System.out.println("Created email notification config for user: " + currentUsername);
+            }
+        } catch (Exception e) {
+            System.err.println("Could not set up email config: " + e.getMessage());
+        }
     }
 
     public AppBuilder addViewModels() {
