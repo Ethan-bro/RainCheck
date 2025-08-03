@@ -219,8 +219,14 @@ public class SupabaseTaskDataAccessObject implements
             reminder = new Reminder((int) minutesBefore);
         }
 
-        String weatherDescription = json.has("weatherDescription") ? json.get("weatherDescription").getAsString() : null;
-        String weatherIconName = json.has("weatherIconName") ? json.get("weatherIconName").getAsString() : null;
+        String isDeleted = "No";
+        if (json.has("isDeleted")) {
+            isDeleted = json.get("isDeleted").getAsString();
+        }
+        String weatherDescription = json.has("weatherDescription") ? json.get("weatherDescription")
+                .getAsString() : null;
+        String weatherIconName = json.has("weatherIconName") ? json.get("weatherIconName")
+                .getAsString() : null;
         String temperature = json.has("temperature") ? json.get("temperature").getAsString() : null;
 
         TaskInfo info = new TaskInfo(
@@ -231,6 +237,7 @@ public class SupabaseTaskDataAccessObject implements
                 priority,
                 tag,
                 reminder,
+                isDeleted,
                 weatherDescription,
                 weatherIconName,
                 temperature

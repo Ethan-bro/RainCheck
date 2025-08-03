@@ -93,7 +93,8 @@ public class AddTaskInteractor implements AddTaskInputBoundary {
 
         TaskInfo newTaskInfo = new TaskInfo(newID, inputData.getTaskName(), inputData.getStartDateTime(),
                 inputData.getEndDateTime(), inputData.getPriority(), inputData.getTag(),
-                inputData.getReminder(), description, iconName, temp
+                inputData.getReminder(), inputData.getIsDeleted(),
+                description, iconName, temp
                 );
 
         Task newTask = new Task(newTaskInfo);
