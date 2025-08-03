@@ -25,20 +25,19 @@ import interface_adapter.create_customTag.CCTViewModel;
 import interface_adapter.deleteTask.DeleteTaskController;
 import interface_adapter.deleteTask.DeleteTaskPresenter;
 import interface_adapter.deleteTask.DeleteTaskViewModel;
-import interface_adapter.editTask.EditTaskController;
 import interface_adapter.logged_in.LoggedInState;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.logout.LogoutController;
 import data_access.LocationService;
 import data_access.WeatherApiService;
 import interface_adapter.markTaskComplete.MarkTaskCompleteController;
+import interface_adapter.task.TaskBoxDependencies;
 import interface_adapter.task.TaskViewModel;
 import org.jetbrains.annotations.NotNull;
 import use_case.DeleteTask.DeleteTaskInteractor;
 import use_case.createCustomTag.CCTInteractor;
 import use_case.MarkTaskComplete.MarkTaskCompleteInteractor;
 import interface_adapter.markTaskComplete.MarkTaskCompletePresenter;
-import interface_adapter.markTaskComplete.MarkTaskCompleteViewModel;
 
 
 public class LoggedInView extends JPanel implements PropertyChangeListener {
@@ -46,8 +45,6 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     private static final String viewName = "logged in";
     private final LoggedInViewModel loggedInViewModel;
     private final AddTaskViewModel addTaskViewModel;
-    private final MarkTaskCompleteViewModel markTaskCompleteViewModel;
-    private final DeleteTaskViewModel deleteTaskViewModel;
     private final ViewManagerModel viewManagerModel;
     private String username;
     private String email;
@@ -64,29 +61,24 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     private ActionListener addTaskAL;
     private ActionListener manageTagsAL;
 
-    private EditTaskController editTaskController;
+    private final TaskBoxDependencies taskBoxDependencies;
 
     public LoggedInView(LoggedInViewModel loggedInViewModel,
-                        MarkTaskCompleteViewModel markTaskCompleteViewModel,
                         LogoutController logoutController,
-                        ViewManagerModel viewManagerModel,
                         SupabaseTagDataAccessObject tagDao,
                         SupabaseTaskDataAccessObject taskDao,
                         AddTaskViewModel addTaskViewModel,
-                        DeleteTaskViewModel deleteTaskViewModel,
-                        EditTaskController editTaskController) throws IOException {
+                        TaskBoxDependencies taskBoxDependencies) throws IOException {
+        this.taskBoxDependencies = taskBoxDependencies;
+        this.viewManagerModel = taskBoxDependencies.viewManagerModel();
+        taskBoxDependencies.markTaskCompleteViewModel().addPropertyChangeListener(this);
+
         this.loggedInViewModel = loggedInViewModel;
-        this.markTaskCompleteViewModel = markTaskCompleteViewModel;
-        this.deleteTaskViewModel = deleteTaskViewModel;
-        this.deleteTaskViewModel.addPropertyChangeListener(this);
-        this.markTaskCompleteViewModel.addPropertyChangeListener(this);
         this.loggedInViewModel.addPropertyChangeListener(this);
-        this.viewManagerModel = viewManagerModel;
         this.logoutController = logoutController;
         this.tagDao = tagDao;
         this.taskDao = taskDao;
         this.addTaskViewModel = addTaskViewModel;
-        this.editTaskController = editTaskController;
 
         setupActionListeners();
 
@@ -214,14 +206,14 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
             TaskViewModel taskViewModel = new TaskViewModel(task);
 
             MarkTaskCompletePresenter markTaskCompletePresenter = new MarkTaskCompletePresenter(
-                    markTaskCompleteViewModel, taskViewModel);
+                    this.taskBoxDependencies.markTaskCompleteViewModel(), taskViewModel);
 
             MarkTaskCompleteController markTaskCompleteController = new MarkTaskCompleteController(
                     new MarkTaskCompleteInteractor(taskDao, markTaskCompletePresenter));
 
             markTaskCompleteController.setUsername(username);
 
-            TaskBox taskBox = getTaskBox(taskViewModel, markTaskCompleteController);
+            TaskBox taskBox = getTaskBox(taskViewModel);
             JOptionPane.showMessageDialog(this, taskBox, "Task Details",
                     JOptionPane.PLAIN_MESSAGE);
         };
@@ -244,19 +236,29 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     }
 
     @NotNull
-    private TaskBox getTaskBox(TaskViewModel taskViewModel, MarkTaskCompleteController markTaskCompleteController) {
-        DeleteTaskPresenter deleteTaskPresenter = new DeleteTaskPresenter(deleteTaskViewModel, taskViewModel);
-        DeleteTaskController deleteTaskController = new DeleteTaskController(
-                new DeleteTaskInteractor(taskDao, deleteTaskPresenter));
+    private TaskBox getTaskBox(TaskViewModel taskViewModel) {
+        MarkTaskCompletePresenter presenter = new MarkTaskCompletePresenter(
+                taskBoxDependencies.markTaskCompleteViewModel(),
+                taskViewModel
+        );
+        MarkTaskCompleteController markTaskCompleteController =
+                new MarkTaskCompleteController(new MarkTaskCompleteInteractor(taskDao, presenter));
+        markTaskCompleteController.setUsername(username);
 
+        DeleteTaskPresenter deleteTaskPresenter = new DeleteTaskPresenter(
+                new DeleteTaskViewModel(), taskViewModel
+        );
+        DeleteTaskController deleteTaskController = new DeleteTaskController(
+                new DeleteTaskInteractor(taskDao, deleteTaskPresenter)
+        );
         deleteTaskController.setUsername(username);
 
         return new TaskBox(
                 taskViewModel,
                 markTaskCompleteController,
                 deleteTaskController,
-                editTaskController,
-                viewManagerModel
+                taskBoxDependencies.editTaskController(),
+                taskBoxDependencies.viewManagerModel()
         );
     }
 
@@ -275,7 +277,7 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
             rebuildCalendarWithTasks(tasks);
         } else if ("taskAdded".equals(evt.getPropertyName())) {
             reloadTasksForCurrentWeek();
-        } else if (evt.getSource() == markTaskCompleteViewModel) {
+        } else if (evt.getSource() == this.taskBoxDependencies.markTaskCompleteViewModel()) {
             reloadTasksForCurrentWeek();
         } else if ("task completed".equals(evt.getPropertyName())) {
             reloadTasksForCurrentWeek();
