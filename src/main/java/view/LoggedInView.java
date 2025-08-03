@@ -257,25 +257,30 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if ("state".equals(evt.getPropertyName()) && evt.getSource() == loggedInViewModel) {
+        String prop = evt.getPropertyName();
+
+        if ("state".equals(prop) && evt.getSource() == loggedInViewModel) {
             LoggedInState state = (LoggedInState) evt.getNewValue();
             this.username = state.getUsername();
             usernameLabel.setText("Signed in as: " + this.username);
             this.email = state.getEmail();
             // TODO: do smth with email (Kian)
             reloadTasksForCurrentWeek();
+            return;
         }
-        else if ("weekTasks".equals(evt.getPropertyName())) {
+
+        if ("weekTasks".equals(prop)) {
             List<Task> tasks = loggedInViewModel.getState().getWeekTasks();
             rebuildCalendarWithTasks(tasks);
-        } else if ("taskAdded".equals(evt.getPropertyName())) {
-            reloadTasksForCurrentWeek();
-        } else if (evt.getSource() == this.taskBoxDependencies.markTaskCompleteViewModel()) {
-            reloadTasksForCurrentWeek();
-        } else if ("task completed".equals(evt.getPropertyName())) {
-            reloadTasksForCurrentWeek();
+            return;
         }
-        else if ("task deleted".equals(evt.getPropertyName())) {
+
+        if ("taskAdded".equals(prop) ||
+                "task completed".equals(prop) ||
+                "task deleted".equals(prop) ||
+                "task updated".equals(prop) ||
+                evt.getSource() == this.taskBoxDependencies.markTaskCompleteViewModel()) {
+
             reloadTasksForCurrentWeek();
         }
     }
