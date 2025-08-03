@@ -3,30 +3,23 @@ package app;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import data_access.SupabaseTaskDataAccessObject;
-import data_access.SupabaseTagDataAccessObject;
-import data_access.SupabaseUserDataAccessObject;
-
-import data_access.WeatherApiService;
-import interface_adapter.ViewManagerModel;
+import data_access.*;
+import interface_adapter.*;
 import interface_adapter.addTask.AddTaskViewModel;
-
-import interface_adapter.create_customTag.CCTViewModel;
+import interface_adapter.deleteTask.DeleteTaskViewModel;
 import interface_adapter.editTask.EditTaskController;
-import interface_adapter.editTask.EditTaskPresenter;
 import interface_adapter.editTask.EditTaskViewModel;
 import interface_adapter.logged_in.LoggedInDependencies;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.logout.LogoutController;
+import interface_adapter.markTaskComplete.MarkTaskCompleteViewModel;
 import interface_adapter.signup.SignupViewModel;
-
-import org.jetbrains.annotations.NotNull;
-import use_case.editTask.EditTaskInteractor;
+import interface_adapter.task.TaskBoxDependencies;
 import view.*;
 
 import javax.swing.*;
-import java.awt.CardLayout;
+import java.awt.*;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -36,27 +29,20 @@ public class AppBuilder {
     private final ViewManagerModel viewManagerModel = new ViewManagerModel();
     private final ViewManager viewManager = new ViewManager(cardPanel, cardLayout, viewManagerModel);
 
-    // databases:
+    // DAOs
     private SupabaseUserDataAccessObject userDao;
     private SupabaseTagDataAccessObject tagDao;
     private SupabaseTaskDataAccessObject taskDao;
 
+    // ViewModels
     private LoginViewModel loginViewModel;
     private LoggedInViewModel loggedInViewModel;
     private SignupViewModel signupViewModel;
     private AddTaskViewModel addTaskViewModel;
-    private ListTasksUseCaseFactory listTasksFactory;
-
     private EditTaskViewModel editTaskViewModel;
-    private EditTaskPresenter editTaskPresenter;
-    private EditTaskInteractor editTaskInteractor;
-    private EditTaskController editTaskController;
-    private EditTaskView editTaskView;
 
-    private LoginView loginView;
-    private SignupView signupView;
-    private LoggedInView loggedInView;
-    private AddTaskView addTaskView;
+    // Controllers
+    private EditTaskController editTaskController;
 
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
@@ -83,47 +69,58 @@ public class AppBuilder {
     }
 
     public AppBuilder addSignupView() {
-        signupView = SignupUseCaseFactory.create(viewManagerModel, loginViewModel, signupViewModel, userDao);
+        SignupView signupView = SignupUseCaseFactory.create(viewManagerModel, loginViewModel, signupViewModel, userDao);
         cardPanel.add(signupView, SignupView.getViewName());
         return this;
     }
 
     public AppBuilder addLoginView() {
-        loginView = LoginUseCaseFactory.create(viewManagerModel, loginViewModel, loggedInViewModel, signupViewModel, userDao);
+        // Views
+        LoginView loginView = LoginUseCaseFactory.create(viewManagerModel, loginViewModel, loggedInViewModel, signupViewModel, userDao);
         cardPanel.add(loginView, loginView.getViewName());
         return this;
     }
 
-    public AppBuilder addListTasksUseCase() {
-        listTasksFactory = new ListTasksUseCaseFactory(taskDao, loggedInViewModel);
-        listTasksFactory.create();
+    public AppBuilder addEditTaskView() {
+        editTaskViewModel = EditTaskUseCaseFactory.createViewModel(tagDao);
+        editTaskController = EditTaskUseCaseFactory.createController(taskDao, editTaskViewModel, viewManagerModel);
+        EditTaskView editTaskView = EditTaskUseCaseFactory.createView(
+                editTaskController, editTaskViewModel, viewManagerModel, LoggedInView.getViewName()
+        );
+        cardPanel.add(editTaskView, EditTaskView.getViewName());
         return this;
     }
 
     public AppBuilder addLoggedInView() throws IOException {
-
         LogoutController logoutController = LogoutUseCaseFactory.create(
-                viewManagerModel, loggedInViewModel, loginViewModel, userDao);
+                viewManagerModel, loggedInViewModel, loginViewModel, userDao
+        );
 
         LoggedInDependencies loggedInDependencies = new LoggedInDependencies(loggedInViewModel, logoutController);
-        loggedInView = LoggedInUseCaseFactory.createLoggedInView(
-                loggedInDependencies,
+
+        TaskBoxDependencies taskBoxDependencies = new TaskBoxDependencies(
+                new MarkTaskCompleteViewModel(),
+                new DeleteTaskViewModel(),
                 viewManagerModel,
+                editTaskController,
+                editTaskViewModel
+        );
+
+        LoggedInView loggedInView = LoggedInUseCaseFactory.createLoggedInView(
+                loggedInDependencies,
                 addTaskViewModel,
                 tagDao,
                 taskDao,
-                editTaskViewModel,
-                editTaskController);
+                taskBoxDependencies
+        );
 
         cardPanel.add(loggedInView, LoggedInView.getViewName());
         return this;
     }
 
     public AppBuilder addTaskViews() {
-
         try {
-            // Add Task View
-            addTaskView = AddTaskUseCaseFactory.create(
+            AddTaskView addTaskView = AddTaskUseCaseFactory.create(
                     viewManagerModel,
                     addTaskViewModel,
                     loggedInViewModel,
@@ -133,26 +130,16 @@ public class AppBuilder {
                     LoggedInView.getViewName()
             );
             cardPanel.add(addTaskView, AddTaskView.getViewName());
-
-            // Edit Task View
-            initEditTaskUseCase();
-            cardPanel.add(editTaskView, EditTaskView.getViewName());
-
         } catch (IOException e) {
             System.err.println("Weather Lookup Failed: " + e.getMessage());
         }
-
         return this;
     }
 
-    private void initEditTaskUseCase() {
-        if (editTaskView != null) return; // ensuring this init is only called once
-
-        editTaskViewModel = new EditTaskViewModel(tagDao);
-        editTaskPresenter = new EditTaskPresenter(editTaskViewModel);
-        editTaskInteractor = new EditTaskInteractor(taskDao, editTaskPresenter);
-        editTaskController = new EditTaskController(editTaskInteractor, viewManagerModel);
-        editTaskView = new EditTaskView(editTaskController, editTaskViewModel, viewManagerModel, LoggedInView.getViewName());
+    public AppBuilder addListTasksUseCase() {
+        ListTasksUseCaseFactory listTasksFactory = new ListTasksUseCaseFactory(taskDao, loggedInViewModel);
+        listTasksFactory.create();
+        return this;
     }
 
     public JFrame build() {
