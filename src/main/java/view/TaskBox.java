@@ -20,12 +20,7 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
     private final JLabel titleLabel;
     private final JLabel weatherDescriptionLabel;
     private final JLabel weatherEmojiLabel;
-
-    private final MarkTaskCompleteController markTaskCompleteController;
-    private final DeleteTaskController deleteTaskController;
-    private final EditTaskController editTaskController;
     private final TaskViewModel taskViewModel;
-    private final ViewManagerModel viewManagerModel;
 
     public TaskBox(TaskViewModel taskViewModel,
                    MarkTaskCompleteController markTaskCompleteController,
@@ -33,10 +28,6 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
                    EditTaskController editTaskController,
                    ViewManagerModel viewManagerModel) {
         this.taskViewModel = taskViewModel;
-        this.markTaskCompleteController = markTaskCompleteController;
-        this.deleteTaskController = deleteTaskController;
-        this.editTaskController = editTaskController;
-        this.viewManagerModel = viewManagerModel;
 
         taskViewModel.addPropertyChangeListener(this);
 
@@ -81,9 +72,10 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
         buttonPanel.setOpaque(false);
 
-        JButton completeButton = createImageButton("complete.png", "Complete", new Color(76, 175, 80), e ->
-                markTaskCompleteController.markAsComplete(taskViewModel.getTask().getTaskInfo().getId())
-        );
+        JButton completeButton = createImageButton("complete.png", "Complete", new Color(76, 175, 80), e -> {
+            markTaskCompleteController.markAsComplete(taskViewModel.getTask().getTaskInfo().getId());
+            closeDialog(e);
+        });
 
         JButton editButton = createImageButton("edit.png", "Edit", new Color(33, 150, 243), e -> {
             editTaskController.setCurrentTask(taskViewModel.getTask());
@@ -93,6 +85,7 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         JButton deleteButton = createImageButton("delete.png", "Delete", new Color(244, 67, 54), e -> {
             try {
                 deleteTaskController.deleteTask(taskViewModel.getTask().getTaskInfo().getId());
+                closeDialog(e);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -220,6 +213,14 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private void closeDialog(java.awt.event.ActionEvent e) {
+        Component source = (Component) e.getSource();
+        Window window = SwingUtilities.getWindowAncestor(source);
+        if (window != null) {
+            window.dispose();
+        }
     }
 
     @Override
