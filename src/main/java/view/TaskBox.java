@@ -79,6 +79,13 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
 
         JButton editButton = createImageButton("edit.png", "Edit", new Color(33, 150, 243), e -> {
             editTaskController.setCurrentTask(taskViewModel.getTask());
+
+            // Set the task on the EditTaskView
+            EditTaskView editTaskView = (EditTaskView) viewManagerModel.getView(EditTaskView.getViewName());
+            if (editTaskView != null) {
+                editTaskView.setExistingTask(taskViewModel.getTask());
+            }
+
             closeDialog(e);
             editTaskController.switchToEditTaskView(viewManagerModel);
         });

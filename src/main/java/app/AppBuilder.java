@@ -22,12 +22,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AppBuilder {
     private final JPanel cardPanel = new JPanel();
     private final CardLayout cardLayout = new CardLayout();
     private final ViewManagerModel viewManagerModel = new ViewManagerModel();
     private final ViewManager viewManager = new ViewManager(cardPanel, cardLayout, viewManagerModel);
+    private final Map<String, JPanel> viewMap = new HashMap<>();
 
     // Weather:
     private final WeatherApiService weatherApiService = new WeatherApiService();
@@ -68,29 +71,31 @@ public class AppBuilder {
         loggedInViewModel = new LoggedInViewModel();
         signupViewModel = new SignupViewModel();
         addTaskViewModel = new AddTaskViewModel(tagDao, userDao.getCurrentUsername());
+        editTaskViewModel = new EditTaskViewModel(tagDao, userDao.getCurrentUsername());
         return this;
     }
 
     public AppBuilder addSignupView() {
         SignupView signupView = SignupUseCaseFactory.create(viewManagerModel, loginViewModel, signupViewModel, userDao);
         cardPanel.add(signupView, SignupView.getViewName());
+        viewMap.put(SignupView.getViewName(), signupView);
         return this;
     }
 
     public AppBuilder addLoginView() {
-        // Views
         LoginView loginView = LoginUseCaseFactory.create(viewManagerModel, loginViewModel, loggedInViewModel, signupViewModel, userDao);
         cardPanel.add(loginView, loginView.getViewName());
+        viewMap.put(loginView.getViewName(), loginView);
         return this;
     }
 
     public AppBuilder addEditTaskView() {
-        editTaskViewModel = EditTaskUseCaseFactory.createViewModel(tagDao);
         editTaskController = EditTaskUseCaseFactory.createController(taskDao, editTaskViewModel, viewManagerModel, weatherApiService);
         EditTaskView editTaskView = EditTaskUseCaseFactory.createView(
                 editTaskController, editTaskViewModel, viewManagerModel, LoggedInView.getViewName()
         );
         cardPanel.add(editTaskView, EditTaskView.getViewName());
+        viewMap.put(EditTaskView.getViewName(), editTaskView);
         return this;
     }
 
@@ -118,6 +123,7 @@ public class AppBuilder {
         );
 
         cardPanel.add(loggedInView, LoggedInView.getViewName());
+        viewMap.put(LoggedInView.getViewName(), loggedInView);
         return this;
     }
 
@@ -132,6 +138,7 @@ public class AppBuilder {
                 LoggedInView.getViewName()
         );
         cardPanel.add(addTaskView, AddTaskView.getViewName());
+        viewMap.put(AddTaskView.getViewName(), addTaskView);
         return this;
     }
 
@@ -142,6 +149,8 @@ public class AppBuilder {
     }
 
     public JFrame build() {
+        viewManagerModel.setViewMap(viewMap);
+
         JFrame application = new JFrame("RainCheck");
         application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         application.add(cardPanel);

@@ -16,10 +16,6 @@ public class EditTaskUseCaseFactory {
 
     private EditTaskUseCaseFactory() {}
 
-    public static EditTaskViewModel createViewModel(SupabaseTagDataAccessObject tagDao) {
-        return new EditTaskViewModel(tagDao);
-    }
-
     public static EditTaskController createController(
             SupabaseTaskDataAccessObject taskDao,
             EditTaskViewModel viewModel,

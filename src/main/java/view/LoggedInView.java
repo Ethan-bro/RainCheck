@@ -25,6 +25,7 @@ import interface_adapter.create_customTag.CCTViewModel;
 import interface_adapter.deleteTask.DeleteTaskController;
 import interface_adapter.deleteTask.DeleteTaskPresenter;
 import interface_adapter.deleteTask.DeleteTaskViewModel;
+import interface_adapter.editTask.EditTaskViewModel;
 import interface_adapter.logged_in.LoggedInState;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.logout.LogoutController;
@@ -45,6 +46,7 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     private static final String viewName = "logged in";
     private final LoggedInViewModel loggedInViewModel;
     private final AddTaskViewModel addTaskViewModel;
+    private final EditTaskViewModel editTaskViewModel;
     private final ViewManagerModel viewManagerModel;
     private String username;
     private String email;
@@ -71,8 +73,10 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
                         TaskBoxDependencies taskBoxDependencies) throws IOException {
         this.taskBoxDependencies = taskBoxDependencies;
         this.viewManagerModel = taskBoxDependencies.viewManagerModel();
+        this.editTaskViewModel = taskBoxDependencies.editTaskViewModel();
         taskBoxDependencies.markTaskCompleteViewModel().addPropertyChangeListener(this);
         taskBoxDependencies.deleteTaskViewModel().addPropertyChangeListener(this);
+        taskBoxDependencies.editTaskViewModel().addPropertyChangeListener(this);
 
         this.loggedInViewModel = loggedInViewModel;
         this.loggedInViewModel.addPropertyChangeListener(this);
@@ -265,6 +269,8 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
             usernameLabel.setText("Signed in as: " + this.username);
             this.email = state.getEmail();
             // TODO: do smth with email (Kian)
+            taskBoxDependencies.editTaskController().setUsername(this.username);
+            editTaskViewModel.setUsername(this.username);
             reloadTasksForCurrentWeek();
             return;
         }

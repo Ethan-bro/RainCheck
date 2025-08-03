@@ -16,7 +16,7 @@ public class EditTaskPresenter implements EditTaskOutputBoundary {
         EditTaskState newState = new EditTaskState();
         newState.setSuccess(true);
         viewModel.setState(newState);
-        viewModel.firePropertyChanged();
+        viewModel.firePropertyChange("task updated", null, null);
 
     }
 

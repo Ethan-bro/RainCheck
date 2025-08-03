@@ -227,12 +227,27 @@ public class EditTaskView extends JPanel implements PropertyChangeListener {
      */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
+        String prop = evt.getPropertyName();
+
+        if ("refreshTagOptions".equals(prop)) {
+            Object newValue = evt.getNewValue();
+            if (newValue instanceof java.util.List<?> updatedTagsRaw) {
+                customTagCombo.setModel(new DefaultComboBoxModel<>(updatedTagsRaw.toArray()));
+            }
+            return;
+        }
+
+        if ("task updated".equals(prop)) {
+            viewManagerModel.setState(mainViewKey);
+            viewManagerModel.firePropertyChanged();
+            return;
+        }
 
         EditTaskState state = viewModel.getState();
 
         if (state.isSuccess()) {
             viewManagerModel.setState(mainViewKey);
-            viewManagerModel.firePropertyChanged("state");
+            viewManagerModel.firePropertyChanged();
         } else if (state.getError() != null) {
             errorLabel.setText(state.getError());
             errorLabel.setVisible(true);
