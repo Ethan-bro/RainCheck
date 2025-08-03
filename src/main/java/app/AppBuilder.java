@@ -106,7 +106,14 @@ public class AppBuilder {
                 viewManagerModel, loggedInViewModel, loginViewModel, userDao);
 
         LoggedInDependencies loggedInDependencies = new LoggedInDependencies(loggedInViewModel, logoutController);
-        loggedInView = LoggedInUseCaseFactory.createLoggedInView(loggedInDependencies, viewManagerModel, addTaskViewModel, tagDao, taskDao);
+        loggedInView = LoggedInUseCaseFactory.createLoggedInView(
+                loggedInDependencies,
+                viewManagerModel,
+                addTaskViewModel,
+                tagDao,
+                taskDao,
+                editTaskViewModel,
+                editTaskController);
 
         cardPanel.add(loggedInView, LoggedInView.getViewName());
         return this;

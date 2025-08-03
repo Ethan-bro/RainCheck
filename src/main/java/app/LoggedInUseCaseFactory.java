@@ -24,14 +24,11 @@ public class LoggedInUseCaseFactory {
                                                   ViewManagerModel viewManagerModel,
                                                   AddTaskViewModel addTaskViewModel,
                                                   SupabaseTagDataAccessObject tagDao,
-                                                  SupabaseTaskDataAccessObject taskDao) throws IOException {
+                                                  SupabaseTaskDataAccessObject taskDao,
+                                                  EditTaskViewModel editTaskViewModel,
+                                                  EditTaskController editTaskController) throws IOException {
 
         MarkTaskCompleteViewModel markTaskCompleteViewModel = new MarkTaskCompleteViewModel();
-
-        EditTaskViewModel editTaskViewModel = new EditTaskViewModel(tagDao);
-        EditTaskPresenter editTaskPresenter = new EditTaskPresenter(editTaskViewModel);
-        EditTaskInteractor editTaskInteractor = new EditTaskInteractor(taskDao, editTaskPresenter);
-        EditTaskController editTaskController = new EditTaskController(editTaskInteractor, viewManagerModel);
 
         TaskBoxDependencies taskBoxDependencies = new TaskBoxDependencies(
                 markTaskCompleteViewModel,
