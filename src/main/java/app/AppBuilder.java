@@ -29,6 +29,9 @@ public class AppBuilder {
     private final ViewManagerModel viewManagerModel = new ViewManagerModel();
     private final ViewManager viewManager = new ViewManager(cardPanel, cardLayout, viewManagerModel);
 
+    // Weather:
+    private final WeatherApiService weatherApiService = new WeatherApiService();
+
     // DAOs
     private SupabaseUserDataAccessObject userDao;
     private SupabaseTagDataAccessObject tagDao;
@@ -44,7 +47,7 @@ public class AppBuilder {
     // Controllers
     private EditTaskController editTaskController;
 
-    public AppBuilder() {
+    public AppBuilder() throws IOException {
         cardPanel.setLayout(cardLayout);
     }
 
@@ -83,7 +86,7 @@ public class AppBuilder {
 
     public AppBuilder addEditTaskView() {
         editTaskViewModel = EditTaskUseCaseFactory.createViewModel(tagDao);
-        editTaskController = EditTaskUseCaseFactory.createController(taskDao, editTaskViewModel, viewManagerModel);
+        editTaskController = EditTaskUseCaseFactory.createController(taskDao, editTaskViewModel, viewManagerModel, weatherApiService);
         EditTaskView editTaskView = EditTaskUseCaseFactory.createView(
                 editTaskController, editTaskViewModel, viewManagerModel, LoggedInView.getViewName()
         );
@@ -119,20 +122,16 @@ public class AppBuilder {
     }
 
     public AppBuilder addTaskViews() {
-        try {
-            AddTaskView addTaskView = AddTaskUseCaseFactory.create(
-                    viewManagerModel,
-                    addTaskViewModel,
-                    loggedInViewModel,
-                    taskDao,
-                    tagDao,
-                    new WeatherApiService(),
-                    LoggedInView.getViewName()
-            );
-            cardPanel.add(addTaskView, AddTaskView.getViewName());
-        } catch (IOException e) {
-            System.err.println("Weather Lookup Failed: " + e.getMessage());
-        }
+        AddTaskView addTaskView = AddTaskUseCaseFactory.create(
+                viewManagerModel,
+                addTaskViewModel,
+                loggedInViewModel,
+                taskDao,
+                tagDao,
+                weatherApiService,
+                LoggedInView.getViewName()
+        );
+        cardPanel.add(addTaskView, AddTaskView.getViewName());
         return this;
     }
 

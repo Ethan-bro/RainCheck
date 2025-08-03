@@ -2,6 +2,7 @@ package app;
 
 import data_access.SupabaseTagDataAccessObject;
 import data_access.SupabaseTaskDataAccessObject;
+import data_access.WeatherApiService;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.editTask.EditTaskController;
 import interface_adapter.editTask.EditTaskPresenter;
@@ -22,10 +23,11 @@ public class EditTaskUseCaseFactory {
     public static EditTaskController createController(
             SupabaseTaskDataAccessObject taskDao,
             EditTaskViewModel viewModel,
-            ViewManagerModel viewManagerModel
+            ViewManagerModel viewManagerModel,
+            WeatherApiService weatherApiService
     ) {
         EditTaskOutputBoundary presenter = new EditTaskPresenter(viewModel);
-        EditTaskInputBoundary interactor = new EditTaskInteractor(taskDao, presenter);
+        EditTaskInputBoundary interactor = new EditTaskInteractor(taskDao, presenter, weatherApiService);
         return new EditTaskController(interactor, viewManagerModel);
     }
 
