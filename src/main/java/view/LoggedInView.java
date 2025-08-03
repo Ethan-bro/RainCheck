@@ -14,6 +14,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import data_access.SupabaseTagDataAccessObject;
+import data_access.SupabaseTaskDataAccessObject;
 import entity.Task;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.addTask.AddTaskViewModel;
@@ -31,12 +32,17 @@ import data_access.WeatherApiService;
 import interface_adapter.markTaskComplete.MarkTaskCompleteController;
 import interface_adapter.task.TaskViewModel;
 import use_case.createCustomTag.CCTInteractor;
+import use_case.MarkTaskComplete.MarkTaskCompleteInteractor;
+import interface_adapter.markTaskComplete.MarkTaskCompletePresenter;
+import interface_adapter.markTaskComplete.MarkTaskCompleteViewModel;
+
 
 public class LoggedInView extends JPanel implements PropertyChangeListener {
 
     private static final String viewName = "logged in";
     private final LoggedInViewModel loggedInViewModel;
     private final AddTaskViewModel addTaskViewModel;
+    private final MarkTaskCompleteViewModel markTaskCompleteViewModel;
     private final ViewManagerModel viewManagerModel;
     private String loggedInUsername;
     private final JLabel usernameLabel;
@@ -46,30 +52,33 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     private Map<LocalDate, Map<String, Object>> weatherMap = null;
     private Map<LocalDate, List<Map<String, String>>> hourlyWeatherMap = null;
     private final SupabaseTagDataAccessObject tagDao;
+    private final SupabaseTaskDataAccessObject taskDao;
 
     private ActionListener logoutAL;
     private ActionListener addTaskAL;
     private ActionListener manageTagsAL;
 
-    private MarkTaskCompleteController markTaskCompleteController;
     private DeleteTaskController deleteTaskController;
     private EditTaskController editTaskController;
 
     public LoggedInView(LoggedInViewModel loggedInViewModel,
+                        MarkTaskCompleteViewModel markTaskCompleteViewModel,
                         LogoutController logoutController,
                         ViewManagerModel viewManagerModel,
                         SupabaseTagDataAccessObject tagDao,
+                        SupabaseTaskDataAccessObject taskDao,
                         AddTaskViewModel addTaskViewModel,
-                        MarkTaskCompleteController markTaskCompleteController,
                         DeleteTaskController deleteTaskController,
                         EditTaskController editTaskController) throws IOException {
         this.loggedInViewModel = loggedInViewModel;
+        this.markTaskCompleteViewModel = markTaskCompleteViewModel;
+        this.markTaskCompleteViewModel.addPropertyChangeListener(this);
         this.loggedInViewModel.addPropertyChangeListener(this);
         this.viewManagerModel = viewManagerModel;
         this.logoutController = logoutController;
         this.tagDao = tagDao;
+        this.taskDao = taskDao;
         this.addTaskViewModel = addTaskViewModel;
-        this.markTaskCompleteController = markTaskCompleteController;
         this.deleteTaskController = deleteTaskController;
         this.editTaskController = editTaskController;
 
@@ -90,7 +99,8 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         usernameLabel.setFont(usernameLabel.getFont().deriveFont(Font.PLAIN, 14f));
 
         LocalDate today = LocalDate.now();
-        JLabel monthYearLabel = new JLabel(today.getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH) + " " + today.getYear());
+        JLabel monthYearLabel = new JLabel(today.getMonth()
+                .getDisplayName(TextStyle.FULL, Locale.ENGLISH) + " " + today.getYear());
         monthYearLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         monthYearLabel.setFont(monthYearLabel.getFont().deriveFont(Font.ITALIC, 15f));
 
@@ -163,7 +173,8 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
 
     }
 
-    private Map<LocalDate, Map<String, Object>> getDailyWeatherMapForCalendarData(CalendarData calendarData) throws IOException {
+    private Map<LocalDate, Map<String, Object>> getDailyWeatherMapForCalendarData(
+            CalendarData calendarData) throws IOException {
         Map<LocalDate, Map<String, Object>> map = new HashMap<>();
 
         String city = LocationService.getUserCity(); // Fetching the user's current location (city e.g., Toronto)
@@ -176,7 +187,8 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
          return map;
     }
 
-    private Map<LocalDate, List<Map<String, String>>> getHourlyWeatherMapForCalendarData(CalendarData calendarData) throws IOException {
+    private Map<LocalDate, List<Map<String, String>>> getHourlyWeatherMapForCalendarData(
+            CalendarData calendarData) throws IOException {
         Map<LocalDate, List<Map<String, String>>> map = new HashMap<>();
 
         String city = LocationService.getUserCity(); // Reuse location
@@ -195,6 +207,15 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
 
         TaskClickListener taskClickListener = task -> {
             TaskViewModel taskViewModel = new TaskViewModel(task);
+
+            MarkTaskCompletePresenter presenter = new MarkTaskCompletePresenter(
+                    markTaskCompleteViewModel, taskViewModel);
+
+            MarkTaskCompleteController markTaskCompleteController = new MarkTaskCompleteController(
+                    new MarkTaskCompleteInteractor(taskDao, presenter));
+
+            markTaskCompleteController.setUsername(loggedInUsername);
+
             TaskBox taskBox = new TaskBox(
                     taskViewModel,
                     markTaskCompleteController,
@@ -225,7 +246,7 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if ("state".equals(evt.getPropertyName())) {
+        if ("state".equals(evt.getPropertyName()) && evt.getSource() == loggedInViewModel) {
             LoggedInState state = (LoggedInState) evt.getNewValue();
             this.loggedInUsername = state.getUsername();
             usernameLabel.setText("Signed in as: " + this.loggedInUsername);
@@ -236,6 +257,10 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
             List<Task> tasks = loggedInViewModel.getState().getWeekTasks();
             rebuildCalendarWithTasks(tasks);
         } else if ("taskAdded".equals(evt.getPropertyName())) {
+            reloadTasksForCurrentWeek();
+        } else if (evt.getSource() == markTaskCompleteViewModel) {
+            reloadTasksForCurrentWeek();
+        } else if ("task completed".equals(evt.getPropertyName())) {
             reloadTasksForCurrentWeek();
         }
     }

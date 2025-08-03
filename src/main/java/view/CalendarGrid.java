@@ -149,16 +149,21 @@ public class CalendarGrid extends JPanel {
 
         button.setOpaque(true);
         button.setBorderPainted(false);
-        switch (t.getTaskInfo().getPriority()) {
-            case HIGH:
-                button.setBackground(Color.RED);
-                break;
-            case MEDIUM:
-                button.setBackground(Color.ORANGE);
-                break;
-            case LOW:
-                button.setBackground(Color.YELLOW);
-                break;
+
+        if (t.getTaskInfo().getTaskStatus().equals("Incomplete") || t.getTaskInfo().getTaskStatus().equals("null")) {
+            switch (t.getTaskInfo().getPriority()) {
+                case HIGH:
+                    button.setBackground(Color.RED);
+                    break;
+                case MEDIUM:
+                    button.setBackground(Color.ORANGE);
+                    break;
+                case LOW:
+                    button.setBackground(Color.YELLOW);
+                    break;
+            }
+        } else {
+            button.setBackground(Color.LIGHT_GRAY);
         }
 
         button.addActionListener(e -> taskClickListener.onTaskClick(t));
