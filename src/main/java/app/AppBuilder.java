@@ -12,11 +12,16 @@ import interface_adapter.ViewManagerModel;
 import interface_adapter.addTask.AddTaskViewModel;
 
 import interface_adapter.create_customTag.CCTViewModel;
+import interface_adapter.editTask.EditTaskController;
+import interface_adapter.editTask.EditTaskPresenter;
+import interface_adapter.editTask.EditTaskViewModel;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.logout.LogoutController;
 import interface_adapter.signup.SignupViewModel;
 
+import org.jetbrains.annotations.NotNull;
+import use_case.editTask.EditTaskInteractor;
 import view.*;
 
 import javax.swing.*;
@@ -99,9 +104,10 @@ public class AppBuilder {
         return this;
     }
 
-    public AppBuilder addAddTaskView() {
+    public AppBuilder addTaskViews() {
 
         try {
+            // Add Task View
             addTaskView = AddTaskUseCaseFactory.create(
                     viewManagerModel,
                     addTaskViewModel,
@@ -111,12 +117,32 @@ public class AppBuilder {
                     new WeatherApiService(),
                     LoggedInView.getViewName()
             );
+            cardPanel.add(addTaskView, AddTaskView.getViewName());
+
+            // Edit Task View
+            EditTaskView editTaskView = getEditTaskView();
+            cardPanel.add(editTaskView, EditTaskView.getViewName());
+
         } catch (IOException e) {
             System.err.println("Weather Lookup Failed: " + e.getMessage());
         }
 
-        cardPanel.add(addTaskView, AddTaskView.getViewName());
         return this;
+    }
+
+    @NotNull
+    private EditTaskView getEditTaskView() {
+        EditTaskViewModel editTaskViewModel = new EditTaskViewModel(tagDao);
+        EditTaskPresenter editTaskPresenter = new EditTaskPresenter(editTaskViewModel);
+        EditTaskInteractor editTaskInteractor = new EditTaskInteractor(taskDao, editTaskPresenter);
+        EditTaskController editTaskController = new EditTaskController(editTaskInteractor, viewManagerModel);
+
+        return new EditTaskView(
+                editTaskController,
+                editTaskViewModel,
+                viewManagerModel,
+                LoggedInView.getViewName()
+        );
     }
 
     public JFrame build() {
