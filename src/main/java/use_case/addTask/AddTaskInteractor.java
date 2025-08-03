@@ -6,9 +6,11 @@ import data_access.WeatherApiService;
 import entity.Task;
 import entity.TaskID;
 import entity.TaskInfo;
+import entity.WeatherInfo;
 import interface_adapter.addTask.Constants;
 import interface_adapter.addTask.TaskIDGenerator;
 import use_case.listTasks.TaskDataAccessInterface;
+import use_case.weather.WeatherInfoGetter;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -66,35 +68,12 @@ public class AddTaskInteractor implements AddTaskInputBoundary {
 
         TaskID newID = taskIDGenerator.generateTaskID();
 
-        String description = "";
-        String feels = "";
-        String iconName = "";
-        try {
-            LocalDateTime startDateTime = inputData.getStartDateTime();
-            LocalDate date = startDateTime.toLocalDate();
-            int hour = startDateTime.getHour();
-
-            List<Map<String,String>> hourly = weatherApiService.getHourlyWeather(LocationService.getUserCity(),
-                    date, hour, hour);
-
-            if (!hourly.isEmpty()){
-                Map<String, String> hourlyMap = hourly.get(0);
-                description = hourlyMap.get("description");
-                feels = hourlyMap.get("feels");
-                Map<String, Object> daily = weatherApiService.getDailyWeather(LocationService.getUserCity(),
-                        date);
-                iconName = daily.get("iconName") != null ? daily.get("iconName").toString() : "";
-            }
-        } catch (IOException e) {
-            System.err.println("Weather Lookup Failed: " + e.getMessage());
-        }
-        String temp = feels;
-
+        WeatherInfo weatherInfo = WeatherInfoGetter.getWeatherInfo(weatherApiService, inputData.getStartDateTime());
 
         TaskInfo newTaskInfo = new TaskInfo(newID, inputData.getTaskName(), inputData.getStartDateTime(),
                 inputData.getEndDateTime(), inputData.getPriority(), inputData.getTag(),
                 inputData.getReminder(), inputData.getIsDeleted(),
-                description, iconName, temp
+                weatherInfo.description(), weatherInfo.iconName(), weatherInfo.temperature()
                 );
 
         Task newTask = new Task(newTaskInfo);
