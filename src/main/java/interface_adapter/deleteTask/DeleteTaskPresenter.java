@@ -1,14 +1,17 @@
 package interface_adapter.deleteTask;
 
+import interface_adapter.task.TaskViewModel;
 import use_case.DeleteTask.DeleteTaskOutputBoundary;
 import use_case.DeleteTask.DeleteTaskOutputData;
 
 public class DeleteTaskPresenter implements DeleteTaskOutputBoundary {
 
     private final DeleteTaskViewModel viewModel;
+    private final TaskViewModel taskViewModel;
 
-    public DeleteTaskPresenter(DeleteTaskViewModel viewModel) {
+    public DeleteTaskPresenter(DeleteTaskViewModel viewModel, TaskViewModel taskViewModel) {
         this.viewModel = viewModel;
+        this.taskViewModel = taskViewModel;
     }
 
     @Override
@@ -16,7 +19,9 @@ public class DeleteTaskPresenter implements DeleteTaskOutputBoundary {
         DeleteTaskState newState = new DeleteTaskState();
         newState.setSuccess(true);
         viewModel.setState(newState);
-        viewModel.firePropertyChanged();
+        viewModel.firePropertyChanged("task deleted");
+        taskViewModel.getTask().getTaskInfo().setIsDeleted("Yes");
+        taskViewModel.firePropertyChanged();
     }
 
     @Override
@@ -25,6 +30,6 @@ public class DeleteTaskPresenter implements DeleteTaskOutputBoundary {
         newState.setSuccess(false);
         newState.setError(errorMessage);
         viewModel.setState(newState);
-        viewModel.firePropertyChanged();
+        viewModel.firePropertyChanged("task deleted");
     }
 }

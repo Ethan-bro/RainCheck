@@ -16,6 +16,7 @@ public class AddTaskInputData {
     private CustomTag customTag;
     private String taskStatus;
     private Reminder reminder;
+    private String isDeleted;
 
     public AddTaskInputData(String taskName, LocalDateTime startDateTime, LocalDateTime endDateTime,
                             Priority priority, CustomTag customTag, Reminder reminder) {
@@ -25,6 +26,7 @@ public class AddTaskInputData {
         this.priority = (priority != null) ? priority : Priority.LOW;
         this.customTag = customTag;
         this.taskStatus = "Incomplete";
+        this.isDeleted = "No";
         this.reminder = reminder;
     }
 
@@ -55,4 +57,8 @@ public class AddTaskInputData {
     public Reminder getReminder() {return reminder;}
 
     public void setReminder(Reminder reminder) {this.reminder = reminder;}
+
+    public void setIsDeleted(String isDeleted) {this.isDeleted = isDeleted;}
+
+    public String getIsDeleted() {return isDeleted;}
 }

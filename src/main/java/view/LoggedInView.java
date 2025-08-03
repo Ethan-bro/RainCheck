@@ -23,6 +23,8 @@ import interface_adapter.create_customTag.CCTController;
 import interface_adapter.create_customTag.CCTPresenter;
 import interface_adapter.create_customTag.CCTViewModel;
 import interface_adapter.deleteTask.DeleteTaskController;
+import interface_adapter.deleteTask.DeleteTaskPresenter;
+import interface_adapter.deleteTask.DeleteTaskViewModel;
 import interface_adapter.editTask.EditTaskController;
 import interface_adapter.logged_in.LoggedInState;
 import interface_adapter.logged_in.LoggedInViewModel;
@@ -31,6 +33,7 @@ import data_access.LocationService;
 import data_access.WeatherApiService;
 import interface_adapter.markTaskComplete.MarkTaskCompleteController;
 import interface_adapter.task.TaskViewModel;
+import use_case.DeleteTask.DeleteTaskInteractor;
 import use_case.createCustomTag.CCTInteractor;
 import use_case.MarkTaskComplete.MarkTaskCompleteInteractor;
 import interface_adapter.markTaskComplete.MarkTaskCompletePresenter;
@@ -43,6 +46,7 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     private final LoggedInViewModel loggedInViewModel;
     private final AddTaskViewModel addTaskViewModel;
     private final MarkTaskCompleteViewModel markTaskCompleteViewModel;
+    private DeleteTaskViewModel deleteTaskViewModel;
     private final ViewManagerModel viewManagerModel;
     private String loggedInUsername;
     private final JLabel usernameLabel;
@@ -58,7 +62,6 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     private ActionListener addTaskAL;
     private ActionListener manageTagsAL;
 
-    private DeleteTaskController deleteTaskController;
     private EditTaskController editTaskController;
 
     public LoggedInView(LoggedInViewModel loggedInViewModel,
@@ -68,10 +71,12 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
                         SupabaseTagDataAccessObject tagDao,
                         SupabaseTaskDataAccessObject taskDao,
                         AddTaskViewModel addTaskViewModel,
-                        DeleteTaskController deleteTaskController,
+                        DeleteTaskViewModel deleteTaskViewModel,
                         EditTaskController editTaskController) throws IOException {
         this.loggedInViewModel = loggedInViewModel;
         this.markTaskCompleteViewModel = markTaskCompleteViewModel;
+        this.deleteTaskViewModel = deleteTaskViewModel;
+        this.deleteTaskViewModel.addPropertyChangeListener(this);
         this.markTaskCompleteViewModel.addPropertyChangeListener(this);
         this.loggedInViewModel.addPropertyChangeListener(this);
         this.viewManagerModel = viewManagerModel;
@@ -79,7 +84,6 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         this.tagDao = tagDao;
         this.taskDao = taskDao;
         this.addTaskViewModel = addTaskViewModel;
-        this.deleteTaskController = deleteTaskController;
         this.editTaskController = editTaskController;
 
         setupActionListeners();
@@ -208,13 +212,19 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         TaskClickListener taskClickListener = task -> {
             TaskViewModel taskViewModel = new TaskViewModel(task);
 
-            MarkTaskCompletePresenter presenter = new MarkTaskCompletePresenter(
+            MarkTaskCompletePresenter markTaskCompletePresenter = new MarkTaskCompletePresenter(
                     markTaskCompleteViewModel, taskViewModel);
 
             MarkTaskCompleteController markTaskCompleteController = new MarkTaskCompleteController(
-                    new MarkTaskCompleteInteractor(taskDao, presenter));
+                    new MarkTaskCompleteInteractor(taskDao, markTaskCompletePresenter));
 
             markTaskCompleteController.setUsername(loggedInUsername);
+
+            DeleteTaskPresenter deleteTaskPresenter = new DeleteTaskPresenter(deleteTaskViewModel, taskViewModel);
+            DeleteTaskController deleteTaskController = new DeleteTaskController(
+                    new DeleteTaskInteractor(taskDao, deleteTaskPresenter));
+
+            deleteTaskController.setUsername(loggedInUsername);
 
             TaskBox taskBox = new TaskBox(
                     taskViewModel,
@@ -261,6 +271,9 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         } else if (evt.getSource() == markTaskCompleteViewModel) {
             reloadTasksForCurrentWeek();
         } else if ("task completed".equals(evt.getPropertyName())) {
+            reloadTasksForCurrentWeek();
+        }
+        else if ("task deleted".equals(evt.getPropertyName())) {
             reloadTasksForCurrentWeek();
         }
     }

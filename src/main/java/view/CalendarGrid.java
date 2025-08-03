@@ -116,8 +116,11 @@ public class CalendarGrid extends JPanel {
                     if (!cellTasks.isEmpty()) {
                         cell.setLayout(new FlowLayout(FlowLayout.LEFT, 2, 2));
                         for (Task t : cellTasks) {
-                            JButton button = getJButton(taskClickListener, t);
-                            cell.add(button);
+                            if (!"Yes".equalsIgnoreCase(t.getTaskInfo().getIsDeleted())) {
+                                JButton button = getJButton(taskClickListener, t);
+                                cell.add(button);
+                            }
+
                         }
                     }
                     cell.setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -150,7 +153,7 @@ public class CalendarGrid extends JPanel {
         button.setOpaque(true);
         button.setBorderPainted(false);
 
-        if (t.getTaskInfo().getTaskStatus().equals("Incomplete") || t.getTaskInfo().getTaskStatus().equals("null")) {
+        if (t.getTaskInfo().getTaskStatus().equals("Incomplete")) {
             switch (t.getTaskInfo().getPriority()) {
                 case HIGH:
                     button.setBackground(Color.RED);
