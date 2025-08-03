@@ -72,6 +72,7 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         this.taskBoxDependencies = taskBoxDependencies;
         this.viewManagerModel = taskBoxDependencies.viewManagerModel();
         taskBoxDependencies.markTaskCompleteViewModel().addPropertyChangeListener(this);
+        taskBoxDependencies.deleteTaskViewModel().addPropertyChangeListener(this);
 
         this.loggedInViewModel = loggedInViewModel;
         this.loggedInViewModel.addPropertyChangeListener(this);

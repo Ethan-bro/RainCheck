@@ -4,6 +4,7 @@ import data_access.SupabaseTagDataAccessObject;
 import data_access.SupabaseTaskDataAccessObject;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.addTask.AddTaskViewModel;
+import interface_adapter.deleteTask.DeleteTaskViewModel;
 import interface_adapter.editTask.EditTaskController;
 import interface_adapter.editTask.EditTaskPresenter;
 import interface_adapter.editTask.EditTaskViewModel;
@@ -32,6 +33,7 @@ public class LoggedInUseCaseFactory {
 
         TaskBoxDependencies taskBoxDependencies = new TaskBoxDependencies(
                 markTaskCompleteViewModel,
+                new DeleteTaskViewModel(),
                 viewManagerModel,
                 editTaskController
         );
