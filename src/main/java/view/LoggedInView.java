@@ -33,6 +33,7 @@ import data_access.LocationService;
 import data_access.WeatherApiService;
 import interface_adapter.markTaskComplete.MarkTaskCompleteController;
 import interface_adapter.task.TaskViewModel;
+import org.jetbrains.annotations.NotNull;
 import use_case.DeleteTask.DeleteTaskInteractor;
 import use_case.createCustomTag.CCTInteractor;
 import use_case.MarkTaskComplete.MarkTaskCompleteInteractor;
@@ -46,11 +47,12 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     private final LoggedInViewModel loggedInViewModel;
     private final AddTaskViewModel addTaskViewModel;
     private final MarkTaskCompleteViewModel markTaskCompleteViewModel;
-    private DeleteTaskViewModel deleteTaskViewModel;
+    private final DeleteTaskViewModel deleteTaskViewModel;
     private final ViewManagerModel viewManagerModel;
-    private String loggedInUsername;
+    private String username;
+    private String email;
     private final JLabel usernameLabel;
-    private LogoutController logoutController;
+    private final LogoutController logoutController;
     private final JPanel centerPanel;
     private final CalendarData calendarData;
     private Map<LocalDate, Map<String, Object>> weatherMap = null;
@@ -160,12 +162,11 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         };
 
         addTaskAL = e -> {
-            addTaskViewModel.setUsername(this.loggedInUsername);
+            addTaskViewModel.setUsername(this.username);
             viewManagerModel.setState(AddTaskView.getViewName());
             viewManagerModel.firePropertyChanged();
         };
 
-        // TODO: Sean - wire to CCTUseCaseFactory.java
         manageTagsAL = e -> {
             CCTViewModel viewModel = new CCTViewModel();
             CCTPresenter presenter = new CCTPresenter(viewManagerModel, viewModel);
@@ -218,21 +219,9 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
             MarkTaskCompleteController markTaskCompleteController = new MarkTaskCompleteController(
                     new MarkTaskCompleteInteractor(taskDao, markTaskCompletePresenter));
 
-            markTaskCompleteController.setUsername(loggedInUsername);
+            markTaskCompleteController.setUsername(username);
 
-            DeleteTaskPresenter deleteTaskPresenter = new DeleteTaskPresenter(deleteTaskViewModel, taskViewModel);
-            DeleteTaskController deleteTaskController = new DeleteTaskController(
-                    new DeleteTaskInteractor(taskDao, deleteTaskPresenter));
-
-            deleteTaskController.setUsername(loggedInUsername);
-
-            TaskBox taskBox = new TaskBox(
-                    taskViewModel,
-                    markTaskCompleteController,
-                    deleteTaskController,
-                    editTaskController,
-                    viewManagerModel
-            );
+            TaskBox taskBox = getTaskBox(taskViewModel, markTaskCompleteController);
             JOptionPane.showMessageDialog(this, taskBox, "Task Details",
                     JOptionPane.PLAIN_MESSAGE);
         };
@@ -254,13 +243,31 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         centerPanel.repaint();
     }
 
+    @NotNull
+    private TaskBox getTaskBox(TaskViewModel taskViewModel, MarkTaskCompleteController markTaskCompleteController) {
+        DeleteTaskPresenter deleteTaskPresenter = new DeleteTaskPresenter(deleteTaskViewModel, taskViewModel);
+        DeleteTaskController deleteTaskController = new DeleteTaskController(
+                new DeleteTaskInteractor(taskDao, deleteTaskPresenter));
+
+        deleteTaskController.setUsername(username);
+
+        return new TaskBox(
+                taskViewModel,
+                markTaskCompleteController,
+                deleteTaskController,
+                editTaskController,
+                viewManagerModel
+        );
+    }
+
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if ("state".equals(evt.getPropertyName()) && evt.getSource() == loggedInViewModel) {
             LoggedInState state = (LoggedInState) evt.getNewValue();
-            this.loggedInUsername = state.getUsername();
-            usernameLabel.setText("Signed in as: " + this.loggedInUsername);
-            // TODO: Brad, this is how you get the email: 'state.getEmail()'
+            this.username = state.getUsername();
+            usernameLabel.setText("Signed in as: " + this.username);
+            this.email = state.getEmail();
+            // TODO: do smth with email (Kian)
             reloadTasksForCurrentWeek();
         }
         else if ("weekTasks".equals(evt.getPropertyName())) {
