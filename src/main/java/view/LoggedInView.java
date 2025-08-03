@@ -205,14 +205,6 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         TaskClickListener taskClickListener = task -> {
             TaskViewModel taskViewModel = new TaskViewModel(task);
 
-            MarkTaskCompletePresenter markTaskCompletePresenter = new MarkTaskCompletePresenter(
-                    this.taskBoxDependencies.markTaskCompleteViewModel(), taskViewModel);
-
-            MarkTaskCompleteController markTaskCompleteController = new MarkTaskCompleteController(
-                    new MarkTaskCompleteInteractor(taskDao, markTaskCompletePresenter));
-
-            markTaskCompleteController.setUsername(username);
-
             TaskBox taskBox = getTaskBox(taskViewModel);
             JOptionPane.showMessageDialog(this, taskBox, "Task Details",
                     JOptionPane.PLAIN_MESSAGE);
