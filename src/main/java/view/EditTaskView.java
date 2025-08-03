@@ -20,7 +20,7 @@ import java.util.Date;
 
 public class EditTaskView extends JPanel implements PropertyChangeListener {
 
-    private final Task existingTask;
+    private Task existingTask;
     private final EditTaskController controller;
     private final EditTaskViewModel viewModel;
     private final ViewManagerModel viewManagerModel;
@@ -28,15 +28,15 @@ public class EditTaskView extends JPanel implements PropertyChangeListener {
     private static final String viewName = "Edit Task";
 
     // Form fields
-    private final JTextField nameField;
-    private final JSpinner startSpinner;
-    private final JSpinner endSpinner;
-    private final JComboBox<Priority> priorityCombo;
-    private final JComboBox<Object> customTagCombo;
-    private final JComboBox<Reminder> reminderCombo;
-    private final JButton saveButton;
-    private final JButton cancelButton;
-    private final JLabel errorLabel;
+    private JTextField nameField = null;
+    private JSpinner startSpinner = null;
+    private JSpinner endSpinner = null;
+    private JComboBox<Priority> priorityCombo = null;
+    private JComboBox<Object> customTagCombo = null;
+    private JComboBox<Reminder> reminderCombo = null;
+    private JButton saveButton = null;
+    private JButton cancelButton = null;
+    private JLabel errorLabel = null;
 
     public EditTaskView(EditTaskController controller,
                         EditTaskViewModel viewModel,
@@ -48,21 +48,38 @@ public class EditTaskView extends JPanel implements PropertyChangeListener {
         this.viewModel.addPropertyChangeListener(this);
         this.viewManagerModel = viewManagerModel;
         this.mainViewKey = mainViewKey;
-        this.existingTask = controller.getCurrentTask();
+        this.existingTask = null; // we set later in setExistingTask
 
-        nameField = new JTextField(existingTask.getTaskInfo().getTaskName(), 30);
-        startSpinner = makeDateTimeSpinner(existingTask.getTaskInfo().getStartDateTime());
-        endSpinner = makeDateTimeSpinner(existingTask.getTaskInfo().getEndDateTime());
+        initView();
+    }
+
+    public void setExistingTask(Task existingTask) {
+        this.existingTask = existingTask;
+        if (existingTask == null) return;
+
+        TaskInfo info = existingTask.getTaskInfo();
+        nameField.setText(info.getTaskName());
+        startSpinner.setValue(Date.from(info.getStartDateTime().atZone(ZoneId.systemDefault()).toInstant()));
+        endSpinner.setValue(Date.from(info.getEndDateTime().atZone(ZoneId.systemDefault()).toInstant()));
+        priorityCombo.setSelectedItem(info.getPriority());
+
+        if (info.getTag() != null) {
+            customTagCombo.setSelectedItem(info.getTag());
+        }
+
+        if (info.getReminder() != null) {
+            reminderCombo.setSelectedItem(info.getReminder());
+        }
+    }
+
+    private void initView() {
+        nameField = new JTextField(30);
+        startSpinner = makeDateTimeSpinner(LocalDateTime.now());
+        endSpinner = makeDateTimeSpinner(LocalDateTime.now().plusHours(1));
         priorityCombo = new JComboBox<>(Priority.values());
-        priorityCombo.setSelectedItem(existingTask.getTaskInfo().getPriority());
 
-        // setting up tags
         java.util.List<Object> tagOptions = viewModel.getTagOptions();
         customTagCombo = new JComboBox<>(tagOptions.toArray());
-
-        if (existingTask.getTaskInfo().getTag() != null) {
-            customTagCombo.setSelectedItem(existingTask.getTaskInfo().getTag());
-        }
 
         customTagCombo.addActionListener(e -> {
             Object selectedItem = customTagCombo.getSelectedItem();
@@ -73,30 +90,25 @@ public class EditTaskView extends JPanel implements PropertyChangeListener {
             }
         });
 
-        // setting up reminders
         Reminder[] reminderOptions = {
                 Reminder.NONE,
-                new Reminder(0),
-                new Reminder(10),
-                new Reminder(30),
-                new Reminder(60),
+                new Reminder(0), new Reminder(10),
+                new Reminder(30), new Reminder(60),
                 new Reminder(1440)
         };
         reminderCombo = new JComboBox<>(reminderOptions);
-
-        if (existingTask.getTaskInfo().getReminder() != null) {
-            reminderCombo.setSelectedItem(existingTask.getTaskInfo().getReminder());
-        }
 
         saveButton = new JButton("Save Changes");
         saveButton.addActionListener(evt -> {
             Task updatedTask = buildUpdatedTask();
             controller.editTask(updatedTask);
-                });
+        });
+
         cancelButton = new JButton("Cancel");
         cancelButton.addActionListener(evt -> {
-                    viewManagerModel.setState(mainViewKey);
-                });
+            viewManagerModel.setState(mainViewKey);
+        });
+
         errorLabel = new JLabel();
         errorLabel.setForeground(Color.RED);
         errorLabel.setVisible(false);
