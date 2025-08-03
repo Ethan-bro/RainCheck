@@ -4,15 +4,16 @@ import java.awt.CardLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import javax.swing.JPanel;
+import javax.swing.*;
 
+import interface_adapter.DynamicViewManager;
 import interface_adapter.ViewManagerModel;
 
 /**
  * The View Manager for the program. It listens for property change events
  * in the ViewManagerModel and updates which View should be visible.
  */
-public class ViewManager implements PropertyChangeListener {
+public class ViewManager implements PropertyChangeListener, DynamicViewManager {
     private final CardLayout cardLayout;
     private final JPanel views;
     private final ViewManagerModel viewManagerModel;
@@ -30,5 +31,10 @@ public class ViewManager implements PropertyChangeListener {
             final String viewModelName = (String) evt.getNewValue();
             cardLayout.show(views, viewModelName);
         }
+    }
+
+    @Override
+    public void registerView(String viewKey, JComponent panel) {
+        views.add(panel, viewKey);
     }
 }

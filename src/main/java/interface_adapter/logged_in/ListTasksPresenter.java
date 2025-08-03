@@ -32,17 +32,13 @@ public class ListTasksPresenter implements ListTasksOutputBoundary {
      */
     @Override
     public void presentTasks(List<Task> tasks) {
-        LoggedInState currentState = viewModel.getState();
+        List<Task> oldTasks = viewModel.getState().getWeekTasks();
 
-        // Defensive check: even if null, set empty list
-        if (tasks == null) {
-            tasks = List.of();
-        }
+        LoggedInState oldState = viewModel.getState();
+        LoggedInState newState = new LoggedInState(oldState);
+        newState.setWeekTasks(tasks);
 
-        currentState.setWeekTasks(tasks);
-        viewModel.setState(currentState);
-
-        // Notify the view that task list has changed
-        viewModel.firePropertyChanged("weekTasks");
+        viewModel.setState(newState);
+        viewModel.firePropertyChange("weekTasks", oldTasks, tasks);
     }
 }

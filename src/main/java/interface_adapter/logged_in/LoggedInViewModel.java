@@ -20,7 +20,11 @@ public class LoggedInViewModel extends ViewModel<LoggedInState> {
         this.listTasksInteractor = listTasksInteractor;
     }
 
-    public void loadTasksForWeek(LocalDate startDate, LocalDate endDate) {
-        listTasksInteractor.listTasks(getState().getUsername(), startDate, endDate);
+    public void loadTasksForWeek(LocalDate start, LocalDate end) {
+        if (listTasksInteractor == null) {
+            throw new IllegalStateException("ListTasksInteractor not set!");
+        }
+        // This will fetch tasks → call the presenter → update state & fire weekTasks
+        listTasksInteractor.listTasks(getState().getUsername(), start, end);
     }
 }

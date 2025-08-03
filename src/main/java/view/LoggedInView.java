@@ -15,6 +15,7 @@ import java.util.Map;
 
 import data_access.SupabaseTagDataAccessObject;
 import entity.Task;
+import interface_adapter.DynamicViewManager;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.addTask.AddTaskViewModel;
 import interface_adapter.calendar.TaskClickListener;
@@ -23,6 +24,7 @@ import interface_adapter.create_customTag.CCTPresenter;
 import interface_adapter.create_customTag.CCTViewModel;
 import interface_adapter.deleteTask.DeleteTaskController;
 import interface_adapter.editTask.EditTaskController;
+import interface_adapter.editTask.EditTaskViewModel;
 import interface_adapter.logged_in.LoggedInState;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.logout.LogoutController;
@@ -31,13 +33,18 @@ import data_access.WeatherApiService;
 import interface_adapter.markTaskComplete.MarkTaskCompleteController;
 import interface_adapter.task.TaskViewModel;
 import use_case.createCustomTag.CCTInteractor;
+import use_case.createCustomTag.CustomTagDataAccessInterface;
+import use_case.editTask.EditTaskDataAccessInterface;
+import use_case.listTasks.TaskDataAccessInterface;
 
 public class LoggedInView extends JPanel implements PropertyChangeListener {
 
     private static final String viewName = "logged in";
     private final LoggedInViewModel loggedInViewModel;
     private final AddTaskViewModel addTaskViewModel;
+    private final EditTaskViewModel editTaskViewModel;
     private final ViewManagerModel viewManagerModel;
+    private final DynamicViewManager dynamicViewManager;
     private String loggedInUsername;
     private final JLabel usernameLabel;
     private LogoutController logoutController;
@@ -45,7 +52,8 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     private final CalendarData calendarData;
     private Map<LocalDate, Map<String, Object>> weatherMap = null;
     private Map<LocalDate, List<Map<String, String>>> hourlyWeatherMap = null;
-    private final SupabaseTagDataAccessObject tagDao;
+    private final CustomTagDataAccessInterface tagDao;
+    private final EditTaskDataAccessInterface taskDao;
 
     private ActionListener logoutAL;
     private ActionListener addTaskAL;
@@ -58,7 +66,10 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     public LoggedInView(LoggedInViewModel loggedInViewModel,
                         LogoutController logoutController,
                         ViewManagerModel viewManagerModel,
-                        SupabaseTagDataAccessObject tagDao,
+                        DynamicViewManager dynamicViewManager,
+                        CustomTagDataAccessInterface tagDao,
+                        EditTaskDataAccessInterface taskDao,
+                        EditTaskViewModel editTaskViewModel,
                         AddTaskViewModel addTaskViewModel,
                         MarkTaskCompleteController markTaskCompleteController,
                         DeleteTaskController deleteTaskController,
@@ -66,9 +77,12 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         this.loggedInViewModel = loggedInViewModel;
         this.loggedInViewModel.addPropertyChangeListener(this);
         this.viewManagerModel = viewManagerModel;
+        this.dynamicViewManager = dynamicViewManager;
         this.logoutController = logoutController;
         this.tagDao = tagDao;
+        this.taskDao = taskDao;
         this.addTaskViewModel = addTaskViewModel;
+        this.editTaskViewModel = editTaskViewModel;
         this.markTaskCompleteController = markTaskCompleteController;
         this.deleteTaskController = deleteTaskController;
         this.editTaskController = editTaskController;
@@ -200,7 +214,10 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
                     markTaskCompleteController,
                     deleteTaskController,
                     editTaskController,
-                    viewManagerModel
+                    viewManagerModel,
+                    dynamicViewManager,
+                    taskDao,
+                    editTaskViewModel
             );
             JOptionPane.showMessageDialog(this, taskBox, "Task Details",
                     JOptionPane.PLAIN_MESSAGE);
@@ -225,12 +242,28 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
+        System.out.println("🔔 LoggedInView got event: " + evt.getPropertyName());
+        if ("state".equals(evt.getPropertyName())) {
+            // …
+        } else if ("weekTasks".equals(evt.getPropertyName())) {
+            System.out.println("    → weekTasks payload size: "
+                    + loggedInViewModel.getState().getWeekTasks().size());
+            rebuildCalendarWithTasks(loggedInViewModel.getState().getWeekTasks());
+        }
+
         if ("state".equals(evt.getPropertyName())) {
             LoggedInState state = (LoggedInState) evt.getNewValue();
             this.loggedInUsername = state.getUsername();
             usernameLabel.setText("Signed in as: " + this.loggedInUsername);
             // TODO: Brad, this is how you get the email: 'state.getEmail()'
+
+            LoggedInState vmState = loggedInViewModel.getState();
+            vmState.setUsername(this.loggedInUsername);
+            loggedInViewModel.setState(vmState);
+
+            rebuildCalendarWithTasks(state.getWeekTasks());
             reloadTasksForCurrentWeek();
+
         }
         else if ("weekTasks".equals(evt.getPropertyName())) {
             List<Task> tasks = loggedInViewModel.getState().getWeekTasks();

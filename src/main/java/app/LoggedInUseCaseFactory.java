@@ -2,6 +2,7 @@ package app;
 
 import data_access.SupabaseTagDataAccessObject;
 import data_access.SupabaseTaskDataAccessObject;
+import interface_adapter.DynamicViewManager;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.addTask.AddTaskViewModel;
 import interface_adapter.deleteTask.DeleteTaskController;
@@ -29,7 +30,9 @@ public class LoggedInUseCaseFactory {
     public static LoggedInView createLoggedInView(LoggedInViewModel loggedInViewModel,
                                                   LogoutController logoutController,
                                                   ViewManagerModel viewManagerModel,
+                                                  DynamicViewManager dynamicViewManager,
                                                   AddTaskViewModel addTaskViewModel,
+                                                  EditTaskViewModel editTaskViewModel,
                                                   SupabaseTagDataAccessObject tagDao,
                                                   SupabaseTaskDataAccessObject taskDao) throws IOException {
 
@@ -37,8 +40,18 @@ public class LoggedInUseCaseFactory {
         DeleteTaskController deleteTaskController = buildDeleteTaskController(taskDao);
         EditTaskController editTaskController = buildEditTaskController(tagDao, taskDao, viewManagerModel);
 
-        return new LoggedInView(loggedInViewModel, logoutController, viewManagerModel, tagDao,
-                addTaskViewModel, markTaskCompleteController, deleteTaskController, editTaskController);
+        return new LoggedInView(
+                loggedInViewModel,
+                logoutController,
+                viewManagerModel,
+                dynamicViewManager,
+                tagDao,
+                taskDao,
+                editTaskViewModel,
+                addTaskViewModel,
+                markTaskCompleteController,
+                deleteTaskController,
+                editTaskController);
          
     }
 

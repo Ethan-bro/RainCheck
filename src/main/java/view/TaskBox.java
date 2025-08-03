@@ -7,12 +7,17 @@ import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.Objects;
 
+import app.EditTaskUseCaseFactory;
 import entity.Priority;
+import entity.Task;
+import interface_adapter.DynamicViewManager;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.deleteTask.DeleteTaskController;
 import interface_adapter.editTask.EditTaskController;
+import interface_adapter.editTask.EditTaskViewModel;
 import interface_adapter.markTaskComplete.MarkTaskCompleteController;
 import interface_adapter.task.TaskViewModel;
+import use_case.editTask.EditTaskDataAccessInterface;
 
 public class TaskBox extends JPanel implements PropertyChangeListener {
     private final JLabel tagNameLabel;
@@ -26,17 +31,27 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
     private final EditTaskController editTaskController;
     private final TaskViewModel taskViewModel;
     private final ViewManagerModel viewManagerModel;
+    private final DynamicViewManager dynamicViewManager;
+    private final EditTaskDataAccessInterface taskDao;
+    private final EditTaskViewModel editTaskViewModel;
 
     public TaskBox(TaskViewModel taskViewModel,
                    MarkTaskCompleteController markTaskCompleteController,
                    DeleteTaskController deleteTaskController,
                    EditTaskController editTaskController,
-                   ViewManagerModel viewManagerModel) {
+                   ViewManagerModel viewManagerModel,
+                   DynamicViewManager dynamicViewManager,
+                   EditTaskDataAccessInterface taskDao,
+                   EditTaskViewModel editTaskViewModel) {
+
         this.taskViewModel = taskViewModel;
         this.markTaskCompleteController = markTaskCompleteController;
         this.deleteTaskController = deleteTaskController;
         this.editTaskController = editTaskController;
         this.viewManagerModel = viewManagerModel;
+        this.dynamicViewManager = dynamicViewManager;
+        this.taskDao = taskDao;
+        this.editTaskViewModel = editTaskViewModel;
 
         taskViewModel.addPropertyChangeListener(this);
 
@@ -86,8 +101,24 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         );
 
         JButton editButton = createImageButton("edit.png", "Edit", new Color(33, 150, 243), e -> {
-            editTaskController.setCurrentTask(taskViewModel.getTask());
-            editTaskController.switchToEditTaskView(viewManagerModel);
+            // close the TaskBox after clicking edit
+            Window popup = SwingUtilities.getWindowAncestor(TaskBox.this);
+            if (popup != null) popup.dispose();
+
+            // construct the EditTaskView for this task
+            Task t = taskViewModel.getTask();
+            EditTaskView editView = EditTaskUseCaseFactory.create(
+                    t,
+                    viewManagerModel,
+                    taskDao,
+                    editTaskViewModel,
+                    LoggedInView.getViewName()
+            );
+            // register it in the CardLayout
+            dynamicViewManager.registerView(EditTaskView.getViewName(), editView);
+            // switch to the edit‐screen
+            viewManagerModel.setState(EditTaskView.getViewName());
+            viewManagerModel.firePropertyChanged("state");
         });
 
         JButton deleteButton = createImageButton("delete.png", "Delete", new Color(244, 67, 54), e -> {

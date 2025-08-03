@@ -12,11 +12,13 @@ import interface_adapter.ViewManagerModel;
 import interface_adapter.addTask.AddTaskViewModel;
 
 import interface_adapter.create_customTag.CCTViewModel;
+import interface_adapter.editTask.EditTaskViewModel;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.logout.LogoutController;
 import interface_adapter.signup.SignupViewModel;
 
+import interface_adapter.task.TaskViewModel;
 import view.*;
 
 import javax.swing.*;
@@ -39,6 +41,8 @@ public class AppBuilder {
     private LoggedInViewModel loggedInViewModel;
     private SignupViewModel signupViewModel;
     private AddTaskViewModel addTaskViewModel;
+    private EditTaskViewModel editTaskViewModel;
+    private TaskViewModel taskViewModel;
     private ListTasksUseCaseFactory listTasksFactory;
 
     private LoginView loginView;
@@ -67,6 +71,7 @@ public class AppBuilder {
         loggedInViewModel = new LoggedInViewModel();
         signupViewModel = new SignupViewModel();
         addTaskViewModel = new AddTaskViewModel(tagDao, userDao.getCurrentUsername());
+        editTaskViewModel = new EditTaskViewModel(tagDao);
         return this;
     }
 
@@ -93,7 +98,15 @@ public class AppBuilder {
         LogoutController logoutController = LogoutUseCaseFactory.create(
                 viewManagerModel, loggedInViewModel, loginViewModel, userDao);
 
-        loggedInView = LoggedInUseCaseFactory.createLoggedInView(loggedInViewModel, logoutController, viewManagerModel, addTaskViewModel, tagDao, taskDao);
+        loggedInView = LoggedInUseCaseFactory.createLoggedInView(
+                loggedInViewModel,
+                logoutController,
+                viewManagerModel,
+                viewManager,
+                addTaskViewModel,
+                editTaskViewModel,
+                tagDao,
+                taskDao);
 
         cardPanel.add(loggedInView, LoggedInView.getViewName());
         return this;

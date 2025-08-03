@@ -93,9 +93,17 @@ public class EditTaskView extends JPanel implements PropertyChangeListener {
             Task updatedTask = buildUpdatedTask();
             controller.editTask(updatedTask);
                 });
+
         cancelButton = new JButton("Cancel");
         cancelButton.addActionListener(evt -> {
-                    viewManagerModel.setState(mainViewKey);
+
+            Window w = SwingUtilities.getWindowAncestor(EditTaskView.this);
+            if (w instanceof JDialog) {
+                w.dispose();
+            }
+
+            viewManagerModel.setState(mainViewKey);
+            viewManagerModel.firePropertyChanged("state");
                 });
         errorLabel = new JLabel();
         errorLabel.setForeground(Color.RED);
@@ -157,7 +165,15 @@ public class EditTaskView extends JPanel implements PropertyChangeListener {
         LocalDateTime start = toLocalDateTime((Date) startSpinner.getValue());
         LocalDateTime end = toLocalDateTime((Date) endSpinner.getValue());
         Priority priority = (Priority) priorityCombo.getSelectedItem();
-        CustomTag tag = (CustomTag) customTagCombo.getSelectedItem();
+
+        Object rawTag = customTagCombo.getSelectedItem();
+        CustomTag tag;
+        if (rawTag instanceof CustomTag) {
+            tag = (CustomTag) rawTag;
+        } else {
+            tag = null;
+        }
+
         Reminder reminder = (Reminder) reminderCombo.getSelectedItem();
 
         TaskInfo oldInfo = existingTask.getTaskInfo();
