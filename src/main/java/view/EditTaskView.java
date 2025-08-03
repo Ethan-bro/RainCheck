@@ -17,6 +17,7 @@ import java.beans.PropertyChangeListener;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
 
 public class EditTaskView extends JPanel implements PropertyChangeListener {
 
@@ -78,17 +79,23 @@ public class EditTaskView extends JPanel implements PropertyChangeListener {
         endSpinner = makeDateTimeSpinner(LocalDateTime.now().plusHours(1));
         priorityCombo = new JComboBox<>(Priority.values());
 
-        java.util.List<Object> tagOptions = viewModel.getTagOptions();
-        customTagCombo = new JComboBox<>(tagOptions.toArray());
+        List<Object> options = viewModel.getTagOptions();
+        customTagCombo = new JComboBox<>(options.isEmpty() ? new Object[]{} : options.toArray());
 
-        customTagCombo.addActionListener(e -> {
-            Object selectedItem = customTagCombo.getSelectedItem();
-            if (selectedItem instanceof String && selectedItem.equals("Create New Tag...")) {
-                controller.createCustomTag();
-                java.util.List<Object> updatedTags = viewModel.getTagOptions();
-                customTagCombo.setModel(new DefaultComboBoxModel<>(updatedTags.toArray()));
-            }
-        });
+        if (options.isEmpty()) {
+            customTagCombo.setRenderer(new DefaultListCellRenderer() {
+                @Override
+                public Component getListCellRendererComponent(JList<?> list, Object value,
+                                                              int index, boolean isSelected, boolean cellHasFocus) {
+                    super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                    if (value == null) {
+                        setText("No tags available - create one first");
+                        setForeground(Color.GRAY);
+                    }
+                    return this;
+                }
+            });
+        }
 
         Reminder[] reminderOptions = {
                 Reminder.NONE,
@@ -107,6 +114,7 @@ public class EditTaskView extends JPanel implements PropertyChangeListener {
         cancelButton = new JButton("Cancel");
         cancelButton.addActionListener(evt -> {
             viewManagerModel.setState(mainViewKey);
+            viewManagerModel.firePropertyChanged();
         });
 
         errorLabel = new JLabel();
