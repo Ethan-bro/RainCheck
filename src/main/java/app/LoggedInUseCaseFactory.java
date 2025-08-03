@@ -8,8 +8,7 @@ import interface_adapter.deleteTask.DeleteTaskViewModel;
 import interface_adapter.editTask.EditTaskController;
 import interface_adapter.editTask.EditTaskPresenter;
 import interface_adapter.editTask.EditTaskViewModel;
-import interface_adapter.logged_in.LoggedInViewModel;
-import interface_adapter.logout.LogoutController;
+import interface_adapter.logged_in.LoggedInDependencies;
 import interface_adapter.markTaskComplete.MarkTaskCompleteViewModel;
 import interface_adapter.task.TaskBoxDependencies;
 import use_case.editTask.EditTaskInteractor;
@@ -21,39 +20,34 @@ public class LoggedInUseCaseFactory {
 
     private LoggedInUseCaseFactory() {}
 
-    public static LoggedInView createLoggedInView(LoggedInViewModel loggedInViewModel,
-                                                  LogoutController logoutController,
+    public static LoggedInView createLoggedInView(LoggedInDependencies loggedInDependencies,
                                                   ViewManagerModel viewManagerModel,
                                                   AddTaskViewModel addTaskViewModel,
                                                   SupabaseTagDataAccessObject tagDao,
                                                   SupabaseTaskDataAccessObject taskDao) throws IOException {
 
         MarkTaskCompleteViewModel markTaskCompleteViewModel = new MarkTaskCompleteViewModel();
-        EditTaskController editTaskController = buildEditTaskController(tagDao, taskDao, viewManagerModel);
+
+        EditTaskViewModel editTaskViewModel = new EditTaskViewModel(tagDao);
+        EditTaskPresenter editTaskPresenter = new EditTaskPresenter(editTaskViewModel);
+        EditTaskInteractor editTaskInteractor = new EditTaskInteractor(taskDao, editTaskPresenter);
+        EditTaskController editTaskController = new EditTaskController(editTaskInteractor, viewManagerModel);
 
         TaskBoxDependencies taskBoxDependencies = new TaskBoxDependencies(
                 markTaskCompleteViewModel,
                 new DeleteTaskViewModel(),
                 viewManagerModel,
-                editTaskController
+                editTaskController,
+                editTaskViewModel
         );
 
         return new LoggedInView(
-                loggedInViewModel,
-                logoutController,
+                loggedInDependencies.loggedInViewModel(),
+                loggedInDependencies.logoutController(),
                 tagDao,
                 taskDao,
                 addTaskViewModel,
                 taskBoxDependencies
         );
-    }
-
-    private static EditTaskController buildEditTaskController(SupabaseTagDataAccessObject tagDao,
-                                                              SupabaseTaskDataAccessObject taskDao,
-                                                              ViewManagerModel viewManagerModel) {
-        EditTaskViewModel editTaskViewModel = new EditTaskViewModel(tagDao);
-        EditTaskPresenter editTaskPresenter = new EditTaskPresenter(editTaskViewModel);
-        EditTaskInteractor editTaskInteractor = new EditTaskInteractor(taskDao, editTaskPresenter);
-        return new EditTaskController(editTaskInteractor, viewManagerModel);
     }
 }

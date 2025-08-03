@@ -15,6 +15,7 @@ import interface_adapter.create_customTag.CCTViewModel;
 import interface_adapter.editTask.EditTaskController;
 import interface_adapter.editTask.EditTaskPresenter;
 import interface_adapter.editTask.EditTaskViewModel;
+import interface_adapter.logged_in.LoggedInDependencies;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.logout.LogoutController;
@@ -45,6 +46,12 @@ public class AppBuilder {
     private SignupViewModel signupViewModel;
     private AddTaskViewModel addTaskViewModel;
     private ListTasksUseCaseFactory listTasksFactory;
+
+    private EditTaskViewModel editTaskViewModel;
+    private EditTaskPresenter editTaskPresenter;
+    private EditTaskInteractor editTaskInteractor;
+    private EditTaskController editTaskController;
+    private EditTaskView editTaskView;
 
     private LoginView loginView;
     private SignupView signupView;
@@ -98,7 +105,8 @@ public class AppBuilder {
         LogoutController logoutController = LogoutUseCaseFactory.create(
                 viewManagerModel, loggedInViewModel, loginViewModel, userDao);
 
-        loggedInView = LoggedInUseCaseFactory.createLoggedInView(loggedInViewModel, logoutController, viewManagerModel, addTaskViewModel, tagDao, taskDao);
+        LoggedInDependencies loggedInDependencies = new LoggedInDependencies(loggedInViewModel, logoutController);
+        loggedInView = LoggedInUseCaseFactory.createLoggedInView(loggedInDependencies, viewManagerModel, addTaskViewModel, tagDao, taskDao);
 
         cardPanel.add(loggedInView, LoggedInView.getViewName());
         return this;
@@ -120,7 +128,7 @@ public class AppBuilder {
             cardPanel.add(addTaskView, AddTaskView.getViewName());
 
             // Edit Task View
-            EditTaskView editTaskView = getEditTaskView();
+            initEditTaskUseCase();
             cardPanel.add(editTaskView, EditTaskView.getViewName());
 
         } catch (IOException e) {
@@ -130,19 +138,14 @@ public class AppBuilder {
         return this;
     }
 
-    @NotNull
-    private EditTaskView getEditTaskView() {
-        EditTaskViewModel editTaskViewModel = new EditTaskViewModel(tagDao);
-        EditTaskPresenter editTaskPresenter = new EditTaskPresenter(editTaskViewModel);
-        EditTaskInteractor editTaskInteractor = new EditTaskInteractor(taskDao, editTaskPresenter);
-        EditTaskController editTaskController = new EditTaskController(editTaskInteractor, viewManagerModel);
+    private void initEditTaskUseCase() {
+        if (editTaskView != null) return; // ensuring this init is only called once
 
-        return new EditTaskView(
-                editTaskController,
-                editTaskViewModel,
-                viewManagerModel,
-                LoggedInView.getViewName()
-        );
+        editTaskViewModel = new EditTaskViewModel(tagDao);
+        editTaskPresenter = new EditTaskPresenter(editTaskViewModel);
+        editTaskInteractor = new EditTaskInteractor(taskDao, editTaskPresenter);
+        editTaskController = new EditTaskController(editTaskInteractor, viewManagerModel);
+        editTaskView = new EditTaskView(editTaskController, editTaskViewModel, viewManagerModel, LoggedInView.getViewName());
     }
 
     public JFrame build() {
