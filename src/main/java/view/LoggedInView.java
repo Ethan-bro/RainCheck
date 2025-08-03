@@ -165,6 +165,7 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         };
 
         manageTagsAL = e -> {
+            // TODO: Sean, show CCT use case first and then the JOptionPane popup
             CCTViewModel viewModel = new CCTViewModel();
             CCTPresenter presenter = new CCTPresenter(viewManagerModel, viewModel);
             CCTInteractor interactor = new CCTInteractor(tagDao, presenter);
@@ -243,7 +244,7 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         markTaskCompleteController.setUsername(username);
 
         DeleteTaskPresenter deleteTaskPresenter = new DeleteTaskPresenter(
-                new DeleteTaskViewModel(), taskViewModel
+                taskBoxDependencies.deleteTaskViewModel(), taskViewModel
         );
         DeleteTaskController deleteTaskController = new DeleteTaskController(
                 new DeleteTaskInteractor(taskDao, deleteTaskPresenter)

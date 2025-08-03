@@ -237,7 +237,7 @@ public class EditTaskView extends JPanel implements PropertyChangeListener {
             return;
         }
 
-        if ("task updated".equals(prop)) {
+        if ("task updated".equals(prop) || "task deleted".equals(prop)) {
             viewManagerModel.setState(mainViewKey);
             viewManagerModel.firePropertyChanged();
             return;
