@@ -6,6 +6,7 @@ import com.google.gson.JsonParser;
 import data_access.*;
 import interface_adapter.*;
 import interface_adapter.addTask.AddTaskViewModel;
+import interface_adapter.create_customTag.CCTViewModel;
 import interface_adapter.deleteTask.DeleteTaskViewModel;
 import interface_adapter.editTask.EditTaskController;
 import interface_adapter.editTask.EditTaskViewModel;
@@ -44,6 +45,7 @@ public class AppBuilder {
     private LoginViewModel loginViewModel;
     private LoggedInViewModel loggedInViewModel;
     private SignupViewModel signupViewModel;
+    private CCTViewModel cctViewModel;
     private AddTaskViewModel addTaskViewModel;
     private EditTaskViewModel editTaskViewModel;
 
@@ -70,6 +72,7 @@ public class AppBuilder {
         loginViewModel = new LoginViewModel();
         loggedInViewModel = new LoggedInViewModel();
         signupViewModel = new SignupViewModel();
+        cctViewModel = new CCTViewModel();
         addTaskViewModel = new AddTaskViewModel(tagDao, userDao.getCurrentUsername());
         editTaskViewModel = new EditTaskViewModel(tagDao, userDao.getCurrentUsername());
         return this;
@@ -86,6 +89,19 @@ public class AppBuilder {
         LoginView loginView = LoginUseCaseFactory.create(viewManagerModel, loginViewModel, loggedInViewModel, signupViewModel, userDao);
         cardPanel.add(loginView, loginView.getViewName());
         viewMap.put(loginView.getViewName(), loginView);
+        return this;
+    }
+
+    public AppBuilder addCCTView() {
+        if (this.cctViewModel == null) return this; // do nothing
+
+        CCTView cctView = CCTUseCaseFactory.create(
+                this.viewManagerModel,
+                this.cctViewModel,
+                this.tagDao
+        );
+        cardPanel.add(cctView, CCTView.getViewName());
+        viewMap.put(CCTView.getViewName(), cctView);
         return this;
     }
 

@@ -13,9 +13,10 @@ public class Main {
                     .addViewModels()
                     .addSignupView()
                     .addLoginView()
-                    .addListTasksUseCase()
+                    .addCCTView()
                     .addEditTaskView()
                     .addLoggedInView()
+                    .addListTasksUseCase()
                     .addTaskViews()
                     .build();
 
