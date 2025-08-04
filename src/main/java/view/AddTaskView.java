@@ -7,6 +7,7 @@ import interface_adapter.ViewManagerModel;
 import interface_adapter.addTask.AddTaskController;
 import interface_adapter.addTask.AddTaskViewModel;
 import interface_adapter.addTask.AddTaskState;
+import interface_adapter.create_customTag.CCTController;
 import interface_adapter.create_customTag.CCTViewModel;
 import interface_adapter.logged_in.LoggedInViewModel;
 import use_case.createCustomTag.CustomTagDataAccessInterface;
@@ -31,6 +32,7 @@ public class AddTaskView extends JPanel
     private final LoggedInViewModel loggedInViewModel;
     private final CCTViewModel cctViewModel;
     private final CustomTagDataAccessInterface tagDao;
+    private final CCTController cctController;
     private final ViewManagerModel viewManagerModel;
     private final String mainViewKey;
     private static final String viewName = "Add Task";
@@ -45,11 +47,13 @@ public class AddTaskView extends JPanel
     private final JButton               saveButton;
     private final JButton               cancelButton;
     private final JLabel                errorLabel;
+    private final JButton               createTagButton;
 
     public AddTaskView(AddTaskController controller,
                        AddTaskViewModel viewModel,
                        LoggedInViewModel loggedInViewModel,
                        CustomTagDataAccessInterface tagDao,
+                       CCTController cctController,
                        ViewManagerModel viewManagerModel) {
         this.controller = controller;
         this.viewModel  = viewModel;
@@ -58,6 +62,7 @@ public class AddTaskView extends JPanel
         this.viewManagerModel = viewManagerModel;
         this.cctViewModel = new CCTViewModel();
         this.cctViewModel.addPropertyChangeListener(this);
+        this.cctController = cctController;
         this.tagDao = tagDao;
         this.mainViewKey = LoggedInView.getViewName();
         this.viewModel.addPropertyChangeListener(this);
@@ -79,7 +84,7 @@ public class AddTaskView extends JPanel
                                                               int index, boolean isSelected, boolean cellHasFocus) {
                     super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
                     if (value == null) {
-                        setText("No tags available - create one first");
+                        setText("Create Custom Tag");
                         setForeground(Color.GRAY);
                     }
                     return this;
@@ -140,6 +145,15 @@ public class AddTaskView extends JPanel
         gbc.gridx = 1;
         add(customTagCombo, gbc);
 
+        createTagButton = new JButton("Create Custom Tag");
+        createTagButton.addActionListener(e -> {
+            cctController.showView();
+        });
+
+        gbc.gridy++;          // next row
+        gbc.gridx = 1;        // same column as the combo
+        add(createTagButton, gbc);
+
         gbc.gridy++; gbc.gridx = 0;
         add(new JLabel("Reminder (min before):"), gbc);
         gbc.gridx = 1;
@@ -168,9 +182,9 @@ public class AddTaskView extends JPanel
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == saveButton) {
-            String name     = nameField.getText().trim();
+            String name = nameField.getText().trim();
             LocalDateTime start = toLocalDateTime((Date) startSpinner.getValue());
-            LocalDateTime end   = toLocalDateTime((Date) endSpinner.getValue());
+            LocalDateTime end = toLocalDateTime((Date) endSpinner.getValue());
             Priority priority = (Priority) priorityCombo.getSelectedItem();
             CustomTag customTag = (CustomTag) customTagCombo.getSelectedItem();
             Reminder reminder = (Reminder) reminderCombo.getSelectedItem();
@@ -178,6 +192,10 @@ public class AddTaskView extends JPanel
             controller.execute(name, start, end, priority, customTag, reminder);
         } else if (e.getSource() == cancelButton) {
             goBackToCalendarView();
+        } else if (e.getSource() == createTagButton) {
+            // switch into the CreateCustomTag screen:
+            viewManagerModel.setState(cctViewModel.getViewName());
+            viewManagerModel.firePropertyChanged();
         }
     }
 

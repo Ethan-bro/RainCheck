@@ -170,9 +170,9 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
             CCTViewModel viewModel = new CCTViewModel();
             CCTPresenter presenter = new CCTPresenter(viewManagerModel, viewModel);
             CCTInteractor interactor = new CCTInteractor(tagDao, presenter);
-            CCTController controller = new CCTController(interactor);
+            // CCTController controller = new CCTController(interactor);
 
-            new CCTView(viewModel, controller, loggedInViewModel);
+            // new CCTView(viewModel, controller, loggedInViewModel);
         };
 
     }
@@ -217,7 +217,8 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
                     viewManagerModel,
                     dynamicViewManager,
                     taskDao,
-                    editTaskViewModel
+                    editTaskViewModel,
+                    loggedInUsername
             );
             JOptionPane.showMessageDialog(this, taskBox, "Task Details",
                     JOptionPane.PLAIN_MESSAGE);

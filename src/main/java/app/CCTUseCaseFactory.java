@@ -15,27 +15,24 @@ public class CCTUseCaseFactory {
 
     private CCTUseCaseFactory() {}
 
-    public static CCTView create (
+    public static CCTController create(
             ViewManagerModel viewManagerModel,
             CCTViewModel viewModel,
-            CustomTagDataAccessInterface CTDataAccessInterface,
+            CustomTagDataAccessInterface tagDao,
             LoggedInViewModel loggedInViewModel) {
-
-        final CCTController Controller = createCCTUseCase(viewManagerModel, viewModel,
-                CTDataAccessInterface);
-
-        return new CCTView(viewModel, Controller, loggedInViewModel);
-    }
-
-    public static CCTController createCCTUseCase(ViewManagerModel viewManagerModel,
-                                                 CCTViewModel viewModel,
-                                                 CustomTagDataAccessInterface customTagDataAccessInterface) {
 
         final CCTOutputBoundary Presenter = new CCTPresenter(viewManagerModel, viewModel);
 
-        final CCTInputBoundary Interactor = new CCTInteractor(customTagDataAccessInterface, Presenter);
+        final CCTInputBoundary Interactor = new CCTInteractor(tagDao, Presenter);
 
-        return new CCTController(Interactor);
+        CCTView view = new CCTView(viewModel, null, loggedInViewModel);
+
+        // make a controller that passes in the view
+        CCTController controller = new CCTController(Interactor, view);
+
+        // wire the view to use that controller
+        view.setController(controller);
+
+        return controller;
     }
-
 }

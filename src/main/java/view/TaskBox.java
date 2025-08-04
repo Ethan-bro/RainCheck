@@ -34,6 +34,7 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
     private final DynamicViewManager dynamicViewManager;
     private final EditTaskDataAccessInterface taskDao;
     private final EditTaskViewModel editTaskViewModel;
+    private final String loggedInUsername;
 
     public TaskBox(TaskViewModel taskViewModel,
                    MarkTaskCompleteController markTaskCompleteController,
@@ -42,7 +43,8 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
                    ViewManagerModel viewManagerModel,
                    DynamicViewManager dynamicViewManager,
                    EditTaskDataAccessInterface taskDao,
-                   EditTaskViewModel editTaskViewModel) {
+                   EditTaskViewModel editTaskViewModel,
+                   String loggedInUsername) {
 
         this.taskViewModel = taskViewModel;
         this.markTaskCompleteController = markTaskCompleteController;
@@ -52,6 +54,7 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         this.dynamicViewManager = dynamicViewManager;
         this.taskDao = taskDao;
         this.editTaskViewModel = editTaskViewModel;
+        this.loggedInUsername = loggedInUsername;
 
         taskViewModel.addPropertyChangeListener(this);
 
@@ -109,6 +112,7 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
             Task t = taskViewModel.getTask();
             EditTaskView editView = EditTaskUseCaseFactory.create(
                     t,
+                    loggedInUsername,
                     viewManagerModel,
                     taskDao,
                     editTaskViewModel,

@@ -19,6 +19,7 @@ public class EditTaskUseCaseFactory {
 
     public static EditTaskView create(
             Task taskToEdit,
+            String username,
             ViewManagerModel viewManagerModel,
             EditTaskDataAccessInterface taskDao,
             EditTaskViewModel editTaskViewModel,
@@ -30,6 +31,7 @@ public class EditTaskUseCaseFactory {
                 editTaskViewModel
         );
 
+        controller.setUsername(username);
         controller.setCurrentTask(taskToEdit);
 
         return new EditTaskView(controller, editTaskViewModel, viewManagerModel, mainViewKey);

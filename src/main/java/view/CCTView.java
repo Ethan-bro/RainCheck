@@ -19,14 +19,17 @@ public class CCTView extends JPanel implements ActionListener, PropertyChangeLis
 
     private static final String viewName = "Create Custom Tag";
     private final CCTViewModel createCustomTagViewModel;
-    private final CCTController createCustomTagController;
+    private CCTController cctController;
     private final LoggedInViewModel loggedInViewModel;
 
-    public CCTView(CCTViewModel model, CCTController
-            createCustomTagController, LoggedInViewModel loggedInViewModel) {
+    public CCTView(
+            CCTViewModel model,
+            CCTController createCustomTagController,
+            LoggedInViewModel loggedInViewModel) {
+
         this.createCustomTagViewModel = model;
         this.createCustomTagViewModel.addPropertyChangeListener(this);
-        this.createCustomTagController = createCustomTagController;
+        this.cctController = createCustomTagController;
         this.loggedInViewModel = loggedInViewModel;
 
         // UI CONSTRUCTION:
@@ -36,7 +39,7 @@ public class CCTView extends JPanel implements ActionListener, PropertyChangeLis
         mainFrame.setTitle(viewName);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setSize(700, 700);
-        mainFrame.setVisible(true);
+
 
         // Tag Name Text Field:
         JPanel tagNamePanel = new JPanel();
@@ -91,7 +94,7 @@ public class CCTView extends JPanel implements ActionListener, PropertyChangeLis
 
         JButton createTag = new JButton("Create Tag");
         createTag.addActionListener(e -> {
-
+            System.out.println("🛠 [CCTView] Create Tag clicked");
 
             String supposedName = tagNameTextField.getText().trim(); // Inputted Tag Name
             if (supposedName.isEmpty()) {
@@ -106,11 +109,11 @@ public class CCTView extends JPanel implements ActionListener, PropertyChangeLis
             }
 
             String supposedIcon = selectedTag.getActionCommand(); // Inputted Tag Icon
-            String Username = loggedInViewModel.getState().getUsername(); // User
+            String Username = this.loggedInViewModel.getState().getUsername(); // User
 
 
             CustomTag supposedTag = new CustomTag(supposedName, supposedIcon);
-            createCustomTagController.execute(supposedTag, Username);
+            cctController.execute(supposedTag, Username);
 
             createTag.setEnabled(false);
 
@@ -126,12 +129,12 @@ public class CCTView extends JPanel implements ActionListener, PropertyChangeLis
         mainFrame.add(tagNamePanel, BorderLayout.NORTH);
         mainFrame.add(IconSelectionPanel, BorderLayout.CENTER);
         mainFrame.add(bottomPanel, BorderLayout.SOUTH);
+    }
 
+    public void show() {
         mainFrame.pack();
-
         mainFrame.setLocationRelativeTo(null);
         mainFrame.setVisible(true);
-
     }
 
     @Override
@@ -167,5 +170,9 @@ public class CCTView extends JPanel implements ActionListener, PropertyChangeLis
 
     public static String getViewName() {
         return viewName;
+    }
+
+    public void setController(CCTController controller) {
+        this.cctController = controller;
     }
 }

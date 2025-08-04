@@ -15,6 +15,7 @@ public class Main {
                     .addLoginView()
                     .addListTasksUseCase()
                     .addLoggedInView()
+                    .addCCTUseCase()
                     .addAddTaskView()
                     .build();
 

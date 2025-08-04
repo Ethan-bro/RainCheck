@@ -11,6 +11,7 @@ import data_access.WeatherApiService;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.addTask.AddTaskViewModel;
 
+import interface_adapter.create_customTag.CCTController;
 import interface_adapter.create_customTag.CCTViewModel;
 import interface_adapter.editTask.EditTaskViewModel;
 import interface_adapter.logged_in.LoggedInViewModel;
@@ -42,8 +43,11 @@ public class AppBuilder {
     private SignupViewModel signupViewModel;
     private AddTaskViewModel addTaskViewModel;
     private EditTaskViewModel editTaskViewModel;
+    private CCTViewModel cctViewModel;
     private TaskViewModel taskViewModel;
     private ListTasksUseCaseFactory listTasksFactory;
+
+    CCTController cctController;
 
     private LoginView loginView;
     private SignupView signupView;
@@ -72,6 +76,8 @@ public class AppBuilder {
         signupViewModel = new SignupViewModel();
         addTaskViewModel = new AddTaskViewModel(tagDao, userDao.getCurrentUsername());
         editTaskViewModel = new EditTaskViewModel(tagDao);
+        cctViewModel = new CCTViewModel();
+
         return this;
     }
 
@@ -112,6 +118,23 @@ public class AppBuilder {
         return this;
     }
 
+    /** 1) Build your CCT use‐case and register its view. */
+    public AppBuilder addCCTUseCase() {
+
+        cctController = CCTUseCaseFactory.create(
+                viewManagerModel,
+                cctViewModel,
+                tagDao,
+                loggedInViewModel
+        );
+        // extract the view from the controller and register it
+        cardPanel.add(
+                cctController.getView(),
+                CCTView.getViewName()
+        );
+        return this;
+    }
+
     public AppBuilder addAddTaskView() {
 
         try {
@@ -122,6 +145,7 @@ public class AppBuilder {
                     taskDao,
                     tagDao,
                     new WeatherApiService(),
+                    cctController,
                     LoggedInView.getViewName()
             );
         } catch (IOException e) {

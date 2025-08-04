@@ -6,6 +6,7 @@ import interface_adapter.addTask.AddTaskController;
 import interface_adapter.addTask.AddTaskPresenter;
 import interface_adapter.addTask.AddTaskViewModel;
 import interface_adapter.addTask.UUIDGenerator;
+import interface_adapter.create_customTag.CCTController;
 import interface_adapter.logged_in.LoggedInViewModel;
 import use_case.addTask.AddTaskInputBoundary;
 import use_case.addTask.AddTaskInteractor;
@@ -24,6 +25,7 @@ public final class AddTaskUseCaseFactory {
             TaskDataAccessInterface taskDao,
             CustomTagDataAccessInterface tagDao,
             WeatherApiService weatherApiService,
+            CCTController cctController,
             String mainViewKey) {
 
         AddTaskPresenter addTaskPresenter = new AddTaskPresenter(addTaskViewModel, viewManagerModel, mainViewKey);
@@ -34,6 +36,12 @@ public final class AddTaskUseCaseFactory {
         AddTaskController addTaskController = new AddTaskController(addTaskInteractor,
                 viewManagerModel, addTaskViewModel);
 
-        return new AddTaskView(addTaskController, addTaskViewModel, loggedInViewModel, tagDao, viewManagerModel);
+        return new AddTaskView(
+                addTaskController,
+                addTaskViewModel,
+                loggedInViewModel,
+                tagDao,
+                cctController,
+                viewManagerModel);
     }
 }
