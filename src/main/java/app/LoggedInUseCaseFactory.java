@@ -3,6 +3,7 @@ package app;
 import data_access.SupabaseTagDataAccessObject;
 import data_access.SupabaseTaskDataAccessObject;
 import interface_adapter.addTask.AddTaskViewModel;
+import interface_adapter.create_customTag.CCTViewModel;
 import interface_adapter.logged_in.LoggedInDependencies;
 import interface_adapter.task.TaskBoxDependencies;
 import view.LoggedInView;
@@ -16,6 +17,7 @@ public class LoggedInUseCaseFactory {
     public static LoggedInView createLoggedInView(
             LoggedInDependencies loggedInDependencies,
             AddTaskViewModel addTaskViewModel,
+            CCTViewModel cctViewModel,
             SupabaseTagDataAccessObject tagDao,
             SupabaseTaskDataAccessObject taskDao,
             TaskBoxDependencies taskBoxDependencies
@@ -25,7 +27,8 @@ public class LoggedInUseCaseFactory {
                 tagDao,
                 taskDao,
                 addTaskViewModel,
-                taskBoxDependencies
+                taskBoxDependencies,
+                cctViewModel
         );
     }
 }

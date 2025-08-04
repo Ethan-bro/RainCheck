@@ -133,6 +133,7 @@ public class AppBuilder {
         LoggedInView loggedInView = LoggedInUseCaseFactory.createLoggedInView(
                 loggedInDependencies,
                 addTaskViewModel,
+                cctViewModel,
                 tagDao,
                 taskDao,
                 taskBoxDependencies

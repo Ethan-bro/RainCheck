@@ -19,8 +19,6 @@ import entity.Task;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.addTask.AddTaskViewModel;
 import interface_adapter.calendar.TaskClickListener;
-import interface_adapter.create_customTag.CCTController;
-import interface_adapter.create_customTag.CCTPresenter;
 import interface_adapter.create_customTag.CCTViewModel;
 import interface_adapter.deleteTask.DeleteTaskController;
 import interface_adapter.deleteTask.DeleteTaskPresenter;
@@ -36,7 +34,6 @@ import interface_adapter.task.TaskBoxDependencies;
 import interface_adapter.task.TaskViewModel;
 import org.jetbrains.annotations.NotNull;
 import use_case.DeleteTask.DeleteTaskInteractor;
-import use_case.createCustomTag.CCTInteractor;
 import use_case.MarkTaskComplete.MarkTaskCompleteInteractor;
 import interface_adapter.markTaskComplete.MarkTaskCompletePresenter;
 
@@ -46,6 +43,7 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     private static final String viewName = "logged in";
     private final LoggedInViewModel loggedInViewModel;
     private final AddTaskViewModel addTaskViewModel;
+    private final CCTViewModel cctViewModel;
     private final EditTaskViewModel editTaskViewModel;
     private final ViewManagerModel viewManagerModel;
     private String username;
@@ -69,7 +67,8 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
                         SupabaseTagDataAccessObject tagDao,
                         SupabaseTaskDataAccessObject taskDao,
                         AddTaskViewModel addTaskViewModel,
-                        TaskBoxDependencies taskBoxDependencies) throws IOException {
+                        TaskBoxDependencies taskBoxDependencies,
+                        CCTViewModel cctViewModel) throws IOException {
         this.taskBoxDependencies = taskBoxDependencies;
         this.viewManagerModel = taskBoxDependencies.viewManagerModel();
         this.editTaskViewModel = taskBoxDependencies.editTaskViewModel();
@@ -83,6 +82,7 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         this.tagDao = tagDao;
         this.taskDao = taskDao;
         this.addTaskViewModel = addTaskViewModel;
+        this.cctViewModel = cctViewModel;
 
         setupActionListeners();
 
@@ -164,13 +164,9 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         };
 
         manageTagsAL = e -> {
-            // TODO: Sean, show CCT use case first and then the JOptionPane popup
-            CCTViewModel viewModel = new CCTViewModel();
-            CCTPresenter presenter = new CCTPresenter(viewManagerModel, viewModel);
-            CCTInteractor interactor = new CCTInteractor(tagDao, presenter);
-            CCTController controller = new CCTController(interactor);
-
-            new CCTView(viewModel, controller, loggedInViewModel);
+            cctViewModel.setUsername(this.username);
+            viewManagerModel.setState(CCTView.getViewName());
+            viewManagerModel.firePropertyChanged("manageTagsClick");
         };
 
     }
