@@ -166,7 +166,7 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         manageTagsAL = e -> {
             cctViewModel.setUsername(this.username);
             viewManagerModel.setState(CCTView.getViewName());
-            viewManagerModel.firePropertyChanged("manageTagsClick");
+            viewManagerModel.firePropertyChanged();
         };
 
     }
