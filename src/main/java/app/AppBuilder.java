@@ -125,7 +125,8 @@ public class AppBuilder {
                 viewManagerModel,
                 cctViewModel,
                 tagDao,
-                loggedInViewModel
+                loggedInViewModel,
+                addTaskViewModel
         );
         // extract the view from the controller and register it
         cardPanel.add(

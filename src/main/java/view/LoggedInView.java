@@ -168,7 +168,7 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         // TODO: Sean - wire to CCTUseCaseFactory.java
         manageTagsAL = e -> {
             CCTViewModel viewModel = new CCTViewModel();
-            CCTPresenter presenter = new CCTPresenter(viewManagerModel, viewModel);
+            CCTPresenter presenter = new CCTPresenter(viewManagerModel, viewModel, addTaskViewModel);
             CCTInteractor interactor = new CCTInteractor(tagDao, presenter);
             // CCTController controller = new CCTController(interactor);
 

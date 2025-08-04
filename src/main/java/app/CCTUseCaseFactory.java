@@ -1,6 +1,7 @@
 package app;
 
 import interface_adapter.ViewManagerModel;
+import interface_adapter.addTask.AddTaskViewModel;
 import interface_adapter.create_customTag.CCTController;
 import interface_adapter.create_customTag.CCTPresenter;
 import interface_adapter.create_customTag.CCTViewModel;
@@ -19,9 +20,10 @@ public class CCTUseCaseFactory {
             ViewManagerModel viewManagerModel,
             CCTViewModel viewModel,
             CustomTagDataAccessInterface tagDao,
-            LoggedInViewModel loggedInViewModel) {
+            LoggedInViewModel loggedInViewModel,
+            AddTaskViewModel addTaskViewModel) {
 
-        final CCTOutputBoundary Presenter = new CCTPresenter(viewManagerModel, viewModel);
+        final CCTOutputBoundary Presenter = new CCTPresenter(viewManagerModel, viewModel, addTaskViewModel);
 
         final CCTInputBoundary Interactor = new CCTInteractor(tagDao, Presenter);
 

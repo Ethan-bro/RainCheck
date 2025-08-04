@@ -16,6 +16,10 @@ import static use_case.createCustomTag.CustomTagIcons.IconList;
 public class CCTView extends JPanel implements ActionListener, PropertyChangeListener {
 
     private final JFrame mainFrame;
+    private final JTextField tagNameField;
+    private final ButtonGroup iconGroup;
+    private final JButton createTagButton;
+    private final JButton cancelTagButton;
 
     private static final String viewName = "Create Custom Tag";
     private final CCTViewModel createCustomTagViewModel;
@@ -40,13 +44,12 @@ public class CCTView extends JPanel implements ActionListener, PropertyChangeLis
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setSize(700, 700);
 
-
         // Tag Name Text Field:
+        tagNameField = new JTextField(20);
         JPanel tagNamePanel = new JPanel();
-        JTextField tagNameTextField = new JTextField(20);
         JLabel tagNameLabel = new JLabel("Tag Name: ");
         tagNamePanel.add(tagNameLabel);
-        tagNamePanel.add(tagNameTextField);
+        tagNamePanel.add(tagNameField);
 
         // Tag Icon Field:
         JPanel IconSelectionPanel = new JPanel();
@@ -54,12 +57,12 @@ public class CCTView extends JPanel implements ActionListener, PropertyChangeLis
         JLabel tagIconLabel = new JLabel("Select Tag Icon: ");
         JPanel IconPanel = new JPanel();
 
-        ButtonGroup IconGroup = new ButtonGroup();
+        iconGroup = new ButtonGroup();
         for (String icon : IconList) {
 
             JToggleButton iconButton = new JToggleButton(icon);
             iconButton.setActionCommand(icon);
-            IconGroup.add(iconButton);
+            iconGroup.add(iconButton);
 
             // Make border transparent
             iconButton.setMargin(new Insets(0, 0, 0, 0));
@@ -92,17 +95,16 @@ public class CCTView extends JPanel implements ActionListener, PropertyChangeLis
         // Submit and Cancel Buttons:
         JPanel bottomPanel = new JPanel();
 
-        JButton createTag = new JButton("Create Tag");
-        createTag.addActionListener(e -> {
-            System.out.println("🛠 [CCTView] Create Tag clicked");
+        createTagButton = new JButton("Create Tag");
+        createTagButton.addActionListener(e -> {
 
-            String supposedName = tagNameTextField.getText().trim(); // Inputted Tag Name
+            String supposedName = tagNameField.getText().trim(); // Inputted Tag Name
             if (supposedName.isEmpty()) {
                 JOptionPane.showMessageDialog(mainFrame, "Please enter a tag name.");
                 return;
             }
 
-            ButtonModel selectedTag = IconGroup.getSelection();
+            ButtonModel selectedTag = iconGroup.getSelection();
             if (selectedTag == null) {
                 JOptionPane.showMessageDialog(mainFrame, "Please select a tag.");
                 return;
@@ -115,15 +117,15 @@ public class CCTView extends JPanel implements ActionListener, PropertyChangeLis
             CustomTag supposedTag = new CustomTag(supposedName, supposedIcon);
             cctController.execute(supposedTag, Username);
 
-            createTag.setEnabled(false);
+            createTagButton.setEnabled(false);
 
         });
 
-        JButton cancelTag = new JButton("Cancel");
-        cancelTag.addActionListener(e -> mainFrame.dispose());
+        cancelTagButton = new JButton("Cancel");
+        cancelTagButton.addActionListener(e -> mainFrame.dispose());
 
-        bottomPanel.add(createTag);
-        bottomPanel.add(cancelTag);
+        bottomPanel.add(createTagButton);
+        bottomPanel.add(cancelTagButton);
 
         // Combining all components and Running
         mainFrame.add(tagNamePanel, BorderLayout.NORTH);
@@ -132,6 +134,13 @@ public class CCTView extends JPanel implements ActionListener, PropertyChangeLis
     }
 
     public void show() {
+
+        // reset fields
+        tagNameField.setText("");
+        iconGroup.clearSelection();
+        createTagButton.setEnabled(true);
+
+        // show frame
         mainFrame.pack();
         mainFrame.setLocationRelativeTo(null);
         mainFrame.setVisible(true);
@@ -153,8 +162,9 @@ public class CCTView extends JPanel implements ActionListener, PropertyChangeLis
                     "Success",
                     JOptionPane.INFORMATION_MESSAGE
             );
-            // Then close the window
-            mainFrame.dispose();
+
+            // make frame disappear until use case is executed again
+            mainFrame.setVisible(false);
         }
         else if ("Failed".equals(prop)) {
             // model tells us why it failed
