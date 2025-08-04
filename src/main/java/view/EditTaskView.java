@@ -7,11 +7,14 @@ import entity.Task;
 import entity.TaskInfo;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.editTask.EditTaskController;
-import interface_adapter.editTask.EditTaskState;
 import interface_adapter.editTask.EditTaskViewModel;
+import interface_adapter.editTask.EditTaskState;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.time.LocalDateTime;
@@ -19,25 +22,28 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
-public class EditTaskView extends JPanel implements PropertyChangeListener {
+public class EditTaskView extends JPanel implements ActionListener, PropertyChangeListener {
 
-    private Task existingTask;
+    private static final String viewName = "Edit Task";
+
     private final EditTaskController controller;
     private final EditTaskViewModel viewModel;
     private final ViewManagerModel viewManagerModel;
     private final String mainViewKey;
-    private static final String viewName = "Edit Task";
 
-    // Form fields
-    private JTextField nameField = null;
-    private JSpinner startSpinner = null;
-    private JSpinner endSpinner = null;
-    private JComboBox<Priority> priorityCombo = null;
-    private JComboBox<Object> customTagCombo = null;
-    private JComboBox<Reminder> reminderCombo = null;
-    private JButton saveButton = null;
-    private JButton cancelButton = null;
-    private JLabel errorLabel = null;
+    private Task existingTask;
+
+    // Components
+    private final JTextField nameField;
+    private final JSpinner startSpinner;
+    private final JSpinner endSpinner;
+    private final JComboBox<Priority> priorityCombo;
+    private final JComboBox<Object> customTagCombo;
+    private final JComboBox<Reminder> reminderCombo;
+
+    private final JButton saveButton;
+    private final JButton cancelButton;
+    private final JLabel errorLabel;
 
     public EditTaskView(EditTaskController controller,
                         EditTaskViewModel viewModel,
@@ -46,39 +52,51 @@ public class EditTaskView extends JPanel implements PropertyChangeListener {
 
         this.controller = controller;
         this.viewModel = viewModel;
-        this.viewModel.addPropertyChangeListener(this);
         this.viewManagerModel = viewManagerModel;
         this.mainViewKey = mainViewKey;
-        this.existingTask = null; // we set later in setExistingTask
 
-        initView();
-    }
+        viewModel.addPropertyChangeListener(this);
 
-    public void setExistingTask(Task existingTask) {
-        this.existingTask = existingTask;
-        if (existingTask == null) return;
+        setLayout(new BorderLayout());
+        setBackground(Color.WHITE);
+        setBorder(new EmptyBorder(30, 40, 30, 40));
 
-        TaskInfo info = existingTask.getTaskInfo();
-        nameField.setText(info.getTaskName());
-        startSpinner.setValue(Date.from(info.getStartDateTime().atZone(ZoneId.systemDefault()).toInstant()));
-        endSpinner.setValue(Date.from(info.getEndDateTime().atZone(ZoneId.systemDefault()).toInstant()));
-        priorityCombo.setSelectedItem(info.getPriority());
+        // ===== Title =====
+        JLabel title = new JLabel(viewName);
+        title.setFont(new Font("Segoe UI", Font.BOLD, 28));
+        title.setForeground(new Color(45, 45, 45));
+        title.setHorizontalAlignment(SwingConstants.CENTER);
+        add(title, BorderLayout.NORTH);
 
-        if (info.getTag() != null) {
-            customTagCombo.setSelectedItem(info.getTag());
-        }
+        // ===== Form Panel =====
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setBackground(Color.WHITE);
+        formPanel.setBorder(new EmptyBorder(20, 0, 0, 0));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(15, 15, 15, 15);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        if (info.getReminder() != null) {
-            reminderCombo.setSelectedItem(info.getReminder());
-        }
-    }
+        Font labelFont = new Font("Segoe UI", Font.PLAIN, 16);
+        Color labelColor = new Color(60, 60, 60);
 
-    private void initView() {
+        // Task Name
         nameField = new JTextField(30);
-        startSpinner = makeDateTimeSpinner(LocalDateTime.now());
-        endSpinner = makeDateTimeSpinner(LocalDateTime.now().plusHours(1));
-        priorityCombo = new JComboBox<>(Priority.values());
+        addLabeledField(formPanel, gbc, 0, "Task Name:", labelFont, labelColor, nameField);
 
+        // Start Date/Time
+        startSpinner = makeDateTimeSpinner(LocalDateTime.now());
+        addLabeledField(formPanel, gbc, 1, "Start Date/Time:", labelFont, labelColor, startSpinner);
+
+        // End Date/Time
+        endSpinner = makeDateTimeSpinner(LocalDateTime.now().plusHours(1));
+        addLabeledField(formPanel, gbc, 2, "End Date/Time:", labelFont, labelColor, endSpinner);
+
+        // Priority
+        priorityCombo = new JComboBox<>(Priority.values());
+        priorityCombo.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        addLabeledField(formPanel, gbc, 3, "Priority:", labelFont, labelColor, priorityCombo);
+
+        // Dynamically load user's tags from ViewModel
         List<Object> options = viewModel.getTagOptions();
         customTagCombo = new JComboBox<>(options.isEmpty() ? new Object[]{} : options.toArray());
 
@@ -97,74 +115,83 @@ public class EditTaskView extends JPanel implements PropertyChangeListener {
             });
         }
 
+        addLabeledField(formPanel, gbc, 4, "Category:", labelFont, labelColor, customTagCombo);
+
+        // Reminder
         Reminder[] reminderOptions = {
                 Reminder.NONE,
-                new Reminder(0), new Reminder(10),
-                new Reminder(30), new Reminder(60),
+                new Reminder(0),
+                new Reminder(10),
+                new Reminder(30),
+                new Reminder(60),
                 new Reminder(1440)
         };
         reminderCombo = new JComboBox<>(reminderOptions);
+        reminderCombo.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        addLabeledField(formPanel, gbc, 5, "Reminder (min before):", labelFont, labelColor, reminderCombo);
 
-        saveButton = new JButton("Save Changes");
-        saveButton.addActionListener(evt -> {
-            Task updatedTask = buildUpdatedTask();
-            controller.editTask(updatedTask);
-        });
+        add(formPanel, BorderLayout.CENTER);
 
-        cancelButton = new JButton("Cancel");
-        cancelButton.addActionListener(evt -> {
-            viewManagerModel.setState(mainViewKey);
-            viewManagerModel.firePropertyChanged();
-        });
-
+        // ===== Error Label =====
         errorLabel = new JLabel();
-        errorLabel.setForeground(Color.RED);
+        errorLabel.setForeground(new Color(220, 20, 60));
+        errorLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
         errorLabel.setVisible(false);
 
-        // Layout with GridBagLayout
-        setLayout(new GridBagLayout());
-        setBorder(BorderFactory.createTitledBorder("Edit Task"));
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(4, 4, 4, 4);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.gridx = 0; gbc.gridy = 0;
+        JPanel errorPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        errorPanel.setBackground(Color.WHITE);
+        errorPanel.add(errorLabel);
+        add(errorPanel, BorderLayout.SOUTH);
 
-        add(new JLabel("Task Name:"), gbc); gbc.gridx = 1;
-        add(nameField, gbc);
+        // ===== Buttons =====
+        JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 15));
+        buttonsPanel.setBackground(Color.WHITE);
 
-        gbc.gridy++; gbc.gridx = 0;
-        add(new JLabel("Start Date/Time:"), gbc); gbc.gridx = 1;
-        add(startSpinner, gbc);
+        saveButton = new JButton("Save Changes");
+        styleButton(saveButton, new Color(34, 139, 34));
+        cancelButton = new JButton("Cancel");
+        styleButton(cancelButton, new Color(178, 34, 34));
 
-        gbc.gridy++; gbc.gridx = 0;
-        add(new JLabel("End Date/Time:"), gbc); gbc.gridx = 1;
-        add(endSpinner, gbc);
+        saveButton.addActionListener(this);
+        cancelButton.addActionListener(this);
 
-        gbc.gridy++; gbc.gridx = 0;
-        add(new JLabel("Priority:"), gbc); gbc.gridx = 1;
-        add(priorityCombo, gbc);
+        buttonsPanel.add(saveButton);
+        buttonsPanel.add(cancelButton);
 
-        gbc.gridy++; gbc.gridx = 0;
-        add(new JLabel("Category:"), gbc); gbc.gridx = 1;
-        add(customTagCombo, gbc);
-
-        gbc.gridy++; gbc.gridx = 0;
-        add(new JLabel("Reminder (min before):"), gbc); gbc.gridx = 1;
-        add(reminderCombo, gbc);
-
-        gbc.gridy++; gbc.gridx = 0; gbc.gridwidth = 2;
-        add(errorLabel, gbc);
-
-        gbc.gridy++; gbc.gridx = 0; gbc.gridwidth = 1;
-        add(saveButton, gbc); gbc.gridx = 1;
-        add(cancelButton, gbc);
+        add(buttonsPanel, BorderLayout.SOUTH);
     }
 
-    private JSpinner makeDateTimeSpinner(LocalDateTime dateTime) {
-        Date date = Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant());
+    private void addLabeledField(JPanel panel, GridBagConstraints gbc, int row,
+                                 String labelText, Font font, Color color, JComponent field) {
+        gbc.gridy = row;
+        gbc.gridx = 0;
+        gbc.weightx = 0.3;
+        JLabel label = new JLabel(labelText);
+        label.setFont(font);
+        label.setForeground(color);
+        panel.add(label, gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 0.7;
+        panel.add(field, gbc);
+    }
+
+    private void styleButton(JButton button, Color bgColor) {
+        button.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        button.setBackground(bgColor);
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setPreferredSize(new Dimension(150, 40));
+        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        button.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+    }
+
+    private JSpinner makeDateTimeSpinner(LocalDateTime time) {
+        Date date = Date.from(time.atZone(ZoneId.systemDefault()).toInstant());
         SpinnerDateModel model = new SpinnerDateModel(date, null, null, java.util.Calendar.MINUTE);
         JSpinner spinner = new JSpinner(model);
         spinner.setEditor(new JSpinner.DateEditor(spinner, "yyyy-MM-dd HH:mm"));
+        spinner.setFont(new Font("Segoe UI", Font.PLAIN, 16));
         return spinner;
     }
 
@@ -195,56 +222,47 @@ public class EditTaskView extends JPanel implements PropertyChangeListener {
                 oldInfo.getWeatherIconName(),
                 oldInfo.getTemperature()
         );
-
         updatedInfo.setTaskStatus(oldInfo.getTaskStatus());
-
         return new Task(updatedInfo);
     }
 
-    public static String getViewName() {
-        return viewName;
+    public void setExistingTask(Task task) {
+        this.existingTask = task;
+        if (task == null) return;
+
+        TaskInfo info = task.getTaskInfo();
+        nameField.setText(info.getTaskName());
+        startSpinner.setValue(Date.from(info.getStartDateTime().atZone(ZoneId.systemDefault()).toInstant()));
+        endSpinner.setValue(Date.from(info.getEndDateTime().atZone(ZoneId.systemDefault()).toInstant()));
+        priorityCombo.setSelectedItem(info.getPriority());
+        if (info.getTag() != null) customTagCombo.setSelectedItem(info.getTag());
+        if (info.getReminder() != null) reminderCombo.setSelectedItem(info.getReminder());
     }
 
-    public EditTaskViewModel getViewModel() {
-        return viewModel;
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == saveButton) {
+            controller.editTask(buildUpdatedTask());
+        } else if (e.getSource() == cancelButton) {
+            viewManagerModel.setState(mainViewKey);
+            viewManagerModel.firePropertyChanged();
+        }
     }
 
-    public EditTaskController getController() {
-        return controller;
-    }
-
-    public ViewManagerModel getViewManagerModel() {
-        return viewManagerModel;
-    }
-
-    public String getMainViewKey() {
-        return mainViewKey;
-    }
-
-    /**
-     * @param evt A PropertyChangeEvent object describing the event source
-     *            and the property that has changed.
-     */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         String prop = evt.getPropertyName();
 
         if ("refreshTagOptions".equals(prop)) {
             Object newValue = evt.getNewValue();
-            if (newValue instanceof java.util.List<?> updatedTagsRaw) {
-                customTagCombo.setModel(new DefaultComboBoxModel<>(updatedTagsRaw.toArray()));
+            if (newValue instanceof List<?> updatedTags) {
+                customTagCombo.setModel(new DefaultComboBoxModel<>(updatedTags.toArray()));
+                customTagCombo.setEnabled(!updatedTags.isEmpty());
             }
             return;
         }
 
-        if ("task updated".equals(prop) || "task deleted".equals(prop)) {
-            viewManagerModel.setState(mainViewKey);
-            viewManagerModel.firePropertyChanged();
-            return;
-        }
-
         EditTaskState state = viewModel.getState();
-
         if (state.isSuccess()) {
             viewManagerModel.setState(mainViewKey);
             viewManagerModel.firePropertyChanged();
@@ -252,5 +270,9 @@ public class EditTaskView extends JPanel implements PropertyChangeListener {
             errorLabel.setText(state.getError());
             errorLabel.setVisible(true);
         }
+    }
+
+    public static String getViewName() {
+        return viewName;
     }
 }
