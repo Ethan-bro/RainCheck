@@ -24,8 +24,8 @@ import interface_adapter.create_customTag.CCTPresenter;
 import interface_adapter.create_customTag.CCTViewModel;
 import interface_adapter.deleteTask.DeleteTaskController;
 import interface_adapter.deleteTask.DeleteTaskPresenter;
-import interface_adapter.deleteTask.DeleteTaskViewModel;
 import interface_adapter.editTask.EditTaskViewModel;
+import interface_adapter.logged_in.LoggedInDependencies;
 import interface_adapter.logged_in.LoggedInState;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.logout.LogoutController;
@@ -65,8 +65,7 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
 
     private final TaskBoxDependencies taskBoxDependencies;
 
-    public LoggedInView(LoggedInViewModel loggedInViewModel,
-                        LogoutController logoutController,
+    public LoggedInView(LoggedInDependencies loggedInDependencies,
                         SupabaseTagDataAccessObject tagDao,
                         SupabaseTaskDataAccessObject taskDao,
                         AddTaskViewModel addTaskViewModel,
@@ -78,9 +77,9 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         taskBoxDependencies.deleteTaskViewModel().addPropertyChangeListener(this);
         taskBoxDependencies.editTaskViewModel().addPropertyChangeListener(this);
 
-        this.loggedInViewModel = loggedInViewModel;
+        this.loggedInViewModel = loggedInDependencies.loggedInViewModel();
         this.loggedInViewModel.addPropertyChangeListener(this);
-        this.logoutController = logoutController;
+        this.logoutController = loggedInDependencies.logoutController();
         this.tagDao = tagDao;
         this.taskDao = taskDao;
         this.addTaskViewModel = addTaskViewModel;

@@ -21,8 +21,7 @@ public class LoggedInUseCaseFactory {
             TaskBoxDependencies taskBoxDependencies
     ) throws IOException {
         return new LoggedInView(
-                loggedInDependencies.loggedInViewModel(),
-                loggedInDependencies.logoutController(),
+                loggedInDependencies,
                 tagDao,
                 taskDao,
                 addTaskViewModel,
