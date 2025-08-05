@@ -23,7 +23,6 @@ public final class AddTaskUseCaseFactory {
             AddTaskViewModel addTaskViewModel,
             LoggedInViewModel loggedInViewModel,
             TaskDataAccessInterface taskDao,
-            CustomTagDataAccessInterface tagDao,
             WeatherApiService weatherApiService,
             ScheduleNotificationInteractor notificationInteractor,
             String mainViewKey) {
@@ -37,6 +36,6 @@ public final class AddTaskUseCaseFactory {
         AddTaskController addTaskController = new AddTaskController(addTaskInteractor,
                 viewManagerModel, addTaskViewModel);
 
-        return new AddTaskView(addTaskController, addTaskViewModel, loggedInViewModel, tagDao, viewManagerModel);
+        return new AddTaskView(addTaskController, addTaskViewModel, loggedInViewModel, viewManagerModel);
     }
 }

@@ -3,7 +3,7 @@ package data_access;
 import com.google.gson.*;
 import entity.*;
 import okhttp3.*;
-import use_case.DeleteTask.DeleteTaskDataAccessInterface;
+import use_case.deleteTask.DeleteTaskDataAccessInterface;
 import use_case.editTask.EditTaskDataAccessInterface;
 import use_case.listTasks.TaskDataAccessInterface;
 import use_case.MarkTaskComplete.MarkTaskCompleteDataAccessInterface;
@@ -188,6 +188,7 @@ public class SupabaseTaskDataAccessObject implements
         json.addProperty("weatherDescription", info.getWeatherDescription());
         json.addProperty("weatherIconName", info.getWeatherIconName());
         json.addProperty("temperature", info.getTemperature());
+        json.addProperty("uvIndex", info.getUvIndex());
 
         return json;
     }
@@ -219,9 +220,16 @@ public class SupabaseTaskDataAccessObject implements
             reminder = new Reminder((int) minutesBefore);
         }
 
-        String weatherDescription = json.has("weatherDescription") ? json.get("weatherDescription").getAsString() : null;
-        String weatherIconName = json.has("weatherIconName") ? json.get("weatherIconName").getAsString() : null;
+        String isDeleted = "No";
+        if (json.has("isDeleted")) {
+            isDeleted = json.get("isDeleted").getAsString();
+        }
+        String weatherDescription = json.has("weatherDescription") ? json.get("weatherDescription")
+                .getAsString() : null;
+        String weatherIconName = json.has("weatherIconName") ? json.get("weatherIconName")
+                .getAsString() : null;
         String temperature = json.has("temperature") ? json.get("temperature").getAsString() : null;
+        String uvIndex = json.has("uvIndex") ? json.get("uvIndex").getAsString() : null;
 
         TaskInfo info = new TaskInfo(
                 TaskID.from(UUID.fromString(idStr)),
@@ -231,9 +239,11 @@ public class SupabaseTaskDataAccessObject implements
                 priority,
                 tag,
                 reminder,
+                isDeleted,
                 weatherDescription,
                 weatherIconName,
-                temperature
+                temperature,
+                uvIndex
         );
         info.setTaskStatus(status);
 

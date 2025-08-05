@@ -1,14 +1,16 @@
 package interface_adapter.markTaskComplete;
 
+import interface_adapter.task.TaskViewModel;
 import use_case.MarkTaskComplete.MarkTaskCompleteOutputBoundary;
 import use_case.MarkTaskComplete.MarkTaskCompleteOutputData;
 
 public class MarkTaskCompletePresenter implements MarkTaskCompleteOutputBoundary {
 
     private final MarkTaskCompleteViewModel viewModel;
-
-    public MarkTaskCompletePresenter(MarkTaskCompleteViewModel viewModel) {
+    private final TaskViewModel taskViewModel;
+    public MarkTaskCompletePresenter(MarkTaskCompleteViewModel viewModel, TaskViewModel taskViewModel) {
         this.viewModel = viewModel;
+        this.taskViewModel = taskViewModel;
     }
 
     @Override
@@ -17,7 +19,9 @@ public class MarkTaskCompletePresenter implements MarkTaskCompleteOutputBoundary
         newState.setSuccess(true);
         newState.setError(null);
         viewModel.setState(newState);
-        viewModel.firePropertyChanged();
+        viewModel.firePropertyChanged("task completed");
+        taskViewModel.firePropertyChanged();
+
     }
 
     @Override
@@ -26,6 +30,7 @@ public class MarkTaskCompletePresenter implements MarkTaskCompleteOutputBoundary
         newState.setSuccess(false);
         newState.setError(errorMessage);
         viewModel.setState(newState);
-        viewModel.firePropertyChanged();
+        viewModel.firePropertyChanged("task completed");
+        taskViewModel.firePropertyChanged();
     }
 }

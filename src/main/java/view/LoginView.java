@@ -97,16 +97,20 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
         logIn = new JButton("Log In");
         logIn.setPreferredSize(new Dimension(120, 35));
         logIn.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        logIn.setBackground(new Color(34, 139, 34)); // green
-        logIn.setForeground(Color.WHITE);
         logIn.setFocusPainted(false);
+        logIn.setBorder(BorderFactory.createLineBorder(new Color(34, 139, 34), 2));
+        logIn.setForeground(new Color(34, 139, 34));
+        logIn.setContentAreaFilled(false);
+        logIn.setOpaque(false);
 
         cancel = new JButton("Cancel");
         cancel.setPreferredSize(new Dimension(120, 35));
         cancel.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        cancel.setBackground(new Color(178, 34, 34)); // red
-        cancel.setForeground(Color.WHITE);
         cancel.setFocusPainted(false);
+        cancel.setBorder(BorderFactory.createLineBorder(new Color(178, 34, 34), 2));
+        cancel.setForeground(new Color(178, 34, 34));
+        cancel.setContentAreaFilled(false);
+        cancel.setOpaque(false);
 
         buttonsPanel.add(logIn);
         buttonsPanel.add(cancel);

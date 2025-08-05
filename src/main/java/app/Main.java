@@ -13,9 +13,12 @@ public class Main {
                     .addViewModels()
                     .addSignupView()
                     .addLoginView()
-                    .addListTasksUseCase()
+                    .addCCTView()
+                    .addManageTagsView()
+                    .addEditTaskView()
                     .addLoggedInView()
-                    .addAddTaskView()
+                    .addListTasksUseCase()
+                    .addTaskViews()
                     .build();
 
             int appWidth = 860;
