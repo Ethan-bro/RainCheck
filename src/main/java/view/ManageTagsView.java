@@ -1,6 +1,7 @@
 package view;
 
 import entity.Priority;
+import interface_adapter.ManageTags.ManageTasksState;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.ManageTags.ManageTagsViewModel;
@@ -124,7 +125,15 @@ public class ManageTagsView extends JPanel implements ActionListener, PropertyCh
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        // handle updates if needed
+        String propertyName = evt.getPropertyName();
+
+        if ("refreshTagOptions".equals(propertyName)) {
+            Object newValue = evt.getNewValue();
+            if (newValue instanceof List<?> updatedTagsRaw) {
+                customTagCombo.setModel(new DefaultComboBoxModel<>(updatedTagsRaw.toArray()));
+                customTagCombo.setEnabled(!updatedTagsRaw.isEmpty());
+            }
+        }
     }
 
     public static String getViewName() {

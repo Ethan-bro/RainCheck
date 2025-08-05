@@ -10,6 +10,7 @@ import use_case.createCustomTag.CCTInteractor;
 import use_case.createCustomTag.CCTOutputBoundary;
 import use_case.createCustomTag.CustomTagDataAccessInterface;
 import view.CCTView;
+import view.LoggedInView;
 
 public class CCTUseCaseFactory {
 
@@ -18,12 +19,13 @@ public class CCTUseCaseFactory {
     public static CCTView create (
             ViewManagerModel viewManagerModel,
             CCTViewModel viewModel,
-            CustomTagDataAccessInterface CTDataAccessInterface) {
+            CustomTagDataAccessInterface CTDataAccessInterface,
+            LoggedInViewModel loggedInViewModel) {
 
         final CCTController Controller = createCCTUseCase(viewManagerModel, viewModel,
                 CTDataAccessInterface);
 
-        return new CCTView(viewModel, Controller);
+        return new CCTView(viewModel, Controller, loggedInViewModel, viewManagerModel);
     }
 
     public static CCTController createCCTUseCase(ViewManagerModel viewManagerModel,
