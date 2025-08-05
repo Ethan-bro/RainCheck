@@ -2,6 +2,9 @@ package entity;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 
 /**
  * Entity representing a scheduled email notification for a task.
@@ -22,14 +25,20 @@ public class ScheduledNotification {
     }
 
     // Constructor for loading existing notifications
-    public ScheduledNotification(String notificationId, String taskId, LocalDateTime scheduledTime,
-                                 String userEmail, boolean sent) {
+    @JsonCreator
+    public ScheduledNotification(
+            @JsonProperty("notificationId") String notificationId,
+            @JsonProperty("taskId") String taskId,
+            @JsonProperty("scheduledTime") LocalDateTime scheduledTime,
+            @JsonProperty("userEmail") String userEmail,
+            @JsonProperty("sent") boolean sent) {
         this.notificationId = notificationId;
         this.taskId = taskId;
         this.scheduledTime = scheduledTime;
         this.userEmail = userEmail;
         this.sent = sent;
     }
+
 
     // Getters
     public String getNotificationId() { return notificationId; }

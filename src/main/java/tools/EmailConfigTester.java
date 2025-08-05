@@ -109,10 +109,12 @@ public class EmailConfigTester {
                 endTime,
                 Priority.HIGH,
                 null, // No tag
-                new Reminder(1), // 1 minute reminder
+                new Reminder(1),
+                "No",// 1 minute reminder
                 "Clear skies",
                 "clear-day",
-                "25" // 25 degrees
+                "25",
+                ""// 25 degrees
         );
 
         return new Task(taskInfo);

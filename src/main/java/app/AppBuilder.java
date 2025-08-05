@@ -23,6 +23,13 @@ import use_case.notification.ScheduleNotificationInteractor;
 import use_case.notification.ScheduleNotificationOutputBoundary;
 import use_case.notification.NotificationDataAccessInterface;
 import use_case.notification.EmailNotificationServiceInterface;
+import interface_adapter.ManageTags.ManageTagsViewModel;
+import interface_adapter.editTask.EditTaskViewModel;
+import interface_adapter.editTask.EditTaskController;
+import interface_adapter.markTaskComplete.MarkTaskCompleteViewModel;
+import interface_adapter.deleteTask.DeleteTaskViewModel;
+import interface_adapter.logged_in.LoggedInDependencies;
+import interface_adapter.task.TaskBoxDependencies;
 
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
@@ -64,12 +71,20 @@ public class AppBuilder {
     private SignupView signupView;
     private LoggedInView loggedInView;
     private AddTaskView addTaskView;
+    private WeatherApiService weatherApiService;
+
+    private ManageTagsViewModel manageTagsViewModel;
+    private EditTaskViewModel editTaskViewModel;
+    private MarkTaskCompleteViewModel markTaskCompleteViewModel;
+    private DeleteTaskViewModel deleteTaskViewModel;
+    private EditTaskController editTaskController;
+
 
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
     }
 
-    public AppBuilder addDatabase() throws Exception {
+    public AppBuilder addDatabase() throws IOException {
         JsonObject config = JsonParser.parseReader(new FileReader("config/secrets.json")).getAsJsonObject();
         String dbUrl = config.get("database_url").getAsString();
         String dbAnonKey = config.get("database_anon_key").getAsString();
@@ -77,6 +92,7 @@ public class AppBuilder {
         userDao = new SupabaseUserDataAccessObject(dbUrl, dbAnonKey);
         tagDao = new SupabaseTagDataAccessObject(dbUrl, dbAnonKey);
         taskDao = new SupabaseTaskDataAccessObject(dbUrl, dbAnonKey);
+        weatherApiService = new WeatherApiService();
 
         // Store notification files in a data directory
         notificationDataAccess = new FileNotificationDataAccess("data/email_configs.json", "data/scheduled_notifications.json");
@@ -152,6 +168,11 @@ public class AppBuilder {
         loggedInViewModel = new LoggedInViewModel();
         signupViewModel = new SignupViewModel();
         addTaskViewModel = new AddTaskViewModel(tagDao, userDao.getCurrentUsername());
+        manageTagsViewModel = new ManageTagsViewModel(tagDao, userDao.getCurrentUsername());
+        editTaskViewModel = new EditTaskViewModel(tagDao, userDao.getCurrentUsername());
+        markTaskCompleteViewModel = new MarkTaskCompleteViewModel();
+        deleteTaskViewModel = new DeleteTaskViewModel();
+
         return this;
     }
 
@@ -178,14 +199,42 @@ public class AppBuilder {
         LogoutController logoutController = LogoutUseCaseFactory.create(
                 viewManagerModel, loggedInViewModel, loginViewModel, userDao);
 
-        loggedInView = LoggedInUseCaseFactory.createLoggedInView(loggedInViewModel, logoutController, viewManagerModel, addTaskViewModel, tagDao, taskDao);
+        LoggedInDependencies loggedInDependencies = new LoggedInDependencies(
+                loggedInViewModel,
+                logoutController
+        );
+
+        editTaskController = EditTaskUseCaseFactory.createController(
+                taskDao,
+                editTaskViewModel,
+                viewManagerModel,
+                weatherApiService
+        );
+
+        TaskBoxDependencies taskBoxDependencies = new TaskBoxDependencies(
+                markTaskCompleteViewModel,
+                deleteTaskViewModel,
+                viewManagerModel,
+                editTaskController,
+                editTaskViewModel
+        );
+
+        loggedInView = LoggedInUseCaseFactory.createLoggedInView(
+                loggedInDependencies,
+                addTaskViewModel,
+                manageTagsViewModel,
+                tagDao,
+                taskDao,
+                taskBoxDependencies
+        );
 
         cardPanel.add(loggedInView, LoggedInView.getViewName());
         return this;
     }
 
-    public AppBuilder addAddTaskView() {
 
+    public AppBuilder addAddTaskView() {
+        
         try {
             // Create a simple output boundary for notifications (you may need to implement this properly)
             ScheduleNotificationOutputBoundary notificationOutputBoundary = new ScheduleNotificationOutputBoundary() {
@@ -199,6 +248,7 @@ public class AppBuilder {
                     }
                 }
             };
+            
 
             // Create the notification interactor
             ScheduleNotificationInteractor notificationInteractor = new ScheduleNotificationInteractor(
@@ -222,6 +272,39 @@ public class AppBuilder {
         }
 
         cardPanel.add(addTaskView, AddTaskView.getViewName());
+        return this;
+    }
+
+
+    public AppBuilder addCCTView() {
+        CCTViewModel cctViewModel = new CCTViewModel();
+        CCTView cctView = CCTUseCaseFactory.create(viewManagerModel, cctViewModel, tagDao);
+        cardPanel.add(cctView, CCTView.getViewName());
+        return this;
+    }
+
+    public AppBuilder addManageTagsView() {
+        if (this.loggedInViewModel == null) return this;
+
+        ManageTagsViewModel manageTagsViewModel = new ManageTagsViewModel(tagDao, userDao.getCurrentUsername());
+        ManageTagsView manageTagsView = ManageTagsUseCaseFactory.create(
+                loggedInViewModel,
+                viewManagerModel,
+                manageTagsViewModel,
+                tagDao
+        );
+
+        cardPanel.add(manageTagsView, ManageTagsView.getViewName());
+        return this;
+    }
+
+    public AppBuilder addEditTaskView() {
+        // Add EditTaskView implementation here if needed
+        return this;
+    }
+
+    public AppBuilder addTaskViews() {
+        // Add TaskViews implementation here if needed  
         return this;
     }
 

@@ -23,6 +23,7 @@ public final class AddTaskUseCaseFactory {
             AddTaskViewModel addTaskViewModel,
             LoggedInViewModel loggedInViewModel,
             TaskDataAccessInterface taskDao,
+            CustomTagDataAccessInterface tagDao,
             WeatherApiService weatherApiService,
             ScheduleNotificationInteractor notificationInteractor,
             String mainViewKey) {
