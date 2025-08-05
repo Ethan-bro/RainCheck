@@ -203,6 +203,25 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     private void rebuildCalendarWithTasks(List<Task> tasks) {
         centerPanel.removeAll();
 
+        CalendarListeners calendarListeners = getCalendarListeners();
+
+        CalendarGrid grid = new CalendarGrid(
+                calendarData,
+                weatherMap,
+                hourlyWeatherMap,
+                tasks,
+                calendarListeners
+                );
+
+        ScrollableCalendar scrollableCalendar = new ScrollableCalendar(grid);
+
+        centerPanel.add(scrollableCalendar, BorderLayout.CENTER);
+        centerPanel.revalidate();
+        centerPanel.repaint();
+    }
+
+    @NotNull
+    private CalendarListeners getCalendarListeners() {
         TaskClickListener taskClickListener = task -> {
             TaskViewModel taskViewModel = new TaskViewModel(task);
 
@@ -211,21 +230,12 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
                     JOptionPane.PLAIN_MESSAGE);
         };
 
-        CalendarGrid grid = new CalendarGrid(
-                calendarData,
-                weatherMap,
-                tasks,
+        return new CalendarListeners(
                 taskClickListener,
                 addTaskAL,
                 manageTagsAL,
                 logoutAL
-                );
-
-        ScrollableCalendar scrollableCalendar = new ScrollableCalendar(grid);
-
-        centerPanel.add(scrollableCalendar, BorderLayout.CENTER);
-        centerPanel.revalidate();
-        centerPanel.repaint();
+        );
     }
 
     @NotNull
