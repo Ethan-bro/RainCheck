@@ -74,51 +74,13 @@ Follow these steps to clone, build, and run RainCheck.
 
 ### Java Prerequisite
 
-RainCheck requires **Java JDK 17 or later** to build and run.
+RainCheck requires Java JDK 17 or later to build and run.
 
-To check if Java is installed, run in your terminal (powershell for Windows, command prompt won't work):
+To simplify setup, we recommend using an IDE that includes a bundled JDK 17 or higher, such as recent versions of IntelliJ IDEA or Eclipse. This way, you won’t need to install Java separately on your system.
 
-```bash
-java -version
-```
+If your IDE does not include a bundled JDK or you want to use a specific Java version, you will need to install Java JDK 17+ manually. 
 
-If the command `java -version` returns a version number **17 or higher**, you already have the required Java JDK installed. You can skip ahead to [Step 1: Clone the Repository](#1-clone-the-repository) to continue.
-
-If Java is not recognized or you get an error saying there is no such command as `java -version`, please download and install the JDK from:
-
-- [Oracle JDK](https://www.oracle.com/java/technologies/downloads/)
-
----
-
-### How to download Oracle JDK for your OS
-
-1. Click the Oracle JDK link above.
-2. Scroll down to the list of available downloads.
-3. Find your operating system (Windows, macOS, Linux, etc.).
-
-<div align="center">
-  <img src="images/oracle_jdk_downloads_page.png" alt="Oracle JDK downloads page" width="700px">
-</div>
-
-4. Choose the recommended installer for your OS:
-  - **Windows:** Select **x64 Installer** (`.exe`) for easiest setup.
-  - **macOS:** Choose the `.dmg` installer.
-  - **Linux:** Pick the `.rpm` or `.tar.gz` package depending on your distribution.
-5. Download the installer.
-
-<div align="center">
-  <img src="images/oracle_jdk_download_completed.png" alt="Oracle JDK download Completed" width="400px">
-</div>
----
-
-After installing and adding Java to your PATH (if needed), **restart your terminal** and run:
-
-```bash
-java -version
-```
-It should now display the installed Java version.
-
-<div align="center"> <img src="images/java_version_terminal.png" alt="Java version command output" width="500px"> </div>
+Throughout this README, we use IntelliJ IDEA which does include a bundled JDK 17 or higher.
 
 ### 1. Clone the Repository
 Open a terminal and run:
@@ -130,18 +92,10 @@ cd RainCheck
   <img src="images/clone_project.png" alt="Cloning project terminal" width="550px">
 </div>
 
-### 2. Build the Project
-You have two options:
-##### Option A: Use an IDE
- - Open the project in IntelliJ IDEA or Eclipse and build it there.
+### 2. Build the Project (using an IDE)
+ - Open the project in IntelliJ IDEA or Eclipse (or any other java IDE) and build it there.
 
-##### Option B: Use terminal
- - Compile the project manually:
-```bash
-javac -d out src/**/*.java
-```
-
-<img src="images/build_terminal.png" alt="Compiling project in terminal">
+<img src="images/build_project_in_IDE.png" alt="build_project_in_IDE">
 
 ### 3. Configure Secrets
 
