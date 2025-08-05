@@ -94,6 +94,8 @@ public class WeatherApiService implements DailyWeatherDataAccessInterface, Hourl
                 mock.put("time", String.format("%02d:00", i));
                 mock.put("description", "Sunny");
                 mock.put("feelslike", "22°C");
+                mock.put("iconName", "clear-day");
+                mock.put("uvindex", "3");
                 result.add(mock);
             }
             return result;
@@ -115,10 +117,22 @@ public class WeatherApiService implements DailyWeatherDataAccessInterface, Hourl
             String description = hour.get("conditions").getAsString();
             String feelsLike = hour.get("feelslike").getAsString();
 
+            String iconName = hour.has("icon") && !hour.get("icon").isJsonNull() ? hour.get("icon").getAsString() : "clear-day";
+
+            // Extract UV index safely
+            String uvIndex = "N/A";
+            if (hour.has("uvindex") && !hour.get("uvindex").isJsonNull()) {
+                uvIndex = String.valueOf(hour.get("uvindex").getAsInt());
+            } else if (hour.has("uv_index") && !hour.get("uv_index").isJsonNull()) {
+                uvIndex = String.valueOf(hour.get("uv_index").getAsInt());
+            }
+
             Map<String, String> weather = new HashMap<>();
             weather.put("time", time);
             weather.put("description", description);
             weather.put("feelslike", feelsLike + "°C");
+            weather.put("iconName", iconName);
+            weather.put("uvindex", uvIndex);
 
             result.add(weather);
         }
