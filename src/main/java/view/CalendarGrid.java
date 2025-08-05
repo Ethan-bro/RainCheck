@@ -23,15 +23,12 @@ public class CalendarGrid extends JPanel {
     public CalendarGrid(CalendarData data,
                         Map<LocalDate, Map<String, Object>> weatherMap,
                         List<Task> tasks,
-                        TaskClickListener taskClickListener,
-                        ActionListener addTaskListener,
-                        ActionListener manageTagsListener,
-                        ActionListener logoutListener) {
+                        CalendarListeners calendarListeners) {
 
         super(new GridBagLayout());
-        this.addTaskListener = addTaskListener;
-        this.manageTagsListener = manageTagsListener;
-        this.logoutListener = logoutListener;
+        this.addTaskListener = calendarListeners.getAddTaskListener();
+        this.manageTagsListener = calendarListeners.getManageTagsListener();
+        this.logoutListener = calendarListeners.getLogoutListener();
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(1,1,1,1);
 
@@ -144,7 +141,7 @@ public class CalendarGrid extends JPanel {
                     Duration.between(start, end).toHours());
             int span = (int)durationHrs;
 
-            JButton btn = getJButton(taskClickListener, t);
+            JButton btn = getJButton(calendarListeners.getTaskClickListener(), t);
 
             gbc.gridx      = col;
             gbc.gridy      = row;
