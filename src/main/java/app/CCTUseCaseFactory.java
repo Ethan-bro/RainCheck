@@ -18,13 +18,12 @@ public class CCTUseCaseFactory {
     public static CCTView create (
             ViewManagerModel viewManagerModel,
             CCTViewModel viewModel,
-            CustomTagDataAccessInterface CTDataAccessInterface,
-            LoggedInViewModel loggedInViewModel) {
+            CustomTagDataAccessInterface CTDataAccessInterface) {
 
         final CCTController Controller = createCCTUseCase(viewManagerModel, viewModel,
                 CTDataAccessInterface);
 
-        return new CCTView(viewModel, Controller, loggedInViewModel);
+        return new CCTView(viewModel, Controller);
     }
 
     public static CCTController createCCTUseCase(ViewManagerModel viewManagerModel,

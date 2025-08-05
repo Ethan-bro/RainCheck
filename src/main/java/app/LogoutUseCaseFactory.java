@@ -11,6 +11,9 @@ import use_case.logout.LogoutOutputBoundary;
 import use_case.logout.LogoutUserDataAccessInterface;
 
 public class LogoutUseCaseFactory {
+
+    private LogoutUseCaseFactory() {}
+
     public static LogoutController create(ViewManagerModel viewManagerModel,
                                           LoggedInViewModel loggedInViewModel,
                                           LoginViewModel loginViewModel,

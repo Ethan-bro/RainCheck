@@ -3,7 +3,7 @@ package view;
 import entity.CustomTag;
 import interface_adapter.create_customTag.CCTController;
 import interface_adapter.create_customTag.CCTViewModel;
-import interface_adapter.logged_in.LoggedInViewModel;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,161 +11,137 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
 import static use_case.createCustomTag.CustomTagIcons.IconList;
 
 public class CCTView extends JPanel implements ActionListener, PropertyChangeListener {
 
-    private final JFrame mainFrame;
-
     private static final String viewName = "Create Custom Tag";
     private final CCTViewModel createCustomTagViewModel;
     private final CCTController createCustomTagController;
-    private final LoggedInViewModel loggedInViewModel;
 
-    public CCTView(CCTViewModel model, CCTController
-            createCustomTagController, LoggedInViewModel loggedInViewModel) {
+    private String username = null;
+
+    public CCTView(CCTViewModel model, CCTController controller) {
         this.createCustomTagViewModel = model;
+        this.createCustomTagController = controller;
         this.createCustomTagViewModel.addPropertyChangeListener(this);
-        this.createCustomTagController = createCustomTagController;
-        this.loggedInViewModel = loggedInViewModel;
 
-        // UI CONSTRUCTION:
+        setLayout(new BorderLayout());
 
-        // Main Frame:
-        this.mainFrame = new JFrame(viewName);
-        mainFrame.setTitle(viewName);
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.setSize(700, 700);
-        mainFrame.setVisible(true);
-
-        // Tag Name Text Field:
+        // --- Tag Name Field ---
         JPanel tagNamePanel = new JPanel();
         JTextField tagNameTextField = new JTextField(20);
         JLabel tagNameLabel = new JLabel("Tag Name: ");
         tagNamePanel.add(tagNameLabel);
         tagNamePanel.add(tagNameTextField);
 
-        // Tag Icon Field:
-        JPanel IconSelectionPanel = new JPanel();
-        IconSelectionPanel.setLayout(new BoxLayout(IconSelectionPanel, BoxLayout.Y_AXIS));
-        JLabel tagIconLabel = new JLabel("Select Tag Icon: ");
-        JPanel IconPanel = new JPanel();
+        // --- Icon Selection ---
+        JPanel iconSelectionPanel = new JPanel();
+        iconSelectionPanel.setLayout(new BoxLayout(iconSelectionPanel, BoxLayout.Y_AXIS));
+        JLabel iconLabel = new JLabel("Select Tag Icon:");
+        JPanel iconPanel = new JPanel();
 
-        ButtonGroup IconGroup = new ButtonGroup();
+        ButtonGroup iconGroup = new ButtonGroup();
+
         for (String icon : IconList) {
-
             JToggleButton iconButton = new JToggleButton(icon);
             iconButton.setActionCommand(icon);
-            IconGroup.add(iconButton);
+            iconGroup.add(iconButton);
 
-            // Make border transparent
             iconButton.setMargin(new Insets(0, 0, 0, 0));
             iconButton.setBorder(BorderFactory.createEmptyBorder());
             iconButton.setFocusPainted(false);
             iconButton.setContentAreaFilled(false);
             iconButton.setOpaque(false);
 
-            // When emoji is selected, create a translucent black square around it to show that it was selected.
             iconButton.addItemListener(e -> {
                 if (iconButton.isSelected()) {
-                    // a 2px semi-transparent black border
-                    iconButton.setBorder(
-                            BorderFactory.createLineBorder(new Color(0, 0, 0, 100), 2)
-
-
-
-                    );
+                    iconButton.setBorder(BorderFactory.createLineBorder(new Color(0, 0, 0, 100), 2));
                 } else {
                     iconButton.setBorder(BorderFactory.createEmptyBorder());
                 }
             });
-            IconPanel.add(iconButton);
+
+            iconPanel.add(iconButton);
         }
 
-        IconSelectionPanel.add(tagIconLabel);
-        IconSelectionPanel.add(IconPanel);
+        iconSelectionPanel.add(iconLabel);
+        iconSelectionPanel.add(iconPanel);
 
+        // --- Bottom Buttons ---
+        JPanel bottomPanel = getJPanel(tagNameTextField, iconGroup);
 
-        // Submit and Cancel Buttons:
+        // --- Assemble ---
+        add(tagNamePanel, BorderLayout.NORTH);
+        add(iconSelectionPanel, BorderLayout.CENTER);
+        add(bottomPanel, BorderLayout.SOUTH);
+    }
+
+    @NotNull
+    private JPanel getJPanel(JTextField tagNameTextField, ButtonGroup iconGroup) {
         JPanel bottomPanel = new JPanel();
+        JButton createButton = new JButton("Create Tag");
+        JButton cancelButton = new JButton("Cancel");
 
-        JButton createTag = new JButton("Create Tag");
-        createTag.addActionListener(e -> {
-
-
-            String supposedName = tagNameTextField.getText().trim(); // Inputted Tag Name
-            if (supposedName.isEmpty()) {
-                JOptionPane.showMessageDialog(mainFrame, "Please enter a tag name.");
+        createButton.addActionListener(e -> {
+            String tagName = tagNameTextField.getText().trim();
+            if (tagName.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Please enter a tag name.");
                 return;
             }
 
-            ButtonModel selectedTag = IconGroup.getSelection();
-            if (selectedTag == null) {
-                JOptionPane.showMessageDialog(mainFrame, "Please select a tag.");
+            ButtonModel selectedIcon = iconGroup.getSelection();
+            if (selectedIcon == null) {
+                JOptionPane.showMessageDialog(this, "Please select a tag icon.");
                 return;
             }
 
-            String supposedIcon = selectedTag.getActionCommand(); // Inputted Tag Icon
-            String Username = loggedInViewModel.getState().getUsername(); // User
+            String icon = selectedIcon.getActionCommand();
+            CustomTag tag = new CustomTag(tagName, icon);
+            createCustomTagController.execute(tag, username);
 
-
-            CustomTag supposedTag = new CustomTag(supposedName, supposedIcon);
-            createCustomTagController.execute(supposedTag, Username);
-
-            createTag.setEnabled(false);
-
+            createButton.setEnabled(false);
         });
 
-        JButton cancelTag = new JButton("Cancel");
-        cancelTag.addActionListener(e -> mainFrame.dispose());
+        cancelButton.addActionListener(e -> {
+            tagNameTextField.setText("");
+            iconGroup.clearSelection();
+            createCustomTagViewModel.setUsername(null);  // signal to close
+        });
 
-        bottomPanel.add(createTag);
-        bottomPanel.add(cancelTag);
-
-        // Combining all components and Running
-        mainFrame.add(tagNamePanel, BorderLayout.NORTH);
-        mainFrame.add(IconSelectionPanel, BorderLayout.CENTER);
-        mainFrame.add(bottomPanel, BorderLayout.SOUTH);
-
-        mainFrame.pack();
-
-        mainFrame.setLocationRelativeTo(null);
-        mainFrame.setVisible(true);
-
+        bottomPanel.add(createButton);
+        bottomPanel.add(cancelButton);
+        return bottomPanel;
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        // method is empty
-    }
-
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        String prop = evt.getPropertyName();
-        if ("Success".equals(prop)) {
-            // Show success message dialog first
-            JOptionPane.showMessageDialog(
-                    mainFrame,
-                    "Custom tag created successfully!",
-                    "Success",
-                    JOptionPane.INFORMATION_MESSAGE
-            );
-            // Then close the window
-            mainFrame.dispose();
-        }
-        else if ("Failed".equals(prop)) {
-            // model tells us why it failed
-            String errorMsg = createCustomTagViewModel.getState().getErrorMsg();
-            JOptionPane.showMessageDialog(
-                    this,
-                    errorMsg,
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
-        }
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public static String getViewName() {
         return viewName;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        // No action commands yet
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        switch (evt.getPropertyName()) {
+            case "Success" -> {
+                JOptionPane.showMessageDialog(this,
+                        "Custom tag created successfully!",
+                        "Success",
+                        JOptionPane.INFORMATION_MESSAGE);
+                createCustomTagViewModel.setUsername(null);
+            }
+            case "Failed" -> {
+                String errorMsg = createCustomTagViewModel.getState().getErrorMsg();
+                JOptionPane.showMessageDialog(this, errorMsg, "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }
 }
