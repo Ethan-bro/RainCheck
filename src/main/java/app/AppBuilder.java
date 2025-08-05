@@ -150,7 +150,6 @@ public class AppBuilder {
                 addTaskViewModel,
                 loggedInViewModel,
                 taskDao,
-                tagDao,
                 weatherApiService,
                 LoggedInView.getViewName()
         );
