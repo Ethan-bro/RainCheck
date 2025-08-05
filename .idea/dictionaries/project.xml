@@ -12,6 +12,7 @@
       <w>supabase</w>
       <w>tempmax</w>
       <w>tempmin</w>
+      <w>uvindex</w>
     </words>
   </dictionary>
 </component>
