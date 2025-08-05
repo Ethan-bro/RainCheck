@@ -16,6 +16,7 @@ import java.util.Map;
 import data_access.SupabaseTagDataAccessObject;
 import data_access.SupabaseTaskDataAccessObject;
 import entity.Task;
+import interface_adapter.ManageTags.ManageTagsViewModel;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.addTask.AddTaskViewModel;
 import interface_adapter.calendar.TaskClickListener;
@@ -43,7 +44,7 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     private static final String viewName = "logged in";
     private final LoggedInViewModel loggedInViewModel;
     private final AddTaskViewModel addTaskViewModel;
-    private final CCTViewModel cctViewModel;
+    private final ManageTagsViewModel manageTagsViewModel;
     private final EditTaskViewModel editTaskViewModel;
     private final ViewManagerModel viewManagerModel;
     private String username;
@@ -68,7 +69,7 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
                         SupabaseTaskDataAccessObject taskDao,
                         AddTaskViewModel addTaskViewModel,
                         TaskBoxDependencies taskBoxDependencies,
-                        CCTViewModel cctViewModel) throws IOException {
+                        ManageTagsViewModel manageTagsViewModel) throws IOException {
         this.taskBoxDependencies = taskBoxDependencies;
         this.viewManagerModel = taskBoxDependencies.viewManagerModel();
         this.editTaskViewModel = taskBoxDependencies.editTaskViewModel();
@@ -82,7 +83,7 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         this.tagDao = tagDao;
         this.taskDao = taskDao;
         this.addTaskViewModel = addTaskViewModel;
-        this.cctViewModel = cctViewModel;
+        this.manageTagsViewModel = manageTagsViewModel;
 
         setupActionListeners();
 
@@ -164,8 +165,8 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         };
 
         manageTagsAL = e -> {
-            cctViewModel.setUsername(this.username);
-            viewManagerModel.setState(CCTView.getViewName());
+            manageTagsViewModel.setUsername(this.username);
+            viewManagerModel.setState(ManageTagsView.getViewName());
             viewManagerModel.firePropertyChanged();
         };
 
