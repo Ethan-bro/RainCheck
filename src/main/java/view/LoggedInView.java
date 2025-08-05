@@ -201,31 +201,79 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     }
 
     private void rebuildCalendarWithTasks(List<Task> tasks) {
+        // clear out the old view
         centerPanel.removeAll();
 
+        // Task‐click handler: pops up TaskBox
         TaskClickListener taskClickListener = task -> {
-            TaskViewModel taskViewModel = new TaskViewModel(task);
-
-            TaskBox taskBox = getTaskBox(taskViewModel);
-            JOptionPane.showMessageDialog(this, taskBox, "Task Details",
-                    JOptionPane.PLAIN_MESSAGE);
+            TaskViewModel vm  = new TaskViewModel(task);
+            TaskBox     box   = getTaskBox(vm);
+            JOptionPane.showMessageDialog(
+                    this,
+                    box,
+                    "Task Details",
+                    JOptionPane.PLAIN_MESSAGE
+            );
         };
 
-        CalendarGrid grid = new CalendarGrid(
-                calendarData,
-                weatherMap,
+        // Build the header row with a menu button in the corner
+        JPanel headerRow = new JPanel(new BorderLayout());
+        headerRow.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+        // Corner menu button
+        JButton menuBtn = new JButton("☰");
+        menuBtn.setMargin(new Insets(0, 0, 0, 0));
+        menuBtn.setPreferredSize(new Dimension(60, 0));  // matches hour‐column width
+        menuBtn.addActionListener(e -> showSideMenu(menuBtn));
+        headerRow.add(menuBtn, BorderLayout.WEST);
+
+        // Day headers
+        JPanel daysPanel = new JPanel(new GridLayout(1, 7));
+        for (LocalDate date : calendarData.getWeekDates()) {
+            daysPanel.add(HeaderCellFactory.makeHeader(date, weatherMap.get(date)));
+        }
+        headerRow.add(daysPanel, BorderLayout.CENTER);
+
+        // Hour labels on the left (aligns with the grid’s hours)
+        HourLabelPane hourLabelPane = new HourLabelPane(60);
+
+        // The task grid pane in the center
+        TaskGridPane bodyPane = new TaskGridPane(
+                calendarData,    // so it knows the dates & grid geometry
                 tasks,
-                taskClickListener,
-                addTaskAL,
-                manageTagsAL,
-                logoutAL
-                );
+                taskClickListener
+        );
 
-        ScrollableCalendar scrollableCalendar = new ScrollableCalendar(grid);
+        // Assemble into one scrollable container
+        JPanel calendarContainer = new JPanel(new BorderLayout());
+        calendarContainer.add(headerRow,      BorderLayout.NORTH);
+        calendarContainer.add(hourLabelPane,  BorderLayout.WEST);
+        calendarContainer.add(bodyPane,       BorderLayout.CENTER);
 
-        centerPanel.add(scrollableCalendar, BorderLayout.CENTER);
+        JScrollPane scroll = new JScrollPane(calendarContainer);
+        scroll.setBorder(null);
+        centerPanel.add(scroll, BorderLayout.CENTER);
+
+        // Refresh
         centerPanel.revalidate();
         centerPanel.repaint();
+    }
+
+    private void showSideMenu(Component invoker) {
+        JPopupMenu sideMenu = new JPopupMenu();
+        JMenuItem addTaskItem    = new JMenuItem("Add Task");
+        JMenuItem manageTagsItem = new JMenuItem("Manage Tags");
+        JMenuItem logoutItem     = new JMenuItem("Log Out");
+
+        addTaskItem.addActionListener(addTaskAL);
+        manageTagsItem.addActionListener(manageTagsAL);
+        logoutItem.addActionListener(logoutAL);
+
+        sideMenu.add(addTaskItem);
+        sideMenu.add(manageTagsItem);
+        sideMenu.add(logoutItem);
+
+        sideMenu.show(invoker, 0, invoker.getHeight());
     }
 
     @NotNull
