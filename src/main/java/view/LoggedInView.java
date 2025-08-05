@@ -20,7 +20,6 @@ import interface_adapter.ManageTags.ManageTagsViewModel;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.addTask.AddTaskViewModel;
 import interface_adapter.calendar.TaskClickListener;
-import interface_adapter.create_customTag.CCTViewModel;
 import interface_adapter.deleteTask.DeleteTaskController;
 import interface_adapter.deleteTask.DeleteTaskPresenter;
 import interface_adapter.editTask.EditTaskViewModel;
@@ -34,7 +33,7 @@ import interface_adapter.markTaskComplete.MarkTaskCompleteController;
 import interface_adapter.task.TaskBoxDependencies;
 import interface_adapter.task.TaskViewModel;
 import org.jetbrains.annotations.NotNull;
-import use_case.DeleteTask.DeleteTaskInteractor;
+import use_case.deleteTask.DeleteTaskInteractor;
 import use_case.MarkTaskComplete.MarkTaskCompleteInteractor;
 import interface_adapter.markTaskComplete.MarkTaskCompletePresenter;
 

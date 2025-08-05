@@ -1,4 +1,4 @@
-package use_case.DeleteTask;
+package use_case.deleteTask;
 
 /**
  * The output boundary for the DeleteTask Use Case.
