@@ -1,5 +1,7 @@
 # <p align="center"><b>RainCheck</b></p>
 
+> ⚠️ **Note:** All screenshots were taken during development. Some UI elements may differ slightly from the final version, but the core features and layout remain the same.
+
 ## Table of Contents
 
 - [Project Summary](#project-summary)
@@ -34,37 +36,55 @@ RainCheck is useful for anyone who wants to manage time more effectively while s
 
 RainCheck helps users plan tasks around real-world weather. Key features include:
 
-TODO next 👇 (add screenshots of run)
+##### 1. Weather-Aware Calendar
+ - View daily weather for a week-view calendar. 
+ - Weather remains visible as tasks are added, edited, or removed.
+ - View hourly weather per task by clicking on the task box in the calendar at any point during the program.
 
-- **Weather-Aware Calendar**:  
-  View hourly weather alongside a week-view calendar. Weather remains visible as tasks are added, edited, or removed.
-  TODO: Add screenshot
+<div align="center">
+  <img src="images/feature_weather_calendar.png" alt="Weather-aware calendar in RainCheck" width="500px">
+</div>
 
-- **Smart Task Management**:  
-  Create, edit, and delete tasks with:
-    - Priority levels (High, Medium, Low) shown by color
-    - Custom tag names and emojis (e.g., `Workout 💪`)
-    - Weather info at task time (e.g., ☀️ 23°C)
-    - Optional reminders and completion status
-  TODO: Add screenshot
+##### 2. Smart Task Management
+Create, edit, and delete tasks with:
+- Priority levels (High, Medium, Low) shown by color
+- Custom tag names and emojis (e.g., Workout 💪)
+- Weather info at task time (e.g., ☀️ 23°C)
+- Optional reminders and completion status
 
-- **Reminder Notifications**:  
-  Set alerts (10, 30, or 60 mins before) that notify users via email.
-  TODO: Add screenshot
+<div align="center">
+  <img src="images/feature_task_management.png" alt="Smart task creation and editing in RainCheck" width="500px">
+</div>
 
-- **Custom Tags**:  
-  Categorize tasks using dropdown tag names and emojis.
-  TODO: Add screenshot
+##### 3. Reminder Notifications
+Set alerts (10, 30, or 60 mins before) that notify users via email.
 
-- **Secure User Accounts**:  
-  Users sign up and log in to access their saved tasks and personalized forecasts.
-  TODO: Add screenshot
+<div align="center">
+  <img src="images/feature_reminder_notifications.png" alt="Reminder notification settings in RainCheck" width="500px">
+</div>
 
-- **Location Detection**:  
-  Automatically fetches weather for your city via IP-based location.
-  TODO: Add screenshot
+##### 4. Custom Tags
+Categorize tasks using dropdown tag names and emojis.
 
-- **API Integrations**:  
+<div align="center">
+  <img src="images/feature_custom_tags.png" alt="Custom tag selection with emojis in RainCheck" width="500px">
+</div>
+
+##### 5. Secure User Accounts
+Users sign up and log in to access their saved tasks and personalized forecasts.
+
+<div align="center">
+  <img src="images/feature_user_login.png" alt="User login and signup in RainCheck" width="500px">
+</div>
+
+##### 6. Location Detection
+Automatically fetches weather for your city via IP-based location.
+
+<div align="center">
+  <img src="images/feature_location_detection.png" alt="Weather auto-detected by IP location in RainCheck" width="500px">
+</div>
+
+##### 7. API Integrations 
   Uses Visual Crossing for weather, Supabase for data, and a TODO email service.
   TODO: Add final email API name
 
