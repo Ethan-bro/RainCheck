@@ -119,4 +119,29 @@ public class EmailConfigTester {
 
         return new Task(taskInfo);
     }
+
+    // Add this to your EmailConfigTester or create a simple test
+    public static void quickTest() {
+        try {
+            JsonObject config = JsonParser.parseReader(new FileReader("config/secrets.json")).getAsJsonObject();
+
+            EmailNotificationService emailService = new EmailNotificationService(
+                    "smtp.gmail.com", "587",
+                    config.get("email_username").getAsString(),
+                    config.get("email_password").getAsString()
+            );
+
+            // Create a simple test task
+            Task testTask = createTestTask("Quick Test", LocalDateTime.now());
+
+            // Send immediate email
+            emailService.sendTaskReminder(null, testTask, config.get("email_username").getAsString());
+
+            System.out.println("✓ Quick test email sent!");
+
+        } catch (Exception e) {
+            System.out.println("✗ Quick test failed: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 }
