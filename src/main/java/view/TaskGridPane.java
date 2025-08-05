@@ -94,7 +94,7 @@ public class TaskGridPane extends JLayeredPane {
             g.drawLine(0, y, W, y);
         }
 
-        // for each day‐column…
+        // for each day‐column
         for (int dayCol = 0; dayCol < cols; dayCol++) {
             final int dc = dayCol;
             List<Segment> colSegs = segments.stream()
@@ -102,7 +102,7 @@ public class TaskGridPane extends JLayeredPane {
                     .sorted(Comparator.comparingInt(s -> s.startQ))
                     .toList();
 
-            // assign slots (as before)…
+            // assign slots
             List<List<Segment>> slots = new ArrayList<>();
             for (Segment s : colSegs) {
                 boolean placed = false;
