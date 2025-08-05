@@ -53,18 +53,20 @@ Create, edit, and delete tasks with:
 - **Weather info at task time (e.g., ☀️ 23°C)**
 - **Optional reminders and completion status**
 
-<video or gif here>
+<div align="center">
+  <img src="images/demo-video-addTask.gif" alt="Task creation flow demo" width="600px">
+</div>
 
 ##### 3. Reminder Notifications
 Set alerts (10, 30, or 60 mins before) that notify users via email.
-
+TODO: Get Kian's reminder notification and snapshot gmail
 <div align="center">
   <img src="images/feature_reminder_notifications.png" alt="Reminder notification settings in RainCheck" width="500px">
 </div>
 
 ##### 4. Custom Tags
 Categorize tasks using dropdown tag names and emojis.
-
+TODO: Get Seans CCT view
 <div align="center">
   <img src="images/feature_custom_tags.png" alt="Custom tag selection with emojis in RainCheck" width="500px">
 </div>
@@ -75,17 +77,6 @@ Users sign up and log in to access their saved tasks and personalized forecasts.
 <div align="center">
   <img src="images/feature_user_login.png" alt="User login and signup in RainCheck" width="500px">
 </div>
-
-##### 6. Location Detection
-Automatically fetches weather for your city via IP-based location.
-
-<div align="center">
-  <img src="images/feature_location_detection.png" alt="Weather auto-detected by IP location in RainCheck" width="500px">
-</div>
-
-##### 7. API Integrations 
-  Uses Visual Crossing for weather, Supabase for data, and a TODO email service.
-  TODO: Add final email API name
 
 ## Installation
 
