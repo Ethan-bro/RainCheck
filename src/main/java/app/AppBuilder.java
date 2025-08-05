@@ -5,6 +5,7 @@ import com.google.gson.JsonParser;
 
 import data_access.*;
 import interface_adapter.*;
+import interface_adapter.ManageTags.ManageTagsViewModel;
 import interface_adapter.addTask.AddTaskViewModel;
 import interface_adapter.create_customTag.CCTViewModel;
 import interface_adapter.deleteTask.DeleteTaskViewModel;
@@ -46,6 +47,7 @@ public class AppBuilder {
     private LoggedInViewModel loggedInViewModel;
     private SignupViewModel signupViewModel;
     private CCTViewModel cctViewModel;
+    private ManageTagsViewModel manageTagsViewModel;
     private AddTaskViewModel addTaskViewModel;
     private EditTaskViewModel editTaskViewModel;
 
@@ -73,6 +75,7 @@ public class AppBuilder {
         loggedInViewModel = new LoggedInViewModel();
         signupViewModel = new SignupViewModel();
         cctViewModel = new CCTViewModel();
+        manageTagsViewModel = new ManageTagsViewModel(tagDao, userDao.getCurrentUsername());
         addTaskViewModel = new AddTaskViewModel(tagDao, userDao.getCurrentUsername());
         editTaskViewModel = new EditTaskViewModel(tagDao, userDao.getCurrentUsername());
         return this;
@@ -105,6 +108,23 @@ public class AppBuilder {
         return this;
     }
 
+    public AppBuilder addManageTagsView() {
+        if (this.manageTagsViewModel == null) return this;
+
+        ManageTagsView manageTagsView = ManageTagsUseCaseFactory.create(
+                loggedInViewModel,
+                viewManagerModel,
+                manageTagsViewModel,
+                tagDao
+        );
+
+        // 3) Register it in the CardLayout
+        cardPanel.add(manageTagsView, ManageTagsView.getViewName());
+        viewMap.put(CCTView.getViewName(), manageTagsView);
+
+        return this;
+    }
+
     public AppBuilder addEditTaskView() {
         editTaskController = EditTaskUseCaseFactory.createController(taskDao, editTaskViewModel, viewManagerModel, weatherApiService);
         EditTaskView editTaskView = EditTaskUseCaseFactory.createView(
@@ -133,7 +153,7 @@ public class AppBuilder {
         LoggedInView loggedInView = LoggedInUseCaseFactory.createLoggedInView(
                 loggedInDependencies,
                 addTaskViewModel,
-                cctViewModel,
+                manageTagsViewModel,
                 tagDao,
                 taskDao,
                 taskBoxDependencies
