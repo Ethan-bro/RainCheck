@@ -97,23 +97,28 @@ public abstract class AbstractTaskFormView extends JPanel {
         errorLabel.setForeground(new Color(220, 20, 60));
         errorLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
         errorLabel.setVisible(false);
+
         JPanel errorPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         errorPanel.setBackground(Color.WHITE);
         errorPanel.add(errorLabel);
-        add(errorPanel, BorderLayout.SOUTH);
-
-        JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 15));
-        buttonsPanel.setBackground(Color.WHITE);
 
         saveButton = new JButton(saveButtonText);
         styleButton(saveButton, new Color(34, 139, 34));
         cancelButton = new JButton("Cancel");
         styleButton(cancelButton, new Color(178, 34, 34));
 
+        JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 15));
+        buttonsPanel.setBackground(Color.WHITE);
         buttonsPanel.add(saveButton);
         buttonsPanel.add(cancelButton);
 
-        add(buttonsPanel, BorderLayout.SOUTH);
+        JPanel southPanel = new JPanel();
+        southPanel.setLayout(new BoxLayout(southPanel, BoxLayout.Y_AXIS));
+        southPanel.setBackground(Color.WHITE);
+        southPanel.add(errorPanel);
+        southPanel.add(buttonsPanel);
+
+        add(southPanel, BorderLayout.SOUTH);
     }
 
     private void addLabeledField(JPanel panel, GridBagConstraints gbc, int row,
