@@ -145,6 +145,8 @@ public abstract class AbstractTaskFormView extends JPanel {
         button.setPreferredSize(new Dimension(200, 40));
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         button.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+        button.setContentAreaFilled(true);
+        button.setOpaque(true);
     }
 
     protected JSpinner makeDateTimeSpinner() {
