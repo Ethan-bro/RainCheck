@@ -34,6 +34,8 @@ RainCheck is useful for anyone who wants to manage time more effectively while s
 
 RainCheck helps users plan tasks around real-world weather. Key features include:
 
+TODO next 👇 (add screenshots of run)
+
 - **Weather-Aware Calendar**:  
   View hourly weather alongside a week-view calendar. Weather remains visible as tasks are added, edited, or removed.
   TODO: Add screenshot
@@ -92,12 +94,24 @@ cd RainCheck
   <img src="images/clone_project.png" alt="Cloning project terminal" width="550px">
 </div>
 
-### 2. Build the Project (using an IDE)
- - Open the project in IntelliJ IDEA or Eclipse (or any other java IDE) and build it there.
+# Weather Data Mode
 
-<img src="images/build_project_in_IDE.png" alt="build_project_in_IDE">
+RainCheck fetches real weather data by default for accurate forecasts.
 
-### 3. Configure Secrets
+The mode is controlled by the `USE_FAKE_DATA` variable in  
+`src/main/java/data_access/WeatherApiService.java`.
+
+**Default value:** `false` (real weather data enabled).
+
+For faster development or offline testing, set it to `true` to use fake weather data.
+
+```java
+private static final boolean USE_FAKE_DATA = false; // true for fake data
+```
+> Note: Real weather fetching requires a valid API key in `config/secrets.json`.
+> Switch to fake data mode to avoid API limits or work offline.
+
+### 2. Configure Secrets
 
 RainCheck requires API keys to access external services like Supabase and Visual Crossing Weather.
 
@@ -111,41 +125,44 @@ RainCheck requires API keys to access external services like Supabase and Visual
   "weather_api_key": "{your_own_key_here}"
 }
 ```
-<img src="images/secrets_json_example.png" alt="secrets.json file structure"> <!-- TODO -->
 
 > **Why is this file public?**  
 > The `secrets.json` file is public in this repo because:
 > - Our database and weather keys are used in class for development and demo purposes.
 > - We frequently reset the backend, so long-term security isn’t a concern.
 > - This simplifies setup for teammates and TAs who are testing or marking the project.
-
 ---
-
 > **How should *you* handle secrets?**
 > If you're building your own version or using your own backend:
 > - **Do NOT commit secrets** to GitHub — add `config/secrets.json` to your `.gitignore`
 > - **Create the file locally** and keep it private
 > - **Use environment variables** where possible (e.g., `.env` files + a dotenv library)
 
----
+### 3. Run the Project (using an IDE)
+Open the project in IntelliJ IDEA, Eclipse, or your preferred Java IDE and run the `Main` class.
 
-### 4. Run the Application
-   Option A: From your IDE
-   Run the Main class located at:
+IntelliJ may prompt you to configure the JDK if it's not set up yet.  
+To do this:
 
-css
-Copy
-Edit
-src/main/java/app/Main.java
-Option B: From terminal
+1. Go to `File` → `Project Structure` → `Project`
+2. Under `Project SDK`, click the dropdown and select `Download JDK`
+3. Choose your desired JDK version (Java 17 or later) and install it
+4. Click `Apply` and then `OK` after download completes
 
-bash
-Copy
-Edit
-java -cp out app.Main
-<img src="images/run_application.png" alt="RainCheck running in terminal or IDE"> <!-- TODO -->
+<div align="center">
+  <img src="images/intellij_setup_jdk.png" alt="IntelliJ Project Structure SDK setup dialog" width="400px">
+</div>
 
-✅ If everything works, RainCheck will launch and display the weekly calendar interface.
+After the SDK is set up, simply run the `Main.java` class to launch RainCheck.
+> `Main.java` is located at `RainCheck/src/main/java/app/Main.java`.
+
+At the time of writing this readme, the program runs successfully and looks like: 
+
+<div align="center">
+  <img src="images/run_application.png" alt="RainCheck running in IDE" width="500px">
+</div>
+
+✅ If everything works, RainCheck will launch and display the weekly calendar interface. <br />
 ❌ If you get any errors, check the Troubleshooting section below.
 
 
