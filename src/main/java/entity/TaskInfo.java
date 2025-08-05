@@ -17,10 +17,11 @@ public class TaskInfo {
     private String weatherDescription;
     private String weatherIconName;
     private String temperature;
+    private String uvIndex;
 
     public TaskInfo(TaskID id, String taskName, LocalDateTime startDateTime, LocalDateTime endDateTime,
                     Priority priority, CustomTag customTag, Reminder reminder, String isDeleted, String weatherDescription,
-                    String weatherIconName, String temperature) {
+                    String weatherIconName, String temperature, String uvIndex) {
         this.id = Objects.requireNonNull(id);
         this.taskName = Objects.requireNonNull(taskName);
         this.startDateTime = Objects.requireNonNull(startDateTime);
@@ -33,6 +34,7 @@ public class TaskInfo {
         this.weatherDescription = weatherDescription;
         this.weatherIconName = weatherIconName;
         this.temperature = temperature;
+        this.uvIndex = uvIndex;
     }
 
     public TaskID getId() {return id;}
@@ -87,6 +89,9 @@ public class TaskInfo {
     public void setTemperature(String temperature) {
         this.temperature = temperature;
     }
+
+    public String getUvIndex() { return uvIndex; }
+    public void setUvIndex(String uvIndex) { this.uvIndex = uvIndex; }
 
     public void setIsDeleted(String isDeleted) {this.isDeleted = isDeleted;}
     public String getIsDeleted() {return isDeleted;}

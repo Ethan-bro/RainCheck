@@ -73,7 +73,8 @@ public class AddTaskInteractor implements AddTaskInputBoundary {
         TaskInfo newTaskInfo = new TaskInfo(newID, inputData.getTaskName(), inputData.getStartDateTime(),
                 inputData.getEndDateTime(), inputData.getPriority(), inputData.getTag(),
                 inputData.getReminder(), inputData.getIsDeleted(),
-                weatherInfo.description(), weatherInfo.iconName(), weatherInfo.temperature()
+                weatherInfo.description(), weatherInfo.iconName(), weatherInfo.temperature(),
+                weatherInfo.uvIndex()
                 );
 
         Task newTask = new Task(newTaskInfo);

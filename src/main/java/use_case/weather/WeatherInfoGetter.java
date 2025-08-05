@@ -18,6 +18,7 @@ public class WeatherInfoGetter {
         String description = "";
         String feels = "";
         String iconName = "";
+        String uvIndex = "";
         try {
             LocalDate date = startDateTime.toLocalDate();
             int hour = startDateTime.getHour();
@@ -32,13 +33,14 @@ public class WeatherInfoGetter {
                 Map<String, Object> daily = weatherApiService.getDailyWeather(LocationService.getUserCity(),
                         date);
                 iconName = daily.get("iconName") != null ? daily.get("iconName").toString() : "";
+                uvIndex = hourlyMap.get("uvindex");
             }
         } catch (IOException e) {
             System.err.println("Weather Lookup Failed: " + e.getMessage());
         }
         String temperature = feels;
 
-        return new WeatherInfo(description, iconName, temperature);
+        return new WeatherInfo(description, iconName, temperature, uvIndex);
     }
 
 }

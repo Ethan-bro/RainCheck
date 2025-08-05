@@ -97,7 +97,8 @@ public class EditTaskView extends AbstractTaskFormView implements ActionListener
                 oldInfo.getIsDeleted(),
                 oldInfo.getWeatherDescription(),
                 oldInfo.getWeatherIconName(),
-                oldInfo.getTemperature()
+                oldInfo.getTemperature(),
+                oldInfo.getUvIndex()
         );
         updatedInfo.setTaskStatus(oldInfo.getTaskStatus());
         return new Task(updatedInfo);

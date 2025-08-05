@@ -91,7 +91,8 @@ public class EditTaskInteractor implements EditTaskInputBoundary {
                 info.getIsDeleted(),
                 weatherInfo.description(),
                 weatherInfo.iconName(),
-                weatherInfo.temperature()
+                weatherInfo.temperature(),
+                weatherInfo.uvIndex()
         );
         updatedTaskInfo.setTaskStatus(info.getTaskStatus());
 

@@ -188,6 +188,7 @@ public class SupabaseTaskDataAccessObject implements
         json.addProperty("weatherDescription", info.getWeatherDescription());
         json.addProperty("weatherIconName", info.getWeatherIconName());
         json.addProperty("temperature", info.getTemperature());
+        json.addProperty("uvIndex", info.getUvIndex());
 
         return json;
     }
@@ -228,6 +229,7 @@ public class SupabaseTaskDataAccessObject implements
         String weatherIconName = json.has("weatherIconName") ? json.get("weatherIconName")
                 .getAsString() : null;
         String temperature = json.has("temperature") ? json.get("temperature").getAsString() : null;
+        String uvIndex = json.has("uvIndex") ? json.get("uvIndex").getAsString() : null;
 
         TaskInfo info = new TaskInfo(
                 TaskID.from(UUID.fromString(idStr)),
@@ -240,7 +242,8 @@ public class SupabaseTaskDataAccessObject implements
                 isDeleted,
                 weatherDescription,
                 weatherIconName,
-                temperature
+                temperature,
+                uvIndex
         );
         info.setTaskStatus(status);
 
