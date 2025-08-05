@@ -208,7 +208,6 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         CalendarGrid grid = new CalendarGrid(
                 calendarData,
                 weatherMap,
-                hourlyWeatherMap,
                 tasks,
                 calendarListeners
                 );
