@@ -125,7 +125,7 @@ public class TaskGridPane extends JLayeredPane {
 
             final int slotCount = Math.max(1, slots.size());
 
-            // now position each segment
+            // position each segment
             for (Segment s : colSegs) {
                 final int startQ = s.startQ;
                 final int endQ   = s.endQ;
