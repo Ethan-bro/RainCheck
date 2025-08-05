@@ -5,6 +5,7 @@ import data_access.SupabaseTaskDataAccessObject;
 import interface_adapter.addTask.AddTaskViewModel;
 import interface_adapter.logged_in.LoggedInDependencies;
 import interface_adapter.task.TaskBoxDependencies;
+import interface_adapter.ManageTags.ManageTagsViewModel;
 import view.LoggedInView;
 
 import java.io.IOException;
@@ -16,6 +17,7 @@ public class LoggedInUseCaseFactory {
     public static LoggedInView createLoggedInView(
             LoggedInDependencies loggedInDependencies,
             AddTaskViewModel addTaskViewModel,
+            ManageTagsViewModel manageTagsViewModel,
             SupabaseTagDataAccessObject tagDao,
             SupabaseTaskDataAccessObject taskDao,
             TaskBoxDependencies taskBoxDependencies
@@ -26,6 +28,7 @@ public class LoggedInUseCaseFactory {
                 tagDao,
                 taskDao,
                 addTaskViewModel,
+                manageTagsViewModel,
                 taskBoxDependencies
         );
     }

@@ -6,6 +6,7 @@ import com.google.gson.JsonParser;
 import data_access.*;
 import interface_adapter.*;
 import interface_adapter.addTask.AddTaskViewModel;
+import interface_adapter.create_customTag.CCTViewModel;
 import interface_adapter.deleteTask.DeleteTaskViewModel;
 import interface_adapter.editTask.EditTaskController;
 import interface_adapter.editTask.EditTaskViewModel;
@@ -16,6 +17,7 @@ import interface_adapter.logout.LogoutController;
 import interface_adapter.markTaskComplete.MarkTaskCompleteViewModel;
 import interface_adapter.signup.SignupViewModel;
 import interface_adapter.task.TaskBoxDependencies;
+import interface_adapter.ManageTags.ManageTagsViewModel;
 import view.*;
 
 import javax.swing.*;
@@ -46,6 +48,8 @@ public class AppBuilder {
     private SignupViewModel signupViewModel;
     private AddTaskViewModel addTaskViewModel;
     private EditTaskViewModel editTaskViewModel;
+    private CCTViewModel CCTViewModel;
+    private ManageTagsViewModel manageTagsViewModel;
 
     // Controllers
     private EditTaskController editTaskController;
@@ -72,6 +76,9 @@ public class AppBuilder {
         signupViewModel = new SignupViewModel();
         addTaskViewModel = new AddTaskViewModel(tagDao, userDao.getCurrentUsername());
         editTaskViewModel = new EditTaskViewModel(tagDao, userDao.getCurrentUsername());
+        CCTViewModel = new CCTViewModel();
+        manageTagsViewModel = new ManageTagsViewModel(tagDao, userDao.getCurrentUsername());
+
         return this;
     }
 
@@ -99,6 +106,38 @@ public class AppBuilder {
         return this;
     }
 
+    public AppBuilder addCCTView() {
+        // 1) Build the view‐model & controller
+        CCTView cctView = CCTUseCaseFactory.create(
+                viewManagerModel,
+                CCTViewModel,
+                tagDao,
+                loggedInViewModel
+        );
+
+        // 3) Register it in the CardLayout
+        cardPanel.add(cctView, CCTView.getViewName());
+        viewMap.put(CCTView.getViewName(), cctView);
+
+        return this;
+    }
+
+    public AppBuilder addManageTagsView() {
+        ManageTagsView manageTagsView = ManageTasksUseCaseFactory.create(
+                loggedInViewModel,
+                viewManagerModel,
+                manageTagsViewModel,
+                tagDao
+        );
+
+        // 3) Register it in the CardLayout
+        cardPanel.add(manageTagsView, ManageTagsView.getViewName());
+        viewMap.put(CCTView.getViewName(), manageTagsView);
+
+        return this;
+    }
+
+
     public AppBuilder addLoggedInView() throws IOException {
         LogoutController logoutController = LogoutUseCaseFactory.create(
                 viewManagerModel, loggedInViewModel, loginViewModel, userDao
@@ -117,6 +156,7 @@ public class AppBuilder {
         LoggedInView loggedInView = LoggedInUseCaseFactory.createLoggedInView(
                 loggedInDependencies,
                 addTaskViewModel,
+                manageTagsViewModel,
                 tagDao,
                 taskDao,
                 taskBoxDependencies

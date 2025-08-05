@@ -15,11 +15,14 @@ public class Main {
                     .addLoginView()
                     .addListTasksUseCase()
                     .addEditTaskView()
+                    .addCCTView()
+                    .addManageTagsView()
                     .addLoggedInView()
                     .addTaskViews()
                     .build();
 
             int appWidth = 860;
+            application.pack();
             application.setSize(appWidth, (int) (appWidth / 1.4)); // Making the app proportional based on it's width
             application.setLocationRelativeTo(null); // centers window
             application.setVisible(true);

@@ -36,6 +36,7 @@ import interface_adapter.task.TaskBoxDependencies;
 import interface_adapter.task.TaskViewModel;
 import org.jetbrains.annotations.NotNull;
 import use_case.DeleteTask.DeleteTaskInteractor;
+import interface_adapter.ManageTags.ManageTagsViewModel;
 import use_case.createCustomTag.CCTInteractor;
 import use_case.MarkTaskComplete.MarkTaskCompleteInteractor;
 import interface_adapter.markTaskComplete.MarkTaskCompletePresenter;
@@ -48,6 +49,7 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     private final AddTaskViewModel addTaskViewModel;
     private final EditTaskViewModel editTaskViewModel;
     private final ViewManagerModel viewManagerModel;
+    private final ManageTagsViewModel manageTagsViewModel;
     private String username;
     private String email;
     private final JLabel usernameLabel;
@@ -70,6 +72,7 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
                         SupabaseTagDataAccessObject tagDao,
                         SupabaseTaskDataAccessObject taskDao,
                         AddTaskViewModel addTaskViewModel,
+                        ManageTagsViewModel manageTagsViewModel,
                         TaskBoxDependencies taskBoxDependencies) throws IOException {
         this.taskBoxDependencies = taskBoxDependencies;
         this.viewManagerModel = taskBoxDependencies.viewManagerModel();
@@ -77,6 +80,8 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         taskBoxDependencies.markTaskCompleteViewModel().addPropertyChangeListener(this);
         taskBoxDependencies.deleteTaskViewModel().addPropertyChangeListener(this);
         taskBoxDependencies.editTaskViewModel().addPropertyChangeListener(this);
+        this.manageTagsViewModel = manageTagsViewModel;
+        this.manageTagsViewModel.addPropertyChangeListener(this);
 
         this.loggedInViewModel = loggedInViewModel;
         this.loggedInViewModel.addPropertyChangeListener(this);
@@ -165,13 +170,10 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         };
 
         manageTagsAL = e -> {
-            // TODO: Sean, show CCT use case first and then the JOptionPane popup
-            CCTViewModel viewModel = new CCTViewModel();
-            CCTPresenter presenter = new CCTPresenter(viewManagerModel, viewModel);
-            CCTInteractor interactor = new CCTInteractor(tagDao, presenter);
-            CCTController controller = new CCTController(interactor);
+            manageTagsViewModel.setUsername(this.username);
+            viewManagerModel.setState(ManageTagsView.getViewName());
+            viewManagerModel.firePropertyChanged();
 
-            new CCTView(viewModel, controller, loggedInViewModel);
         };
 
     }
