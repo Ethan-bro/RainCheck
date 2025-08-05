@@ -49,31 +49,11 @@ RainCheck helps users plan tasks around real-world weather. Key features include
 Create, edit, and delete tasks with:
 
 - **Priority levels (High, Medium, Low) shown by color**
-  <div align="center">
-    <img src="images/priority_levels.png" alt="Task priority color indicators" width="300px">
-  </div>
-
 - **Custom tag names and emojis (e.g., Workout 💪)**
-  <div align="center">
-    <img src="images/tag_emojis.png" alt="Custom tags with emoji selection" width="300px">
-  </div>
-
 - **Weather info at task time (e.g., ☀️ 23°C)**
-  <div align="center">
-    <img src="images/task_weather.png" alt="Weather information in task view" width="300px">
-  </div>
-
 - **Optional reminders and completion status**
-  <div align="center">
-    <img src="images/reminder_toggle.png" alt="Reminder toggle and completion checkbox" width="300px">
-  </div>
-This is the task when its not complete:
-<div align="center">
-  <img src="images/task_not_complete.png" alt="Task NOT Complete view" width="500px">
-</div>
-<div align="center">
-  <img src="images/task_complete.png" alt="Task Complete view" width="500px">
-</div>
+
+<video or gif here>
 
 ##### 3. Reminder Notifications
 Set alerts (10, 30, or 60 mins before) that notify users via email.
