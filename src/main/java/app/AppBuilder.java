@@ -333,6 +333,9 @@ public class AppBuilder {
         application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         application.add(cardPanel);
 
+        // Initialize ViewManagerModel with view map
+        viewManagerModel.setViewMap(viewMap);
+
         // Add shutdown hook to stop scheduler when app closes
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             if (notificationScheduler != null) {
