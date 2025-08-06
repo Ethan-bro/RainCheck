@@ -2,7 +2,7 @@ package data_access;
 
 import entity.Task;
 import entity.TaskID;
-import use_case.MarkTaskComplete.MarkTaskCompleteDataAccessInterface;
+import use_case.markTaskComplete.MarkTaskCompleteDataAccessInterface;
 import use_case.deleteTask.DeleteTaskDataAccessInterface;
 import use_case.editTask.EditTaskDataAccessInterface;
 

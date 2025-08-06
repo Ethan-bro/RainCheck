@@ -6,7 +6,7 @@ import okhttp3.*;
 import use_case.deleteTask.DeleteTaskDataAccessInterface;
 import use_case.editTask.EditTaskDataAccessInterface;
 import use_case.listTasks.TaskDataAccessInterface;
-import use_case.MarkTaskComplete.MarkTaskCompleteDataAccessInterface;
+import use_case.markTaskComplete.MarkTaskCompleteDataAccessInterface;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

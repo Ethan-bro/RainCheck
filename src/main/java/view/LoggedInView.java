@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import data_access.SupabaseTagDataAccessObject;
 import data_access.SupabaseTaskDataAccessObject;
 import entity.Task;
 import interface_adapter.ManageTags.ManageTagsViewModel;
@@ -35,7 +34,7 @@ import interface_adapter.task.TaskViewModel;
 import org.jetbrains.annotations.NotNull;
 import tools.EnsureEmailConfigForUser;
 import use_case.deleteTask.DeleteTaskInteractor;
-import use_case.MarkTaskComplete.MarkTaskCompleteInteractor;
+import use_case.markTaskComplete.MarkTaskCompleteInteractor;
 import interface_adapter.markTaskComplete.MarkTaskCompletePresenter;
 import use_case.notification.NotificationDataAccessInterface;
 
