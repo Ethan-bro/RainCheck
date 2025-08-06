@@ -34,7 +34,7 @@ public class TaskGridPane extends JLayeredPane {
         setOpaque(true);
         setBackground(Color.WHITE);
 
-        int W = 7 * 120, H = TOTAL_QUARTERS * 20;
+        int W = 7 * 50, H = TOTAL_QUARTERS * 20;
         setPreferredSize(new Dimension(W, H));
 
         for (Task t : tasks) {
