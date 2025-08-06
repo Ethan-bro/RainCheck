@@ -4,149 +4,228 @@ import entity.CustomTag;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.create_customTag.CCTController;
 import interface_adapter.create_customTag.CCTViewModel;
-import interface_adapter.logged_in.LoggedInViewModel;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
 import static use_case.createCustomTag.CustomTagIcons.IconList;
 
-public class CCTView extends JPanel implements ActionListener, PropertyChangeListener {
+public class CCTView extends JPanel implements PropertyChangeListener {
 
     private static final String viewName = "Create Custom Tag";
+    private final ViewManagerModel viewManagerModel;
     private final CCTViewModel createCustomTagViewModel;
     private final CCTController createCustomTagController;
-    private final LoggedInViewModel loggedInViewModel;
-    private final ViewManagerModel viewManagerModel;
 
-    // UI components
-    private final JTextField tagNameTextField;
-    private final ButtonGroup iconGroup;
-    private final JButton createTag;
-    private final JButton cancelTag;
+    private final JTextField tagNameTextField = new JTextField(20);
+    private final ButtonGroup iconGroup = new ButtonGroup();
+    private final JButton createButton = new JButton("Create Tag");
+    private final JButton cancelButton = new JButton("Cancel");
 
-    public CCTView(CCTViewModel model,
-                   CCTController createCustomTagController,
-                   LoggedInViewModel loggedInViewModel,
-                   ViewManagerModel viewManagerModel) {
-
-        this.createCustomTagViewModel = model;
-        this.createCustomTagViewModel.addPropertyChangeListener(this);
-        this.createCustomTagController = createCustomTagController;
-        this.loggedInViewModel = loggedInViewModel;
+    public CCTView(ViewManagerModel viewManagerModel, CCTViewModel model, CCTController controller) {
         this.viewManagerModel = viewManagerModel;
+        this.createCustomTagViewModel = model;
+        this.createCustomTagController = controller;
+        this.createCustomTagViewModel.addPropertyChangeListener(this);
 
-        // Build Panel
         setLayout(new BorderLayout());
-        setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        setBackground(Color.WHITE);
+        setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
 
-        // Tag Name Text Field
-        JPanel tagNamePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        tagNameTextField = new JTextField(20);
-        JLabel tagNameLabel = new JLabel("Tag Name: ");
+        // Title - centered
+        JLabel title = new JLabel("Create Custom Tag", SwingConstants.CENTER);
+        title.setFont(new Font("SansSerif", Font.BOLD, 24));
+        title.setForeground(new Color(0x1E90FF)); // DodgerBlue
+        add(title, BorderLayout.NORTH);
+
+        // Center panel to hold everything centered vertically and horizontally
+        JPanel centerPanel = new JPanel();
+        centerPanel.setBackground(Color.WHITE);
+        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
+        centerPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // Tag name panel centered
+        JPanel tagNamePanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        tagNamePanel.setBackground(Color.WHITE);
+        JLabel tagNameLabel = new JLabel("Tag Name:");
+        tagNameLabel.setFont(new Font("SansSerif", Font.PLAIN, 16));
         tagNamePanel.add(tagNameLabel);
-        tagNamePanel.add(tagNameTextField);
-        add(tagNamePanel, BorderLayout.NORTH);
 
-        // Icon Selection
-        JPanel iconSelectionPanel = new JPanel();
-        iconSelectionPanel.setLayout(new BoxLayout(iconSelectionPanel, BoxLayout.Y_AXIS));
-        JLabel tagIconLabel = new JLabel("Select Tag Icon: ");
+        tagNameTextField.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        tagNameTextField.setPreferredSize(new Dimension(220, 28));
+        tagNamePanel.add(tagNameTextField);
+
+        centerPanel.add(tagNamePanel);
+
+        // Spacer
+        centerPanel.add(Box.createVerticalStrut(20));
+
+        // Icon label centered
+        JLabel iconLabel = new JLabel("Select Tag Icon:");
+        iconLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
+        iconLabel.setForeground(new Color(0x1E90FF)); // DodgerBlue
+        iconLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        centerPanel.add(iconLabel);
+        centerPanel.add(Box.createVerticalStrut(12));
+
+        // Icon buttons panel - centered grid for uniform size
         JPanel iconPanel = new JPanel();
-        iconGroup = new ButtonGroup();
+        iconPanel.setBackground(Color.WHITE);
+        iconPanel.setLayout(new GridLayout(2, (IconList.size() + 1) / 2, 15, 15)); // 2 rows, balanced cols
+        iconPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        Font emojiFont = findEmojiFont();
+
         for (String icon : IconList) {
-            JToggleButton iconButton = new JToggleButton(icon);
-            iconButton.setActionCommand(icon);
+            JToggleButton iconButton = getJToggleButton(icon, emojiFont);
+
             iconGroup.add(iconButton);
-            iconButton.setMargin(new Insets(0, 0, 0, 0));
-            iconButton.setBorder(BorderFactory.createEmptyBorder());
-            iconButton.setFocusPainted(false);
-            iconButton.setContentAreaFilled(false);
-            iconButton.setOpaque(false);
-            iconButton.addItemListener(e -> {
-                if (iconButton.isSelected()) {
-                    iconButton.setBorder(
-                            BorderFactory.createLineBorder(new Color(0, 0, 0, 100), 2)
-                    );
-                } else {
-                    iconButton.setBorder(BorderFactory.createEmptyBorder());
-                }
-            });
             iconPanel.add(iconButton);
         }
-        iconSelectionPanel.add(tagIconLabel);
-        iconSelectionPanel.add(iconPanel);
-        add(iconSelectionPanel, BorderLayout.CENTER);
 
-        // Submit and Cancel Buttons
-        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        createTag = new JButton("Create Tag");
-        cancelTag = new JButton("Cancel");
-        createTag.addActionListener(this);
-        cancelTag.addActionListener(this);
-        bottomPanel.add(createTag);
-        bottomPanel.add(cancelTag);
+        centerPanel.add(iconPanel);
+
+        add(centerPanel, BorderLayout.CENTER);
+
+        // Bottom buttons panel centered horizontally
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
+        bottomPanel.setBackground(Color.WHITE);
+
+        stylePrimaryButton(createButton);
+        styleSecondaryButton(cancelButton);
+
+        bottomPanel.add(cancelButton);
+        bottomPanel.add(createButton);
+
         add(bottomPanel, BorderLayout.SOUTH);
 
-        setPreferredSize(new Dimension(450, 300));
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == createTag) {
-            String supposedName = tagNameTextField.getText().trim();
-            if (supposedName.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Please enter a tag name.");
-                return;
-            }
-            ButtonModel selectedTag = iconGroup.getSelection();
-            if (selectedTag == null) {
-                JOptionPane.showMessageDialog(this, "Please select a tag.");
-                return;
-            }
-            String supposedIcon = selectedTag.getActionCommand();
-            String username = loggedInViewModel.getState().getUsername();
-            CustomTag supposedTag = new CustomTag(supposedName, supposedIcon);
-            createCustomTagController.execute(supposedTag, username);
-            createTag.setEnabled(false);
-        } else if (e.getSource() == cancelTag) {
-            viewManagerModel.setState(ManageTagsView.getViewName());
+        // Button listeners
+        createButton.addActionListener(this::onCreateClicked);
+        cancelButton.addActionListener(e -> {
+            resetForm();
+            createCustomTagViewModel.setUsername(null);
+            viewManagerModel.setState(ManageTagsView.getViewName());  // Switch back to ManageTagsView
             viewManagerModel.firePropertyChanged();
-        }
+        });
+
+        setPreferredSize(new Dimension(560, 400));
     }
 
+    @NotNull
+    private static JToggleButton getJToggleButton(String icon, Font emojiFont) {
+        JToggleButton iconButton = new JToggleButton(icon);
+        iconButton.setActionCommand(icon);
+        iconButton.setFont(emojiFont);
+        iconButton.setFocusPainted(false);
+        iconButton.setPreferredSize(new Dimension(50, 50));
+        iconButton.setBorder(BorderFactory.createEmptyBorder());
+        iconButton.setContentAreaFilled(false);
+        iconButton.setOpaque(false);
 
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        String prop = evt.getPropertyName();
-        if ("Success".equals(prop)) {
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Custom tag created successfully!",
-                    "Success",
-                    JOptionPane.INFORMATION_MESSAGE
-            );
-            // close the window holding this panel
-            Window win = SwingUtilities.getWindowAncestor(this);
-            viewManagerModel.setState(ManageTagsView.getViewName());
-            viewManagerModel.firePropertyChanged();
-
-        } else if ("Failed".equals(prop)) {
-            String errorMsg = createCustomTagViewModel.getState().getErrorMsg();
-            JOptionPane.showMessageDialog(
-                    this,
-                    errorMsg,
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
-        }
+        iconButton.addItemListener(e -> {
+            if (iconButton.isSelected()) {
+                iconButton.setBorder(BorderFactory.createLineBorder(new Color(0x1E90FF), 3));
+                iconButton.setOpaque(true);
+                iconButton.setBackground(new Color(0xD0E7FF));
+            } else {
+                iconButton.setBorder(BorderFactory.createEmptyBorder());
+                iconButton.setOpaque(false);
+                iconButton.setBackground(null);
+            }
+        });
+        return iconButton;
     }
 
+    // Try to pick a font that supports emojis well
+    private Font findEmojiFont() {
+        // Try Segoe UI Emoji (Windows), Apple Color Emoji (macOS), Noto Color Emoji (Linux)
+        String[] emojiFonts = {"Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji"};
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+
+        for (String fontName : emojiFonts) {
+            Font font = new Font(fontName, Font.PLAIN, 28);
+            if (ge.getAvailableFontFamilyNames() != null) {
+                for (String availableFont : ge.getAvailableFontFamilyNames()) {
+                    if (availableFont.equalsIgnoreCase(fontName)) {
+                        return font;
+                    }
+                }
+            }
+        }
+        // fallback default font with bigger size
+        return new Font("Segoe UI", Font.PLAIN, 28);
+    }
+
+    private void onCreateClicked(ActionEvent e) {
+        String tagName = tagNameTextField.getText().trim();
+        if (tagName.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter a tag name.", "Validation Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        ButtonModel selectedIcon = iconGroup.getSelection();
+        if (selectedIcon == null) {
+            JOptionPane.showMessageDialog(this, "Please select a tag icon.", "Validation Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        String icon = selectedIcon.getActionCommand();
+        CustomTag tag = new CustomTag(tagName, icon);
+        createCustomTagController.execute(tag, createCustomTagViewModel.getUsername());
+
+        createButton.setEnabled(false);
+    }
+
+    private void resetForm() {
+        tagNameTextField.setText("");
+        iconGroup.clearSelection();
+        createButton.setEnabled(true);
+    }
+
+    private void stylePrimaryButton(JButton button) {
+        button.setFont(new Font("SansSerif", Font.BOLD, 16));
+        button.setBackground(new Color(0x1E90FF)); // DodgerBlue
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createEmptyBorder(10, 25, 10, 25));
+        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+    }
+
+    private void styleSecondaryButton(JButton button) {
+        button.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        button.setBackground(new Color(230, 230, 230));
+        button.setForeground(Color.BLACK);
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createEmptyBorder(10, 25, 10, 25));
+        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+    }
 
     public static String getViewName() {
         return viewName;
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        switch (evt.getPropertyName()) {
+            case "Success" -> {
+                JOptionPane.showMessageDialog(this,
+                        "Custom tag created successfully!",
+                        "Success",
+                        JOptionPane.INFORMATION_MESSAGE);
+                resetForm();
+                createCustomTagViewModel.setUsername(null);
+
+                viewManagerModel.setState(LoggedInView.getViewName());  // Switch back to main logged in view
+                viewManagerModel.firePropertyChanged();
+            }
+            case "Failed" -> {
+                String errorMsg = createCustomTagViewModel.getState().getErrorMsg();
+                JOptionPane.showMessageDialog(this, errorMsg, "Error", JOptionPane.ERROR_MESSAGE);
+                createButton.setEnabled(true);
+            }
+        }
     }
 }

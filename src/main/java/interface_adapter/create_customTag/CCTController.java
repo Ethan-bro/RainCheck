@@ -16,6 +16,7 @@ public class CCTController {
      *
      */
     public void execute(CustomTag customTag, String username) {
+        System.out.println("Controller received request to create tag. Username: " + username);
         CCTInputData inputData = new CCTInputData(customTag.getTagName(), customTag.getTagEmoji());
         createCustomTagInteractor.execute(inputData, username);
     }

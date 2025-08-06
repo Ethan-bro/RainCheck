@@ -31,15 +31,30 @@ public class ManageTagsViewModel extends ViewModel<ManageTasksState> {
     }
 
     public void refreshTags() {
-        firePropertyChange("refreshTagOptions", null, getTagOptions());
+        /*
+        This was the root cause of the "Manage Tags" side button in LoggedInView hanging:
+        The call to fetch tags from the data access object (tagDao.getCustomTags) is a blocking operation
+        that was executed synchronously on the Swing Event Dispatch Thread (EDT).
+        Since Swing UI updates must happen on the EDT, blocking it causes the UI to freeze,
+        making the application unresponsive.
+        To resolve this, the data fetching must be performed asynchronously off the EDT,
+        and the UI update triggered afterwards on the EDT to maintain thread safety and responsiveness.
+         */
+        new Thread(() -> {
+            List<CustomTag> tags = getTagOptions();
+            javax.swing.SwingUtilities.invokeLater(() -> firePropertyChange("refreshTagOptions", null, tags));
+        }).start();
     }
 
-    public List<Object> getTagOptions() {
+    public List<CustomTag> getTagOptions() {
         Map<String,String> raw = tagDao.getCustomTags(username);
         return raw.entrySet().stream()
                 .map(e -> new CustomTag(e.getKey(), e.getValue()))
                 .collect(Collectors.toList());
     }
+
+    public String getTagEmojiFor(String tagName) {
+        Map<String,String> raw = tagDao.getCustomTags(username);
+        return raw.getOrDefault(tagName, "");
+    }
 }
-
-
