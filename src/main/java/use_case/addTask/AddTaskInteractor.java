@@ -85,7 +85,7 @@ public class AddTaskInteractor implements AddTaskInputBoundary {
             if (!hourly.isEmpty()){
                 Map<String, String> hourlyMap = hourly.get(0);
                 description = hourlyMap.get("description");
-                feels = hourlyMap.get("feels");
+                feels = hourlyMap.get("feelslike");
                 Map<String, Object> daily = weatherApiService.getDailyWeather(LocationService.getUserCity(),
                         date);
                 iconName = daily.get("iconName") != null ? daily.get("iconName").toString() : "";
