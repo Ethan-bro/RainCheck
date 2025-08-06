@@ -125,6 +125,60 @@ public class SupabaseTaskDataAccessObject implements
     }
 
     @Override
+    public Task getTaskByIdAndEmail(String email, TaskID id) {
+        try {
+            // Step 1: Find the user by email to get the username
+            HttpUrl url = Objects.requireNonNull(HttpUrl.parse(baseUrl + "/rest/v1/users"))
+                    .newBuilder()
+                    .addQueryParameter("email", "eq." + email)
+                    .build();
+
+            Request request = new Request.Builder()
+                    .url(url)
+                    .addHeader("apikey", apiKey)
+                    .addHeader("Authorization", "Bearer " + apiKey)
+                    .addHeader("Accept", "application/json")
+                    .build();
+
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    System.err.println("Failed to find user by email: " + email);
+                    return null;
+                }
+
+                String body = Objects.requireNonNull(response.body()).string();
+                JsonArray array = JsonParser.parseString(body).getAsJsonArray();
+                if (array.isEmpty()) {
+                    System.err.println("No user found for email: " + email);
+                    return null;
+                }
+
+                JsonObject user = array.get(0).getAsJsonObject();
+                if (!user.has("username") || user.get("username").isJsonNull()) {
+                    System.err.println("User record missing username for email: " + email);
+                    return null;
+                }
+
+                String username = user.get("username").getAsString();
+
+                // Step 2: Get tasks for username
+                List<Task> tasks = getTasks(username);
+
+                // Step 3: Find task by id
+                for (Task task : tasks) {
+                    if (task.getTaskInfo().getId().equals(id)) {
+                        return task;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    @Override
     public void updateTask(String username, Task updatedTask) {
         List<Task> tasks = getTasks(username);
         for (int i = 0; i < tasks.size(); i++) {

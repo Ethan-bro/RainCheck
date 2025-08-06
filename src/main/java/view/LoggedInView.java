@@ -33,9 +33,11 @@ import interface_adapter.markTaskComplete.MarkTaskCompleteController;
 import interface_adapter.task.TaskBoxDependencies;
 import interface_adapter.task.TaskViewModel;
 import org.jetbrains.annotations.NotNull;
+import tools.EnsureEmailConfigForUser;
 import use_case.deleteTask.DeleteTaskInteractor;
 import use_case.MarkTaskComplete.MarkTaskCompleteInteractor;
 import interface_adapter.markTaskComplete.MarkTaskCompletePresenter;
+import use_case.notification.NotificationDataAccessInterface;
 
 
 public class LoggedInView extends JPanel implements PropertyChangeListener {
@@ -61,12 +63,15 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     private ActionListener manageTagsAL;
 
     private final TaskBoxDependencies taskBoxDependencies;
+    private final NotificationDataAccessInterface notificationDataAccess;
 
     public LoggedInView(LoggedInDependencies loggedInDependencies,
                         SupabaseTaskDataAccessObject taskDao,
                         AddTaskViewModel addTaskViewModel,
                         TaskBoxDependencies taskBoxDependencies,
-                        ManageTagsViewModel manageTagsViewModel) throws IOException {
+                        ManageTagsViewModel manageTagsViewModel,
+                        NotificationDataAccessInterface notificationDataAccess
+                        ) throws IOException {
         this.taskBoxDependencies = taskBoxDependencies;
         this.viewManagerModel = taskBoxDependencies.viewManagerModel();
         this.editTaskViewModel = taskBoxDependencies.editTaskViewModel();
@@ -80,6 +85,8 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         this.taskDao = taskDao;
         this.addTaskViewModel = addTaskViewModel;
         this.manageTagsViewModel = manageTagsViewModel;
+
+        this.notificationDataAccess = notificationDataAccess;
 
         setupActionListeners();
 
@@ -304,9 +311,15 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
 
         if ("state".equals(prop) && evt.getSource() == loggedInViewModel) {
             LoggedInState state = (LoggedInState) evt.getNewValue();
+
+            // username
             this.username = state.getUsername();
             usernameLabel.setText("Signed in as: " + this.username);
+
+            // email
             this.email = state.getEmail();
+            EnsureEmailConfigForUser.ensureEmailConfigForUser(notificationDataAccess, this.username);
+
             setViewModelsUsername(this.username);
             reloadTasksForCurrentWeek();
             return;

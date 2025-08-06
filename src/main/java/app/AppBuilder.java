@@ -228,7 +228,8 @@ public class AppBuilder {
                 addTaskViewModel,
                 manageTagsViewModel,
                 taskDao,
-                taskBoxDependencies
+                taskBoxDependencies,
+                notificationDataAccess
         );
 
         cardPanel.add(loggedInView, LoggedInView.getViewName());
@@ -273,12 +274,11 @@ public class AppBuilder {
 
 
         // Create the notification interactor
-        ScheduleNotificationInteractor notificationInteractor = new ScheduleNotificationInteractor(
+        return new ScheduleNotificationInteractor(
                 notificationDataAccess,
                 taskDao,  // taskDao should implement EditTaskDataAccessInterface
                 notificationOutputBoundary
         );
-        return notificationInteractor;
     }
 
 

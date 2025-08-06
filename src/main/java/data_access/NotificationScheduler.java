@@ -69,8 +69,8 @@ public class NotificationScheduler {
     private void sendNotification(ScheduledNotification notification) {
         try {
             // Get the task details
-            Task task = taskDataAccess.getTaskById(
-                    "default_user", // You'll need to store username in ScheduledNotification
+            Task task = taskDataAccess.getTaskByIdAndEmail(
+                    notification.getUserEmail(),
                     entity.TaskID.from(java.util.UUID.fromString(notification.getTaskId()))
             );
 

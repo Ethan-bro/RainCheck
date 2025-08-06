@@ -23,8 +23,10 @@ public class ScheduleNotificationInteractor {
 
     public void scheduleNotification(ScheduleNotificationInputData inputData) {
         try {
+            String username = inputData.getUsername();
+
             // Get user's email configuration
-            EmailNotificationConfig emailConfig = notificationDataAccess.getEmailConfig(inputData.getUsername());
+            EmailNotificationConfig emailConfig = notificationDataAccess.getEmailConfig(username);
 
             if (emailConfig == null || !emailConfig.isEmailNotificationsEnabled()) {
                 outputBoundary.presentScheduleResult(new ScheduleNotificationOutputData(
@@ -36,7 +38,7 @@ public class ScheduleNotificationInteractor {
             TaskID taskId = TaskID.from(UUID.fromString(inputData.getTaskId()));
 
             // Get the task to schedule notification for
-            Task task = taskDataAccess.getTaskById(inputData.getUsername(), taskId);
+            Task task = taskDataAccess.getTaskById(username, taskId);
             if (task == null) {
                 outputBoundary.presentScheduleResult(new ScheduleNotificationOutputData(
                         null, false, "Task not found"));
