@@ -1,4 +1,5 @@
 # <p align="center"><b>RainCheck</b></p>
+<p align="center"><sub><i>A Desktop Task Planner with Weather Integration</i></sub></p>
 
 > ⚠️ **Note:** All screenshots were taken during development. Some UI elements may differ slightly from the final version, but the core features and layout remain the same.
 
@@ -8,6 +9,9 @@
 - [Authors and Contributors](#authors-and-contributors)
 - [Features](#features)
 - [Installation](#installation)
+- [Troubleshooting](#troubleshooting)
+- [Common Installation Issues & Fixes](#common-installation-issues--fixes)
+- [Common IntelliJ IDEA Issues & Fixes](#common-intellij-idea-issues--fixes)
 - [Usage](#usage)
 - [License](#license)
 - [Feedback](#feedback)
@@ -15,9 +19,9 @@
 
 ## Project Summary
 
-**RainCheck** is a desktop task planner built with Java Swing that helps users organize their week by combining their personal schedule with live hourly weather forecasts.
+**RainCheck** is a desktop task planner built with [Java Swing](https://docs.oracle.com/javase/tutorial/uiswing/) that helps users organize their week by combining their personal schedule with live hourly weather forecasts.
 
-Traditional task planners ignore weather, but RainCheck bridges this gap by integrating forecast data directly into a visual week-view calendar. This helps users make informed decisions about when to schedule outdoor activities, avoid weather disruptions, and better prioritize tasks.
+Most traditional task planners do not incorporate weather data, but RainCheck bridges this gap by integrating forecast data directly into a visual week-view calendar. This helps users make informed decisions about when to schedule outdoor activities, avoid weather disruptions, and better prioritize tasks.
 
 Users can create, edit, and delete tasks — each with customizable priority levels, tag names and emojis, reminders, and embedded weather info. All tasks persist across sessions and are tied to secure personal accounts.
 
@@ -25,12 +29,12 @@ RainCheck is useful for anyone who wants to manage time more effectively while s
 
 ## Authors and Contributors
 
-- **Ethan** – User Authentication & Account Management
-- **Brad** – Task Creation, Reminder Class & Priority Management
-- **Sean** – Custom Tag System (`tagName`, `tagEmoji`)
-- **Clara** – Task Editing, Deletion, Completion UI
-- **Kian** – Reminder Logic, Notification Feature Design
-- **Team** – Weekly Weather View, Weather-Integrated Calendar, Core Architecture, UI Enhancement
+- **Ethan** – *User Authentication & Account Management*
+- **Brad** – *Task Creation, Reminder Class & Priority Management*
+- **Sean** – *Custom Tag System (`tagName`, `tagEmoji`)*
+- **Clara** – *Task Editing, Deletion, Completion UI*
+- **Kian** – *Reminder Logic, Notification Feature Design*
+- **Team** – *Weekly Weather View, Weather-Integrated Calendar, Core Architecture, UI Enhancement*
 
 ## Features
 
@@ -41,9 +45,9 @@ RainCheck helps users plan tasks around real-world weather. Key features include
  - Weather remains visible as tasks are added, edited, or removed.
  - View hourly weather per task by clicking on the task box in the calendar at any point during the program.
 
-<div align="center">
+<p align="center">
   <img src="images/feature_weather_calendar.png" alt="Weather-aware calendar in RainCheck" width="500px">
-</div>
+</p>
 
 ##### 2. Smart Task Management
 Create, edit, and delete tasks with:
@@ -53,36 +57,36 @@ Create, edit, and delete tasks with:
 - **Weather info at task time (e.g., ☀️ 23°C)**
 - **Optional reminders and completion status**
 
-<div align="center">
+<p align="center">
   <a href="https://www.youtube.com/watch?v=cbo1l0AgY7o" target="_blank" rel="noopener noreferrer">
     Watch Task Management Demo on YouTube
   </a>
-</div>
+</p>
 
 ##### 3. Reminder Notifications
-<div align="center">
+<p align="center">
   Set alerts (10, 30, or 60 mins before) that notify users via email.
-</div>
+</p>
 
-<div align="center">
-  <img src="images/feature_reminder_notifications_addTask config.png" alt="Reminder notification addTask config" width="50%%">
-  <img src="images/example_gmail_notification.png" alt="Gmail notification example from RainCheck" width="50%%">
-</div>
+<p align="center">
+  <img src="images/feature_reminder_notifications_addTask config.png" alt="Reminder notification addTask config" width="50%">
+  <img src="images/example_gmail_notification.png" alt="Gmail notification example from RainCheck" width="50%">
+</p>
 
 ##### 4. Custom Tags
 Create/Edit/Delete tasks using dropdown tag names and emojis.
-<div align="center">
+<p align="center">
   <a href="https://www.youtube.com/watch?v=GdjuhhC6-yw" target="_blank" rel="noopener noreferrer">
     Watch Custom Tags Demo on YouTube
   </a>
-</div>
+</p>
 
 ##### 5. Secure User Accounts
 Users sign up and log in to access their saved tasks and personalized forecasts.
 
-<div align="center">
+<p align="center">
   <img src="images/feature_user_login.png" alt="User login and signup in RainCheck" width="500px">
-</div>
+</p>
 
 ## Installation
 
@@ -90,7 +94,7 @@ Follow these steps to clone, build, and run RainCheck.
 
 ### Java Prerequisite
 
-RainCheck requires Java JDK 17 or later to build and run.
+RainCheck requires [Java JDK 17](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html) or higher to build and run.
 
 To simplify setup, we recommend using an IDE that includes a bundled JDK 17 or higher, such as recent versions of IntelliJ IDEA or Eclipse. This way, you won’t need to install Java separately on your system.
 
@@ -104,9 +108,9 @@ Open a terminal and run:
 git clone https://github.com/Ethan-bro/RainCheck.git
 cd RainCheck
 ```
-<div align="center">
+<p align="center">
   <img src="images/clone_project.png" alt="Cloning project terminal" width="550px">
-</div>
+</p>
 
 ### 2. Configure Secrets
 
@@ -125,8 +129,8 @@ RainCheck requires API keys to access external services like Supabase and Visual
 }
 ```
 > Note:
-> email_username must be a valid email address (Avoid school or work emails, as they may block automated emails — use a personal email instead.)
-> email_password must be exactly 16 letters, no numbers, no spaces, no special characters.
+> `email_username` must be a valid email address (Avoid school or work emails, as they may block automated emails — use a personal email instead.)
+> `email_password` must be exactly 16 letters, no numbers, no spaces, no special characters.
 ---
 > **Why is this file public?**  
 > The `secrets.json` file is public in this repo because:
@@ -150,24 +154,24 @@ To do this:
 3. Choose your desired JDK version (Java 17 or later) and install it
 4. Click `Apply` and then `OK` after download completes
 
-<div align="center">
+<p align="center">
   <img src="images/intellij_setup_jdk.png" alt="IntelliJ Project Structure SDK setup dialog" width="400px">
-</div>
+</p>
 
 After the SDK is set up, simply run the `Main.java` class to launch RainCheck.
 > `Main.java` is located at `RainCheck/src/main/java/app/Main.java`.
 
 At the time of writing this readme, the program runs successfully and looks like: 
 
-<div align="center">
+<p align="center">
   <img src="images/run_application.png" alt="RainCheck running in IDE" width="500px">
-</div>
+</p>
 
-✅ If everything works, RainCheck will launch and display the weekly calendar interface. You can now continue to the [Usage](#usage) section to explore how to use the app.
+> ✅ **If everything works:** RainCheck will launch and display the weekly calendar interface.
+>
+> ❌ **If you get errors:** Check the [Troubleshooting](#troubleshooting) and [Common Installation Issues & Fixes](#common-installation-issues--fixes) sections below.
 
-❌ If you get any errors, check the [Troubleshooting](#troubleshooting) and [Common Installation Issues & Fixes](#common-installation-issues--fixes) sections below for solutions to the most common problems.
-
-# Troubleshooting
+## Troubleshooting
 
 ## System Compatibility
 RainCheck is compatible with:
@@ -232,11 +236,9 @@ Fix: Ensure the file exists in `config/secrets.json` with the following structur
   "email_password": "sixteenletterpass"
 }
 ```
-> Note:
-> email_username must be a valid email address (Avoid school or work emails, as they may block automated emails — use a personal email instead.)
-> email_password must be exactly 16 letters, no numbers, no spaces, no special characters.
+For more info, see the [Configure Secrets](#2-configure-secrets) section.
 ---
-If you experience issues with weather data not loading correctly, check the USE_FAKE_DATA variable in
+If you experience issues with weather data not loading correctly, check the `USE_FAKE_DATA` variable in
 `src/main/java/data_access/WeatherApiService.java`. <br />
 
 This variable controls whether RainCheck fetches real weather data from the API or uses fake (mock) data for testing and offline development.
@@ -259,14 +261,16 @@ Refer to the tutorials above for detailed guidance.
 
 ## Usage
 
-> For the demo below (provided as a youtube video link), weather data is simulated to showcase the UI and weather-aware features.  
-However, you can toggle between fake and real data by modifying the `USE_FAKE_DATA` variable in:  
-`src/main/java/data_access/WeatherApiService.java`
+> For the demo below (provided as a YouTube video link), weather data is simulated to showcase the UI and weather-aware features.  
+> You can toggle between fake and real data by modifying the `USE_FAKE_DATA` variable in:  
+> `src/main/java/data_access/WeatherApiService.java`.
 
-Set:
+Modify the `USE_FAKE_DATA` variable as follows:
+
 ```java
 private static final boolean USE_FAKE_DATA = true; // or false
 ```
+
 This allows you to easily switch between mock data (for testing/dev) and live weather API responses.
 
 **DEMO VIDEO** 🎬  
@@ -320,8 +324,8 @@ Want to contribute to RainCheck? We appreciate your interest!
 5. Submit a pull request (PR) with a clear description of what you changed and why.
 
 ### Guidelines for Pull Requests
-- Keep PRs focused and small — avoid mixing unrelated changes
-- Describe your changes clearly in the PR
+- Keep PRs focused and **small** — ideally, changes should address a single feature or fix and be under 200 lines of code to facilitate easier review. Avoid mixing unrelated changes in one PR.
+- Clearly describe your changes in the PR
 - Follow the existing folder structure and naming conventions
 - Check that your code builds and runs before submitting
 - Respect the project's purpose and scope
@@ -334,5 +338,3 @@ Want to contribute to RainCheck? We appreciate your interest!
   - Conflict with the project's vision
   - Violate license terms
   - Introduce unnecessary complexity
-
-TODO: ...
