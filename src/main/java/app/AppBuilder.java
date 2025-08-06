@@ -208,13 +208,6 @@ public class AppBuilder {
                 logoutController
         );
 
-        editTaskController = EditTaskUseCaseFactory.createController(
-                taskDao,
-                editTaskViewModel,
-                viewManagerModel,
-                weatherApiService
-        );
-
         TaskBoxDependencies taskBoxDependencies = new TaskBoxDependencies(
                 markTaskCompleteViewModel,
                 deleteTaskViewModel,

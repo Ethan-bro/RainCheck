@@ -90,6 +90,8 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
                 editTaskView.setExistingTask(taskViewModel.getTask());
             }
 
+            System.out.println("EDIT TASK IS CALLED. Task id " + editTaskView.getExistingTask().getTaskInfo().getId());
+
             closeDialog(e);
             editTaskController.switchToEditTaskView(viewManagerModel);
         });
