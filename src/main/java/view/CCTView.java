@@ -111,7 +111,7 @@ public class CCTView extends JPanel implements ActionListener, PropertyChangeLis
             String username = loggedInViewModel.getState().getUsername();
             CustomTag supposedTag = new CustomTag(supposedName, supposedIcon);
             createCustomTagController.execute(supposedTag, username);
-            createTag.setEnabled(false);
+
         } else if (e.getSource() == cancelTag) {
             viewManagerModel.setState(ManageTagsView.getViewName());
             viewManagerModel.firePropertyChanged();
@@ -129,6 +129,7 @@ public class CCTView extends JPanel implements ActionListener, PropertyChangeLis
                     "Success",
                     JOptionPane.INFORMATION_MESSAGE
             );
+            resetForm();
             // close the window holding this panel
             Window win = SwingUtilities.getWindowAncestor(this);
             viewManagerModel.setState(ManageTagsView.getViewName());
@@ -142,9 +143,14 @@ public class CCTView extends JPanel implements ActionListener, PropertyChangeLis
                     "Error",
                     JOptionPane.ERROR_MESSAGE
             );
+            resetForm();
         }
     }
-
+    private void resetForm() {
+        createTag.setEnabled(true);
+        tagNameTextField.setText("");
+        iconGroup.clearSelection();
+    }
 
     public static String getViewName() {
         return viewName;
