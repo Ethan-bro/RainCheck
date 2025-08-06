@@ -108,7 +108,7 @@ public class EmailNotificationService implements EmailNotificationServiceInterfa
                     <h3>%s</h3>
                     <p><strong>Scheduled Time:</strong> %s</p>
                     <p><strong>Priority:</strong> <span style="color: %s;">%s</span></p>
-                    <p><strong>Temperature:</strong> %s°C</p>
+                    <p><strong>Temperature:</strong> %s</p>
                     <p><strong>Weather:</strong> %s %s</p>
                     %s
                 </div>
