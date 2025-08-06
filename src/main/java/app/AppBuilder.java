@@ -7,6 +7,11 @@ import data_access.SupabaseTaskDataAccessObject;
 import data_access.SupabaseTagDataAccessObject;
 import data_access.SupabaseUserDataAccessObject;
 
+import data_access.*;
+import interface_adapter.*;
+
+import interface_adapter.ManageTags.ManageTagsViewModel;
+
 import data_access.WeatherApiService;
 import data_access.NotificationScheduler;
 import data_access.EmailNotificationService;
@@ -37,11 +42,12 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import java.util.Properties;
 
-
-
 import view.*;
 
 import javax.swing.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.awt.*;
 import java.awt.CardLayout;
 import java.io.FileReader;
 import java.io.IOException;
@@ -51,6 +57,10 @@ public class AppBuilder {
     private final CardLayout cardLayout = new CardLayout();
     private final ViewManagerModel viewManagerModel = new ViewManagerModel();
     private final ViewManager viewManager = new ViewManager(cardPanel, cardLayout, viewManagerModel);
+    private final Map<String, JPanel> viewMap = new HashMap<>();
+
+    // Weather:
+    private final WeatherApiService weatherApiService = new WeatherApiService();
 
     // databases:
     private SupabaseUserDataAccessObject userDao;
@@ -61,6 +71,8 @@ public class AppBuilder {
     private LoginViewModel loginViewModel;
     private LoggedInViewModel loggedInViewModel;
     private SignupViewModel signupViewModel;
+    private CCTViewModel cctViewModel;
+    private ManageTagsViewModel manageTagsViewModel;
     private AddTaskViewModel addTaskViewModel;
     private ListTasksUseCaseFactory listTasksFactory;
     private EmailNotificationServiceInterface emailService;  // Add this field
@@ -71,20 +83,19 @@ public class AppBuilder {
     private SignupView signupView;
     private LoggedInView loggedInView;
     private AddTaskView addTaskView;
-    private WeatherApiService weatherApiService;
 
-    private ManageTagsViewModel manageTagsViewModel;
+
     private EditTaskViewModel editTaskViewModel;
     private MarkTaskCompleteViewModel markTaskCompleteViewModel;
     private DeleteTaskViewModel deleteTaskViewModel;
     private EditTaskController editTaskController;
 
 
-    public AppBuilder() {
+    public AppBuilder() throws IOException{
         cardPanel.setLayout(cardLayout);
     }
 
-    public AppBuilder addDatabase() throws IOException {
+    public AppBuilder addDatabase() throws Exception {
         JsonObject config = JsonParser.parseReader(new FileReader("config/secrets.json")).getAsJsonObject();
         String dbUrl = config.get("database_url").getAsString();
         String dbAnonKey = config.get("database_anon_key").getAsString();
@@ -92,7 +103,7 @@ public class AppBuilder {
         userDao = new SupabaseUserDataAccessObject(dbUrl, dbAnonKey);
         tagDao = new SupabaseTagDataAccessObject(dbUrl, dbAnonKey);
         taskDao = new SupabaseTaskDataAccessObject(dbUrl, dbAnonKey);
-        weatherApiService = new WeatherApiService();
+
 
         // Store notification files in a data directory
         notificationDataAccess = new FileNotificationDataAccess("data/email_configs.json", "data/scheduled_notifications.json");
@@ -167,8 +178,9 @@ public class AppBuilder {
         loginViewModel = new LoginViewModel();
         loggedInViewModel = new LoggedInViewModel();
         signupViewModel = new SignupViewModel();
-        addTaskViewModel = new AddTaskViewModel(tagDao, userDao.getCurrentUsername());
+        cctViewModel = new CCTViewModel();
         manageTagsViewModel = new ManageTagsViewModel(tagDao, userDao.getCurrentUsername());
+        addTaskViewModel = new AddTaskViewModel(tagDao, userDao.getCurrentUsername());
         editTaskViewModel = new EditTaskViewModel(tagDao, userDao.getCurrentUsername());
         markTaskCompleteViewModel = new MarkTaskCompleteViewModel();
         deleteTaskViewModel = new DeleteTaskViewModel();
@@ -177,19 +189,21 @@ public class AppBuilder {
     }
 
     public AppBuilder addSignupView() {
-        signupView = SignupUseCaseFactory.create(viewManagerModel, loginViewModel, signupViewModel, userDao);
+        SignupView signupView = SignupUseCaseFactory.create(viewManagerModel, loginViewModel, signupViewModel, userDao);
         cardPanel.add(signupView, SignupView.getViewName());
+        viewMap.put(SignupView.getViewName(), signupView);
         return this;
     }
 
     public AppBuilder addLoginView() {
-        loginView = LoginUseCaseFactory.create(viewManagerModel, loginViewModel, loggedInViewModel, signupViewModel, userDao);
+        LoginView loginView = LoginUseCaseFactory.create(viewManagerModel, loginViewModel, loggedInViewModel, signupViewModel, userDao);
         cardPanel.add(loginView, loginView.getViewName());
+        viewMap.put(loginView.getViewName(), loginView);
         return this;
     }
 
     public AppBuilder addListTasksUseCase() {
-        listTasksFactory = new ListTasksUseCaseFactory(taskDao, loggedInViewModel);
+        ListTasksUseCaseFactory listTasksFactory = new ListTasksUseCaseFactory(taskDao, loggedInViewModel);
         listTasksFactory.create();
         return this;
     }
@@ -277,16 +291,21 @@ public class AppBuilder {
 
 
     public AppBuilder addCCTView() {
-        CCTViewModel cctViewModel = new CCTViewModel();
-        CCTView cctView = CCTUseCaseFactory.create(viewManagerModel, cctViewModel, tagDao);
+        if (this.cctViewModel == null) return this; // do nothing
+
+        CCTView cctView = CCTUseCaseFactory.create(
+                this.viewManagerModel,
+                this.cctViewModel,
+                this.tagDao
+        );
         cardPanel.add(cctView, CCTView.getViewName());
+        viewMap.put(CCTView.getViewName(), cctView);
         return this;
     }
 
     public AppBuilder addManageTagsView() {
-        if (this.loggedInViewModel == null) return this;
+        if (this.manageTagsViewModel == null) return this;
 
-        ManageTagsViewModel manageTagsViewModel = new ManageTagsViewModel(tagDao, userDao.getCurrentUsername());
         ManageTagsView manageTagsView = ManageTagsUseCaseFactory.create(
                 loggedInViewModel,
                 viewManagerModel,
@@ -294,12 +313,21 @@ public class AppBuilder {
                 tagDao
         );
 
+        // 3) Register it in the CardLayout
         cardPanel.add(manageTagsView, ManageTagsView.getViewName());
+        viewMap.put(CCTView.getViewName(), manageTagsView);
+
         return this;
     }
 
+
     public AppBuilder addEditTaskView() {
-        // Add EditTaskView implementation here if needed
+        editTaskController = EditTaskUseCaseFactory.createController(taskDao, editTaskViewModel, viewManagerModel, weatherApiService);
+        EditTaskView editTaskView = EditTaskUseCaseFactory.createView(
+                editTaskController, editTaskViewModel, viewManagerModel, LoggedInView.getViewName()
+        );
+        cardPanel.add(editTaskView, EditTaskView.getViewName());
+        viewMap.put(EditTaskView.getViewName(), editTaskView);
         return this;
     }
 
