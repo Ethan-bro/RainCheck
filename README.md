@@ -272,3 +272,10 @@ This allows you to easily switch between mock data (for testing/dev) and live we
 **DEMO VIDEO** 🎬  
 [🔴 **WATCH THE FULL DEMO HERE** 🔴](https://www.youtube.com/watch?v=zJ1nZ8WgueA)
 
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
+You are free to use, modify, and distribute this software for personal or commercial use, provided that you include the original copyright and license.
+
+For more details, see the [LICENSE](LICENSE) file in this repository.
