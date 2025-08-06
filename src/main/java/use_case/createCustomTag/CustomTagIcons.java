@@ -14,6 +14,7 @@ public class CustomTagIcons {
     public static final String MUSIC = "🎶";
     public static final String FOOD = "🍽️";
     public static final String NATURE = "🏔️";
+    public static final String STAR = "⭐️";
 
     public static final List<String> IconList = List.of(
             BOOKS,
@@ -24,6 +25,7 @@ public class CustomTagIcons {
             MUSCLE,
             MUSIC,
             FOOD,
-            NATURE
+            NATURE,
+            STAR
     );
 }

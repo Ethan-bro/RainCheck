@@ -72,6 +72,13 @@ public class EditTaskView extends AbstractTaskFormView implements ActionListener
         if (info.getReminder() != null) reminderCombo.setSelectedItem(info.getReminder());
     }
 
+    /**
+     * For debugging print purposes
+     */
+    public Task getExistingTask() {
+        return existingTask;
+    }
+
     private LocalDateTime toLocalDateTime(Date date) {
         return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
     }
@@ -97,7 +104,8 @@ public class EditTaskView extends AbstractTaskFormView implements ActionListener
                 oldInfo.getIsDeleted(),
                 oldInfo.getWeatherDescription(),
                 oldInfo.getWeatherIconName(),
-                oldInfo.getTemperature()
+                oldInfo.getTemperature(),
+                oldInfo.getUvIndex()
         );
         updatedInfo.setTaskStatus(oldInfo.getTaskStatus());
         return new Task(updatedInfo);

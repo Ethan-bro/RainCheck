@@ -16,10 +16,10 @@ import java.util.Map;
 import data_access.SupabaseTagDataAccessObject;
 import data_access.SupabaseTaskDataAccessObject;
 import entity.Task;
+import interface_adapter.ManageTags.ManageTagsViewModel;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.addTask.AddTaskViewModel;
 import interface_adapter.calendar.TaskClickListener;
-import interface_adapter.create_customTag.CCTViewModel;
 import interface_adapter.deleteTask.DeleteTaskController;
 import interface_adapter.deleteTask.DeleteTaskPresenter;
 import interface_adapter.editTask.EditTaskViewModel;
@@ -33,9 +33,11 @@ import interface_adapter.markTaskComplete.MarkTaskCompleteController;
 import interface_adapter.task.TaskBoxDependencies;
 import interface_adapter.task.TaskViewModel;
 import org.jetbrains.annotations.NotNull;
-import use_case.DeleteTask.DeleteTaskInteractor;
+import tools.EnsureEmailConfigForUser;
+import use_case.deleteTask.DeleteTaskInteractor;
 import use_case.MarkTaskComplete.MarkTaskCompleteInteractor;
 import interface_adapter.markTaskComplete.MarkTaskCompletePresenter;
+import use_case.notification.NotificationDataAccessInterface;
 
 
 public class LoggedInView extends JPanel implements PropertyChangeListener {
@@ -43,7 +45,7 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     private static final String viewName = "logged in";
     private final LoggedInViewModel loggedInViewModel;
     private final AddTaskViewModel addTaskViewModel;
-    private final CCTViewModel cctViewModel;
+    private final ManageTagsViewModel manageTagsViewModel;
     private final EditTaskViewModel editTaskViewModel;
     private final ViewManagerModel viewManagerModel;
     private String username;
@@ -54,7 +56,6 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     private final CalendarData calendarData;
     private Map<LocalDate, Map<String, Object>> weatherMap = null;
     private Map<LocalDate, List<Map<String, String>>> hourlyWeatherMap = null;
-    private final SupabaseTagDataAccessObject tagDao;
     private final SupabaseTaskDataAccessObject taskDao;
 
     private ActionListener logoutAL;
@@ -62,13 +63,15 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     private ActionListener manageTagsAL;
 
     private final TaskBoxDependencies taskBoxDependencies;
+    private final NotificationDataAccessInterface notificationDataAccess;
 
     public LoggedInView(LoggedInDependencies loggedInDependencies,
-                        SupabaseTagDataAccessObject tagDao,
                         SupabaseTaskDataAccessObject taskDao,
                         AddTaskViewModel addTaskViewModel,
                         TaskBoxDependencies taskBoxDependencies,
-                        CCTViewModel cctViewModel) throws IOException {
+                        ManageTagsViewModel manageTagsViewModel,
+                        NotificationDataAccessInterface notificationDataAccess
+                        ) throws IOException {
         this.taskBoxDependencies = taskBoxDependencies;
         this.viewManagerModel = taskBoxDependencies.viewManagerModel();
         this.editTaskViewModel = taskBoxDependencies.editTaskViewModel();
@@ -79,10 +82,11 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         this.loggedInViewModel = loggedInDependencies.loggedInViewModel();
         this.loggedInViewModel.addPropertyChangeListener(this);
         this.logoutController = loggedInDependencies.logoutController();
-        this.tagDao = tagDao;
         this.taskDao = taskDao;
         this.addTaskViewModel = addTaskViewModel;
-        this.cctViewModel = cctViewModel;
+        this.manageTagsViewModel = manageTagsViewModel;
+
+        this.notificationDataAccess = notificationDataAccess;
 
         setupActionListeners();
 
@@ -158,14 +162,12 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         };
 
         addTaskAL = e -> {
-            addTaskViewModel.setUsername(this.username);
             viewManagerModel.setState(AddTaskView.getViewName());
             viewManagerModel.firePropertyChanged();
         };
 
         manageTagsAL = e -> {
-            cctViewModel.setUsername(this.username);
-            viewManagerModel.setState(CCTView.getViewName());
+            viewManagerModel.setState(ManageTagsView.getViewName());
             viewManagerModel.firePropertyChanged();
         };
 
@@ -201,31 +203,79 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     }
 
     private void rebuildCalendarWithTasks(List<Task> tasks) {
+        // clear out the old view
         centerPanel.removeAll();
 
+        // Task‐click handler: pops up TaskBox
         TaskClickListener taskClickListener = task -> {
-            TaskViewModel taskViewModel = new TaskViewModel(task);
-
-            TaskBox taskBox = getTaskBox(taskViewModel);
-            JOptionPane.showMessageDialog(this, taskBox, "Task Details",
-                    JOptionPane.PLAIN_MESSAGE);
+            TaskViewModel vm  = new TaskViewModel(task);
+            TaskBox     box   = getTaskBox(vm);
+            JOptionPane.showMessageDialog(
+                    this,
+                    box,
+                    "Task Details",
+                    JOptionPane.PLAIN_MESSAGE
+            );
         };
 
-        CalendarGrid grid = new CalendarGrid(
-                calendarData,
-                weatherMap,
+        // Build the header row with a menu button in the corner
+        JPanel headerRow = new JPanel(new BorderLayout());
+        headerRow.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+        // Corner menu button
+        JButton menuBtn = new JButton("☰");
+        menuBtn.setMargin(new Insets(0, 0, 0, 0));
+        menuBtn.setPreferredSize(new Dimension(60, 0));  // matches hour‐column width
+        menuBtn.addActionListener(e -> showSideMenu(menuBtn));
+        headerRow.add(menuBtn, BorderLayout.WEST);
+
+        // Day headers
+        JPanel daysPanel = new JPanel(new GridLayout(1, 7));
+        for (LocalDate date : calendarData.getWeekDates()) {
+            daysPanel.add(HeaderCellFactory.makeHeader(date, weatherMap.get(date)));
+        }
+        headerRow.add(daysPanel, BorderLayout.CENTER);
+
+        // Hour labels on the left (aligns with the grid’s hours)
+        HourLabelPane hourLabelPane = new HourLabelPane(60);
+
+        // The task grid pane in the center
+        TaskGridPane bodyPane = new TaskGridPane(
+                calendarData,    // so it knows the dates & grid geometry
                 tasks,
-                taskClickListener,
-                addTaskAL,
-                manageTagsAL,
-                logoutAL
-                );
+                taskClickListener
+        );
 
-        ScrollableCalendar scrollableCalendar = new ScrollableCalendar(grid);
+        // Assemble into one scrollable container
+        JPanel calendarContainer = new JPanel(new BorderLayout());
+        calendarContainer.add(headerRow,      BorderLayout.NORTH);
+        calendarContainer.add(hourLabelPane,  BorderLayout.WEST);
+        calendarContainer.add(bodyPane,       BorderLayout.CENTER);
 
-        centerPanel.add(scrollableCalendar, BorderLayout.CENTER);
+        JScrollPane scroll = new JScrollPane(calendarContainer);
+        scroll.setBorder(null);
+        centerPanel.add(scroll, BorderLayout.CENTER);
+
+        // Refresh
         centerPanel.revalidate();
         centerPanel.repaint();
+    }
+
+    private void showSideMenu(Component invoker) {
+        JPopupMenu sideMenu = new JPopupMenu();
+        JMenuItem addTaskItem    = new JMenuItem("Add Task");
+        JMenuItem manageTagsItem = new JMenuItem("Manage Tags");
+        JMenuItem logoutItem     = new JMenuItem("Log Out");
+
+        addTaskItem.addActionListener(addTaskAL);
+        manageTagsItem.addActionListener(manageTagsAL);
+        logoutItem.addActionListener(logoutAL);
+
+        sideMenu.add(addTaskItem);
+        sideMenu.add(manageTagsItem);
+        sideMenu.add(logoutItem);
+
+        sideMenu.show(invoker, 0, invoker.getHeight());
     }
 
     @NotNull
@@ -261,12 +311,16 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
 
         if ("state".equals(prop) && evt.getSource() == loggedInViewModel) {
             LoggedInState state = (LoggedInState) evt.getNewValue();
+
+            // username
             this.username = state.getUsername();
             usernameLabel.setText("Signed in as: " + this.username);
+
+            // email
             this.email = state.getEmail();
-            // TODO: do smth with email (Kian)
-            taskBoxDependencies.editTaskController().setUsername(this.username);
-            editTaskViewModel.setUsername(this.username);
+            EnsureEmailConfigForUser.ensureEmailConfigForUser(notificationDataAccess, this.username);
+
+            setViewModelsUsername(this.username);
             reloadTasksForCurrentWeek();
             return;
         }
@@ -285,6 +339,13 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
 
             reloadTasksForCurrentWeek();
         }
+    }
+
+    private void setViewModelsUsername(String name) {
+        taskBoxDependencies.editTaskController().setUsername(name);
+        addTaskViewModel.setUsername(name);
+        editTaskViewModel.setUsername(name);
+        manageTagsViewModel.setUsername(name);
     }
 
     private void reloadTasksForCurrentWeek() {

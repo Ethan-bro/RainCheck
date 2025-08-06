@@ -77,7 +77,7 @@ public class SupabaseUserDataAccessObject implements
     }
 
     @Override
-    public void save(User user) {
+    public void save(User user) throws DuplicateEmailException {
         JsonObject newUser = new JsonObject();
         newUser.addProperty("username", user.getName());
         newUser.addProperty("password", user.getPassword());
@@ -100,6 +100,11 @@ public class SupabaseUserDataAccessObject implements
         try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful()) {
                 String errorDetails = response.body() != null ? response.body().string() : "No response body";
+
+                if (response.code() == 409 && errorDetails.contains("duplicate key") && errorDetails.contains("email")) {
+                    throw new DuplicateEmailException("Email already exists.");
+                }
+
                 throw new RuntimeException("Save failed: " + response.code() + " - " + response.message() + " - " + errorDetails);
             }
         } catch (IOException e) {

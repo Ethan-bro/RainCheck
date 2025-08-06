@@ -2,10 +2,12 @@ package app;
 
 import data_access.SupabaseTagDataAccessObject;
 import data_access.SupabaseTaskDataAccessObject;
+import interface_adapter.ManageTags.ManageTagsViewModel;
 import interface_adapter.addTask.AddTaskViewModel;
 import interface_adapter.create_customTag.CCTViewModel;
 import interface_adapter.logged_in.LoggedInDependencies;
 import interface_adapter.task.TaskBoxDependencies;
+import use_case.notification.NotificationDataAccessInterface;
 import view.LoggedInView;
 
 import java.io.IOException;
@@ -17,18 +19,18 @@ public class LoggedInUseCaseFactory {
     public static LoggedInView createLoggedInView(
             LoggedInDependencies loggedInDependencies,
             AddTaskViewModel addTaskViewModel,
-            CCTViewModel cctViewModel,
-            SupabaseTagDataAccessObject tagDao,
+            ManageTagsViewModel manageTagsViewModel,
             SupabaseTaskDataAccessObject taskDao,
-            TaskBoxDependencies taskBoxDependencies
+            TaskBoxDependencies taskBoxDependencies,
+            NotificationDataAccessInterface notificationDataAccess
     ) throws IOException {
         return new LoggedInView(
                 loggedInDependencies,
-                tagDao,
                 taskDao,
                 addTaskViewModel,
                 taskBoxDependencies,
-                cctViewModel
+                manageTagsViewModel,
+                notificationDataAccess
         );
     }
 }

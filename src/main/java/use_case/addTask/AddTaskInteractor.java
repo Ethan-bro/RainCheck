@@ -3,14 +3,13 @@ package use_case.addTask;
 import data_access.LocationService;
 import data_access.SupabaseTaskDataAccessObject;
 import data_access.WeatherApiService;
+import entity.Reminder;
 import entity.Task;
 import entity.TaskID;
 import entity.TaskInfo;
-import entity.WeatherInfo;
 import interface_adapter.addTask.Constants;
 import interface_adapter.addTask.TaskIDGenerator;
 import use_case.listTasks.TaskDataAccessInterface;
-import use_case.weather.WeatherInfoGetter;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -19,19 +18,28 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+import use_case.notification.NotificationDataAccessInterface;
+import use_case.notification.ScheduleNotificationInputData;
+import use_case.notification.ScheduleNotificationInteractor;
+
+
 public class AddTaskInteractor implements AddTaskInputBoundary {
 
     private final TaskDataAccessInterface dao;
     private final AddTaskOutputBoundary addTaskPresenter;
     private final TaskIDGenerator taskIDGenerator;
     private final WeatherApiService weatherApiService;
+    private final ScheduleNotificationInteractor notificationInteractor;
+
 
     public AddTaskInteractor(TaskDataAccessInterface dao, TaskIDGenerator taskIDGenerator,
-                             AddTaskOutputBoundary addTaskPresenter, WeatherApiService weatherApiService) {
+                             AddTaskOutputBoundary addTaskPresenter, WeatherApiService weatherApiService,
+                              ScheduleNotificationInteractor notificationInteractor) {
         this.dao = dao;
         this.taskIDGenerator = taskIDGenerator;
         this.addTaskPresenter = addTaskPresenter;
         this.weatherApiService = weatherApiService;
+        this.notificationInteractor = notificationInteractor;
     }
 
     @Override
@@ -60,25 +68,52 @@ public class AddTaskInteractor implements AddTaskInputBoundary {
             return;
         }
 
-        if (inputData.getTag() == null) {
-            AddTaskOutputData failedOutput = new AddTaskOutputData(AddTaskError.NO_TAG_SELECTED);
-            addTaskPresenter.prepareFailView(failedOutput);
-            return;
-        }
 
         TaskID newID = taskIDGenerator.generateTaskID();
 
-        WeatherInfo weatherInfo = WeatherInfoGetter.getWeatherInfo(weatherApiService, inputData.getStartDateTime());
+        String description = "";
+        String feels = "";
+        String iconName = "";
+        try {
+            LocalDateTime startDateTime = inputData.getStartDateTime();
+            LocalDate date = startDateTime.toLocalDate();
+            int hour = startDateTime.getHour();
+
+            List<Map<String,String>> hourly = weatherApiService.getHourlyWeather(LocationService.getUserCity(),
+                    date, hour, hour);
+
+            if (!hourly.isEmpty()){
+                Map<String, String> hourlyMap = hourly.get(0);
+                description = hourlyMap.get("description");
+                feels = hourlyMap.get("feelslike");
+                Map<String, Object> daily = weatherApiService.getDailyWeather(LocationService.getUserCity(),
+                        date);
+                iconName = daily.get("iconName") != null ? daily.get("iconName").toString() : "";
+            }
+        } catch (IOException e) {
+            System.err.println("Weather Lookup Failed: " + e.getMessage());
+        }
+        String temp = feels;
+
 
         TaskInfo newTaskInfo = new TaskInfo(newID, inputData.getTaskName(), inputData.getStartDateTime(),
-                inputData.getEndDateTime(), inputData.getPriority(), inputData.getTag(),
-                inputData.getReminder(), inputData.getIsDeleted(),
-                weatherInfo.description(), weatherInfo.iconName(), weatherInfo.temperature()
-                );
+        inputData.getEndDateTime(), inputData.getPriority(), inputData.getTag(),
+        inputData.getReminder(), "No", description, iconName, temp, ""
+        );
 
         Task newTask = new Task(newTaskInfo);
 
         dao.addTask(username, newTask);
+
+        if (!inputData.getReminder().equals(Reminder.NONE)) {
+            ScheduleNotificationInputData notificationInput = new ScheduleNotificationInputData(
+                    newTask.getTaskInfo().getId().toString(), // Use the newly created task
+                    username,
+                    inputData.getReminder()
+            );
+            notificationInteractor.scheduleNotification(notificationInput);
+        }
+
 
         AddTaskOutputData outputData = new AddTaskOutputData(newTask);
         addTaskPresenter.prepareSuccessView(outputData);

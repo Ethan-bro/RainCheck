@@ -1,8 +1,8 @@
 package interface_adapter.deleteTask;
 
 import interface_adapter.task.TaskViewModel;
-import use_case.DeleteTask.DeleteTaskOutputBoundary;
-import use_case.DeleteTask.DeleteTaskOutputData;
+import use_case.deleteTask.DeleteTaskOutputBoundary;
+import use_case.deleteTask.DeleteTaskOutputData;
 
 public class DeleteTaskPresenter implements DeleteTaskOutputBoundary {
 

@@ -22,7 +22,9 @@ public class EditTaskController {
     }
 
     public void editTask(Task updatedTask) {
+        System.out.println("[EditTaskController] Username is: " + username);
         EditTaskInputData inputData = new EditTaskInputData(username, updatedTask);
+        System.out.println("Loaded existing task with ID: " + updatedTask.getTaskInfo().getId());
         editTaskInputInteractor.execute(username, inputData);
     }
 

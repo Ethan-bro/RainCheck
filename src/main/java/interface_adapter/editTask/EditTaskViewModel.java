@@ -2,6 +2,7 @@ package interface_adapter.editTask;
 
 import entity.CustomTag;
 import interface_adapter.ViewModel;
+import interface_adapter.events.TagChangeEventNotifier;
 import use_case.createCustomTag.CustomTagDataAccessInterface;
 
 import java.util.List;
@@ -16,8 +17,14 @@ public class EditTaskViewModel extends ViewModel<EditTaskState> {
     public EditTaskViewModel(CustomTagDataAccessInterface tagDao, String username) {
         super("Edit Task");
         this.tagDao = tagDao;
-        setUsername(username);
+        this.username = username;
         setState(new EditTaskState());
+
+        // Subscribe to tag change events
+        TagChangeEventNotifier.subscribe(() -> {
+            List<CustomTag> updatedTags = getTagOptions();
+            firePropertyChange("refreshTagOptions", null, updatedTags);
+        });
     }
 
     @Override
@@ -28,15 +35,14 @@ public class EditTaskViewModel extends ViewModel<EditTaskState> {
 
     public void setUsername(String username) {
         this.username = username;
-        refreshTags();
+
+        // Optionally trigger refresh immediately when username is set
+        List<CustomTag> updatedTags = getTagOptions();
+        firePropertyChange("refreshTagOptions", null, updatedTags);
     }
 
-    public void refreshTags() {
-        firePropertyChange("refreshTagOptions", null, getTagOptions());
-    }
-
-    public List<Object> getTagOptions() {
-        Map<String,String> raw = tagDao.getCustomTags(username);
+    public List<CustomTag> getTagOptions() {
+        Map<String, String> raw = tagDao.getCustomTags(username);
         return raw.entrySet().stream()
                 .map(e -> new CustomTag(e.getKey(), e.getValue()))
                 .collect(Collectors.toList());

@@ -1,5 +1,6 @@
 package use_case.signup;
 
+import data_access.DuplicateEmailException;
 import entity.User;
 import entity.UserFactory;
 
@@ -74,10 +75,15 @@ public class SignupInteractor implements SignupInputBoundary {
             userPresenter.prepareFailView(errorMessages.toString());
         } else {
             User user = userFactory.create(username, password, email);
-            userDataAccessObject.save(user);
-
-            SignupOutputData signupOutputData = new SignupOutputData(user.getName(), false);
-            userPresenter.prepareSuccessView(signupOutputData);
+            try {
+                userDataAccessObject.save(user);
+                SignupOutputData signupOutputData = new SignupOutputData(user.getName(), false);
+                userPresenter.prepareSuccessView(signupOutputData);
+            } catch (DuplicateEmailException e) {
+                userPresenter.prepareFailView("That email is already registered.");
+            } catch (Exception e) {
+                userPresenter.prepareFailView("Unexpected error: " + e.getMessage());
+            }
         }
     }
 

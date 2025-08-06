@@ -12,6 +12,7 @@ import use_case.addTask.AddTaskInteractor;
 import data_access.SupabaseTaskDataAccessObject;
 import use_case.createCustomTag.CustomTagDataAccessInterface;
 import use_case.listTasks.TaskDataAccessInterface;
+import use_case.notification.ScheduleNotificationInteractor;
 import view.AddTaskView;
 
 public final class AddTaskUseCaseFactory {
@@ -23,12 +24,14 @@ public final class AddTaskUseCaseFactory {
             LoggedInViewModel loggedInViewModel,
             TaskDataAccessInterface taskDao,
             WeatherApiService weatherApiService,
+            ScheduleNotificationInteractor notificationInteractor,
             String mainViewKey) {
 
         AddTaskPresenter addTaskPresenter = new AddTaskPresenter(addTaskViewModel, viewManagerModel, mainViewKey);
 
         AddTaskInputBoundary addTaskInteractor = new AddTaskInteractor(taskDao, new UUIDGenerator(), addTaskPresenter,
-                weatherApiService);
+                weatherApiService, notificationInteractor
+        );
 
         AddTaskController addTaskController = new AddTaskController(addTaskInteractor,
                 viewManagerModel, addTaskViewModel);

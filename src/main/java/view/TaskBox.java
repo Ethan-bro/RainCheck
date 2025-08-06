@@ -20,6 +20,7 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
     private final JLabel titleLabel;
     private final JLabel weatherDescriptionLabel;
     private final JLabel weatherEmojiLabel;
+    private final JLabel uvIndexLabel;
     private final TaskViewModel taskViewModel;
 
     public TaskBox(TaskViewModel taskViewModel,
@@ -48,6 +49,9 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         weatherDescriptionLabel.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         weatherPanel.add(weatherEmojiLabel);
         weatherPanel.add(weatherDescriptionLabel);
+        uvIndexLabel = new JLabel();
+        uvIndexLabel.setFont(new Font("Segoe UI", Font.PLAIN, 13));
+        weatherPanel.add(uvIndexLabel);
         add(weatherPanel, BorderLayout.NORTH);
 
         JPanel centerPanel = new JPanel();
@@ -85,6 +89,8 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
             if (editTaskView != null) {
                 editTaskView.setExistingTask(taskViewModel.getTask());
             }
+
+            System.out.println("EDIT TASK IS CALLED. Task id " + editTaskView.getExistingTask().getTaskInfo().getId());
 
             closeDialog(e);
             editTaskController.switchToEditTaskView(viewManagerModel);
@@ -201,6 +207,27 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         } else {
             weatherEmojiLabel.setIcon(null);
             weatherEmojiLabel.setText("");
+        }
+
+        String uv = taskInfo.getUvIndex();
+        if (uv != null && !uv.isEmpty()) {
+            uvIndexLabel.setText("UV: " + uv);
+            uvIndexLabel.setFont(new Font("Segoe UI", Font.BOLD, 13)); // Set UV index label font to bold
+
+            try {
+                int uvVal = Integer.parseInt(uv);
+                if (uvVal <= 2) {
+                    uvIndexLabel.setForeground(new Color(56, 142, 60)); // green
+                } else if (uvVal <= 5) {
+                    uvIndexLabel.setForeground(new Color(255, 193, 7)); // amber
+                } else {
+                    uvIndexLabel.setForeground(new Color(211, 47, 47)); // red
+                }
+            } catch (NumberFormatException ignored) {
+                uvIndexLabel.setForeground(Color.DARK_GRAY);
+            }
+        } else {
+            uvIndexLabel.setText("");
         }
 
         updateDisplayColour();

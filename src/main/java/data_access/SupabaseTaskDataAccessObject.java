@@ -3,7 +3,7 @@ package data_access;
 import com.google.gson.*;
 import entity.*;
 import okhttp3.*;
-import use_case.DeleteTask.DeleteTaskDataAccessInterface;
+import use_case.deleteTask.DeleteTaskDataAccessInterface;
 import use_case.editTask.EditTaskDataAccessInterface;
 import use_case.listTasks.TaskDataAccessInterface;
 import use_case.MarkTaskComplete.MarkTaskCompleteDataAccessInterface;
@@ -77,6 +77,12 @@ public class SupabaseTaskDataAccessObject implements
                 for (JsonElement el : taskArray) {
                     result.add(jsonToTask(el.getAsJsonObject()));
                 }
+
+                System.out.println("Tasks loaded for user " + username + ":");
+                for (Task t : result) {
+                    System.out.println(" -> " + t.getTaskInfo().getId());
+                }
+
                 return result;
             }
         } catch (Exception e) {
@@ -116,16 +122,78 @@ public class SupabaseTaskDataAccessObject implements
 
     @Override
     public Task getTaskById(String username, TaskID taskId) {
-        for (Task task : getTasks(username)) {
+        System.out.println("[DAO] Searching for task ID: " + taskId + " for user: " + username);
+        List<Task> tasks = getTasks(username);
+        System.out.println("[DAO] Retrieved " + tasks.size() + " tasks for user: " + username);
+
+        for (Task task : tasks) {
+            System.out.println("[DAO] Checking task ID: " + task.getTaskInfo().getId());
             if (task.getTaskInfo().getId().equals(taskId)) {
+                System.out.println("[DAO] Task matched for ID: " + taskId);
                 return task;
             }
         }
+        System.out.println("[DAO] Task not found for ID: " + taskId);
+        return null;
+    }
+
+    @Override
+    public Task getTaskByIdAndEmail(String email, TaskID id) {
+        try {
+            // Step 1: Find the user by email to get the username
+            HttpUrl url = Objects.requireNonNull(HttpUrl.parse(baseUrl + "/rest/v1/users"))
+                    .newBuilder()
+                    .addQueryParameter("email", "eq." + email)
+                    .build();
+
+            Request request = new Request.Builder()
+                    .url(url)
+                    .addHeader("apikey", apiKey)
+                    .addHeader("Authorization", "Bearer " + apiKey)
+                    .addHeader("Accept", "application/json")
+                    .build();
+
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    System.err.println("Failed to find user by email: " + email);
+                    return null;
+                }
+
+                String body = Objects.requireNonNull(response.body()).string();
+                JsonArray array = JsonParser.parseString(body).getAsJsonArray();
+                if (array.isEmpty()) {
+                    System.err.println("No user found for email: " + email);
+                    return null;
+                }
+
+                JsonObject user = array.get(0).getAsJsonObject();
+                if (!user.has("username") || user.get("username").isJsonNull()) {
+                    System.err.println("User record missing username for email: " + email);
+                    return null;
+                }
+
+                String username = user.get("username").getAsString();
+
+                // Step 2: Get tasks for username
+                List<Task> tasks = getTasks(username);
+
+                // Step 3: Find task by id
+                for (Task task : tasks) {
+                    if (task.getTaskInfo().getId().equals(id)) {
+                        return task;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return null;
     }
 
     @Override
     public void updateTask(String username, Task updatedTask) {
+        System.out.println("------UPDATE TASK IS CALLED. Username " + username + " and ID " + updatedTask.getTaskInfo().getId());
         List<Task> tasks = getTasks(username);
         for (int i = 0; i < tasks.size(); i++) {
             if (tasks.get(i).getTaskInfo().getId().equals(updatedTask.getTaskInfo().getId())) {
@@ -188,6 +256,7 @@ public class SupabaseTaskDataAccessObject implements
         json.addProperty("weatherDescription", info.getWeatherDescription());
         json.addProperty("weatherIconName", info.getWeatherIconName());
         json.addProperty("temperature", info.getTemperature());
+        json.addProperty("uvIndex", info.getUvIndex());
 
         return json;
     }
@@ -228,6 +297,7 @@ public class SupabaseTaskDataAccessObject implements
         String weatherIconName = json.has("weatherIconName") ? json.get("weatherIconName")
                 .getAsString() : null;
         String temperature = json.has("temperature") ? json.get("temperature").getAsString() : null;
+        String uvIndex = json.has("uvIndex") ? json.get("uvIndex").getAsString() : null;
 
         TaskInfo info = new TaskInfo(
                 TaskID.from(UUID.fromString(idStr)),
@@ -240,7 +310,8 @@ public class SupabaseTaskDataAccessObject implements
                 isDeleted,
                 weatherDescription,
                 weatherIconName,
-                temperature
+                temperature,
+                uvIndex
         );
         info.setTaskStatus(status);
 
