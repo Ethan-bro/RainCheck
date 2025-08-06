@@ -259,15 +259,16 @@ Refer to the tutorials above for detailed guidance.
 
 ## Usage
 
-RainCheck launches into a weekly calendar where you can create, edit, and manage weather-aware tasks and tags for tasks.
+> For the demo below (provided as a youtube video link), weather data is simulated to showcase the UI and weather-aware features.  
+However, you can toggle between fake and real data by modifying the `USE_FAKE_DATA` variable in:  
+`src/main/java/data_access/WeatherApiService.java`
 
-### Visual Demo (TODO)
+Set:
+```java
+private static final boolean USE_FAKE_DATA = true; // or false
+```
+This allows you to easily switch between mock data (for testing/dev) and live weather API responses.
 
-To demonstrate how the app works, include:
+**DEMO VIDEO** 🎬  
+[🔴 **WATCH THE FULL DEMO HERE** 🔴](https://www.youtube.com/watch?v=zJ1nZ8WgueA)
 
-- A short **video or GIF** showing:
-  - Adding a task
-  - Viewing weather and UV info
-  - Editing, deleting, and marking tasks as complete
-
-**TODO:** Add visual walkthrough here for submission.
