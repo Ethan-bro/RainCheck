@@ -1,5 +1,6 @@
 package use_case.login;
 
+import data_access.DuplicateEmailException;
 import entity.User;
 
 /**
@@ -17,8 +18,9 @@ public interface LoginUserDataAccessInterface {
     /**
      * Saves the user.
      * @param user the user to save
+     * @throws DuplicateEmailException if the email is already registered
      */
-    void save(User user);
+    void save(User user) throws DuplicateEmailException;
 
     /**
      * Returns the user with the given username.
@@ -39,5 +41,4 @@ public interface LoginUserDataAccessInterface {
      * @return the username of the current user, or null if no user is logged in
      */
     String getCurrentUser();
-
 }

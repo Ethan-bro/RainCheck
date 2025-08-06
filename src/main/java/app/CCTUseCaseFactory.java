@@ -4,7 +4,6 @@ import interface_adapter.ViewManagerModel;
 import interface_adapter.create_customTag.CCTController;
 import interface_adapter.create_customTag.CCTPresenter;
 import interface_adapter.create_customTag.CCTViewModel;
-import interface_adapter.logged_in.LoggedInViewModel;
 import use_case.createCustomTag.CCTInputBoundary;
 import use_case.createCustomTag.CCTInteractor;
 import use_case.createCustomTag.CCTOutputBoundary;
@@ -23,7 +22,7 @@ public class CCTUseCaseFactory {
         final CCTController Controller = createCCTUseCase(viewManagerModel, viewModel,
                 CTDataAccessInterface);
 
-        return new CCTView(viewModel, Controller);
+        return new CCTView(viewManagerModel, viewModel, Controller);
     }
 
     public static CCTController createCCTUseCase(ViewManagerModel viewManagerModel,

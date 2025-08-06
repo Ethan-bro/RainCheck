@@ -307,15 +307,15 @@ public class AppBuilder {
         if (this.manageTagsViewModel == null) return this;
 
         ManageTagsView manageTagsView = ManageTagsUseCaseFactory.create(
-                loggedInViewModel,
                 viewManagerModel,
                 manageTagsViewModel,
+                cctViewModel,
                 tagDao
         );
 
         // 3) Register it in the CardLayout
         cardPanel.add(manageTagsView, ManageTagsView.getViewName());
-        viewMap.put(CCTView.getViewName(), manageTagsView);
+        viewMap.put(ManageTagsView.getViewName(), manageTagsView);
 
         return this;
     }
