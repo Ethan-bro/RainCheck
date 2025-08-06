@@ -54,7 +54,9 @@ Create, edit, and delete tasks with:
 - **Optional reminders and completion status**
 
 <div align="center">
-  <img src="images/demo-video-addTask.gif" alt="Task creation flow demo" width="600px">
+  <a href="[link]" target="_blank" rel="noopener noreferrer">
+    Watch Task Management Demo on YouTube
+  </a>
 </div>
 
 ##### 3. Reminder Notifications
@@ -69,7 +71,11 @@ Create, edit, and delete tasks with:
 
 ##### 4. Custom Tags
 Create/Edit/Delete tasks using dropdown tag names and emojis.
-<insert gif>
+<div align="center">
+  <a href="https://www.youtube.com/watch?v=GdjuhhC6-yw" target="_blank" rel="noopener noreferrer">
+    Watch Custom Tags Demo on YouTube
+  </a>
+</div>
 
 ##### 5. Secure User Accounts
 Users sign up and log in to access their saved tasks and personalized forecasts.
