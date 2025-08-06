@@ -30,6 +30,11 @@ public final class TaskID {
     }
 
     @Override
+    public int hashCode() {
+        return value.hashCode();
+    }
+
+    @Override
     public String toString() {
         return value.toString();
     }
