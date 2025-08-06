@@ -119,10 +119,15 @@ RainCheck requires API keys to access external services like Supabase and Visual
 {
   "database_url": "https://jbjoxiauljridpmnunuh.supabase.co",
   "database_anon_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "weather_api_key": "{your_own_key_here}"
+  "weather_api_key": "{your_own_key_here}",
+  "email_username": "your_email@gmail.com",
+  "email_password": "sixteenletterpass"
 }
 ```
-
+> Note:
+> email_username must be a valid email address (Avoid school or work emails, as they may block automated emails — use a personal email instead.)
+> email_password must be exactly 16 letters, no numbers, no spaces, no special characters.
+---
 > **Why is this file public?**  
 > The `secrets.json` file is public in this repo because:
 > - Our database and weather keys are used in class for development and demo purposes.
@@ -221,11 +226,16 @@ Fix: Ensure the file exists in `config/secrets.json` with the following structur
 ```json
 {
   "database_url": "https://jbjoxiauljridpmnunuh.supabase.co",
-  "database_anon_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpyaW...",
-  "weather_api_key": "{your_weather_api_key}"
+  "database_anon_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "weather_api_key": "{your_own_key_here}",
+  "email_username": "your_email@gmail.com",
+  "email_password": "sixteenletterpass"
 }
 ```
-
+> Note:
+> email_username must be a valid email address (Avoid school or work emails, as they may block automated emails — use a personal email instead.)
+> email_password must be exactly 16 letters, no numbers, no spaces, no special characters.
+---
 If you experience issues with weather data not loading correctly, check the USE_FAKE_DATA variable in
 `src/main/java/data_access/WeatherApiService.java`. <br />
 
