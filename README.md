@@ -58,10 +58,13 @@ Create, edit, and delete tasks with:
 </div>
 
 ##### 3. Reminder Notifications
-Set alerts (10, 30, or 60 mins before) that notify users via email.
-TODO: Get Kian's reminder notification and snapshot gmail
 <div align="center">
-  <img src="images/feature_reminder_notifications.png" alt="Reminder notification settings in RainCheck" width="500px">
+  Set alerts (10, 30, or 60 mins before) that notify users via email.
+</div>
+
+<div align="center">
+  <img src="images/feature_reminder_notifications_addTask config.png" alt="Reminder notification addTask config" width="50%%">
+  <img src="images/example_gmail_notification.png" alt="Gmail notification example from RainCheck" width="50%%">
 </div>
 
 ##### 4. Custom Tags
