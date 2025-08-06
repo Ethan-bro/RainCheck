@@ -15,10 +15,10 @@ public class Main {
                     .addLoginView()
                     .addCCTView()
                     .addManageTagsView()
-                    .addLoggedInView()
                     .addEditTaskView()
                     .addListTasksUseCase()
                     .addAddTaskView()
+                    .addLoggedInView()
                     .build();
 
             int appWidth = 860;
