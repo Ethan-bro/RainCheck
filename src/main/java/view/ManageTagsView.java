@@ -184,10 +184,24 @@ public class ManageTagsView extends JPanel implements ActionListener, PropertyCh
     }
 
     private void refreshTags() {
-        manageTagsVM.refreshTags();
+        List<CustomTag> newTags = manageTagsVM.getTagOptions();
+
+        // Save currently selected tag
+        CustomTag selected = (CustomTag) customTagCombo.getSelectedItem();
+
         customTagCombo.removeAllItems();
-        for (CustomTag tag : manageTagsVM.getTagOptions()) {
+        for (CustomTag tag : newTags) {
             customTagCombo.addItem(tag);
+        }
+
+        // Try to restore selection if possible
+        if (selected != null) {
+            for (int i = 0; i < customTagCombo.getItemCount(); i++) {
+                if (customTagCombo.getItemAt(i).equals(selected)) {
+                    customTagCombo.setSelectedIndex(i);
+                    break;
+                }
+            }
         }
     }
 
