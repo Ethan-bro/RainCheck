@@ -82,8 +82,6 @@ Users sign up and log in to access their saved tasks and personalized forecasts.
 
 Follow these steps to clone, build, and run RainCheck.
 
----
-
 ### Java Prerequisite
 
 RainCheck requires Java JDK 17 or later to build and run.
@@ -103,23 +101,6 @@ cd RainCheck
 <div align="center">
   <img src="images/clone_project.png" alt="Cloning project terminal" width="550px">
 </div>
-
-# Weather Data Mode
-
-RainCheck fetches real weather data by default for accurate forecasts.
-
-The mode is controlled by the `USE_FAKE_DATA` variable in  
-`src/main/java/data_access/WeatherApiService.java`.
-
-**Default value:** `false` (real weather data enabled).
-
-For faster development or offline testing, set it to `true` to use fake weather data.
-
-```java
-private static final boolean USE_FAKE_DATA = false; // true for fake data
-```
-> Note: Real weather fetching requires a valid API key in `config/secrets.json`.
-> Switch to fake data mode to avoid API limits or work offline.
 
 ### 2. Configure Secrets
 
@@ -141,7 +122,6 @@ RainCheck requires API keys to access external services like Supabase and Visual
 > - Our database and weather keys are used in class for development and demo purposes.
 > - We frequently reset the backend, so long-term security isn’t a concern.
 > - This simplifies setup for teammates and TAs who are testing or marking the project.
----
 > **How should *you* handle secrets?**
 > If you're building your own version or using your own backend:
 > - **Do NOT commit secrets** to GitHub — add `config/secrets.json` to your `.gitignore`
@@ -172,48 +152,89 @@ At the time of writing this readme, the program runs successfully and looks like
   <img src="images/run_application.png" alt="RainCheck running in IDE" width="500px">
 </div>
 
-✅ If everything works, RainCheck will launch and display the weekly calendar interface. <br />
-❌ If you get any errors, check the Troubleshooting section below.
+✅ If everything works, RainCheck will launch and display the weekly calendar interface. You can now continue to the [Usage](#usage) section to explore how to use the app.
 
+❌ If you get any errors, check the [Troubleshooting](#troubleshooting) and [Common Installation Issues & Fixes](#common-installation-issues--fixes) sections below for solutions to the most common problems.
 
+# Troubleshooting
 
-TODO:
-------------------
-**System Compatibility:**  
-RainCheck is compatible with **Windows** and **Linux** systems. It has been developed and tested primarily on these platforms.
-- **macOS** users may experience issues with file paths, Swing rendering, or Java SDK setup and may need to manually configure their environment to match Java 17+ expectations.
+## System Compatibility
+RainCheck is compatible with:
+- Windows - fully supported
+- macOS - fully supported
+- Linux - may work but untested (check Java 17+ configuration)
 
-**Common Installation Issues & Fixes:**
+Note for macOS/Linux: Verify IDE uses Java 17+ with matching compiler
 
-- 🔁 **Java version mismatch**
-  - Symptom: `UnsupportedClassVersionError` or crashes at runtime
-  - Fix: Make sure you're using **Java 17 or higher**. Check with:
-    ```bash
-    java -version
-    ```
+## Common Installation Issues & Fixes
 
-- 🌐 **No internet connection / API call failure**
-  - Symptom: Weather data or user login fails to load
-  - Fix: Check your internet access, firewall, or VPN settings. RainCheck needs outbound HTTPS access to Supabase and Visual Crossing Weather APIs.
+### Git Clone Fails
 
-- 📂 **Incorrect project structure**
-  - Symptom: Compilation errors when running `javac`
-  - Fix: Ensure you're inside the correct project root and that `src/` contains all `.java` files organized by package.
+Symptom: When running
+```bash
+git clone https://github.com/Ethan-bro/RainCheck.git
+```
+You receive the error:
+```bash
+fatal: repository 'https://github.com/Ethan-bro/RainCheck.git/' not found
+```
+Fixes:
+1. Verify the repository URL:
+ - Check for typos in the URL
+ - Remove any extra characters like quotes or trailing slashes
+ - Verify the repository exists and is public
+ - Correct URL should be: https://github.com/Ethan-bro/RainCheck.git
+2. Check your internet connection:
+ - Ensure you have stable internet access
+ - Try accessing ```github.com``` in your browser
+3. Try SSH cloning instead:
+```bash
+git clone git@github.com:Ethan-bro/RainCheck.git
+```
 
-- 🔑 **Missing or malformed `secrets.json` file**
-  - Symptom: Task loading, authentication, or weather retrieval fails silently
-  - Fix: Create a `config/secrets.json` file with your Supabase and weather API credentials.
+> Notes:
+> First-time GitHub users may need to set up Git credentials
+> Corporate networks might block Git operations
 
-  - ✅ This is the correct structure for `config/secrets.json`:
-    ```json
-    {
-      "database_url": "https://jbjoxiauljridpmnunuh.supabase.co",
-      "database_anon_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impiam94aWF1bGpyaWRwbW51bnVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIyMDE5MDQsImV4cCI6MjA2Nzc3NzkwNH0.rLCXZN4wuDANPaIy3kU0uxKrhm_Ne3yb2KlLP7lMfBw",
-      "weather_api_key": "{weather_api_key}"
-    }
-    ```
+### Java SDK Missing
 
-    > ⚠️ Replace `{weather_api_key}` with your personal API key if you encounter weather loading issues due to "too many API requests". This is optional and only needed when the automatic IP-based weather fetch fails.
+Symptom: 'No SDK' errors in IntelliJ <br />
+Fix:
+1. File > Project Structure > Project
+2. Set SDK to JDK 17 (or higher). Download if missing
+3. Apply changes
 
-<!-- TODO: Add screenshot of successful secrets.json setup in IDE -->
+For detailed JDK setup instructions with visual guidance, see: <br />
+[Setting Up Java JDK/SDK](#3-run-the-project-using-an-ide)
 
+### `secrets.json` Problems
+
+Symptom: Signup/Login and weather retrieval features don't work  
+Fix: Ensure the file exists in `config/secrets.json` with the following structure:
+
+```json
+{
+  "database_url": "https://jbjoxiauljridpmnunuh.supabase.co",
+  "database_anon_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpyaW...",
+  "weather_api_key": "{your_weather_api_key}"
+}
+```
+
+If you experience issues with weather data not loading correctly, check the USE_FAKE_DATA variable in
+`src/main/java/data_access/WeatherApiService.java`. <br />
+
+This variable controls whether RainCheck fetches real weather data from the API or uses fake (mock) data for testing and offline development.
+ - When `USE_FAKE_DATA` is set to `false` (default), RainCheck fetches live weather data using your API key from `secrets.json`.
+ - When set to `true`, the app uses pre-defined fake weather data, which is useful for faster testing or when offline.
+Make sure to set this variable according to your needs and verify that your API key in secrets.json is valid to avoid errors.
+
+## Common IntelliJ IDEA Issues & Fixes
+### 1. **Project Build or Compilation Errors**
+**Symptom:** Errors during build or run, even though the code seems correct.
+**Fix:** Follow this tutorial to resolve common build issues in IntelliJ IDEA:
+[How to fix common errors in IntelliJ](https://www.youtube.com/watch?v=hbXsdKGG0Pg&ab_channel=BitsNBytes)
+
+### 2. **Running the Application: Errors or Blank Screen**
+**Symptom:** Application doesn't start or shows a blank screen.
+**Fix:** Ensure all configurations are correct and dependencies are properly set up. <br />
+Refer to the tutorials above for detailed guidance.
