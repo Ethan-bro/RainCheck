@@ -2,6 +2,7 @@ package view;
 
 import entity.CustomTag;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.create_customTag.CCTViewModel;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.ManageTags.ManageTagsViewModel;
 import interface_adapter.ManageTags.EditTagController;
@@ -20,15 +21,11 @@ public class ManageTagsView extends JPanel implements ActionListener, PropertyCh
 
     private static final String viewName = "Manage Tags";
 
-    private final LoggedInViewModel loggedInVM;
     private final ViewManagerModel viewManagerModel;
     private final ManageTagsViewModel manageTagsVM;
-    private final CustomTagDataAccessInterface tagDao;
+    private final CCTViewModel cctViewModel;
     private final EditTagController editTagController;
     private final DeleteTagController deleteTagController;
-
-    private final String mainViewKey;
-    private final String cctViewKey;
 
     private final JComboBox<CustomTag> customTagCombo;
     private final JButton editTagButton;
@@ -37,22 +34,17 @@ public class ManageTagsView extends JPanel implements ActionListener, PropertyCh
     private final JButton doneButton;
 
     public ManageTagsView(
-            LoggedInViewModel loggedInVM,
             ViewManagerModel viewManagerModel,
             ManageTagsViewModel manageTagsVM,
-            CustomTagDataAccessInterface tagDao,
+            CCTViewModel cctViewModel,
             EditTagController editTagController,
             DeleteTagController deleteTagController
     ) {
-        this.loggedInVM = loggedInVM;
         this.viewManagerModel = viewManagerModel;
         this.manageTagsVM = manageTagsVM;
-        this.tagDao = tagDao;
+        this.cctViewModel = cctViewModel;
         this.editTagController = editTagController;
         this.deleteTagController = deleteTagController;
-
-        this.mainViewKey = loggedInVM.getViewName();
-        this.cctViewKey = view.CCTView.getViewName();
 
         this.manageTagsVM.addPropertyChangeListener(this);
 
@@ -175,10 +167,11 @@ public class ManageTagsView extends JPanel implements ActionListener, PropertyCh
                 refreshTags();
             }
         } else if (e.getSource() == createTagButton) {
-            viewManagerModel.setState(cctViewKey);
+            cctViewModel.setUsername(manageTagsVM.getUsername());
+            viewManagerModel.setState(CCTView.getViewName());
             viewManagerModel.firePropertyChanged();
         } else if (e.getSource() == doneButton) {
-            viewManagerModel.setState(mainViewKey);
+            viewManagerModel.setState(LoggedInView.getViewName());
             viewManagerModel.firePropertyChanged();
         }
     }

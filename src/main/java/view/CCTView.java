@@ -1,8 +1,10 @@
 package view;
 
 import entity.CustomTag;
+import interface_adapter.ViewManagerModel;
 import interface_adapter.create_customTag.CCTController;
 import interface_adapter.create_customTag.CCTViewModel;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,17 +17,17 @@ import static use_case.createCustomTag.CustomTagIcons.IconList;
 public class CCTView extends JPanel implements PropertyChangeListener {
 
     private static final String viewName = "Create Custom Tag";
+    private final ViewManagerModel viewManagerModel;
     private final CCTViewModel createCustomTagViewModel;
     private final CCTController createCustomTagController;
-
-    private String username = null;
 
     private final JTextField tagNameTextField = new JTextField(20);
     private final ButtonGroup iconGroup = new ButtonGroup();
     private final JButton createButton = new JButton("Create Tag");
     private final JButton cancelButton = new JButton("Cancel");
 
-    public CCTView(CCTViewModel model, CCTController controller) {
+    public CCTView(ViewManagerModel viewManagerModel, CCTViewModel model, CCTController controller) {
+        this.viewManagerModel = viewManagerModel;
         this.createCustomTagViewModel = model;
         this.createCustomTagController = controller;
         this.createCustomTagViewModel.addPropertyChangeListener(this);
@@ -79,26 +81,7 @@ public class CCTView extends JPanel implements PropertyChangeListener {
         Font emojiFont = findEmojiFont();
 
         for (String icon : IconList) {
-            JToggleButton iconButton = new JToggleButton(icon);
-            iconButton.setActionCommand(icon);
-            iconButton.setFont(emojiFont);
-            iconButton.setFocusPainted(false);
-            iconButton.setPreferredSize(new Dimension(50, 50));
-            iconButton.setBorder(BorderFactory.createEmptyBorder());
-            iconButton.setContentAreaFilled(false);
-            iconButton.setOpaque(false);
-
-            iconButton.addItemListener(e -> {
-                if (iconButton.isSelected()) {
-                    iconButton.setBorder(BorderFactory.createLineBorder(new Color(0x1E90FF), 3));
-                    iconButton.setOpaque(true);
-                    iconButton.setBackground(new Color(0xD0E7FF));
-                } else {
-                    iconButton.setBorder(BorderFactory.createEmptyBorder());
-                    iconButton.setOpaque(false);
-                    iconButton.setBackground(null);
-                }
-            });
+            JToggleButton iconButton = getJToggleButton(icon, emojiFont);
 
             iconGroup.add(iconButton);
             iconPanel.add(iconButton);
@@ -125,9 +108,36 @@ public class CCTView extends JPanel implements PropertyChangeListener {
         cancelButton.addActionListener(e -> {
             resetForm();
             createCustomTagViewModel.setUsername(null);
+            viewManagerModel.setState(ManageTagsView.getViewName());  // Switch back to ManageTagsView
+            viewManagerModel.firePropertyChanged();
         });
 
         setPreferredSize(new Dimension(560, 400));
+    }
+
+    @NotNull
+    private static JToggleButton getJToggleButton(String icon, Font emojiFont) {
+        JToggleButton iconButton = new JToggleButton(icon);
+        iconButton.setActionCommand(icon);
+        iconButton.setFont(emojiFont);
+        iconButton.setFocusPainted(false);
+        iconButton.setPreferredSize(new Dimension(50, 50));
+        iconButton.setBorder(BorderFactory.createEmptyBorder());
+        iconButton.setContentAreaFilled(false);
+        iconButton.setOpaque(false);
+
+        iconButton.addItemListener(e -> {
+            if (iconButton.isSelected()) {
+                iconButton.setBorder(BorderFactory.createLineBorder(new Color(0x1E90FF), 3));
+                iconButton.setOpaque(true);
+                iconButton.setBackground(new Color(0xD0E7FF));
+            } else {
+                iconButton.setBorder(BorderFactory.createEmptyBorder());
+                iconButton.setOpaque(false);
+                iconButton.setBackground(null);
+            }
+        });
+        return iconButton;
     }
 
     // Try to pick a font that supports emojis well
@@ -162,10 +172,9 @@ public class CCTView extends JPanel implements PropertyChangeListener {
             JOptionPane.showMessageDialog(this, "Please select a tag icon.", "Validation Error", JOptionPane.WARNING_MESSAGE);
             return;
         }
-
         String icon = selectedIcon.getActionCommand();
         CustomTag tag = new CustomTag(tagName, icon);
-        createCustomTagController.execute(tag, username);
+        createCustomTagController.execute(tag, createCustomTagViewModel.getUsername());
 
         createButton.setEnabled(false);
     }
@@ -194,10 +203,6 @@ public class CCTView extends JPanel implements PropertyChangeListener {
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public static String getViewName() {
         return viewName;
     }
@@ -212,6 +217,9 @@ public class CCTView extends JPanel implements PropertyChangeListener {
                         JOptionPane.INFORMATION_MESSAGE);
                 resetForm();
                 createCustomTagViewModel.setUsername(null);
+
+                viewManagerModel.setState(LoggedInView.getViewName());  // Switch back to main logged in view
+                viewManagerModel.firePropertyChanged();
             }
             case "Failed" -> {
                 String errorMsg = createCustomTagViewModel.getState().getErrorMsg();

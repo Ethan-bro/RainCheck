@@ -313,8 +313,7 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
             usernameLabel.setText("Signed in as: " + this.username);
             this.email = state.getEmail();
             // TODO: do smth with email (Kian)
-            taskBoxDependencies.editTaskController().setUsername(this.username);
-            editTaskViewModel.setUsername(this.username);
+            setViewModelsUsername(this.username);
             reloadTasksForCurrentWeek();
             return;
         }
@@ -333,6 +332,12 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
 
             reloadTasksForCurrentWeek();
         }
+    }
+
+    private void setViewModelsUsername(String name) {
+        taskBoxDependencies.editTaskController().setUsername(name);
+        editTaskViewModel.setUsername(name);
+        manageTagsViewModel.setUsername(name);
     }
 
     private void reloadTasksForCurrentWeek() {

@@ -112,9 +112,9 @@ public class AppBuilder {
         if (this.manageTagsViewModel == null) return this;
 
         ManageTagsView manageTagsView = ManageTagsUseCaseFactory.create(
-                loggedInViewModel,
                 viewManagerModel,
                 manageTagsViewModel,
+                cctViewModel,
                 tagDao
         );
 
