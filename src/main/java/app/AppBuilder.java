@@ -120,7 +120,7 @@ public class AppBuilder {
 
         // 3) Register it in the CardLayout
         cardPanel.add(manageTagsView, ManageTagsView.getViewName());
-        viewMap.put(CCTView.getViewName(), manageTagsView);
+        viewMap.put(ManageTagsView.getViewName(), manageTagsView);
 
         return this;
     }
