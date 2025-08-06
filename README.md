@@ -68,11 +68,8 @@ Create, edit, and delete tasks with:
 </div>
 
 ##### 4. Custom Tags
-Categorize tasks using dropdown tag names and emojis.
-TODO: Get Seans CCT view
-<div align="center">
-  <img src="images/feature_custom_tags.png" alt="Custom tag selection with emojis in RainCheck" width="500px">
-</div>
+Create/Edit/Delete tasks using dropdown tag names and emojis.
+<insert gif>
 
 ##### 5. Secure User Accounts
 Users sign up and log in to access their saved tasks and personalized forecasts.
