@@ -238,3 +238,20 @@ Make sure to set this variable according to your needs and verify that your API 
 **Symptom:** Application doesn't start or shows a blank screen.
 **Fix:** Ensure all configurations are correct and dependencies are properly set up. <br />
 Refer to the tutorials above for detailed guidance.
+
+---
+
+## Usage
+
+RainCheck launches into a weekly calendar where you can create, edit, and manage weather-aware tasks and tags for tasks.
+
+### Visual Demo (TODO)
+
+To demonstrate how the app works, include:
+
+- A short **video or GIF** showing:
+  - Adding a task
+  - Viewing weather and UV info
+  - Editing, deleting, and marking tasks as complete
+
+**TODO:** Add visual walkthrough here for submission.
