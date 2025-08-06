@@ -1,5 +1,6 @@
 package view;
 
+import entity.CustomTag;
 import entity.Priority;
 import entity.Reminder;
 
@@ -21,7 +22,7 @@ public abstract class AbstractTaskFormView extends JPanel {
     protected JButton cancelButton;
     protected JLabel errorLabel;
 
-    public AbstractTaskFormView(String title, String saveButtonText, List<Object> tagOptions) {
+    public AbstractTaskFormView(String title, String saveButtonText, List<CustomTag> tagOptions) {
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
         setBorder(new EmptyBorder(30, 40, 30, 40));

@@ -3,11 +3,10 @@ package view;
 import entity.CustomTag;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.create_customTag.CCTViewModel;
-import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.ManageTags.ManageTagsViewModel;
 import interface_adapter.ManageTags.EditTagController;
 import interface_adapter.ManageTags.DeleteTagController;
-import use_case.createCustomTag.CustomTagDataAccessInterface;
+import interface_adapter.events.TagChangeEventNotifier;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,7 +16,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
-public class ManageTagsView extends JPanel implements ActionListener, PropertyChangeListener {
+public class ManageTagsView extends JPanel implements ActionListener {
 
     private static final String viewName = "Manage Tags";
 
@@ -33,6 +32,8 @@ public class ManageTagsView extends JPanel implements ActionListener, PropertyCh
     private final JButton createTagButton;
     private final JButton doneButton;
 
+    private final PropertyChangeListener tagListener = this::onTagUpdate;
+
     public ManageTagsView(
             ViewManagerModel viewManagerModel,
             ManageTagsViewModel manageTagsVM,
@@ -46,7 +47,8 @@ public class ManageTagsView extends JPanel implements ActionListener, PropertyCh
         this.editTagController = editTagController;
         this.deleteTagController = deleteTagController;
 
-        this.manageTagsVM.addPropertyChangeListener(this);
+        // Subscribe to global tag change events
+        TagChangeEventNotifier.addListener(tagListener);
 
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
@@ -127,9 +129,15 @@ public class ManageTagsView extends JPanel implements ActionListener, PropertyCh
         setPreferredSize(new Dimension(500, 360));
     }
 
+    private void onTagUpdate(PropertyChangeEvent evt) {
+        if ("tagsUpdated".equals(evt.getPropertyName())) {
+            refreshTags();
+        }
+    }
+
     private void stylePrimaryButton(JButton button) {
         button.setFont(new Font("SansSerif", Font.BOLD, 14));
-        button.setBackground(new Color(0x1E90FF)); // DodgerBlue
+        button.setBackground(new Color(0x1E90FF));
         button.setForeground(Color.WHITE);
         button.setFocusPainted(false);
         button.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
@@ -158,7 +166,6 @@ public class ManageTagsView extends JPanel implements ActionListener, PropertyCh
             return;
         }
 
-        // For Edit/Delete only: we need a tag selected
         CustomTag selectedTag = (CustomTag) customTagCombo.getSelectedItem();
         if (selectedTag == null) {
             JOptionPane.showMessageDialog(this, "Please select a tag first.");
@@ -169,24 +176,19 @@ public class ManageTagsView extends JPanel implements ActionListener, PropertyCh
             String newName = JOptionPane.showInputDialog(this, "Enter new name for tag:", selectedTag.getTagName());
             if (newName != null && !newName.trim().isEmpty()) {
                 editTagController.execute(selectedTag.getTagName(), newName.trim(), selectedTag.getTagEmoji());
-                refreshTags();
             }
         } else if (e.getSource() == deleteTagButton) {
             int confirm = JOptionPane.showConfirmDialog(this,
                     "Are you sure you want to delete the tag \"" + selectedTag.getTagName() + "\"?",
-                    "Confirm Delete",
-                    JOptionPane.YES_NO_OPTION);
+                    "Confirm Delete", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
                 deleteTagController.execute(selectedTag.getTagName());
-                refreshTags();
             }
         }
     }
 
     private void refreshTags() {
         List<CustomTag> newTags = manageTagsVM.getTagOptions();
-
-        // Save currently selected tag
         CustomTag selected = (CustomTag) customTagCombo.getSelectedItem();
 
         customTagCombo.removeAllItems();
@@ -194,7 +196,6 @@ public class ManageTagsView extends JPanel implements ActionListener, PropertyCh
             customTagCombo.addItem(tag);
         }
 
-        // Try to restore selection if possible
         if (selected != null) {
             for (int i = 0; i < customTagCombo.getItemCount(); i++) {
                 if (customTagCombo.getItemAt(i).equals(selected)) {
@@ -205,14 +206,11 @@ public class ManageTagsView extends JPanel implements ActionListener, PropertyCh
         }
     }
 
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        if ("refreshTagOptions".equals(evt.getPropertyName())) {
-            refreshTags();
-        }
-    }
-
     public static String getViewName() {
         return viewName;
+    }
+
+    public void dispose() {
+        TagChangeEventNotifier.removeListener(tagListener);
     }
 }

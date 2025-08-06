@@ -216,7 +216,6 @@ public class CCTView extends JPanel implements PropertyChangeListener {
                         "Success",
                         JOptionPane.INFORMATION_MESSAGE);
                 resetForm();
-                createCustomTagViewModel.setUsername(null);
 
                 viewManagerModel.setState(LoggedInView.getViewName());  // Switch back to main logged in view
                 viewManagerModel.firePropertyChanged();

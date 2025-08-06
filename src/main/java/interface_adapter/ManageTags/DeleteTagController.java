@@ -2,6 +2,7 @@ package interface_adapter.ManageTags;
 
 import use_case.createCustomTag.CustomTagDataAccessInterface;
 import entity.CustomTag;
+import interface_adapter.events.TagChangeEventNotifier;
 
 public class DeleteTagController {
 
@@ -27,7 +28,7 @@ public class DeleteTagController {
 
         tagDao.deleteCustomTag(manageTagsVM.getUsername(), new CustomTag(tagName, emoji));
 
-        // Refresh view model data
-        manageTagsVM.refreshTags();
+        // Notify global listeners that tags have changed
+        TagChangeEventNotifier.fire();
     }
 }

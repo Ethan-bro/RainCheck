@@ -288,6 +288,7 @@ public class AppBuilder {
         CCTView cctView = CCTUseCaseFactory.create(
                 this.viewManagerModel,
                 this.cctViewModel,
+                this.manageTagsViewModel,
                 this.tagDao
         );
         cardPanel.add(cctView, CCTView.getViewName());

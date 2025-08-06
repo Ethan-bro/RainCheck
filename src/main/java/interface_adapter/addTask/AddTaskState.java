@@ -1,8 +1,13 @@
 package interface_adapter.addTask;
 
+import entity.CustomTag;
+
+import java.util.List;
+
 public class AddTaskState {
     private String errorMessage = "";
     private boolean success = false;
+    private List<CustomTag> tagOptions;
 
     public AddTaskState() {
         // empty constructor
@@ -22,5 +27,13 @@ public class AddTaskState {
 
     public void setTaskAdded(boolean taskAdded) {
         this.success = taskAdded;
+    }
+
+    public void setTagOptions(List<CustomTag> tags) {
+        this.tagOptions = tags;
+    }
+
+    public List<CustomTag> getTagOptions() {
+        return tagOptions;
     }
 }
