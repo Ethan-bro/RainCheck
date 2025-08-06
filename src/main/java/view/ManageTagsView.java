@@ -145,6 +145,20 @@ public class ManageTagsView extends JPanel implements ActionListener, PropertyCh
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == createTagButton) {
+            cctViewModel.setUsername(manageTagsVM.getUsername());
+            viewManagerModel.setState(CCTView.getViewName());
+            viewManagerModel.firePropertyChanged();
+            return;
+        }
+
+        if (e.getSource() == doneButton) {
+            viewManagerModel.setState(LoggedInView.getViewName());
+            viewManagerModel.firePropertyChanged();
+            return;
+        }
+
+        // For Edit/Delete only: we need a tag selected
         CustomTag selectedTag = (CustomTag) customTagCombo.getSelectedItem();
         if (selectedTag == null) {
             JOptionPane.showMessageDialog(this, "Please select a tag first.");
@@ -166,13 +180,6 @@ public class ManageTagsView extends JPanel implements ActionListener, PropertyCh
                 deleteTagController.execute(selectedTag.getTagName());
                 refreshTags();
             }
-        } else if (e.getSource() == createTagButton) {
-            cctViewModel.setUsername(manageTagsVM.getUsername());
-            viewManagerModel.setState(CCTView.getViewName());
-            viewManagerModel.firePropertyChanged();
-        } else if (e.getSource() == doneButton) {
-            viewManagerModel.setState(LoggedInView.getViewName());
-            viewManagerModel.firePropertyChanged();
         }
     }
 

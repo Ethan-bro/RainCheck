@@ -18,7 +18,7 @@ public class Main {
                     .addEditTaskView()
                     .addLoggedInView()
                     .addListTasksUseCase()
-                    .addTaskViews()
+                    .addAddTaskView()
                     .build();
 
             int appWidth = 860;

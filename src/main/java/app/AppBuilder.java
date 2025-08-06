@@ -7,9 +7,6 @@ import data_access.SupabaseTaskDataAccessObject;
 import data_access.SupabaseTagDataAccessObject;
 import data_access.SupabaseUserDataAccessObject;
 
-import data_access.*;
-import interface_adapter.*;
-
 import interface_adapter.ManageTags.ManageTagsViewModel;
 
 import data_access.WeatherApiService;
@@ -24,11 +21,11 @@ import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.logout.LogoutController;
 import interface_adapter.signup.SignupViewModel;
+import org.jetbrains.annotations.NotNull;
 import use_case.notification.ScheduleNotificationInteractor;
 import use_case.notification.ScheduleNotificationOutputBoundary;
 import use_case.notification.NotificationDataAccessInterface;
 import use_case.notification.EmailNotificationServiceInterface;
-import interface_adapter.ManageTags.ManageTagsViewModel;
 import interface_adapter.editTask.EditTaskViewModel;
 import interface_adapter.editTask.EditTaskController;
 import interface_adapter.markTaskComplete.MarkTaskCompleteViewModel;
@@ -36,18 +33,11 @@ import interface_adapter.deleteTask.DeleteTaskViewModel;
 import interface_adapter.logged_in.LoggedInDependencies;
 import interface_adapter.task.TaskBoxDependencies;
 
-import javax.mail.Authenticator;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import java.util.Properties;
-
 import view.*;
 
 import javax.swing.*;
 import java.util.HashMap;
 import java.util.Map;
-import java.awt.*;
 import java.awt.CardLayout;
 import java.io.FileReader;
 import java.io.IOException;
@@ -237,7 +227,6 @@ public class AppBuilder {
                 loggedInDependencies,
                 addTaskViewModel,
                 manageTagsViewModel,
-                tagDao,
                 taskDao,
                 taskBoxDependencies
         );
@@ -251,32 +240,13 @@ public class AppBuilder {
         
         try {
             // Create a simple output boundary for notifications (you may need to implement this properly)
-            ScheduleNotificationOutputBoundary notificationOutputBoundary = new ScheduleNotificationOutputBoundary() {
-                @Override
-                public void presentScheduleResult(use_case.notification.ScheduleNotificationOutputData outputData) {
-                    // Simple implementation - you can enhance this later
-                    if (outputData.isSuccess()) {
-                        System.out.println("Notification scheduled successfully: " + outputData.getNotificationId());
-                    } else {
-                        System.err.println("Failed to schedule notification: " + outputData.getMessage());
-                    }
-                }
-            };
-            
-
-            // Create the notification interactor
-            ScheduleNotificationInteractor notificationInteractor = new ScheduleNotificationInteractor(
-                    notificationDataAccess,
-                    taskDao,  // taskDao should implement EditTaskDataAccessInterface
-                    notificationOutputBoundary
-            );
+            ScheduleNotificationInteractor notificationInteractor = getScheduleNotificationInteractor();
 
             addTaskView = AddTaskUseCaseFactory.create(
                     viewManagerModel,
                     addTaskViewModel,
                     loggedInViewModel,
                     taskDao,
-                    tagDao,
                     new WeatherApiService(),
                     notificationInteractor,
                     LoggedInView.getViewName()
@@ -286,7 +256,29 @@ public class AppBuilder {
         }
 
         cardPanel.add(addTaskView, AddTaskView.getViewName());
+        viewMap.put(AddTaskView.getViewName(), addTaskView);
         return this;
+    }
+
+    @NotNull
+    private ScheduleNotificationInteractor getScheduleNotificationInteractor() {
+        ScheduleNotificationOutputBoundary notificationOutputBoundary = outputData -> {
+            // Simple implementation - you can enhance this later
+            if (outputData.isSuccess()) {
+                System.out.println("Notification scheduled successfully: " + outputData.getNotificationId());
+            } else {
+                System.err.println("Failed to schedule notification: " + outputData.getMessage());
+            }
+        };
+
+
+        // Create the notification interactor
+        ScheduleNotificationInteractor notificationInteractor = new ScheduleNotificationInteractor(
+                notificationDataAccess,
+                taskDao,  // taskDao should implement EditTaskDataAccessInterface
+                notificationOutputBoundary
+        );
+        return notificationInteractor;
     }
 
 

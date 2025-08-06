@@ -54,7 +54,6 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     private final CalendarData calendarData;
     private Map<LocalDate, Map<String, Object>> weatherMap = null;
     private Map<LocalDate, List<Map<String, String>>> hourlyWeatherMap = null;
-    private final SupabaseTagDataAccessObject tagDao;
     private final SupabaseTaskDataAccessObject taskDao;
 
     private ActionListener logoutAL;
@@ -64,7 +63,6 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     private final TaskBoxDependencies taskBoxDependencies;
 
     public LoggedInView(LoggedInDependencies loggedInDependencies,
-                        SupabaseTagDataAccessObject tagDao,
                         SupabaseTaskDataAccessObject taskDao,
                         AddTaskViewModel addTaskViewModel,
                         TaskBoxDependencies taskBoxDependencies,
@@ -79,7 +77,6 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         this.loggedInViewModel = loggedInDependencies.loggedInViewModel();
         this.loggedInViewModel.addPropertyChangeListener(this);
         this.logoutController = loggedInDependencies.logoutController();
-        this.tagDao = tagDao;
         this.taskDao = taskDao;
         this.addTaskViewModel = addTaskViewModel;
         this.manageTagsViewModel = manageTagsViewModel;
@@ -158,13 +155,11 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         };
 
         addTaskAL = e -> {
-            addTaskViewModel.setUsername(this.username);
             viewManagerModel.setState(AddTaskView.getViewName());
             viewManagerModel.firePropertyChanged();
         };
 
         manageTagsAL = e -> {
-            manageTagsViewModel.setUsername(this.username);
             viewManagerModel.setState(ManageTagsView.getViewName());
             viewManagerModel.firePropertyChanged();
         };
@@ -312,7 +307,6 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
             this.username = state.getUsername();
             usernameLabel.setText("Signed in as: " + this.username);
             this.email = state.getEmail();
-            // TODO: do smth with email (Kian)
             setViewModelsUsername(this.username);
             reloadTasksForCurrentWeek();
             return;
@@ -336,6 +330,7 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
 
     private void setViewModelsUsername(String name) {
         taskBoxDependencies.editTaskController().setUsername(name);
+        addTaskViewModel.setUsername(name);
         editTaskViewModel.setUsername(name);
         manageTagsViewModel.setUsername(name);
     }
