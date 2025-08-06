@@ -9,6 +9,9 @@ import use_case.editTask.EditTaskDataAccessInterface;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A fake in-memory DAO used only for unit tests. No external I/O.
+ */
 public class InMemoryTaskDataAccessObject implements
         EditTaskDataAccessInterface,
         DeleteTaskDataAccessInterface,
