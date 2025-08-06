@@ -314,7 +314,6 @@ public class AppBuilder {
 
 
     public AppBuilder addEditTaskView() {
-        editTaskController = EditTaskUseCaseFactory.createController(taskDao, editTaskViewModel, viewManagerModel, weatherApiService);
         EditTaskView editTaskView = EditTaskUseCaseFactory.createView(
                 editTaskController, editTaskViewModel, viewManagerModel, LoggedInView.getViewName()
         );
