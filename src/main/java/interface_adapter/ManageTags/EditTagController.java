@@ -1,7 +1,8 @@
 package interface_adapter.ManageTags;
 
-import use_case.createCustomTag.CustomTagDataAccessInterface;
 import entity.CustomTag;
+import interface_adapter.events.TagChangeEventNotifier;
+import use_case.createCustomTag.CustomTagDataAccessInterface;
 
 public class EditTagController {
 
@@ -23,15 +24,17 @@ public class EditTagController {
      */
     public void execute(String oldName, String newName, String emoji) {
         if (oldName == null || newName == null || emoji == null) return;
-        if (oldName.equals(newName)) return; // no change
+        if (oldName.equals(newName)) return; // No change
+
+        String username = manageTagsVM.getUsername();
 
         // Delete old tag
-        tagDao.deleteCustomTag(manageTagsVM.getUsername(), new CustomTag(oldName, emoji));
+        tagDao.deleteCustomTag(username, new CustomTag(oldName, emoji));
 
-        // Add new tag with new name and same emoji
-        tagDao.addCustomTag(manageTagsVM.getUsername(), new CustomTag(newName, emoji));
+        // Add new tag with the new name and same emoji
+        tagDao.addCustomTag(username, new CustomTag(newName, emoji));
 
-        // Refresh view model data
-        manageTagsVM.refreshTags();
+        // Notify all subscribed views/viewModels of tag changes
+        TagChangeEventNotifier.fire();
     }
 }
