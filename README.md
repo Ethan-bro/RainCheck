@@ -279,3 +279,60 @@ This project is licensed under the [MIT License](LICENSE).
 You are free to use, modify, and distribute this software for personal or commercial use, provided that you include the original copyright and license.
 
 For more details, see the [LICENSE](LICENSE) file in this repository.
+
+## Feedback
+
+We welcome feedback to improve RainCheck!
+
+If you encounter bugs, usability issues, or have feature suggestions, please let us know via this form:  
+[📋 Submit Feedback](https://forms.gle/f4TtfUXz5E6zRzN46)
+
+### What counts as valid feedback?
+- Bug reports (UI errors, features not working, crashes)
+- Feature suggestions (e.g., new task filters, calendar views)
+- UI/UX improvement ideas
+- Accessibility or usability issues
+
+### What to expect when submitting feedback:
+- We review feedback weekly during development cycles
+- Critical bugs or UI issues may be prioritized
+- We may follow up if more info is needed
+
+## Contributing
+
+Want to contribute to RainCheck? We appreciate your interest!
+
+### How to contribute
+
+1. **Fork** this repository using the top-right corner of the GitHub page.
+2. **Clone** your forked repo:
+  ```bash
+     git clone https://github.com/Ethan-bro/RainCheck.git
+  ```
+3. Create a new branch:
+  ```bash
+  git checkout -b your-feature-name
+  ```
+4. Make your changes, test them locally, then push:
+  ```bash
+  git push origin your-feature-name
+  ```
+5. Submit a pull request (PR) with a clear description of what you changed and why.
+
+### Guidelines for Pull Requests
+- Keep PRs focused and small — avoid mixing unrelated changes
+- Describe your changes clearly in the PR
+- Follow the existing folder structure and naming conventions
+- Check that your code builds and runs before submitting
+- Respect the project's purpose and scope
+
+### Review Process
+- We review all PRs manually
+- Small changes (e.g., UI fixes) may be merged quickly
+- Larger or architectural changes may require more time and discussion
+- We reserve the right to reject contributions that:
+  - Conflict with the project's vision
+  - Violate license terms
+  - Introduce unnecessary complexity
+
+TODO: ...
