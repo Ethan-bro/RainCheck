@@ -1,5 +1,6 @@
 package use_case.signup;
 
+import data_access.DuplicateEmailException;
 import entity.User;
 
 /**
@@ -17,8 +18,9 @@ public interface SignupUserDataAccessInterface {
     /**
      * Saves the user.
      * @param user the user to save
+     * @throws DuplicateEmailException if the email is already registered
      */
-    void save(User user);
+    void save(User user) throws DuplicateEmailException;
 
     /**
      * Checks if the username is valid (i.e., not already taken).
