@@ -6,7 +6,7 @@ import java.util.UUID;
 public final class TaskID {
     private final UUID value;
 
-    private TaskID(UUID value) {
+    public TaskID(UUID value) {
         this.value = Objects.requireNonNull(value, "TaskID must not be null");
     }
 
