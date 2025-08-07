@@ -122,7 +122,7 @@ RainCheck requires API keys to access external services like Supabase and Visual
 ```json
 {
   "database_url": "https://jbjoxiauljridpmnunuh.supabase.co",
-  "database_anon_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "database_anon_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impiam94aWF1bGpyaWRwbW51bnVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIyMDE5MDQsImV4cCI6MjA2Nzc3NzkwNH0.rLCXZN4wuDANPaIy3kU0uxKrhm_Ne3yb2KlLP7lMfBw",
   "weather_api_key": "{your_own_key_here}",
   "email_username": "your_email@gmail.com",
   "email_password": "sixteenletterpass"
@@ -230,7 +230,7 @@ Fix: Ensure the file exists in `config/secrets.json` with the following structur
 ```json
 {
   "database_url": "https://jbjoxiauljridpmnunuh.supabase.co",
-  "database_anon_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "database_anon_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impiam94aWF1bGpyaWRwbW51bnVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIyMDE5MDQsImV4cCI6MjA2Nzc3NzkwNH0.rLCXZN4wuDANPaIy3kU0uxKrhm_Ne3yb2KlLP7lMfBw",
   "weather_api_key": "{your_own_key_here}",
   "email_username": "your_email@gmail.com",
   "email_password": "sixteenletterpass"
