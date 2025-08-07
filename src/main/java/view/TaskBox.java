@@ -184,7 +184,7 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
 
         if (taskInfo.getTag() != null) {
             tagNameLabel.setText(taskInfo.getTag().getTagName());
-            tagEmojiLabel.setText(taskInfo.getTag().getTagEmoji());
+            tagEmojiLabel.setText(taskInfo.getTag().getTagIcon());
             tagNameLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         } else {
             tagNameLabel.setText("");

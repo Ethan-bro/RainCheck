@@ -237,7 +237,7 @@ public class SupabaseTaskDataAccessObject implements
         if (info.getTag() != null) {
             JsonObject tag = new JsonObject();
             tag.addProperty("tagName", info.getTag().getTagName());
-            tag.addProperty("tagEmoji", info.getTag().getTagEmoji());
+            tag.addProperty("tagEmoji", info.getTag().getTagIcon());
             json.add("customTag", tag);
         }
 
