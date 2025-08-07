@@ -7,6 +7,7 @@ import data_access.SupabaseTaskDataAccessObject;
 import data_access.SupabaseTagDataAccessObject;
 import data_access.SupabaseUserDataAccessObject;
 
+import interface_adapter.EditTag.EditTagViewModel;
 import interface_adapter.ManageTags.ManageTagsViewModel;
 
 import data_access.WeatherApiService;
@@ -62,6 +63,7 @@ public class AppBuilder {
     private LoggedInViewModel loggedInViewModel;
     private SignupViewModel signupViewModel;
     private CCTViewModel cctViewModel;
+    private EditTagViewModel editTagViewModel;
     private ManageTagsViewModel manageTagsViewModel;
     private AddTaskViewModel addTaskViewModel;
     private ListTasksUseCaseFactory listTasksFactory;
@@ -169,6 +171,7 @@ public class AppBuilder {
         loggedInViewModel = new LoggedInViewModel();
         signupViewModel = new SignupViewModel();
         cctViewModel = new CCTViewModel();
+        editTagViewModel = new EditTagViewModel();
         manageTagsViewModel = new ManageTagsViewModel(tagDao, userDao.getCurrentUsername());
         addTaskViewModel = new AddTaskViewModel(tagDao, userDao.getCurrentUsername());
         editTaskViewModel = new EditTaskViewModel(tagDao, userDao.getCurrentUsername());
@@ -296,6 +299,7 @@ public class AppBuilder {
                 viewManagerModel,
                 manageTagsViewModel,
                 cctViewModel,
+                editTagViewModel,
                 tagDao
         );
 

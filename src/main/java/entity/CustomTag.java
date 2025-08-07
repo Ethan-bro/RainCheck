@@ -5,9 +5,9 @@ public class CustomTag {
     private String tagName;
     private String tagIcon;
 
-    public CustomTag(String tagName, String tagEmoji) {
+    public CustomTag(String tagName, String tagIcon) {
         this.tagName = tagName;
-        this.tagIcon = tagEmoji;
+        this.tagIcon = tagIcon;
     }
 
     public String getTagName() {

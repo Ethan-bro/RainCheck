@@ -1,5 +1,6 @@
 package app;
 
+import interface_adapter.EditTag.EditTagViewModel;
 import interface_adapter.ManageTags.ManageTagsViewModel;
 import interface_adapter.EditTag.EditTagController;
 import interface_adapter.ManageTags.DeleteTagController;
@@ -16,16 +17,17 @@ public class ManageTagsUseCaseFactory {
             ViewManagerModel viewManagerModel,
             ManageTagsViewModel viewModel,
             CCTViewModel cctViewModel,
+            EditTagViewModel editTagViewModel,
             CustomTagDataAccessInterface tagDao
     ) {
-        EditTagController editTagController = new EditTagController(tagDao, viewModel);
+
         DeleteTagController deleteTagController = new DeleteTagController(tagDao, viewModel);
 
         return new ManageTagsView(
                 viewManagerModel,
                 viewModel,
                 cctViewModel,
-                editTagController,
+                editTagViewModel,
                 deleteTagController
         );
     }

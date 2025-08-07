@@ -77,7 +77,7 @@ public class SupabaseTagDataAccessObject implements CustomTagDataAccessInterface
     @Override
     public void addCustomTag(String username, CustomTag tagToAdd) {
         Map<String, String> tags = getCustomTags(username);
-        tags.put(tagToAdd.getTagName(), tagToAdd.getTagEmoji());
+        tags.put(tagToAdd.getTagName(), tagToAdd.getTagIcon());
         patchTags(username, tags);
     }
 

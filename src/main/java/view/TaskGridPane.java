@@ -165,7 +165,7 @@ public class TaskGridPane extends JLayeredPane {
             // build label: name + tag emoji (no TaskID)
             String txt = t.getTaskInfo().getTaskName();
             if (t.getTaskInfo().getTag() != null) {
-                txt += " " + t.getTaskInfo().getTag().getTagEmoji();
+                txt += " " + t.getTaskInfo().getTag().getTagIcon();
             }
 
             button = new JButton(txt);
