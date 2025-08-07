@@ -2,6 +2,7 @@ package view;
 
 import entity.CustomTag;
 import interface_adapter.EditTag.EditTagViewModel;
+import interface_adapter.ManageTags.ManageTagsState;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.CreateTag.CCTViewModel;
 import interface_adapter.ManageTags.ManageTagsViewModel;
@@ -166,6 +167,7 @@ public class ManageTagsView extends JPanel implements ActionListener {
             return;
         }
 
+        // get the selected tag:
         CustomTag selectedTag = (CustomTag) customTagCombo.getSelectedItem();
         if (selectedTag == null) {
             JOptionPane.showMessageDialog(this, "Please select a tag first.");
@@ -173,6 +175,15 @@ public class ManageTagsView extends JPanel implements ActionListener {
         }
 
         if (e.getSource() == editTagButton) {
+
+            //.set the current tag to be edited
+            ManageTagsState state = manageTagsVM.getState();
+            state.setCurrTag(selectedTag);
+
+            // let EditTagView know a tag has been selected to edit
+            editTagViewModel.loadTag(selectedTag);
+
+            // switch to edit tag view
             editTagViewModel.setUsername(manageTagsVM.getUsername());
             viewManagerModel.setState(EditTagView.getViewName());
             viewManagerModel.firePropertyChanged();

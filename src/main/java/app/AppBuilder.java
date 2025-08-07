@@ -292,6 +292,20 @@ public class AppBuilder {
         return this;
     }
 
+    public AppBuilder addEditTagView() {
+        if (this.editTagViewModel == null) return this;
+
+        EditTagView editTagView = EditTagUseCaseFactory.create(
+                this.viewManagerModel,
+                this.editTagViewModel,
+                this.manageTagsViewModel,
+                this.tagDao
+        );
+        cardPanel.add(editTagView, EditTagView.getViewName());
+        viewMap.put(EditTagView.getViewName(), editTagView);
+        return this;
+    }
+
     public AppBuilder addManageTagsView() {
         if (this.manageTagsViewModel == null) return this;
 

@@ -14,6 +14,7 @@ public class Main {
                     .addSignupView()
                     .addLoginView()
                     .addCCTView()
+                    .addEditTagView()
                     .addManageTagsView()
                     .addEditTaskView()
                     .addListTasksUseCase()

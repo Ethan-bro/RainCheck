@@ -34,4 +34,8 @@ public class ManageTagsState {
     public void setErrorMsg(String newErrorMsg) {
         errorMsg = newErrorMsg;
     }
+
+    public void setCurrTag(CustomTag selectedTag) {
+        currTag = selectedTag;
+    }
 }

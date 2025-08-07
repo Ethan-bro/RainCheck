@@ -1,22 +1,24 @@
 package interface_adapter.EditTag;
 
 import interface_adapter.ManageTags.ManageTagsViewModel;
+import interface_adapter.ViewManagerModel;
 import interface_adapter.events.TagChangeEventNotifier;
 import use_case.EditCT.EditTagOutputBoundary;
 import use_case.EditCT.EditTagOutputData;
 
 public class EditTagPresenter implements EditTagOutputBoundary {
 
-    EditTagOutputData editTagOutputData;
+    ViewManagerModel viewManagerModel;
     EditTagViewModel editTagViewModel;
     ManageTagsViewModel manageTagsViewModel;
 
 
-    public EditTagPresenter(EditTagOutputData editTagOutputData,
+    public EditTagPresenter(ViewManagerModel viewManagerModel,
                             EditTagViewModel editTagViewModel,
                             ManageTagsViewModel manageTagsViewModel) {
 
-        this.editTagOutputData = editTagOutputData;
+        this.viewManagerModel = viewManagerModel;
+        this.manageTagsViewModel = manageTagsViewModel;
         this.editTagViewModel = editTagViewModel;
     }
 
