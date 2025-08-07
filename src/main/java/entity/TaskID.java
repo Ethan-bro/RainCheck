@@ -6,7 +6,7 @@ import java.util.UUID;
 public final class TaskID {
     private final UUID value;
 
-    private TaskID(UUID value) {
+    public TaskID(UUID value) {
         this.value = Objects.requireNonNull(value, "TaskID must not be null");
     }
 
@@ -27,6 +27,11 @@ public final class TaskID {
         if (this == o) return true;
         if (!(o instanceof TaskID that)) return false;
         return value.equals(that.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return value.hashCode();
     }
 
     @Override

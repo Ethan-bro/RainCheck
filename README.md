@@ -1,87 +1,341 @@
+# <p align="center"><b>RainCheck</b></p>
+<p align="center"><sub><i>A Desktop Task Planner with Weather Integration</i></sub></p>
+
+> ⚠️ **Note:** All screenshots were taken during development. Some UI elements may differ slightly from the final version, but the core features and layout remain the same.
+
+## Table of Contents
+
+- [Project Summary](#project-summary)
+- [Authors and Contributors](#authors-and-contributors)
+- [Features](#features)
+- [Installation](#installation)
+- [Troubleshooting](#troubleshooting)
+- [Common Installation Issues & Fixes](#common-installation-issues--fixes)
+- [Common IntelliJ IDEA Issues & Fixes](#common-intellij-idea-issues--fixes)
+- [Usage](#usage)
+- [License](#license)
+- [Feedback](#feedback)
+- [Contributing](#contributing)
+
+## Project Summary
+
+**RainCheck** is a desktop task planner built with [Java Swing](https://docs.oracle.com/javase/tutorial/uiswing/) that helps users organize their week by combining their personal schedule with live hourly weather forecasts.
+
+Most traditional task planners do not incorporate weather data, but RainCheck bridges this gap by integrating forecast data directly into a visual week-view calendar. This helps users make informed decisions about when to schedule outdoor activities, avoid weather disruptions, and better prioritize tasks.
+
+Users can create, edit, and delete tasks — each with customizable priority levels, tag names and emojis, reminders, and embedded weather info. All tasks persist across sessions and are tied to secure personal accounts.
+
+RainCheck is useful for anyone who wants to manage time more effectively while staying aware of changing weather conditions that could affect their plans.
+
+## Authors and Contributors
+
+- **Ethan** – *User Authentication & Account Management*
+- **Brad** – *Task Creation, Reminder Class & Priority Management*
+- **Sean** – *Custom Tag System (`tagName`, `tagEmoji`)*
+- **Clara** – *Task Editing, Deletion, Completion UI*
+- **Kian** – *Reminder Logic, Notification Feature Design*
+- **Team** – *Weekly Weather View, Weather-Integrated Calendar, Core Architecture, UI Enhancement*
+
+## Features
+
+RainCheck helps users plan tasks around real-world weather. Key features include:
+
+##### 1. Weather-Aware Calendar
+ - View daily weather for a week-view calendar. 
+ - Weather remains visible as tasks are added, edited, or removed.
+ - View hourly weather per task by clicking on the task box in the calendar at any point during the program.
+
 <p align="center">
-  <img src="images/RainCheck-logo.png" alt="RainCheck Logo" width="150" />
+  <img src="images/feature_weather_calendar.png" alt="Weather-aware calendar in RainCheck" width="500px">
 </p>
 
-<h1 align="center">RainCheck</h1>
+##### 2. Smart Task Management
+Create, edit, and delete tasks with:
+
+- **Priority levels (High, Medium, Low) shown by color**
+- **Custom tag names and emojis (e.g., Workout 💪)**
+- **Weather info at task time (e.g., ☀️ 23°C)**
+- **Optional reminders and completion status**
 
 <p align="center">
-  RainCheck is a Java Swing app that helps users plan their day by linking tasks with real-time weather forecasts in a calendar-style interface. Built using Clean Architecture, the app promotes modular, scalable, and testable code practices.
+  <a href="https://www.youtube.com/watch?v=cbo1l0AgY7o" target="_blank" rel="noopener noreferrer">
+    Watch Task Management Demo on YouTube
+  </a>
 </p>
 
+##### 3. Reminder Notifications
+<p align="center">
+  Set alerts (10, 30, or 60 mins before) that notify users via email.
+</p>
+
+<p align="center">
+  <img src="images/feature_reminder_notifications_addTask config.png" alt="Reminder notification addTask config" width="50%">
+  <img src="images/example_gmail_notification.png" alt="Gmail notification example from RainCheck" width="50%">
+</p>
+
+##### 4. Custom Tags
+Create/Edit/Delete tasks using dropdown tag names and emojis.
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=GdjuhhC6-yw" target="_blank" rel="noopener noreferrer">
+    Watch Custom Tags Demo on YouTube
+  </a>
+</p>
+
+##### 5. Secure User Accounts
+Users sign up and log in to access their saved tasks and personalized forecasts.
+
+<p align="center">
+  <img src="images/feature_user_login.png" alt="User login and signup in RainCheck" width="500px">
+</p>
+
+## Installation
+
+Follow these steps to clone, build, and run RainCheck.
+
+### Java Prerequisite
+
+RainCheck requires [Java JDK 17](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html) or higher to build and run.
+
+To simplify setup, we recommend using an IDE that includes a bundled JDK 17 or higher, such as recent versions of IntelliJ IDEA or Eclipse. This way, you won’t need to install Java separately on your system.
+
+If your IDE does not include a bundled JDK or you want to use a specific Java version, you will need to install Java JDK 17+ manually. 
+
+Throughout this README, we use IntelliJ IDEA which does include a bundled JDK 17 or higher.
+
+### 1. Clone the Repository
+Open a terminal and run:
+```bash
+git clone https://github.com/Ethan-bro/RainCheck.git
+cd RainCheck
+```
+<p align="center">
+  <img src="images/clone_project.png" alt="Cloning project terminal" width="550px">
+</p>
+
+### 2. Configure Secrets
+
+RainCheck requires API keys to access external services like Supabase and Visual Crossing Weather.
+
+- A sample `config/secrets.json` file is **already included** in the repo to make setup easy.
+- You **must** replace `"weather_api_key"` with your own if the app fails to load weather (1000 free API calls/month).
+
+```json
+{
+  "database_url": "https://jbjoxiauljridpmnunuh.supabase.co",
+  "database_anon_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "weather_api_key": "{your_own_key_here}",
+  "email_username": "your_email@gmail.com",
+  "email_password": "sixteenletterpass"
+}
+```
+> Note:
+> `email_username` must be a valid email address (Avoid school or work emails, as they may block automated emails — use a personal email instead.)
+> `email_password` must be exactly 16 letters, no numbers, no spaces, no special characters.
+---
+> **Why is this file public?**  
+> The `secrets.json` file is public in this repo because:
+> - Our database and weather keys are used in class for development and demo purposes.
+> - We frequently reset the backend, so long-term security isn’t a concern.
+> - This simplifies setup for teammates and TAs who are testing or marking the project.
+> **How should *you* handle secrets?**
+> If you're building your own version or using your own backend:
+> - **Do NOT commit secrets** to GitHub — add `config/secrets.json` to your `.gitignore`
+> - **Create the file locally** and keep it private
+> - **Use environment variables** where possible (e.g., `.env` files + a dotenv library)
+
+### 3. Run the Project (using an IDE)
+Open the project in IntelliJ IDEA, Eclipse, or your preferred Java IDE and run the `Main` class.
+
+IntelliJ may prompt you to configure the JDK if it's not set up yet.  
+To do this:
+
+1. Go to `File` → `Project Structure` → `Project`
+2. Under `Project SDK`, click the dropdown and select `Download JDK`
+3. Choose your desired JDK version (Java 17 or later) and install it
+4. Click `Apply` and then `OK` after download completes
+
+<p align="center">
+  <img src="images/intellij_setup_jdk.png" alt="IntelliJ Project Structure SDK setup dialog" width="400px">
+</p>
+
+After the SDK is set up, simply run the `Main.java` class to launch RainCheck.
+> `Main.java` is located at `RainCheck/src/main/java/app/Main.java`.
+
+At the time of writing this readme, the program runs successfully and looks like: 
+
+<p align="center">
+  <img src="images/run_application.png" alt="RainCheck running in IDE" width="500px">
+</p>
+
+> ✅ **If everything works:** RainCheck will launch and display the weekly calendar interface.
+>
+> ❌ **If you get errors:** Check the [Troubleshooting](#troubleshooting) and [Common Installation Issues & Fixes](#common-installation-issues--fixes) sections below.
+
+## Troubleshooting
+
+## System Compatibility
+RainCheck is compatible with:
+- Windows - fully supported
+- macOS - fully supported
+- Linux - may work but untested (check Java 17+ configuration)
+
+Note for macOS/Linux: Verify IDE uses Java 17+ with matching compiler
+
+## Common Installation Issues & Fixes
+
+### Git Clone Fails
+
+Symptom: When running
+```bash
+git clone https://github.com/Ethan-bro/RainCheck.git
+```
+You receive the error:
+```bash
+fatal: repository 'https://github.com/Ethan-bro/RainCheck.git/' not found
+```
+Fixes:
+1. Verify the repository URL:
+ - Check for typos in the URL
+ - Remove any extra characters like quotes or trailing slashes
+ - Verify the repository exists and is public
+ - Correct URL should be: https://github.com/Ethan-bro/RainCheck.git
+2. Check your internet connection:
+ - Ensure you have stable internet access
+ - Try accessing ```github.com``` in your browser
+3. Try SSH cloning instead:
+```bash
+git clone git@github.com:Ethan-bro/RainCheck.git
+```
+
+> Notes:
+> First-time GitHub users may need to set up Git credentials
+> Corporate networks might block Git operations
+
+### Java SDK Missing
+
+Symptom: 'No SDK' errors in IntelliJ <br />
+Fix:
+1. File > Project Structure > Project
+2. Set SDK to JDK 17 (or higher). Download if missing
+3. Apply changes
+
+For detailed JDK setup instructions with visual guidance, see: <br />
+[Setting Up Java JDK/SDK](#3-run-the-project-using-an-ide)
+
+### `secrets.json` Problems
+
+Symptom: Signup/Login and weather retrieval features don't work  
+Fix: Ensure the file exists in `config/secrets.json` with the following structure:
+
+```json
+{
+  "database_url": "https://jbjoxiauljridpmnunuh.supabase.co",
+  "database_anon_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "weather_api_key": "{your_own_key_here}",
+  "email_username": "your_email@gmail.com",
+  "email_password": "sixteenletterpass"
+}
+```
+For more info, see the [Configure Secrets](#2-configure-secrets) section.
+---
+If you experience issues with weather data not loading correctly, check the `USE_FAKE_DATA` variable in
+`src/main/java/data_access/WeatherApiService.java`. <br />
+
+This variable controls whether RainCheck fetches real weather data from the API or uses fake (mock) data for testing and offline development.
+ - When `USE_FAKE_DATA` is set to `false` (default), RainCheck fetches live weather data using your API key from `secrets.json`.
+ - When set to `true`, the app uses pre-defined fake weather data, which is useful for faster testing or when offline.
+Make sure to set this variable according to your needs and verify that your API key in secrets.json is valid to avoid errors.
+
+## Common IntelliJ IDEA Issues & Fixes
+### 1. **Project Build or Compilation Errors**
+**Symptom:** Errors during build or run, even though the code seems correct.
+**Fix:** Follow this tutorial to resolve common build issues in IntelliJ IDEA:
+[How to fix common errors in IntelliJ](https://www.youtube.com/watch?v=hbXsdKGG0Pg&ab_channel=BitsNBytes)
+
+### 2. **Running the Application: Errors or Blank Screen**
+**Symptom:** Application doesn't start or shows a blank screen.
+**Fix:** Ensure all configurations are correct and dependencies are properly set up. <br />
+Refer to the tutorials above for detailed guidance.
+
 ---
 
-## 🌦️ Domain: Weather-Aware Task Planning
+## Usage
 
-RainCheck helps users schedule and manage daily tasks while providing context-aware weather data. Hourly forecasts are displayed in a timeline that persists regardless of task updates. Tasks and weather are visually aligned for smarter planning.
+> For the demos below (provided as YouTube video links), weather data is simulated to showcase the UI and weather-aware features.  
+> You can toggle between fake and real data by modifying the `USE_FAKE_DATA` variable in:  
+> `src/main/java/data_access/WeatherApiService.java`.
 
----
+Modify the `USE_FAKE_DATA` variable as follows:
 
-## 🧩 Software Specification
+```java
+private static final boolean USE_FAKE_DATA = true; // or false
+```
 
-- Calendar-style timeline with **hourly weather forecasts**
-- **Tasks appear beside the forecast** at their scheduled hour
-- Weather display remains constant, even if tasks are edited or deleted
-- Tasks can be:
-  - ✅ **Created, edited, deleted, or marked as completed**
-  - 🏷️ Assigned a **priority** (High, Medium, Low)
-  - 🧠 Tagged with a **custom name + emoji**
-- Secure **account-based login system** using local file storage
-- Weather data fetched from the **Visual Crossing Weather API**
-- Personalized task list and weather context are loaded on login
+This allows you to easily switch between mock data (for testing/dev) and live weather API responses.
 
----
+**DEMO VIDEOS** 🎬  
+🔴 [RainCheck App Demo – PART 1](https://www.youtube.com/watch?v=zJ1nZ8WgueA)  
+🔴 [RainCheck App Demo – PART 2](https://www.youtube.com/watch?v=uEL7TlSQXfw)
 
-## 👥 User Stories
+## License
 
-- **[Team Story]** George sees a calendar with hourly weather forecasts. As he adds tasks, they appear next to the relevant hour. If he deletes or reschedules a task, the weather remains unchanged.
+This project is licensed under the [MIT License](LICENSE).
 
-- **[Kian’s Story]** Based on a task’s priority, its display color changes to help George distinguish urgent items from less critical ones.
+You are free to use, modify, and distribute this software for personal or commercial use, provided that you include the original copyright and license.
 
-- **[Sean’s Story]** Users can create custom tags (e.g., 📚 School, 🏋️ Gym) with a name and an emoji chosen from a dropdown. Tags improve task categorization.
+For more details, see the [LICENSE](LICENSE) file in this repository.
 
-- **[Brad’s Story]** George adds tasks manually or using voice-to-text, which transcribes and previews input before saving. He can also assign priority levels when creating or editing tasks.
+## Feedback
 
-- **[Clara’s Story]** George wants to edit, delete, and mark tasks as done. This helps him stay on track and organized.
+We welcome feedback to improve RainCheck!
 
-- **[Ethan’s Story]** George creates an account and logs in using a username and password. His tasks and weather preferences are saved securely.
+If you encounter bugs, usability issues, or have feature suggestions, please let us know via this form:  
+[📋 Submit Feedback](https://forms.gle/f4TtfUXz5E6zRzN46)
 
----
+### What counts as valid feedback?
+- Bug reports (UI errors, features not working, crashes)
+- Feature suggestions (e.g., new task filters, calendar views)
+- UI/UX improvement ideas
+- Accessibility or usability issues
 
-## 📦 Domain Model: Proposed Entities
+### What to expect when submitting feedback:
+- We review feedback weekly during development cycles
+- Critical bugs or UI issues may be prioritized
+- We may follow up if more info is needed
 
-| **Entity**         | **Attributes / Description**                                                                  |
-|--------------------|-----------------------------------------------------------------------------------------------|
-| `User`             | `username`, `password`                                                                        |
-| `Task`             | `title`, `scheduledDateTime`, `isCompleted`, `temperature`, `priority`, `displayColor`, `tag` |
-| `Tag`              | `tagName`, `tagEmoji` (e.g., `"📚"`)                                                          |
+## Contributing
 
----
+Want to contribute to RainCheck? We appreciate your interest!
 
-## 🌐 Weather API Integration
+### How to contribute
 
-- Uses the **Visual Crossing Weather API** for hourly weather data
-- Supports temperature, conditions, precipitation, wind, and icon imagery
-- Data is fetched via **Java HTTP requests**
-- Supports **JSON response format**
-- Up to **1,000 free API calls/day** under the free tier
-- Weather is parsed and mapped to `WeatherForecast` entities
+1. **Fork** this repository using the top-right corner of the GitHub page.
+2. **Clone** your forked repo:
+  ```bash
+     git clone https://github.com/Ethan-bro/RainCheck.git
+  ```
+3. Create a new branch:
+  ```bash
+  git checkout -b your-feature-name
+  ```
+4. Make your changes, test them locally, then push:
+  ```bash
+  git push origin your-feature-name
+  ```
+5. Submit a pull request (PR) with a clear description of what you changed and why.
 
----
+### Guidelines for Pull Requests
+- Keep PRs focused and **small** — ideally, changes should address a single feature or fix and be under 200 lines of code to facilitate easier review. Avoid mixing unrelated changes in one PR.
+- Clearly describe your changes in the PR
+- Follow the existing folder structure and naming conventions
+- Check that your code builds and runs before submitting
+- Respect the project's purpose and scope
 
-## 🧪 Project Focus by Feature/Member
-
-| **Member** | **Feature Responsibility**                                                           |
-|------------|--------------------------------------------------------------------------------------|
-| Ethan      | User account creation and login                                                      |
-| Brad       | Task input methods including manual entry                                            |
-| Kian       | Task priority visualization with dynamic color coding for urgency                    |
-| Sean       | Custom task tags with name and emoji selection from dropdown                         |
-| Clara      | Task management: editing, deleting, and marking tasks as completed                   |
-| Team       | Display of hourly weather forecasts and integration with Visual Crossing Weather API |
-
----
-
-## 📅 Group Coordination
-
-- **Meeting Time**: Thursdays, 5–6 PM (before tutorial)
-- **Communication**: Instagram group chat + in-person meetings
+### Review Process
+- We review all PRs manually
+- Small changes (e.g., UI fixes) may be merged quickly
+- Larger or architectural changes may require more time and discussion
+- We reserve the right to reject contributions that:
+  - Conflict with the project's vision
+  - Violate license terms
+  - Introduce unnecessary complexity

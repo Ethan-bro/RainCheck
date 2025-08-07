@@ -1,5 +1,7 @@
 package use_case.deleteTask;
 
+import use_case.editTask.EditTaskOutputData;
+
 /**
  * The output boundary for the DeleteTask Use Case.
  */

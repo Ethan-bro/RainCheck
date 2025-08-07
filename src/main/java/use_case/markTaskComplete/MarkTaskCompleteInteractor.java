@@ -1,4 +1,4 @@
-package use_case.MarkTaskComplete;
+package use_case.markTaskComplete;
 
 import entity.Task;
 

@@ -1,9 +1,9 @@
-package use_case.MarkTaskComplete;
+package use_case.markTaskComplete;
 
 import entity.TaskID;
 
 /**
- * Output Data for the MarkTaskComplete Use Case.
+ * Output Data for the markTaskComplete Use Case.
  */
 public class MarkTaskCompleteOutputData {
      private final TaskID taskId;

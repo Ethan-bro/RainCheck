@@ -6,7 +6,7 @@ import okhttp3.*;
 import use_case.deleteTask.DeleteTaskDataAccessInterface;
 import use_case.editTask.EditTaskDataAccessInterface;
 import use_case.listTasks.TaskDataAccessInterface;
-import use_case.MarkTaskComplete.MarkTaskCompleteDataAccessInterface;
+import use_case.markTaskComplete.MarkTaskCompleteDataAccessInterface;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -77,6 +77,12 @@ public class SupabaseTaskDataAccessObject implements
                 for (JsonElement el : taskArray) {
                     result.add(jsonToTask(el.getAsJsonObject()));
                 }
+
+                System.out.println("Tasks loaded for user " + username + ":");
+                for (Task t : result) {
+                    System.out.println(" -> " + t.getTaskInfo().getId());
+                }
+
                 return result;
             }
         } catch (Exception e) {
@@ -116,11 +122,18 @@ public class SupabaseTaskDataAccessObject implements
 
     @Override
     public Task getTaskById(String username, TaskID taskId) {
-        for (Task task : getTasks(username)) {
+        System.out.println("[DAO] Searching for task ID: " + taskId + " for user: " + username);
+        List<Task> tasks = getTasks(username);
+        System.out.println("[DAO] Retrieved " + tasks.size() + " tasks for user: " + username);
+
+        for (Task task : tasks) {
+            System.out.println("[DAO] Checking task ID: " + task.getTaskInfo().getId());
             if (task.getTaskInfo().getId().equals(taskId)) {
+                System.out.println("[DAO] Task matched for ID: " + taskId);
                 return task;
             }
         }
+        System.out.println("[DAO] Task not found for ID: " + taskId);
         return null;
     }
 
@@ -180,6 +193,7 @@ public class SupabaseTaskDataAccessObject implements
 
     @Override
     public void updateTask(String username, Task updatedTask) {
+        System.out.println("------UPDATE TASK IS CALLED. Username " + username + " and ID " + updatedTask.getTaskInfo().getId());
         List<Task> tasks = getTasks(username);
         for (int i = 0; i < tasks.size(); i++) {
             if (tasks.get(i).getTaskInfo().getId().equals(updatedTask.getTaskInfo().getId())) {

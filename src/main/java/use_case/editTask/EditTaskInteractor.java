@@ -28,12 +28,15 @@ public class EditTaskInteractor implements EditTaskInputBoundary {
     @Override
     public void execute(String username, EditTaskInputData inputData) {
         Task updatedTask = inputData.getUpdatedTask();
+        System.out.println("[Interactor] Looking for task ID: " + updatedTask.getTaskInfo().getId());
         Task existingTask = dataAccess.getTaskById(username, updatedTask.getTaskInfo().getId());
 
         if (existingTask == null) {
+            System.out.println("[Interactor] Task not found for ID: " + updatedTask.getTaskInfo().getId());
             presenter.prepareFailView("Task not found.");
             return;
         }
+        System.out.println("[Interactor] Found existing task with ID: " + existingTask.getTaskInfo().getId());
 
         TaskInfo info = updatedTask.getTaskInfo();
 
@@ -45,11 +48,6 @@ public class EditTaskInteractor implements EditTaskInputBoundary {
 
         if (info.getTaskName().length() > Constants.CHAR_LIMIT) {
             presenter.prepareFailView("Task name exceeds character limit of " + Constants.CHAR_LIMIT);
-            return;
-        }
-
-        if (info.getStartDateTime() == null || info.getEndDateTime() == null) {
-            presenter.prepareFailView("Start and end time must be set.");
             return;
         }
 

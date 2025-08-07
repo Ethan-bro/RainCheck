@@ -1,4 +1,4 @@
-package use_case.MarkTaskComplete;
+package use_case.markTaskComplete;
 
 /**
  * Input Boundary for actions which are related to marking task as complete.
