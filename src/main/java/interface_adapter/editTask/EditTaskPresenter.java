@@ -24,7 +24,7 @@ public class EditTaskPresenter implements EditTaskOutputBoundary {
     public void prepareFailView(String errorMessage) {
         EditTaskState newState = new EditTaskState();
         newState.setSuccess(false);
-        newState.setError(errorMessage);
+        newState.setError("task failed to update");
         viewModel.setState(newState);
         viewModel.firePropertyChanged();
     }

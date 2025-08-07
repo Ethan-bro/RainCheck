@@ -1,8 +1,8 @@
 package interface_adapter.markTaskComplete;
 
 import interface_adapter.task.TaskViewModel;
-import use_case.MarkTaskComplete.MarkTaskCompleteOutputBoundary;
-import use_case.MarkTaskComplete.MarkTaskCompleteOutputData;
+import use_case.markTaskComplete.MarkTaskCompleteOutputBoundary;
+import use_case.markTaskComplete.MarkTaskCompleteOutputData;
 
 public class MarkTaskCompletePresenter implements MarkTaskCompleteOutputBoundary {
 

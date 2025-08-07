@@ -1,10 +1,10 @@
-package use_case.MarkTaskComplete;
+package use_case.markTaskComplete;
 
 import entity.Task;
 import entity.TaskID;
 
 /**
- * DAO for the MarkTaskComplete Use Case.
+ * DAO for the markTaskComplete Use Case.
  */
 public interface MarkTaskCompleteDataAccessInterface {
 
