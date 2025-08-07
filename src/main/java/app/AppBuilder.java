@@ -7,6 +7,7 @@ import data_access.SupabaseTaskDataAccessObject;
 import data_access.SupabaseTagDataAccessObject;
 import data_access.SupabaseUserDataAccessObject;
 
+import interface_adapter.EditTag.EditTagViewModel;
 import interface_adapter.ManageTags.ManageTagsViewModel;
 
 import data_access.WeatherApiService;
@@ -16,7 +17,7 @@ import data_access.FileNotificationDataAccess;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.addTask.AddTaskViewModel;
 
-import interface_adapter.create_customTag.CCTViewModel;
+import interface_adapter.CreateTag.CCTViewModel;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.logout.LogoutController;
@@ -62,6 +63,7 @@ public class AppBuilder {
     private LoggedInViewModel loggedInViewModel;
     private SignupViewModel signupViewModel;
     private CCTViewModel cctViewModel;
+    private EditTagViewModel editTagViewModel;
     private ManageTagsViewModel manageTagsViewModel;
     private AddTaskViewModel addTaskViewModel;
     private ListTasksUseCaseFactory listTasksFactory;
@@ -169,6 +171,7 @@ public class AppBuilder {
         loggedInViewModel = new LoggedInViewModel();
         signupViewModel = new SignupViewModel();
         cctViewModel = new CCTViewModel();
+        editTagViewModel = new EditTagViewModel();
         manageTagsViewModel = new ManageTagsViewModel(tagDao, userDao.getCurrentUsername());
         addTaskViewModel = new AddTaskViewModel(tagDao, userDao.getCurrentUsername());
         editTaskViewModel = new EditTaskViewModel(tagDao, userDao.getCurrentUsername());
@@ -297,6 +300,20 @@ public class AppBuilder {
         return this;
     }
 
+    public AppBuilder addEditTagView() {
+        if (this.editTagViewModel == null) return this;
+
+        EditTagView editTagView = EditTagUseCaseFactory.create(
+                this.viewManagerModel,
+                this.editTagViewModel,
+                this.manageTagsViewModel,
+                this.tagDao
+        );
+        cardPanel.add(editTagView, EditTagView.getViewName());
+        viewMap.put(EditTagView.getViewName(), editTagView);
+        return this;
+    }
+
     public AppBuilder addManageTagsView() {
         if (this.manageTagsViewModel == null) return this;
 
@@ -304,6 +321,7 @@ public class AppBuilder {
                 viewManagerModel,
                 manageTagsViewModel,
                 cctViewModel,
+                editTagViewModel,
                 tagDao
         );
 

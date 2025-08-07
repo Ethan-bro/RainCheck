@@ -261,7 +261,7 @@ Refer to the tutorials above for detailed guidance.
 
 ## Usage
 
-> For the demo below (provided as a YouTube video link), weather data is simulated to showcase the UI and weather-aware features.  
+> For the demos below (provided as YouTube video links), weather data is simulated to showcase the UI and weather-aware features.  
 > You can toggle between fake and real data by modifying the `USE_FAKE_DATA` variable in:  
 > `src/main/java/data_access/WeatherApiService.java`.
 
@@ -273,8 +273,9 @@ private static final boolean USE_FAKE_DATA = true; // or false
 
 This allows you to easily switch between mock data (for testing/dev) and live weather API responses.
 
-**DEMO VIDEO** 🎬  
-[🔴 **WATCH THE FULL DEMO HERE** 🔴](https://www.youtube.com/watch?v=zJ1nZ8WgueA)
+**DEMO VIDEOS** 🎬  
+🔴 [RainCheck App Demo – PART 1](https://www.youtube.com/watch?v=zJ1nZ8WgueA)  
+🔴 [RainCheck App Demo – PART 2](https://www.youtube.com/watch?v=uEL7TlSQXfw)
 
 ## License
 

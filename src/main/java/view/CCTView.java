@@ -2,8 +2,8 @@ package view;
 
 import entity.CustomTag;
 import interface_adapter.ViewManagerModel;
-import interface_adapter.create_customTag.CCTController;
-import interface_adapter.create_customTag.CCTViewModel;
+import interface_adapter.CreateTag.CCTController;
+import interface_adapter.CreateTag.CCTViewModel;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;

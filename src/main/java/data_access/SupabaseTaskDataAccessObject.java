@@ -6,7 +6,7 @@ import okhttp3.*;
 import use_case.deleteTask.DeleteTaskDataAccessInterface;
 import use_case.editTask.EditTaskDataAccessInterface;
 import use_case.listTasks.TaskDataAccessInterface;
-import use_case.MarkTaskComplete.MarkTaskCompleteDataAccessInterface;
+import use_case.markTaskComplete.MarkTaskCompleteDataAccessInterface;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -237,7 +237,7 @@ public class SupabaseTaskDataAccessObject implements
         if (info.getTag() != null) {
             JsonObject tag = new JsonObject();
             tag.addProperty("tagName", info.getTag().getTagName());
-            tag.addProperty("tagEmoji", info.getTag().getTagEmoji());
+            tag.addProperty("tagEmoji", info.getTag().getTagIcon());
             json.add("customTag", tag);
         }
 

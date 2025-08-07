@@ -51,11 +51,6 @@ public class EditTaskInteractor implements EditTaskInputBoundary {
             return;
         }
 
-        if (info.getStartDateTime() == null || info.getEndDateTime() == null) {
-            presenter.prepareFailView("Start and end time must be set.");
-            return;
-        }
-
         if (!info.getEndDateTime().isAfter(info.getStartDateTime())) {
             presenter.prepareFailView("End time must be after start time.");
             return;

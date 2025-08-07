@@ -1,10 +1,12 @@
 package view;
 
 import entity.CustomTag;
+import interface_adapter.EditTag.EditTagViewModel;
+import interface_adapter.ManageTags.ManageTagsState;
 import interface_adapter.ViewManagerModel;
-import interface_adapter.create_customTag.CCTViewModel;
+import interface_adapter.CreateTag.CCTViewModel;
 import interface_adapter.ManageTags.ManageTagsViewModel;
-import interface_adapter.ManageTags.EditTagController;
+import interface_adapter.EditTag.EditTagController;
 import interface_adapter.ManageTags.DeleteTagController;
 import interface_adapter.events.TagChangeEventNotifier;
 
@@ -23,7 +25,7 @@ public class ManageTagsView extends JPanel implements ActionListener {
     private final ViewManagerModel viewManagerModel;
     private final ManageTagsViewModel manageTagsVM;
     private final CCTViewModel cctViewModel;
-    private final EditTagController editTagController;
+    private final EditTagViewModel editTagViewModel;
     private final DeleteTagController deleteTagController;
 
     private final JComboBox<CustomTag> customTagCombo;
@@ -38,13 +40,13 @@ public class ManageTagsView extends JPanel implements ActionListener {
             ViewManagerModel viewManagerModel,
             ManageTagsViewModel manageTagsVM,
             CCTViewModel cctViewModel,
-            EditTagController editTagController,
+            EditTagViewModel editTagViewModel,
             DeleteTagController deleteTagController
     ) {
         this.viewManagerModel = viewManagerModel;
         this.manageTagsVM = manageTagsVM;
         this.cctViewModel = cctViewModel;
-        this.editTagController = editTagController;
+        this.editTagViewModel = editTagViewModel;
         this.deleteTagController = deleteTagController;
 
         // Subscribe to global tag change events
@@ -75,7 +77,7 @@ public class ManageTagsView extends JPanel implements ActionListener {
                                                           boolean isSelected, boolean cellHasFocus) {
                 super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
                 if (value instanceof CustomTag tag) {
-                    setText(tag.getTagName() + " " + tag.getTagEmoji());
+                    setText(tag.getTagName() + " " + tag.getTagIcon());
                 }
                 return this;
             }
@@ -103,7 +105,6 @@ public class ManageTagsView extends JPanel implements ActionListener {
 
         // --- Create New Tag ---
         createTagButton = new JButton("Create Custom Tag");
-        stylePrimaryButton(createTagButton);
         JPanel createPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         createPanel.setBackground(Color.WHITE);
         createPanel.add(createTagButton);
@@ -166,6 +167,7 @@ public class ManageTagsView extends JPanel implements ActionListener {
             return;
         }
 
+        // get the selected tag:
         CustomTag selectedTag = (CustomTag) customTagCombo.getSelectedItem();
         if (selectedTag == null) {
             JOptionPane.showMessageDialog(this, "Please select a tag first.");
@@ -173,10 +175,19 @@ public class ManageTagsView extends JPanel implements ActionListener {
         }
 
         if (e.getSource() == editTagButton) {
-            String newName = JOptionPane.showInputDialog(this, "Enter new name for tag:", selectedTag.getTagName());
-            if (newName != null && !newName.trim().isEmpty()) {
-                editTagController.execute(selectedTag.getTagName(), newName.trim(), selectedTag.getTagEmoji());
-            }
+
+            //.set the current tag to be edited
+            ManageTagsState state = manageTagsVM.getState();
+            state.setCurrTag(selectedTag);
+
+            // let EditTagView know a tag has been selected to edit
+            editTagViewModel.loadTag(selectedTag);
+
+            // switch to edit tag view
+            editTagViewModel.setUsername(manageTagsVM.getUsername());
+            viewManagerModel.setState(EditTagView.getViewName());
+            viewManagerModel.firePropertyChanged();
+
         } else if (e.getSource() == deleteTagButton) {
             int confirm = JOptionPane.showConfirmDialog(this,
                     "Are you sure you want to delete the tag \"" + selectedTag.getTagName() + "\"?",
