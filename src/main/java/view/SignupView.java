@@ -152,7 +152,7 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
         combinedPanel.add(loginPanel);
 
         // Add Gmail Setup Instructions button
-        JButton gmailButton = GmailSetupInstructionsFactory.createButton(viewManagerModel, SignupView.getViewName());
+        JButton gmailButton = GmailSetupInstructionsFactory.createButton(viewManagerModel, getViewName());
         gmailButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         combinedPanel.add(Box.createVerticalStrut(10)); // spacing between login and button
         combinedPanel.add(gmailButton);

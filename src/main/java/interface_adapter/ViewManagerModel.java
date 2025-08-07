@@ -21,10 +21,6 @@ public class ViewManagerModel extends ViewModel<String> {
         this.viewMap = viewMap;
     }
 
-    public void addToViewMap(String name, JPanel view) {
-        this.viewMap.put(name, view);
-    }
-
     public JPanel getView(String viewName) {
         if (viewMap == null) {
             throw new IllegalStateException("View map not initialized. Call setViewMap first.");

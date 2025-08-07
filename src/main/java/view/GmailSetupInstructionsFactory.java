@@ -4,6 +4,7 @@ import interface_adapter.ViewManagerModel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Map;
 
 public class GmailSetupInstructionsFactory {
 
@@ -18,8 +19,10 @@ public class GmailSetupInstructionsFactory {
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         button.addActionListener(e -> {
-            GmailInstructionsView instructionsView = new GmailInstructionsView(viewManagerModel, currentViewName);
-            viewManagerModel.addToViewMap(GmailInstructionsView.getViewName(), instructionsView);
+            GmailInstructionsView instructionsView = (GmailInstructionsView) viewManagerModel.getView(GmailInstructionsView.getViewName());
+
+            instructionsView.setPreviousViewName(currentViewName);
+
             viewManagerModel.setState(GmailInstructionsView.getViewName());
             viewManagerModel.firePropertyChanged();
         });

@@ -8,8 +8,9 @@ import java.awt.*;
 public class GmailInstructionsView extends JPanel {
 
     private static final String viewName = "gmail instructions";
+    private String previousViewName;
 
-    public GmailInstructionsView(ViewManagerModel viewManagerModel, String previousViewName) {
+    public GmailInstructionsView(ViewManagerModel viewManagerModel) {
         setLayout(new BorderLayout());
         setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
@@ -61,6 +62,10 @@ public class GmailInstructionsView extends JPanel {
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         bottomPanel.add(goBack);
         add(bottomPanel, BorderLayout.SOUTH);
+    }
+
+    public void setPreviousViewName(String previousViewName) {
+        this.previousViewName = previousViewName;
     }
 
     public static String getViewName() {
