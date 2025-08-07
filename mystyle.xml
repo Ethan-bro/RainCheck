@@ -601,15 +601,10 @@
         <module name="CustomImportOrder">
             <!-- Custom project packages first, alphabetically sorted -->
             <property name="customImportOrderRules"
-                      value="APP_PACKAGE###DATA_ACCESS_PACKAGE###ENTITY_PACKAGE###INTERFACE_ADAPTER_PACKAGE###USE_CASE_PACKAGE###VIEW_PACKAGE###STATIC###STANDARD_JAVA_PACKAGE###SPECIAL_IMPORTS###THIRD_PARTY_PACKAGE"/>
+                      value="PROJECT_PACKAGES###STATIC###STANDARD_JAVA_PACKAGE###SPECIAL_IMPORTS###THIRD_PARTY_PACKAGE"/>
 
-            <!-- Define regex patterns for your project packages -->
-            <property name="appPackageRegExp" value="^app\."/>
-            <property name="dataAccessPackageRegExp" value="^data_access\."/>
-            <property name="entityPackageRegExp" value="^entity\."/>
-            <property name="interfaceAdapterPackageRegExp" value="^interface_adapter\."/>
-            <property name="useCasePackageRegExp" value="^use_case\."/>
-            <property name="viewPackageRegExp" value="^view\."/>
+            <!-- Define your project package regex patterns -->
+            <property name="projectPackagesRegExp" value="^(app|data_access|entity|interface_adapter|use_case|view)\." />
 
             <!-- Standard packages -->
             <property name="standardPackageRegExp" value="^java\."/>
@@ -623,7 +618,7 @@
         <module name="IllegalImport"/>
 
         <module name="ImportOrder">
-            <!-- Ensure the order of the groups is enforced -->
+            <!-- Enforce order with your project packages first -->
             <property name="groups" value="app,data_access,entity,interface_adapter,use_case,view,java,javax,org"/>
             <property name="ordered" value="true"/>
             <property name="separated" value="true"/>
