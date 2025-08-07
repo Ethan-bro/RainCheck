@@ -176,7 +176,6 @@ public class CCTView extends JPanel implements PropertyChangeListener {
         CustomTag tag = new CustomTag(tagName, icon);
         createCustomTagController.execute(tag, createCustomTagViewModel.getUsername());
 
-        createButton.setEnabled(false);
     }
 
     private void resetForm() {
@@ -215,9 +214,10 @@ public class CCTView extends JPanel implements PropertyChangeListener {
                         "Custom tag created successfully!",
                         "Success",
                         JOptionPane.INFORMATION_MESSAGE);
+
                 resetForm();
 
-                viewManagerModel.setState(LoggedInView.getViewName());  // Switch back to main logged in view
+                viewManagerModel.setState(ManageTagsView.getViewName());  // Switch back to main logged in view
                 viewManagerModel.firePropertyChanged();
             }
             case "Failed" -> {

@@ -70,16 +70,20 @@ public class ManageTagsView extends JPanel implements ActionListener {
         List<CustomTag> tagOptions = manageTagsVM.getTagOptions();
         customTagCombo = new JComboBox<>(tagOptions.toArray(new CustomTag[0]));
         customTagCombo.setPreferredSize(new Dimension(250, 30));
-        customTagCombo.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        Font emojiFont = new Font("Segoe UI Emoji", Font.PLAIN, 14);
+        customTagCombo.setFont(emojiFont);
         customTagCombo.setRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index,
                                                           boolean isSelected, boolean cellHasFocus) {
-                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                if (value instanceof CustomTag tag) {
-                    setText(tag.getTagName() + " " + tag.getTagIcon());
+                JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value == null) {
+                    label.setText("Create a tag!");
+                    label.setForeground(Color.GRAY);
+                } else {
+                    label.setText(value.toString());  // this uses your CustomTag.toString()
                 }
-                return this;
+                return label;
             }
         });
 
