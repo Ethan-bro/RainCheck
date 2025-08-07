@@ -114,6 +114,7 @@ public class ManageTagsView extends JPanel implements ActionListener {
         createPanel.add(createTagButton);
         centerPanel.add(createPanel);
         centerPanel.add(Box.createVerticalStrut(20));
+        stylePrimaryButton(createTagButton);
 
         add(centerPanel, BorderLayout.CENTER);
 
@@ -146,6 +147,8 @@ public class ManageTagsView extends JPanel implements ActionListener {
         button.setForeground(Color.WHITE);
         button.setFocusPainted(false);
         button.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        button.setContentAreaFilled(true);
+        button.setOpaque(true);
     }
 
     private void styleSecondaryButton(JButton button) {
@@ -154,6 +157,8 @@ public class ManageTagsView extends JPanel implements ActionListener {
         button.setForeground(Color.BLACK);
         button.setFocusPainted(false);
         button.setBorder(BorderFactory.createEmptyBorder(8, 18, 8, 18));
+        button.setContentAreaFilled(true);
+        button.setOpaque(true);
     }
 
     @Override
