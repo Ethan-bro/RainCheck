@@ -13,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Enumeration;
 
 import static use_case.createCustomTag.CustomTagIcons.IconList;
 
@@ -24,6 +25,7 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
     private final ManageTagsViewModel manageTagsViewModel;
     private final EditTagController editTagController;
 
+    private CustomTag oldTag;
     private final JTextField tagNameTextField = new JTextField(20);
     private final ButtonGroup iconGroup = new ButtonGroup();
     private final JButton confirmButton = new JButton("Confirm Edit");
@@ -37,7 +39,10 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
         this.viewManagerModel = viewManagerModel;
         this.manageTagsViewModel = manageTagsViewModel;
         this.editTagViewModel = model;
+        editTagViewModel.addPropertyChangeListener(this);
         this.editTagController = controller;
+
+        this.oldTag = manageTagsViewModel.getState().getCurrTag();
 
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
@@ -64,6 +69,7 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
 
         tagNameTextField.setFont(new Font("SansSerif", Font.PLAIN, 16));
         tagNameTextField.setPreferredSize(new Dimension(220, 28));
+
         tagNamePanel.add(tagNameTextField);
 
         centerPanel.add(tagNamePanel);
@@ -223,7 +229,7 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
 
         if (e.getSource() == confirmButton) {
             String tagName = tagNameTextField.getText().trim();
-            String selectedIcon = iconGroup.getSelection().toString();
+            String selectedIcon = iconGroup.getSelection().getActionCommand();
 
             CustomTag supposedTag = new CustomTag(tagName, selectedIcon);
             CustomTag oldTag = manageTagsViewModel.getState().getCurrTag();
@@ -270,6 +276,29 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
                 String errorMsg = editTagViewModel.getState().getErrorMsg();
                 JOptionPane.showMessageDialog(this, errorMsg, "Error", JOptionPane.ERROR_MESSAGE);
                 confirmButton.setEnabled(true);
+            }
+
+            case "LoadTag" -> {
+                oldTag = manageTagsViewModel.getState().getCurrTag();
+                if (oldTag != null) {
+                    String oldName = oldTag.getTagName();
+                    if (oldName != null) {
+                        tagNameTextField.setText(oldName);
+                    }
+
+                    String oldIcon = oldTag.getTagIcon();
+                    if (oldIcon != null) {
+                        for (Enumeration<AbstractButton> buttons = iconGroup.getElements();
+                             buttons.hasMoreElements(); ) {
+                            JToggleButton btn = (JToggleButton) buttons.nextElement();
+                            if (oldIcon.equals(btn.getActionCommand())) {
+                                btn.setSelected(true);
+                                break;
+                            }
+                        }
+                    }
+
+                }
             }
         }
     }

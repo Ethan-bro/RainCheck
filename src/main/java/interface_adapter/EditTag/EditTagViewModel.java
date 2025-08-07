@@ -1,5 +1,6 @@
 package interface_adapter.EditTag;
 
+import entity.CustomTag;
 import interface_adapter.ViewModel;
 
 public class EditTagViewModel extends ViewModel<EditTagState> {
@@ -18,5 +19,10 @@ public class EditTagViewModel extends ViewModel<EditTagState> {
 
     public String getUsername() {
         return username;
+    }
+
+    public void loadTag(CustomTag tag) {
+
+        firePropertyChanged("LoadTag");
     }
 }

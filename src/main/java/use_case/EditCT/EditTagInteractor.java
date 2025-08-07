@@ -26,13 +26,6 @@ public class EditTagInteractor implements EditTagInputBoundary {
 
     public void execute(EditTagInputData inputData) {
 
-        // check if any of the fields are blank (assume old and new tag are complete)
-        // if (oldName == null || newName == null || newEmoji == null) return;
-
-        // optional check:
-        // if (oldName.equals(newName)) || oldEmoji.equals(newEmoji) return; // No change
-
-
         // old fields
         CustomTag oldTag = inputData.getOldTag();
         String oldName = inputData.getOldTagName();
@@ -43,12 +36,14 @@ public class EditTagInteractor implements EditTagInputBoundary {
         String newName = inputData.getNewTagName();
         String newIcon = inputData.getNewTagIcon();
 
-        // fetch user and tag data
+        // get user
         String username = inputData.getUsername();
-        Map<String, String> existingTags = tagDao.getCustomTags(username);
 
         // delete the old tag
         tagDao.deleteCustomTag(username, oldTag);
+
+        // fetch tag data
+        Map<String, String> existingTags = tagDao.getCustomTags(username);
 
         // Check if new tag name is already taken
         if (existingTags.containsKey(newName)) {
