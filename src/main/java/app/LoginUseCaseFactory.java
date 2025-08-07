@@ -39,7 +39,7 @@ public final class LoginUseCaseFactory {
 
         final LoginController loginController = createLoginUseCase(viewManagerModel, loginViewModel,
                 loggedInViewModel, signupViewModel, userDataAccessObject);
-        return new LoginView(loginViewModel, loginController);
+        return new LoginView(loginController, loginViewModel, viewManagerModel);
 
     }
 

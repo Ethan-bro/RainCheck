@@ -10,6 +10,7 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import interface_adapter.ViewManagerModel;
 import interface_adapter.login.LoginController;
 import interface_adapter.login.LoginState;
 import interface_adapter.login.LoginViewModel;
@@ -21,8 +22,9 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
 
     private final String viewName = "log in";
 
-    private final LoginViewModel loginViewModel;
     private final LoginController loginController;
+    private final LoginViewModel loginViewModel;
+    private final ViewManagerModel viewManagerModel;
 
     private final JTextField usernameInputField = new JTextField(20);
     private final JPasswordField passwordInputField = new JPasswordField(20);
@@ -33,9 +35,10 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
     private final JButton cancel;
     private final JButton signUp;
 
-    public LoginView(LoginViewModel loginViewModel, LoginController controller) {
-        this.loginViewModel = loginViewModel;
+    public LoginView(LoginController controller, LoginViewModel loginViewModel, ViewManagerModel viewManagerModel) {
         this.loginController = controller;
+        this.loginViewModel = loginViewModel;
+        this.viewManagerModel = viewManagerModel;
         this.loginViewModel.addPropertyChangeListener(this);
 
         setLayout(new BorderLayout());
@@ -133,6 +136,12 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
         combinedPanel.setOpaque(false);
         combinedPanel.add(buttonsPanel);
         combinedPanel.add(signupPanel);
+
+        // Add Gmail Setup Instructions button below signupPanel
+        JButton gmailButton = GmailSetupInstructionsFactory.createButton(viewManagerModel, getViewName());
+        gmailButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        combinedPanel.add(Box.createVerticalStrut(10)); // spacing between signupPanel and button
+        combinedPanel.add(gmailButton);
 
         add(combinedPanel, BorderLayout.SOUTH);
 

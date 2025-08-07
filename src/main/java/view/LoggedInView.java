@@ -131,19 +131,26 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         // --- Bottom: Logout + Add Task Buttons ---
         JButton logoutButton = new JButton("Log Out");
         JButton addTaskButton = new JButton("+ Add Task");
+        JButton gmailSetupButton = GmailSetupInstructionsFactory.createButton(viewManagerModel, getViewName());
+        gmailSetupButton.setPreferredSize(new Dimension(200, 35));
 
-        JPanel bottomPanel = new JPanel();
-        bottomPanel.setLayout(new BorderLayout());
+        JPanel bottomPanel = new JPanel(new BorderLayout());
 
         // Left side: Log Out button
         JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         leftPanel.add(logoutButton);
 
+        // Middle: Gmail Setup Instructions button (centered)
+        JPanel middlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        middlePanel.add(gmailSetupButton);
+
         // Right side: + Add Task button
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         rightPanel.add(addTaskButton);
 
+        // Add panels to bottomPanel
         bottomPanel.add(leftPanel, BorderLayout.WEST);
+        bottomPanel.add(middlePanel, BorderLayout.CENTER);
         bottomPanel.add(rightPanel, BorderLayout.EAST);
 
         add(bottomPanel, BorderLayout.SOUTH);
