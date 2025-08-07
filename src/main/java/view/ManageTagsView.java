@@ -2,6 +2,7 @@ package view;
 
 import entity.CustomTag;
 import interface_adapter.EditTag.EditTagViewModel;
+import interface_adapter.ManageTags.ManageTagsState;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.CreateTag.CCTViewModel;
 import interface_adapter.ManageTags.ManageTagsViewModel;
@@ -173,6 +174,9 @@ public class ManageTagsView extends JPanel implements ActionListener {
         }
 
         if (e.getSource() == editTagButton) {
+            ManageTagsState state = manageTagsVM.getState();
+            state.setCurrTag(selectedTag);
+
             editTagViewModel.setUsername(manageTagsVM.getUsername());
             viewManagerModel.setState(EditTagView.getViewName());
             viewManagerModel.firePropertyChanged();
