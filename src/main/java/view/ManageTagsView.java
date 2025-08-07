@@ -2,9 +2,9 @@ package view;
 
 import entity.CustomTag;
 import interface_adapter.ViewManagerModel;
-import interface_adapter.create_customTag.CCTViewModel;
+import interface_adapter.CreateTag.CCTViewModel;
 import interface_adapter.ManageTags.ManageTagsViewModel;
-import interface_adapter.ManageTags.EditTagController;
+import interface_adapter.EditTag.EditTagController;
 import interface_adapter.ManageTags.DeleteTagController;
 import interface_adapter.events.TagChangeEventNotifier;
 
@@ -103,7 +103,6 @@ public class ManageTagsView extends JPanel implements ActionListener {
 
         // --- Create New Tag ---
         createTagButton = new JButton("Create Custom Tag");
-        stylePrimaryButton(createTagButton);
         JPanel createPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         createPanel.setBackground(Color.WHITE);
         createPanel.add(createTagButton);

@@ -3,11 +3,11 @@ package entity;
 public class CustomTag {
 
     private String tagName;
-    private String tagEmoji;
+    private String tagIcon;
 
     public CustomTag(String tagName, String tagEmoji) {
         this.tagName = tagName;
-        this.tagEmoji = tagEmoji;
+        this.tagIcon = tagEmoji;
     }
 
     public String getTagName() {
@@ -18,16 +18,16 @@ public class CustomTag {
         this.tagName = tagName;
     }
 
-    public String getTagEmoji() {
-        return tagEmoji;
+    public String getTagIcon() {
+        return tagIcon;
     }
 
-    public void setTagEmoji(String tagEmoji) {
-        this.tagEmoji = tagEmoji;
+    public void setTagIcon(String tagEmoji) {
+        this.tagIcon = tagEmoji;
     }
 
     @Override
     public String toString() {
-        return tagEmoji + "  " + tagName;
+        return tagIcon + "  " + tagName;
     }
 }

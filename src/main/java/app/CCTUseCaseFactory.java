@@ -2,9 +2,9 @@ package app;
 
 import interface_adapter.ManageTags.ManageTagsViewModel;
 import interface_adapter.ViewManagerModel;
-import interface_adapter.create_customTag.CCTController;
-import interface_adapter.create_customTag.CCTPresenter;
-import interface_adapter.create_customTag.CCTViewModel;
+import interface_adapter.CreateTag.CCTController;
+import interface_adapter.CreateTag.CCTPresenter;
+import interface_adapter.CreateTag.CCTViewModel;
 import use_case.createCustomTag.CCTInputBoundary;
 import use_case.createCustomTag.CCTInteractor;
 import use_case.createCustomTag.CCTOutputBoundary;

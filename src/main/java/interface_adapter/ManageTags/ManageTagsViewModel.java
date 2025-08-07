@@ -9,14 +9,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class ManageTagsViewModel extends ViewModel<ManageTasksState> {
+public class ManageTagsViewModel extends ViewModel<ManageTagsState> {
 
     private final CustomTagDataAccessInterface tagDao;
     private String username;
 
     public ManageTagsViewModel(CustomTagDataAccessInterface tagDao, String username) {
         super("Manage Tags");
-        setState(new ManageTasksState());
+        setState(new ManageTagsState());
 
         this.tagDao = tagDao;
         this.username = username;

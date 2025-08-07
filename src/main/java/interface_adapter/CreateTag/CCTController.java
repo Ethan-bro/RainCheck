@@ -1,4 +1,4 @@
-package interface_adapter.create_customTag;
+package interface_adapter.CreateTag;
 
 import entity.CustomTag;
 import use_case.createCustomTag.CCTInputBoundary;
