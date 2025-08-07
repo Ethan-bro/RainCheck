@@ -1,4 +1,4 @@
-package interface_adapter.create_customTag;
+package interface_adapter.CreateTag;
 
 import interface_adapter.ManageTags.ManageTagsViewModel;
 import interface_adapter.ViewManagerModel;
@@ -35,7 +35,7 @@ public class CCTPresenter implements CCTOutputBoundary {
         final CCTState customTagState = createCustomTagViewModel.getState();
         customTagState.setErrorMsg(null);
         customTagState.setCurrTagName(outputData.getCreatedTag().getTagName());
-        customTagState.setCurrTagEmoji(outputData.getCreatedTag().getTagEmoji());
+        customTagState.setCurrTagEmoji(outputData.getCreatedTag().getTagIcon());
         createCustomTagViewModel.firePropertyChanged("Success");
 
         try {

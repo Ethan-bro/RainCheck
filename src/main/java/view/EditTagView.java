@@ -1,9 +1,10 @@
 package view;
 
 import entity.CustomTag;
+import interface_adapter.EditTag.EditTagController;
+import interface_adapter.EditTag.EditTagViewModel;
+import interface_adapter.ManageTags.ManageTagsViewModel;
 import interface_adapter.ViewManagerModel;
-import interface_adapter.CreateTag.CCTController;
-import interface_adapter.CreateTag.CCTViewModel;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -14,23 +15,28 @@ import java.beans.PropertyChangeListener;
 
 import static use_case.createCustomTag.CustomTagIcons.IconList;
 
-public class CCTView extends JPanel implements PropertyChangeListener {
+public class EditTagView extends JPanel implements PropertyChangeListener {
 
-    private static final String viewName = "Create Custom Tag";
+    private static final String viewName = "Edit Custom Tag";
     private final ViewManagerModel viewManagerModel;
-    private final CCTViewModel createCustomTagViewModel;
-    private final CCTController createCustomTagController;
+    private final EditTagViewModel editTagViewModel;
+    private final ManageTagsViewModel manageTagsViewModel;
+    private final EditTagController editTagController;
 
     private final JTextField tagNameTextField = new JTextField(20);
     private final ButtonGroup iconGroup = new ButtonGroup();
     private final JButton createButton = new JButton("Create Tag");
     private final JButton cancelButton = new JButton("Cancel");
 
-    public CCTView(ViewManagerModel viewManagerModel, CCTViewModel model, CCTController controller) {
+    public EditTagView(ViewManagerModel viewManagerModel,
+                       ManageTagsViewModel manageTagsViewModel,
+                       EditTagViewModel model,
+                       EditTagController controller) {
+
         this.viewManagerModel = viewManagerModel;
-        this.createCustomTagViewModel = model;
-        this.createCustomTagController = controller;
-        this.createCustomTagViewModel.addPropertyChangeListener(this);
+        this.manageTagsViewModel = manageTagsViewModel;
+        this.editTagViewModel = model;
+        this.editTagController = controller;
 
         setLayout(new BorderLayout());
         setBackground(Color.WHITE);
@@ -107,7 +113,7 @@ public class CCTView extends JPanel implements PropertyChangeListener {
         createButton.addActionListener(this::onCreateClicked);
         cancelButton.addActionListener(e -> {
             resetForm();
-            createCustomTagViewModel.setUsername(null);
+            editTagViewModel.setUsername(null);
             viewManagerModel.setState(ManageTagsView.getViewName());  // Switch back to ManageTagsView
             viewManagerModel.firePropertyChanged();
         });
@@ -172,9 +178,13 @@ public class CCTView extends JPanel implements PropertyChangeListener {
             JOptionPane.showMessageDialog(this, "Please select a tag icon.", "Validation Error", JOptionPane.WARNING_MESSAGE);
             return;
         }
+
         String icon = selectedIcon.getActionCommand();
-        CustomTag tag = new CustomTag(tagName, icon);
-        createCustomTagController.execute(tag, createCustomTagViewModel.getUsername());
+
+        CustomTag supposedTag = new CustomTag(tagName, icon);
+        CustomTag oldTag = manageTagsViewModel.getState().getCurrTag();
+
+        editTagController.execute(oldTag, supposedTag);
 
         createButton.setEnabled(false);
     }
@@ -212,7 +222,7 @@ public class CCTView extends JPanel implements PropertyChangeListener {
         switch (evt.getPropertyName()) {
             case "Success" -> {
                 JOptionPane.showMessageDialog(this,
-                        "Custom tag created successfully!",
+                        "Custom tag edited successfully!",
                         "Success",
                         JOptionPane.INFORMATION_MESSAGE);
                 resetForm();
@@ -221,10 +231,11 @@ public class CCTView extends JPanel implements PropertyChangeListener {
                 viewManagerModel.firePropertyChanged();
             }
             case "Failed" -> {
-                String errorMsg = createCustomTagViewModel.getState().getErrorMsg();
+                String errorMsg = editTagViewModel.getState().getErrorMsg();
                 JOptionPane.showMessageDialog(this, errorMsg, "Error", JOptionPane.ERROR_MESSAGE);
                 createButton.setEnabled(true);
             }
         }
     }
 }
+
