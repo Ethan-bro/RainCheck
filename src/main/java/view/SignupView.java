@@ -10,6 +10,7 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import interface_adapter.ViewManagerModel;
 import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupState;
 import interface_adapter.signup.SignupViewModel;
@@ -21,6 +22,7 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
     private static final String viewName = "sign up";
 
     private final SignupViewModel signupViewModel;
+    private final ViewManagerModel viewManagerModel;
     private final SignupController signupController;
 
     private final JTextField emailInputField = new JTextField(20);
@@ -32,9 +34,10 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
     private final JButton cancel;
     private final JButton toLogin;
 
-    public SignupView(SignupController controller, SignupViewModel signupViewModel) {
+    public SignupView(SignupController controller, SignupViewModel signupViewModel, ViewManagerModel viewManagerModel) {
         this.signupController = controller;
         this.signupViewModel = signupViewModel;
+        this.viewManagerModel = viewManagerModel;
         signupViewModel.addPropertyChangeListener(this);
 
         setLayout(new BorderLayout());
@@ -147,6 +150,12 @@ public class SignupView extends JPanel implements ActionListener, PropertyChange
         combinedPanel.setOpaque(false);
         combinedPanel.add(buttonsPanel);
         combinedPanel.add(loginPanel);
+
+        // Add Gmail Setup Instructions button
+        JButton gmailButton = GmailSetupInstructionsFactory.createButton(viewManagerModel, getViewName());
+        gmailButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        combinedPanel.add(Box.createVerticalStrut(10)); // spacing between login and button
+        combinedPanel.add(gmailButton);
 
         add(combinedPanel, BorderLayout.SOUTH);
 

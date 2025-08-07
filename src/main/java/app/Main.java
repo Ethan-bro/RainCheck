@@ -17,9 +17,10 @@ public class Main {
                     .addEditTagView()
                     .addManageTagsView()
                     .addEditTaskView()
-                    .addListTasksUseCase()
                     .addAddTaskView()
                     .addLoggedInView()
+                    .addGmailInstructionsView()
+                    .addListTasksUseCase()
                     .build();
 
             int appWidth = 860;

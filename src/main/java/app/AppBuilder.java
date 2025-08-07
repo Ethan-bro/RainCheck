@@ -131,7 +131,7 @@ public class AppBuilder {
         notificationScheduler.start();
 
         return this;
-            }
+    }
 
             private EmailNotificationService createDummyEmailService() {
         return new EmailNotificationService(
@@ -232,6 +232,14 @@ public class AppBuilder {
         return this;
     }
 
+    public AppBuilder addGmailInstructionsView() {
+        GmailInstructionsView gmailInstructionsView = new GmailInstructionsView(viewManagerModel);
+
+        cardPanel.add(gmailInstructionsView, GmailInstructionsView.getViewName());
+        viewMap.put(GmailInstructionsView.getViewName(), gmailInstructionsView);
+
+        return this;
+    }
 
     public AppBuilder addAddTaskView() {
         
