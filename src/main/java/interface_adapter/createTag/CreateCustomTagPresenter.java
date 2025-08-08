@@ -3,10 +3,10 @@ package interface_adapter.createTag;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.manageTags.ManageTagsViewModel;
 
-import use_case.createCustomTag.cctOutputBoundary;
-import use_case.createCustomTag.cctOutputData;
+import use_case.createCustomTag.CreateCustomTagOutputBoundary;
+import use_case.createCustomTag.CreateCustomTagOutputData;
 
-public class CreateCustomTagPresenter implements cctOutputBoundary {
+public class CreateCustomTagPresenter implements CreateCustomTagOutputBoundary {
 
     private ViewManagerModel viewManagerModel;
     private final CreateCustomTagViewModel createCustomTagViewModel;
@@ -22,7 +22,7 @@ public class CreateCustomTagPresenter implements cctOutputBoundary {
     }
 
     @Override
-    public void prepareFailView(cctOutputData outputData) {
+    public void prepareFailView(CreateCustomTagOutputData outputData) {
         final CreateCustomTagState customTagState = createCustomTagViewModel.getState();
         customTagState.setErrorMsg(outputData.getErrorMessage());
         customTagState.setCurrTagName(null);
@@ -31,7 +31,7 @@ public class CreateCustomTagPresenter implements cctOutputBoundary {
     }
 
     @Override
-    public void prepareSuccessView(cctOutputData outputData) {
+    public void prepareSuccessView(CreateCustomTagOutputData outputData) {
         final CreateCustomTagState customTagState = createCustomTagViewModel.getState();
         customTagState.setErrorMsg(null);
         customTagState.setCurrTagName(outputData.getCreatedTag().getTagName());

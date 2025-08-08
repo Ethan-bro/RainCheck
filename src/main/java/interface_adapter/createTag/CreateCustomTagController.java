@@ -2,17 +2,17 @@ package interface_adapter.createTag;
 
 import entity.CustomTag;
 
-import use_case.createCustomTag.cctInputBoundary;
-import use_case.createCustomTag.cctInputData;
+import use_case.createCustomTag.CreateCustomTagInputBoundary;
+import use_case.createCustomTag.CreateCustomTagInputData;
 
 /**
  * Controller responsible for handling the creation of custom tags.
  */
 public class CreateCustomTagController {
 
-    private final cctInputBoundary createCustomTagInteractor;
+    private final CreateCustomTagInputBoundary createCustomTagInteractor;
 
-    public CreateCustomTagController(cctInputBoundary createCustomTagInteractor) {
+    public CreateCustomTagController(CreateCustomTagInputBoundary createCustomTagInteractor) {
         this.createCustomTagInteractor = createCustomTagInteractor;
     }
 
@@ -23,7 +23,9 @@ public class CreateCustomTagController {
      * @param username  the username of the user creating the tag
      */
     public void execute(CustomTag customTag, String username) {
-        final cctInputData inputData = new cctInputData(customTag.getTagName(), customTag.getTagIcon());
+        final CreateCustomTagInputData inputData = new CreateCustomTagInputData(
+                customTag.getTagName(), customTag.getTagIcon()
+        );
         createCustomTagInteractor.execute(inputData, username);
     }
 }

@@ -342,15 +342,23 @@ public class SupabaseTaskDataAccessObject implements
             isDeleted = "No";
         }
 
-        final TaskInfo info = new TaskInfo(
+        final TaskInfo info = new TaskInfo();
+
+        info.setCoreDetails(
                 TaskID.from(UUID.fromString(idStr)),
                 taskName,
                 start,
-                end,
+                end
+        );
+
+        info.setAdditionalDetails(
                 priority,
                 tag,
                 reminder,
-                isDeleted,
+                isDeleted
+        );
+
+        info.setWeatherInfo(
                 getNullableString(json, WEATHER_DESCRIPTION),
                 getNullableString(json, WEATHER_ICON_NAME),
                 getNullableString(json, TEMPERATURE),

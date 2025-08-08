@@ -6,10 +6,10 @@ import interface_adapter.createTag.CreateCustomTagPresenter;
 import interface_adapter.createTag.CreateCustomTagViewModel;
 import interface_adapter.manageTags.ManageTagsViewModel;
 
+import use_case.createCustomTag.CreateCustomTagInputBoundary;
+import use_case.createCustomTag.CreateCustomTagInteractor;
+import use_case.createCustomTag.CreateCustomTagOutputBoundary;
 import use_case.createCustomTag.CustomTagDataAccessInterface;
-import use_case.createCustomTag.cctInputBoundary;
-import use_case.createCustomTag.cctInteractor;
-import use_case.createCustomTag.cctOutputBoundary;
 
 import view.CCTView;
 
@@ -56,10 +56,10 @@ public final class CctUseCaseFactory {
                                                              ManageTagsViewModel manageTagsViewModel,
                                                              CustomTagDataAccessInterface customTagDataAccess) {
 
-        final cctOutputBoundary presenter = new CreateCustomTagPresenter(
+        final CreateCustomTagOutputBoundary presenter = new CreateCustomTagPresenter(
                 viewManagerModel, CreateCustomTagViewModel, manageTagsViewModel
         );
-        final cctInputBoundary interactor = new cctInteractor(customTagDataAccess, presenter);
+        final CreateCustomTagInputBoundary interactor = new CreateCustomTagInteractor(customTagDataAccess, presenter);
 
         return new CreateCustomTagController(interactor);
     }

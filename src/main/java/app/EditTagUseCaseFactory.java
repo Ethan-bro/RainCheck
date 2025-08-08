@@ -6,10 +6,10 @@ import interface_adapter.editTag.EditTagPresenter;
 import interface_adapter.editTag.EditTagViewModel;
 import interface_adapter.manageTags.ManageTagsViewModel;
 
-import use_case.EditCT.EditTagInputBoundary;
-import use_case.EditCT.EditTagInteractor;
-import use_case.EditCT.EditTagOutputBoundary;
 import use_case.createCustomTag.CustomTagDataAccessInterface;
+import use_case.edit_custom_tag.EditTagInputBoundary;
+import use_case.edit_custom_tag.EditTagInteractor;
+import use_case.edit_custom_tag.EditTagOutputBoundary;
 
 import view.EditTagView;
 

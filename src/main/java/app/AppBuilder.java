@@ -312,11 +312,11 @@ public final class AppBuilder {
 
     private ScheduleNotificationInteractor getScheduleNotificationInteractor() {
         final ScheduleNotificationOutputBoundary notificationOutputBoundary = outputData -> {
-            if (outputData.isSuccess()) {
-                System.out.println("Notification scheduled successfully: " + outputData.getNotificationId());
+            if (outputData.success()) {
+                System.out.println("Notification scheduled successfully: " + outputData.notificationId());
             }
             else {
-                System.err.println("Failed to schedule notification: " + outputData.getMessage());
+                System.err.println("Failed to schedule notification: " + outputData.message());
             }
         };
         return new ScheduleNotificationInteractor(notificationDataAccess, taskDao, notificationOutputBoundary);

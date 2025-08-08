@@ -2,6 +2,7 @@ package app;
 
 import data_access.SupabaseTaskDataAccessObject;
 import data_access.WeatherApiService;
+import data_access.WeatherApiServiceAdapter;
 
 import interface_adapter.ViewManagerModel;
 import interface_adapter.editTask.EditTaskController;
@@ -11,6 +12,7 @@ import interface_adapter.editTask.EditTaskViewModel;
 import use_case.editTask.EditTaskInputBoundary;
 import use_case.editTask.EditTaskInteractor;
 import use_case.editTask.EditTaskOutputBoundary;
+import use_case.weather.WeatherApiInterface;
 
 import view.EditTaskView;
 
@@ -39,8 +41,10 @@ public final class EditTaskUseCaseFactory {
             final ViewManagerModel viewManagerModel,
             final WeatherApiService weatherApiService
     ) {
+        final WeatherApiInterface adapter = new WeatherApiServiceAdapter(weatherApiService);
+
         final EditTaskOutputBoundary presenter = new EditTaskPresenter(viewModel);
-        final EditTaskInputBoundary interactor = new EditTaskInteractor(taskDao, presenter, weatherApiService);
+        final EditTaskInputBoundary interactor = new EditTaskInteractor(taskDao, presenter, adapter);
         return new EditTaskController(interactor, viewManagerModel);
     }
 
