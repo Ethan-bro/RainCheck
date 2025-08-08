@@ -1,5 +1,6 @@
 package interface_adapter.task;
 
+import entity.CustomTag;
 import entity.Task;
 
 import interface_adapter.ViewModel;
@@ -37,7 +38,7 @@ public class TaskViewModel extends ViewModel<TaskState> {
         st.setEnd(updatedTask.getTaskInfo().getEndDateTime());
         st.setPriority(updatedTask.getTaskInfo().getPriority().name());
 
-        String tag = null;
+        CustomTag tag = null;
         if (updatedTask.getTaskInfo().getTag() != null) {
             tag = updatedTask.getTaskInfo().getTag();
         }
