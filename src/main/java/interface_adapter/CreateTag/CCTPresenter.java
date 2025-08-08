@@ -2,8 +2,8 @@ package interface_adapter.CreateTag;
 
 import interface_adapter.ManageTags.ManageTagsViewModel;
 import interface_adapter.ViewManagerModel;
-import use_case.createCustomTag.CCTOutputBoundary;
-import use_case.createCustomTag.CCTOutputData;
+import use_case.CreateCT.CCTOutputBoundary;
+import use_case.CreateCT.CCTOutputData;
 
 public class CCTPresenter implements CCTOutputBoundary {
 

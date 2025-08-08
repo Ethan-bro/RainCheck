@@ -322,8 +322,7 @@ public class AppBuilder {
                 manageTagsViewModel,
                 cctViewModel,
                 editTagViewModel,
-                tagDao
-        );
+                tagDao);
 
         // 3) Register it in the CardLayout
         cardPanel.add(manageTagsView, ManageTagsView.getViewName());

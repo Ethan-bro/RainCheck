@@ -1,10 +1,7 @@
 package use_case.EditCT;
 
 import entity.CustomTag;
-import interface_adapter.events.TagChangeEventNotifier;
-import use_case.createCustomTag.CCTError;
-import use_case.createCustomTag.CCTOutputData;
-import use_case.createCustomTag.CustomTagDataAccessInterface;
+import use_case.CreateCT.CustomTagDataAccessInterface;
 
 import java.util.Map;
 
@@ -64,5 +61,7 @@ public class EditTagInteractor implements EditTagInputBoundary {
 
         EditTagOutputData successOutput = new EditTagOutputData(newTag);
         editTagPresenter.prepareSuccessView(successOutput);
+
+
     }
 }

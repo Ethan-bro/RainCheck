@@ -8,7 +8,7 @@ import interface_adapter.ViewManagerModel;
 import use_case.EditCT.EditTagInputBoundary;
 import use_case.EditCT.EditTagInteractor;
 import use_case.EditCT.EditTagOutputBoundary;
-import use_case.createCustomTag.CustomTagDataAccessInterface;
+import use_case.CreateCT.CustomTagDataAccessInterface;
 import view.EditTagView;
 
 public class EditTagUseCaseFactory {

@@ -15,7 +15,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Enumeration;
 
-import static use_case.createCustomTag.CustomTagIcons.IconList;
+import static use_case.CreateCT.CustomTagIcons.IconList;
 
 public class EditTagView extends JPanel implements PropertyChangeListener, ActionListener {
 

@@ -6,8 +6,7 @@ import interface_adapter.ManageTags.ManageTagsState;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.CreateTag.CCTViewModel;
 import interface_adapter.ManageTags.ManageTagsViewModel;
-import interface_adapter.EditTag.EditTagController;
-import interface_adapter.ManageTags.DeleteTagController;
+import interface_adapter.DeleteCT.DeleteTagController;
 import interface_adapter.events.TagChangeEventNotifier;
 
 import javax.swing.*;
@@ -18,7 +17,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
-public class ManageTagsView extends JPanel implements ActionListener {
+public class ManageTagsView extends JPanel implements ActionListener, PropertyChangeListener {
 
     private static final String viewName = "Manage Tags";
 
@@ -45,6 +44,7 @@ public class ManageTagsView extends JPanel implements ActionListener {
     ) {
         this.viewManagerModel = viewManagerModel;
         this.manageTagsVM = manageTagsVM;
+        this.manageTagsVM.addPropertyChangeListener(this);
         this.cctViewModel = cctViewModel;
         this.editTagViewModel = editTagViewModel;
         this.deleteTagController = deleteTagController;
@@ -114,6 +114,7 @@ public class ManageTagsView extends JPanel implements ActionListener {
         createPanel.add(createTagButton);
         centerPanel.add(createPanel);
         centerPanel.add(Box.createVerticalStrut(20));
+        stylePrimaryButton(createTagButton);
 
         add(centerPanel, BorderLayout.CENTER);
 
@@ -146,6 +147,8 @@ public class ManageTagsView extends JPanel implements ActionListener {
         button.setForeground(Color.WHITE);
         button.setFocusPainted(false);
         button.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
+        button.setContentAreaFilled(true);
+        button.setOpaque(true);
     }
 
     private void styleSecondaryButton(JButton button) {
@@ -154,6 +157,8 @@ public class ManageTagsView extends JPanel implements ActionListener {
         button.setForeground(Color.BLACK);
         button.setFocusPainted(false);
         button.setBorder(BorderFactory.createEmptyBorder(8, 18, 8, 18));
+        button.setContentAreaFilled(true);
+        button.setOpaque(true);
     }
 
     @Override
@@ -197,8 +202,21 @@ public class ManageTagsView extends JPanel implements ActionListener {
                     "Are you sure you want to delete the tag \"" + selectedTag.getTagName() + "\"?",
                     "Confirm Delete", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
-                deleteTagController.execute(selectedTag.getTagName());
+                deleteTagController.execute(selectedTag);
             }
+        }
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        String event = evt.getPropertyName();
+        if ("tagDeleted".equals(event)) {
+            JOptionPane.showMessageDialog(this,
+                    "Tag deleted successfully.",
+                    "Success",
+                    JOptionPane.INFORMATION_MESSAGE);
+
+            deleteTagButton.setEnabled(true);
         }
     }
 

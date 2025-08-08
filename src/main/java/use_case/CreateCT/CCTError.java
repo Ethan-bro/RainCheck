@@ -1,4 +1,4 @@
-package use_case.createCustomTag;
+package use_case.CreateCT;
 
 public enum CCTError {
     NAME_TAKEN("Tag name is already in use!"),

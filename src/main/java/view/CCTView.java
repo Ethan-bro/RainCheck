@@ -12,7 +12,7 @@ import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import static use_case.createCustomTag.CustomTagIcons.IconList;
+import static use_case.CreateCT.CustomTagIcons.IconList;
 
 public class CCTView extends JPanel implements PropertyChangeListener {
 
@@ -191,6 +191,9 @@ public class CCTView extends JPanel implements PropertyChangeListener {
         button.setFocusPainted(false);
         button.setBorder(BorderFactory.createEmptyBorder(10, 25, 10, 25));
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        button.setContentAreaFilled(true);
+        button.setOpaque(true);
+
     }
 
     private void styleSecondaryButton(JButton button) {
@@ -200,6 +203,9 @@ public class CCTView extends JPanel implements PropertyChangeListener {
         button.setFocusPainted(false);
         button.setBorder(BorderFactory.createEmptyBorder(10, 25, 10, 25));
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        button.setContentAreaFilled(true);
+        button.setOpaque(true);
+
     }
 
     public static String getViewName() {
