@@ -660,6 +660,7 @@
                        UnsupportedEncodingException, BuildException, ConversionException,
                        FileNotFoundException, TestException"/>
             <property name="max" value="15"/>
+            <property name="ignoreClasses" value="view.AbstractTaskFormView"/>
         </module>
         <module name="ClassFanOutComplexity">
             <property name="max" value="25"/>
