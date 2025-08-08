@@ -163,16 +163,17 @@ public final class AppBuilder {
 
     private void setupDefaultEmailConfig(final JsonObject config) {
         final String currentUsername = userDao.getCurrentUsername();
-        if (currentUsername == null || currentUsername.isEmpty()) {
-            System.out.println("No user logged in, skipping email config setup");
-            return;
+        if (currentUsername != null && !currentUsername.isEmpty()) {
+            final EmailNotificationConfig emailConfig = notificationDataAccess.getEmailConfig(currentUsername);
+            if (emailConfig == null && config.has(EMAIL_USERNAME_KEY)) {
+                final String email = config.get(EMAIL_USERNAME_KEY).getAsString();
+                final EmailNotificationConfig newConfig = new EmailNotificationConfig(email, true);
+                notificationDataAccess.saveEmailConfig(currentUsername, newConfig);
+                System.out.println("Created email notification config for user: " + currentUsername);
+            }
         }
-        final EmailNotificationConfig emailConfig = notificationDataAccess.getEmailConfig(currentUsername);
-        if (emailConfig == null && config.has(EMAIL_USERNAME_KEY)) {
-            final String email = config.get(EMAIL_USERNAME_KEY).getAsString();
-            final EmailNotificationConfig newConfig = new EmailNotificationConfig(email, true);
-            notificationDataAccess.saveEmailConfig(currentUsername, newConfig);
-            System.out.println("Created email notification config for user: " + currentUsername);
+        else {
+            System.out.println("No user logged in, skipping email config setup");
         }
     }
 
