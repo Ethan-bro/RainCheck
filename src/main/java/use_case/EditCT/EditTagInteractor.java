@@ -61,5 +61,7 @@ public class EditTagInteractor implements EditTagInputBoundary {
 
         EditTagOutputData successOutput = new EditTagOutputData(newTag);
         editTagPresenter.prepareSuccessView(successOutput);
+
+
     }
 }

@@ -4,13 +4,13 @@ import entity.CustomTag;
 
 public class EditTagOutputData {
 
-    private final boolean UseCaseFailed;
+    private final boolean isUseCaseFailed;
     private final String errorMessage;
     private final CustomTag createdTag;
 
     // failed UseCase constructor
     public EditTagOutputData(String errorMessage) {
-        this.UseCaseFailed = true;
+        this.isUseCaseFailed = true;
         this.errorMessage = errorMessage;
         this.createdTag = null;
     }
@@ -21,13 +21,13 @@ public class EditTagOutputData {
 
     // successful UseCase constructor
     public EditTagOutputData(CustomTag createdTag) {
-        UseCaseFailed = false;
-        errorMessage = null;
+        this.isUseCaseFailed = false;
+        this.errorMessage = null;
         this.createdTag = createdTag;
     }
 
     public boolean isUseCaseFailed() {
-        return UseCaseFailed;
+        return isUseCaseFailed;
     }
 
     public CustomTag getCreatedTag() {
