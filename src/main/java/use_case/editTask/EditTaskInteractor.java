@@ -1,15 +1,16 @@
 package use_case.editTask;
 
+import org.jetbrains.annotations.NotNull;
+
+import data_access.WeatherApiService;
 import entity.Task;
 import entity.TaskInfo;
 import entity.WeatherInfo;
 import interface_adapter.addTask.Constants;
-import data_access.WeatherApiService;
-import org.jetbrains.annotations.NotNull;
 import use_case.weather.WeatherInfoGetter;
 
 /**
- * Interactor for the editTask use case
+ * Interactor for the editTask use case.
  */
 public class EditTaskInteractor implements EditTaskInputBoundary {
 
@@ -34,46 +35,42 @@ public class EditTaskInteractor implements EditTaskInputBoundary {
         if (existingTask == null) {
             System.out.println("[Interactor] Task not found for ID: " + updatedTask.getTaskInfo().getId());
             presenter.prepareFailView("Task not found.");
-            return;
         }
-        System.out.println("[Interactor] Found existing task with ID: " + existingTask.getTaskInfo().getId());
+        else {
 
-        TaskInfo info = updatedTask.getTaskInfo();
+            System.out.println("[Interactor] Found existing task with ID: " + existingTask.getTaskInfo().getId());
 
-        // Validation checks:
-        if (info.getTaskName() == null || info.getTaskName().isEmpty()) {
-            presenter.prepareFailView("Task name cannot be empty.");
-            return;
+            TaskInfo info = updatedTask.getTaskInfo();
+
+            // Validation checks:
+            if (info.getTaskName() == null || info.getTaskName().isEmpty()) {
+                presenter.prepareFailView("Task name cannot be empty.");
+            }
+            else if (info.getTaskName().length() > Constants.CHAR_LIMIT) {
+                presenter.prepareFailView("Task name exceeds character limit of " + Constants.CHAR_LIMIT);
+            }
+            else if (!info.getEndDateTime().isAfter(info.getStartDateTime())) {
+                presenter.prepareFailView("End time must be after start time.");
+            }
+            else if (info.getTag() == null) {
+                presenter.prepareFailView("Please select a category/tag.");
+            }
+            else {
+                // Update weather info based on updated start time
+                WeatherInfo weatherInfo = WeatherInfoGetter.getWeatherInfo(weatherApiService, info.getStartDateTime());
+
+                Task taskToUpdate = getTask(info, weatherInfo);
+
+                // Update in data access
+                dataAccess.updateTask(username, taskToUpdate);
+
+                EditTaskOutputData outputData = new EditTaskOutputData(
+                        taskToUpdate.getTaskInfo().getId(),
+                        false
+                );
+                presenter.prepareSuccessView(outputData);
+            }
         }
-
-        if (info.getTaskName().length() > Constants.CHAR_LIMIT) {
-            presenter.prepareFailView("Task name exceeds character limit of " + Constants.CHAR_LIMIT);
-            return;
-        }
-
-        if (!info.getEndDateTime().isAfter(info.getStartDateTime())) {
-            presenter.prepareFailView("End time must be after start time.");
-            return;
-        }
-
-        if (info.getTag() == null) {
-            presenter.prepareFailView("Please select a category/tag.");
-            return;
-        }
-
-        // Update weather info based on updated start time
-        WeatherInfo weatherInfo = WeatherInfoGetter.getWeatherInfo(weatherApiService, info.getStartDateTime());
-
-        Task taskToUpdate = getTask(info, weatherInfo);
-
-        // Update in data access
-        dataAccess.updateTask(username, taskToUpdate);
-
-        EditTaskOutputData outputData = new EditTaskOutputData(
-                taskToUpdate.getTaskInfo().getId(),
-                false
-        );
-        presenter.prepareSuccessView(outputData);
     }
 
     @NotNull

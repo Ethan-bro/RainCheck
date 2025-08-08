@@ -11,9 +11,11 @@ import use_case.EditCT.EditTagOutputBoundary;
 import use_case.createCustomTag.CustomTagDataAccessInterface;
 import view.EditTagView;
 
-public class EditTagUseCaseFactory {
+public final class EditTagUseCaseFactory {
 
-    private EditTagUseCaseFactory() {}
+    private EditTagUseCaseFactory() {
+
+    }
 
     public static EditTagView create(ViewManagerModel viewManagerModel,
                                      EditTagViewModel viewModel, ManageTagsViewModel manageTagsViewModel,

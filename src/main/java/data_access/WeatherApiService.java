@@ -154,7 +154,7 @@ public class WeatherApiService implements DailyWeatherDataAccessInterface, Hourl
         Request request = new Request.Builder().url(url).build();
         Response response = client.newCall(request).execute();
 
-        Main.incrementNumOfAPIcallsMade();
+        Main.incrementNumOfApiCallsMade();
 
         if (!response.isSuccessful()) throw new IOException("Unexpected code: " + response);
 

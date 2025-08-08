@@ -9,14 +9,14 @@ import interface_adapter.addTask.UUIDGenerator;
 import interface_adapter.logged_in.LoggedInViewModel;
 import use_case.addTask.AddTaskInputBoundary;
 import use_case.addTask.AddTaskInteractor;
-import data_access.SupabaseTaskDataAccessObject;
-import use_case.createCustomTag.CustomTagDataAccessInterface;
 import use_case.listTasks.TaskDataAccessInterface;
 import use_case.notification.ScheduleNotificationInteractor;
 import view.AddTaskView;
 
 public final class AddTaskUseCaseFactory {
-    private AddTaskUseCaseFactory() {}
+    private AddTaskUseCaseFactory() {
+
+    }
 
     public static AddTaskView create(
             ViewManagerModel viewManagerModel,

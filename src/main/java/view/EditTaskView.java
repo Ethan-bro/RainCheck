@@ -1,17 +1,5 @@
 package view;
 
-import entity.CustomTag;
-import entity.Priority;
-import entity.Reminder;
-import entity.Task;
-import entity.TaskInfo;
-import interface_adapter.ViewManagerModel;
-import interface_adapter.editTask.EditTaskController;
-import interface_adapter.editTask.EditTaskViewModel;
-import interface_adapter.editTask.EditTaskState;
-
-import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -21,7 +9,22 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
-public class EditTaskView extends AbstractTaskFormView implements ActionListener, PropertyChangeListener {
+import javax.swing.DefaultComboBoxModel;
+
+import entity.CustomTag;
+import entity.Priority;
+import entity.Reminder;
+import entity.Task;
+import entity.TaskInfo;
+import interface_adapter.ViewManagerModel;
+import interface_adapter.editTask.EditTaskController;
+import interface_adapter.editTask.EditTaskState;
+import interface_adapter.editTask.EditTaskViewModel;
+
+/**
+ * View for editing an existing task.
+ */
+public final class EditTaskView extends AbstractTaskFormView implements ActionListener, PropertyChangeListener {
 
     private static final String VIEW_NAME = "Edit Task";
 
@@ -59,21 +62,31 @@ public class EditTaskView extends AbstractTaskFormView implements ActionListener
         endSpinner.setValue(nowDate);
     }
 
+    /**
+     * Sets the task to populate the form fields.
+     * @param task the existing task to edit
+     */
     public void setExistingTask(Task task) {
         this.existingTask = task;
-        if (task == null) return;
+        if (!(task == null)) {
 
-        TaskInfo info = task.getTaskInfo();
-        nameField.setText(info.getTaskName());
-        startSpinner.setValue(Date.from(info.getStartDateTime().atZone(ZoneId.systemDefault()).toInstant()));
-        endSpinner.setValue(Date.from(info.getEndDateTime().atZone(ZoneId.systemDefault()).toInstant()));
-        priorityCombo.setSelectedItem(info.getPriority());
-        if (info.getTag() != null) customTagCombo.setSelectedItem(info.getTag());
-        if (info.getReminder() != null) reminderCombo.setSelectedItem(info.getReminder());
+            TaskInfo info = task.getTaskInfo();
+            nameField.setText(info.getTaskName());
+            startSpinner.setValue(Date.from(info.getStartDateTime().atZone(ZoneId.systemDefault()).toInstant()));
+            endSpinner.setValue(Date.from(info.getEndDateTime().atZone(ZoneId.systemDefault()).toInstant()));
+            priorityCombo.setSelectedItem(info.getPriority());
+            if (info.getTag() != null) {
+                customTagCombo.setSelectedItem(info.getTag());
+            }
+            if (info.getReminder() != null) {
+                reminderCombo.setSelectedItem(info.getReminder());
+            }
+        }
     }
 
     /**
-     * For debugging print purposes
+     * For debugging print purposes.
+     * @return Task the task already existing in the database
      */
     public Task getExistingTask() {
         return existingTask;
@@ -115,7 +128,8 @@ public class EditTaskView extends AbstractTaskFormView implements ActionListener
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == saveButton) {
             controller.editTask(buildUpdatedTask());
-        } else if (e.getSource() == cancelButton) {
+        }
+        else if (e.getSource() == cancelButton) {
             viewManagerModel.setState(mainViewKey);
             viewManagerModel.firePropertyChanged();
         }
@@ -131,16 +145,17 @@ public class EditTaskView extends AbstractTaskFormView implements ActionListener
                 customTagCombo.setModel(new DefaultComboBoxModel<>(updatedTags.toArray()));
                 customTagCombo.setEnabled(!updatedTags.isEmpty());
             }
-            return;
         }
-
-        EditTaskState state = viewModel.getState();
-        if (state.isSuccess()) {
-            viewManagerModel.setState(mainViewKey);
-            viewManagerModel.firePropertyChanged();
-        } else if (state.getError() != null) {
-            errorLabel.setText(state.getError());
-            errorLabel.setVisible(true);
+        else {
+            EditTaskState state = viewModel.getState();
+            if (state.isSuccess()) {
+                viewManagerModel.setState(mainViewKey);
+                viewManagerModel.firePropertyChanged();
+            }
+            else if (state.getError() != null) {
+                errorLabel.setText(state.getError());
+                errorLabel.setVisible(true);
+            }
         }
     }
 

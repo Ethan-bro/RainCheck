@@ -5,5 +5,10 @@ package use_case.markTaskComplete;
  */
 public interface MarkTaskCompleteInputBoundary {
 
+    /**
+     * Executes the mark task complete use case.
+     * @param username the username of the user
+     * @param inputData the input data for the use case
+     */
     void execute(String username, MarkTaskCompleteInputData inputData);
 }

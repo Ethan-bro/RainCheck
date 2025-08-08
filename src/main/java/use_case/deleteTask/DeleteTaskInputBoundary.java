@@ -10,6 +10,7 @@ public interface DeleteTaskInputBoundary {
     /**
      * Executes the DeleteTask use case.
      * @param deleteTaskInputData the input data
+     * @throws IOException IO exception
      */
     void execute(DeleteTaskInputData deleteTaskInputData) throws IOException;
 }

@@ -23,5 +23,10 @@ public interface MarkTaskCompleteDataAccessInterface {
      */
     void updateTask(String username, Task task);
 
+    /**
+     * Marks the specified task as complete for the given user.
+     * @param username the username of the user
+     * @param taskId   the ID of the task to mark complete
+     */
     void markAsComplete(String username, TaskID taskId);
 }

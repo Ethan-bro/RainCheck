@@ -8,6 +8,7 @@ public class MarkTaskCompletePresenter implements MarkTaskCompleteOutputBoundary
 
     private final MarkTaskCompleteViewModel viewModel;
     private final TaskViewModel taskViewModel;
+
     public MarkTaskCompletePresenter(MarkTaskCompleteViewModel viewModel, TaskViewModel taskViewModel) {
         this.viewModel = viewModel;
         this.taskViewModel = taskViewModel;

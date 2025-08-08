@@ -23,16 +23,19 @@ public class Main {
                     .build();
 
             int appWidth = 860;
-            application.setSize(appWidth, (int) (appWidth / 1.4)); // Making the app proportional based on it's width
-            application.setLocationRelativeTo(null); // centers window
+            // Making the app proportional based on it's width
+            application.setSize(appWidth, (int) (appWidth / 1.4));
+            // centers window
+            application.setLocationRelativeTo(null);
             application.setVisible(true);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void incrementNumOfAPIcallsMade() {
-        numOfAPIcallsMade ++;
+    public static void incrementNumOfApiCallsMade() {
+        numOfAPIcallsMade++;
     }
 
     public static int getNumOfAPIcallsMade() {

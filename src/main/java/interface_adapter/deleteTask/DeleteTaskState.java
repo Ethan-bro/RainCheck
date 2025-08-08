@@ -1,14 +1,22 @@
 package interface_adapter.deleteTask;
 
-public class DeleteTaskState {
+public final class DeleteTaskState {
 
     private boolean success;
     private String error;
 
+    /**
+     * Returns whether the task deletion was successful.
+     * @return true if successful, false otherwise
+     */
     public boolean isSuccess() {
         return success;
     }
 
+    /**
+     * Sets task deletion to success.
+     * @param success success of the task
+     */
     public void setSuccess(boolean success) {
         this.success = success;
     }

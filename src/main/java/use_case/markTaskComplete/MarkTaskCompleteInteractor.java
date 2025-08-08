@@ -13,7 +13,6 @@ public class MarkTaskCompleteInteractor implements MarkTaskCompleteInputBoundary
         this.presenter = presenter;
     }
 
-
     @Override
     public void execute(String username, MarkTaskCompleteInputData inputData) {
         // Retrieving the task
@@ -21,19 +20,21 @@ public class MarkTaskCompleteInteractor implements MarkTaskCompleteInputBoundary
 
         if (task == null) {
             presenter.prepareFailView("Task not found.");
-            return;
         }
+        else {
+            // Marking the task as complete
+            task.getTaskInfo().setTaskStatus("Complete");
 
-        // Marking the task as complete
-        task.getTaskInfo().setTaskStatus("Complete");
+            // Update the task in the data source
+            dataAccess.updateTask(inputData.getUsername(), task);
 
-        // Update the task in the data source
-        dataAccess.updateTask(inputData.getUsername(), task);
-
-        // Return a success view
-        MarkTaskCompleteOutputData outputData = new MarkTaskCompleteOutputData(
-                task.getTaskInfo().getId(),
-                false  // useCaseFailed = false (meaning success)
-        );
-        presenter.prepareSuccessView(outputData);
-    }}
+            // Return a success view
+            MarkTaskCompleteOutputData outputData = new MarkTaskCompleteOutputData(
+                    task.getTaskInfo().getId(),
+                    // useCaseFailed = false (meaning success)
+                    false
+            );
+            presenter.prepareSuccessView(outputData);
+        }
+    }
+}

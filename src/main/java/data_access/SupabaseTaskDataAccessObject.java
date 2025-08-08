@@ -1,5 +1,9 @@
 package data_access;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
+
 import com.google.gson.*;
 import entity.*;
 import okhttp3.*;
@@ -7,10 +11,6 @@ import use_case.deleteTask.DeleteTaskDataAccessInterface;
 import use_case.editTask.EditTaskDataAccessInterface;
 import use_case.listTasks.TaskDataAccessInterface;
 import use_case.markTaskComplete.MarkTaskCompleteDataAccessInterface;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.*;
 
 public class SupabaseTaskDataAccessObject implements
         TaskDataAccessInterface,
@@ -64,13 +64,19 @@ public class SupabaseTaskDataAccessObject implements
                     .build();
 
             try (Response response = client.newCall(request).execute()) {
-                if (!response.isSuccessful()) return new ArrayList<>();
+                if (!response.isSuccessful()) {
+                    return new ArrayList<>();
+                }
                 String body = Objects.requireNonNull(response.body()).string();
                 JsonArray array = JsonParser.parseString(body).getAsJsonArray();
-                if (array.isEmpty()) return new ArrayList<>();
+                if (array.isEmpty()) {
+                    return new ArrayList<>();
+                }
 
                 JsonObject user = array.get(0).getAsJsonObject();
-                if (!user.has("tasks") || user.get("tasks").isJsonNull()) return new ArrayList<>();
+                if (!user.has("tasks") || user.get("tasks").isJsonNull()) {
+                    return new ArrayList<>();
+                }
 
                 JsonArray taskArray = user.getAsJsonArray("tasks");
                 List<Task> result = new ArrayList<>();
@@ -85,7 +91,8 @@ public class SupabaseTaskDataAccessObject implements
 
                 return result;
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
             return new ArrayList<>();
         }
@@ -115,7 +122,8 @@ public class SupabaseTaskDataAccessObject implements
 
             client.newCall(request).execute().close();
 
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -184,7 +192,8 @@ public class SupabaseTaskDataAccessObject implements
                     }
                 }
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -193,7 +202,8 @@ public class SupabaseTaskDataAccessObject implements
 
     @Override
     public void updateTask(String username, Task updatedTask) {
-        System.out.println("------UPDATE TASK IS CALLED. Username " + username + " and ID " + updatedTask.getTaskInfo().getId());
+        System.out.println("------UPDATE TASK IS CALLED. Username " + username + " and ID " + updatedTask
+                .getTaskInfo().getId());
         List<Task> tasks = getTasks(username);
         for (int i = 0; i < tasks.size(); i++) {
             if (tasks.get(i).getTaskInfo().getId().equals(updatedTask.getTaskInfo().getId())) {
@@ -207,7 +217,9 @@ public class SupabaseTaskDataAccessObject implements
     @Override
     public void markAsComplete(String username, TaskID taskId) {
         Task task = getTaskById(username, taskId);
-        if (task == null) throw new IllegalArgumentException("Task not found.");
+        if (task == null) {
+            throw new IllegalArgumentException("Task not found.");
+        }
         task.getTaskInfo().setTaskStatus("Complete");
         updateTask(username, task);
     }
@@ -231,8 +243,9 @@ public class SupabaseTaskDataAccessObject implements
         json.addProperty("endDateTime", info.getEndDateTime().toString());
         json.addProperty("taskStatus", info.getTaskStatus());
 
-        if (info.getPriority() != null)
+        if (info.getPriority() != null) {
             json.addProperty("priority", info.getPriority().name());
+        }
 
         if (info.getTag() != null) {
             JsonObject tag = new JsonObject();
