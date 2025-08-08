@@ -1,9 +1,7 @@
-
 package entity;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 
 /**
  * Entity representing email notification configuration for a user.
@@ -12,9 +10,6 @@ public class EmailNotificationConfig {
     private String userEmail;
     private boolean emailNotificationsEnabled;
 
-    public EmailNotificationConfig() {
-    }
-
     @JsonCreator
     public EmailNotificationConfig(
             @JsonProperty("userEmail") String userEmail,
@@ -22,7 +17,6 @@ public class EmailNotificationConfig {
         this.userEmail = userEmail;
         this.emailNotificationsEnabled = emailNotificationsEnabled;
     }
-
 
     // Getters and setters
     @JsonProperty("userEmail")
@@ -43,14 +37,20 @@ public class EmailNotificationConfig {
         this.emailNotificationsEnabled = emailNotificationsEnabled;
     }
 
-
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        EmailNotificationConfig that = (EmailNotificationConfig) o;
-        return emailNotificationsEnabled == that.emailNotificationsEnabled &&
-                userEmail.equals(that.userEmail);
+        final boolean result;
+        if (this == o) {
+            result = true;
+        }
+        else if (o == null || getClass() != o.getClass()) {
+            result = false;
+        }
+        else {
+            final EmailNotificationConfig that = (EmailNotificationConfig) o;
+            result = emailNotificationsEnabled == that.emailNotificationsEnabled && userEmail.equals(that.userEmail);
+        }
+        return result;
     }
 
     @Override

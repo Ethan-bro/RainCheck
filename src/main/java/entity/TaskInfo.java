@@ -3,7 +3,17 @@ package entity;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+/**
+ * Represents task details, including weather-related information.
+ * To create a fully initialized task, call in order:
+ * <ol>
+ *     <li>{@link #setCoreDetails(TaskID, String, LocalDateTime, LocalDateTime)}</li>
+ *     <li>{@link #setAdditionalDetails(Priority, CustomTag, Reminder, String)}</li>
+ *     <li>{@link #setWeatherInfo(String, String, String, String)}</li>
+ * </ol>
+ */
 public class TaskInfo {
+
     private TaskID id;
     private String taskName;
     private LocalDateTime startDateTime;
@@ -13,65 +23,151 @@ public class TaskInfo {
     private String taskStatus;
     private Reminder reminder;
     private String isDeleted;
-
     private String weatherDescription;
     private String weatherIconName;
     private String temperature;
     private String uvIndex;
 
-    public TaskInfo(TaskID id, String taskName, LocalDateTime startDateTime, LocalDateTime endDateTime,
-                    Priority priority, CustomTag customTag, Reminder reminder, String isDeleted, String weatherDescription,
-                    String weatherIconName, String temperature, String uvIndex) {
-        this.id = Objects.requireNonNull(id);
-        this.taskName = Objects.requireNonNull(taskName);
-        this.startDateTime = Objects.requireNonNull(startDateTime);
-        this.endDateTime = Objects.requireNonNull(endDateTime);
-        this.priority = (priority != null) ? priority : Priority.LOW;
-        this.customTag = customTag;
-        this.isDeleted = "No";
-        this.taskStatus = "Incomplete";
-        this.reminder = reminder;
-        this.weatherDescription = weatherDescription;
-        this.weatherIconName = weatherIconName;
-        this.temperature = temperature;
-        this.uvIndex = uvIndex;
+    /**
+     * Creates an empty TaskInfo.
+     * Use the three initialization methods to set all fields after construction.
+     */
+    public TaskInfo() {
+        // Default empty constructor
     }
 
-    public TaskID getId() {return id;}
+    /**
+     * Sets core task details such as ID, name, and times.
+     * Must be called along with {@link #setAdditionalDetails(Priority, CustomTag, Reminder, String)}
+     * and {@link #setWeatherInfo(String, String, String, String)} to fully initialize the task.
+     *
+     * @param idParam             the unique task ID
+     * @param taskNameParam       the name of the task
+     * @param startDateTimeParam  the start date and time
+     * @param endDateTimeParam    the end date and time
+     */
+    public void setCoreDetails(TaskID idParam,
+                               String taskNameParam,
+                               LocalDateTime startDateTimeParam,
+                               LocalDateTime endDateTimeParam) {
 
-    public void setId(TaskID id) {this.id = id;}
+        this.id = Objects.requireNonNull(idParam);
+        this.taskName = Objects.requireNonNull(taskNameParam);
+        this.startDateTime = Objects.requireNonNull(startDateTimeParam);
+        this.endDateTime = Objects.requireNonNull(endDateTimeParam);
+        this.taskStatus = "Incomplete";
+    }
 
-    public String getTaskName() {return taskName;}
+    /**
+     * Sets additional details like priority, tags, reminders, and deletion status.
+     * Must be called along with {@link #setCoreDetails(TaskID, String, LocalDateTime, LocalDateTime)}
+     * and {@link #setWeatherInfo(String, String, String, String)} to fully initialize the task.
+     *
+     * @param priorityParam   the task priority, defaults to LOW if null
+     * @param tagParam        a custom tag for the task
+     * @param reminderParam   the reminder object
+     * @param isDeletedParam  deletion status as "Yes" or "No"
+     */
+    public void setAdditionalDetails(Priority priorityParam,
+                                     CustomTag tagParam,
+                                     Reminder reminderParam,
+                                     String isDeletedParam) {
 
-    public void setTaskName(String taskName) {this.taskName = taskName;}
+        this.priority = Objects.requireNonNullElse(priorityParam, Priority.LOW);
+        this.customTag = tagParam;
+        this.reminder = reminderParam;
+        this.isDeleted = isDeletedParam;
+    }
 
-    public LocalDateTime getStartDateTime() {return startDateTime;}
+    /**
+     * Adds weather-related information to the task.
+     * Must be called along with {@link #setCoreDetails(TaskID, String, LocalDateTime, LocalDateTime)}
+     * and {@link #setAdditionalDetails(Priority, CustomTag, Reminder, String)} to fully initialize the task.
+     *
+     * @param weatherDescriptionParam  the description of the weather
+     * @param weatherIconNameParam     the weather icon identifier
+     * @param temperatureParam         the temperature in Celsius
+     * @param uvIndexParam             the UV index
+     */
+    public void setWeatherInfo(String weatherDescriptionParam,
+                               String weatherIconNameParam,
+                               String temperatureParam,
+                               String uvIndexParam) {
 
-    public void setStartDateTime(LocalDateTime startDateTime) {this.startDateTime = startDateTime;}
+        this.weatherDescription = weatherDescriptionParam;
+        this.weatherIconName = weatherIconNameParam;
+        this.temperature = temperatureParam;
+        this.uvIndex = uvIndexParam;
+    }
 
-    public LocalDateTime getEndDateTime() {return endDateTime;}
+    public TaskID getId() {
+        return id;
+    }
 
-    public void setEndDateTime(LocalDateTime endDateTime) {this.endDateTime = endDateTime;}
+    public void setId(TaskID id) {
+        this.id = id;
+    }
 
-    public Priority getPriority() {return priority;}
+    public String getTaskName() {
+        return taskName;
+    }
 
-    public void setPriority(Priority priority) {this.priority = priority;}
+    public void setTaskName(String taskName) {
+        this.taskName = taskName;
+    }
 
-    public CustomTag getTag() {return customTag;}
+    public LocalDateTime getStartDateTime() {
+        return startDateTime;
+    }
 
-    public void setTag(CustomTag customTag) {this.customTag = customTag;}
+    public void setStartDateTime(LocalDateTime startDateTime) {
+        this.startDateTime = startDateTime;
+    }
 
-    public String getTaskStatus() {return taskStatus;}
+    public LocalDateTime getEndDateTime() {
+        return endDateTime;
+    }
 
-    public void setTaskStatus(String taskStatus) {this.taskStatus = taskStatus;}
+    public void setEndDateTime(LocalDateTime endDateTime) {
+        this.endDateTime = endDateTime;
+    }
 
-    public Reminder getReminder() {return reminder;}
+    public Priority getPriority() {
+        return priority;
+    }
 
-    public void setReminder(Reminder reminder) {this.reminder = reminder;}
+    public void setPriority(Priority priority) {
+        this.priority = priority;
+    }
+
+    public CustomTag getTag() {
+        return customTag;
+    }
+
+    public void setTag(CustomTag tag) {
+        this.customTag = tag;
+    }
+
+    public String getTaskStatus() {
+        return taskStatus;
+    }
+
+    public void setTaskStatus(String taskStatus) {
+        this.taskStatus = taskStatus;
+    }
+
+    public Reminder getReminder() {
+        return reminder;
+    }
+
+    public void setReminder(Reminder reminder) {
+        this.reminder = reminder;
+    }
 
     public String getWeatherDescription() {
         return weatherDescription;
     }
+
     public void setWeatherDescription(String weatherDescription) {
         this.weatherDescription = weatherDescription;
     }
@@ -79,6 +175,7 @@ public class TaskInfo {
     public String getWeatherIconName() {
         return weatherIconName;
     }
+
     public void setWeatherIconName(String weatherIconName) {
         this.weatherIconName = weatherIconName;
     }
@@ -86,13 +183,24 @@ public class TaskInfo {
     public String getTemperature() {
         return temperature;
     }
+
     public void setTemperature(String temperature) {
         this.temperature = temperature;
     }
 
-    public String getUvIndex() { return uvIndex; }
-    public void setUvIndex(String uvIndex) { this.uvIndex = uvIndex; }
+    public String getUvIndex() {
+        return uvIndex;
+    }
 
-    public void setIsDeleted(String isDeleted) {this.isDeleted = isDeleted;}
-    public String getIsDeleted() {return isDeleted;}
+    public void setUvIndex(String uvIndex) {
+        this.uvIndex = uvIndex;
+    }
+
+    public String getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(String isDeleted) {
+        this.isDeleted = isDeleted;
+    }
 }

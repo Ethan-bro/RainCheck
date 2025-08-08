@@ -1,37 +1,70 @@
 package entity;
 
+/**
+ * Represents a reminder for a task specifying how many minutes before the event the reminder occurs.
+ */
 public class Reminder {
+
     public static final Reminder NONE = new Reminder(-1);
+
+    private static final int REMINDER_AT_EVENT = 0;
+    private static final int REMINDER_10_MIN = 10;
+    private static final int REMINDER_30_MIN = 30;
+    private static final int REMINDER_1_HOUR = 60;
+    private static final int REMINDER_1_DAY = 1440;
 
     private final int minutesBefore;
 
+    /**
+     * Constructs a Reminder.
+     *
+     * @param minutesBefore the number of minutes before the event to remind, -1 means no reminder.
+     *                      Must be >= -1.
+     * @throws IllegalArgumentException if minutesBefore < -1
+     */
     public Reminder(int minutesBefore) {
-        if (minutesBefore < -1) throw new IllegalArgumentException("Reminder must be >= -1");
+        if (minutesBefore < -1) {
+            throw new IllegalArgumentException("Reminder must be >= -1");
+        }
         this.minutesBefore = minutesBefore;
     }
 
-    public int getMinutesBefore() {return minutesBefore;}
+    public int getMinutesBefore() {
+        return minutesBefore;
+    }
 
     @Override
     public String toString() {
         return switch (minutesBefore) {
             case -1 -> "No reminder";
-            case 0 -> "At event (0 minutes)";
-            case 10 -> "10 minutes";
-            case 30 -> "30 minutes";
-            case 60 -> "1 hour";
-            case 1440 -> "1 day";
+            case REMINDER_AT_EVENT -> "At event (0 minutes)";
+            case REMINDER_10_MIN -> "10 minutes";
+            case REMINDER_30_MIN -> "30 minutes";
+            case REMINDER_1_HOUR -> "1 hour";
+            case REMINDER_1_DAY -> "1 day";
             default -> minutesBefore + " min before";
         };
     }
 
-    public boolean equals(Object o) {
-        return o instanceof Reminder r && r.minutesBefore == minutesBefore;
+    /**
+     * Checks equality with another object.
+     *
+     * @param other the object to compare to
+     * @return true if other is a Reminder with the same minutesBefore value
+     */
+    public boolean equals(Object other) {
+        final boolean result;
+        if (!(other instanceof Reminder reminder)) {
+            result = false;
+        }
+        else {
+            result = reminder.minutesBefore == this.minutesBefore;
+        }
+        return result;
     }
 
     @Override
     public int hashCode() {
         return Integer.hashCode(minutesBefore);
     }
-
 }
