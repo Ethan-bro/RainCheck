@@ -1,4 +1,4 @@
-package use_case.EditCT;
+package use_case.EditCustomTag;
 
 public interface EditTagInputBoundary {
 

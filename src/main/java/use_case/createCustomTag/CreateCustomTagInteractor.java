@@ -9,10 +9,10 @@ import java.util.Map;
  */
 public class cctInteractor implements cctInputBoundary {
 
-    private final customTagDataAccessInterface dao;
+    private final CustomTagDataAccessInterface dao;
     private final cctOutputBoundary createCustomTagPresenter;
 
-    public cctInteractor(customTagDataAccessInterface dao,
+    public cctInteractor(CustomTagDataAccessInterface dao,
                          cctOutputBoundary createCustomTagPresenter) {
         this.dao = dao;
         this.createCustomTagPresenter = createCustomTagPresenter;
