@@ -1,22 +1,58 @@
 package data_access;
 
-import com.google.gson.*;
-import entity.*;
-import okhttp3.*;
+import entity.CustomTag;
+import entity.Priority;
+import entity.Reminder;
+import entity.Task;
+import entity.TaskID;
+import entity.TaskInfo;
+
 import use_case.deleteTask.DeleteTaskDataAccessInterface;
 import use_case.editTask.EditTaskDataAccessInterface;
 import use_case.listTasks.TaskDataAccessInterface;
 import use_case.markTaskComplete.MarkTaskCompleteDataAccessInterface;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import okhttp3.HttpUrl;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class SupabaseTaskDataAccessObject implements
         TaskDataAccessInterface,
         EditTaskDataAccessInterface,
         DeleteTaskDataAccessInterface,
         MarkTaskCompleteDataAccessInterface {
+
+    private static final String USERNAME = "username";
+    private static final String USERNAME_QUERY_PARAM = "username";
+    private static final String TASKS_FIELD = "tasks";
+    private static final String API_KEY_HEADER = "apikey";
+    private static final String AUTHORIZATION_HEADER = "Authorization";
+    private static final String BEARER_PREFIX = "Bearer ";
+    private static final String APPLICATION_JSON = "application/json";
+
+    private static final String PRIORITY = "priority";
+    private static final String CUSTOM_TAG = "customTag";
+    private static final String REMINDER = "reminder";
+    private static final String WEATHER_DESCRIPTION = "weatherDescription";
+    private static final String WEATHER_ICON_NAME = "weatherIconName";
+    private static final String TEMPERATURE = "temperature";
+    private static final String UV_INDEX = "uvIndex";
 
     private final String baseUrl;
     private final String apiKey;
@@ -30,171 +66,179 @@ public class SupabaseTaskDataAccessObject implements
 
     @Override
     public void addTask(String username, Task task) {
-        List<Task> tasks = getTasks(username);
+        final List<Task> tasks = getTasks(username);
         tasks.add(task);
         patchTasks(username, tasks);
     }
 
     @Override
     public List<Task> getTasksByDateRange(String username, LocalDate start, LocalDate end) {
-        List<Task> all = getTasks(username);
-        List<Task> filtered = new ArrayList<>();
-        for (Task t : all) {
-            LocalDate date = t.getTaskInfo().getStartDateTime().toLocalDate();
+        final List<Task> filtered = new ArrayList<>();
+        final List<Task> all = getTasks(username);
+
+        for (final Task task : all) {
+            final LocalDate date = task.getTaskInfo().getStartDateTime().toLocalDate();
             if (!date.isBefore(start) && !date.isAfter(end)) {
-                filtered.add(t);
+                filtered.add(task);
             }
         }
         return filtered;
     }
 
     private List<Task> getTasks(String username) {
+        final List<Task> result = new ArrayList<>();
+
         try {
-            HttpUrl url = Objects.requireNonNull(HttpUrl.parse(baseUrl + "/rest/v1/users"))
-                    .newBuilder()
-                    .addQueryParameter("username", "eq." + username)
-                    .addQueryParameter("select", "tasks")
-                    .build();
+            final JsonArray array = fetchUserData(username);
 
-            Request request = new Request.Builder()
-                    .url(url)
-                    .addHeader("apikey", apiKey)
-                    .addHeader("Authorization", "Bearer " + apiKey)
-                    .addHeader("Accept", "application/json")
-                    .build();
+            if (array != null && !array.isEmpty()) {
+                final JsonObject user = array.get(0).getAsJsonObject();
 
-            try (Response response = client.newCall(request).execute()) {
-                if (!response.isSuccessful()) return new ArrayList<>();
-                String body = Objects.requireNonNull(response.body()).string();
-                JsonArray array = JsonParser.parseString(body).getAsJsonArray();
-                if (array.isEmpty()) return new ArrayList<>();
+                if (user.has(TASKS_FIELD) && !user.get(TASKS_FIELD).isJsonNull()) {
+                    final JsonArray taskArray = user.getAsJsonArray(TASKS_FIELD);
 
-                JsonObject user = array.get(0).getAsJsonObject();
-                if (!user.has("tasks") || user.get("tasks").isJsonNull()) return new ArrayList<>();
-
-                JsonArray taskArray = user.getAsJsonArray("tasks");
-                List<Task> result = new ArrayList<>();
-                for (JsonElement el : taskArray) {
-                    result.add(jsonToTask(el.getAsJsonObject()));
+                    for (final JsonElement element : taskArray) {
+                        result.add(jsonToTask(element.getAsJsonObject()));
+                    }
+                    logLoadedTasks(username, result);
                 }
-
-                System.out.println("Tasks loaded for user " + username + ":");
-                for (Task t : result) {
-                    System.out.println(" -> " + t.getTaskInfo().getId());
-                }
-
-                return result;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ArrayList<>();
+        }
+        catch (IOException ioEx) {
+            ioEx.printStackTrace();
+        }
+
+        return result;
+    }
+
+    private JsonArray fetchUserData(String username) throws IOException {
+        final HttpUrl url = Objects.requireNonNull(HttpUrl.parse(baseUrl + "/rest/v1/users"))
+                .newBuilder()
+                .addQueryParameter(USERNAME_QUERY_PARAM, "eq." + username)
+                .addQueryParameter("select", TASKS_FIELD)
+                .build();
+
+        final Request request = new Request.Builder()
+                .url(url)
+                .addHeader(API_KEY_HEADER, apiKey)
+                .addHeader(AUTHORIZATION_HEADER, BEARER_PREFIX + apiKey)
+                .addHeader("Accept", APPLICATION_JSON)
+                .build();
+
+        JsonArray result = null;
+
+        try (Response response = client.newCall(request).execute()) {
+            if (response.isSuccessful()) {
+                final String body = Objects.requireNonNull(response.body()).string();
+                result = JsonParser.parseString(body).getAsJsonArray();
+            }
+        }
+
+        return result;
+    }
+
+    private void logLoadedTasks(String username, List<Task> tasks) {
+        System.out.println("Tasks loaded for user " + username + ":");
+        for (final Task task : tasks) {
+            System.out.println(" -> " + task.getTaskInfo().getId());
         }
     }
 
     private void patchTasks(String username, List<Task> tasks) {
+        final JsonArray taskArray = new JsonArray();
+
+        for (final Task task : tasks) {
+            taskArray.add(taskToJson(task));
+        }
+
+        final JsonObject update = new JsonObject();
+        update.add(TASKS_FIELD, taskArray);
+
+        final RequestBody body = RequestBody.create(gson.toJson(update), MediaType.get(APPLICATION_JSON));
+
+        final Request request = new Request.Builder()
+                .url(baseUrl + "/rest/v1/users?" + USERNAME_QUERY_PARAM + "=eq." + username)
+                .addHeader(API_KEY_HEADER, apiKey)
+                .addHeader(AUTHORIZATION_HEADER, BEARER_PREFIX + apiKey)
+                .addHeader("Prefer", "return=minimal")
+                .patch(body)
+                .build();
 
         try {
-            JsonArray taskArray = new JsonArray();
-            for (Task task : tasks) {
-                taskArray.add(taskToJson(task));
-            }
-
-            JsonObject update = new JsonObject();
-            update.add("tasks", taskArray);
-
-            RequestBody body = RequestBody.create(
-                    gson.toJson(update), MediaType.get("application/json"));
-
-            Request request = new Request.Builder()
-                    .url(baseUrl + "/rest/v1/users?username=eq." + username)
-                    .addHeader("apikey", apiKey)
-                    .addHeader("Authorization", "Bearer " + apiKey)
-                    .addHeader("Prefer", "return=minimal")
-                    .patch(body)
-                    .build();
-
             client.newCall(request).execute().close();
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        }
+        catch (IOException ioEx) {
+            ioEx.printStackTrace();
         }
     }
 
     @Override
     public Task getTaskById(String username, TaskID taskId) {
-        System.out.println("[DAO] Searching for task ID: " + taskId + " for user: " + username);
-        List<Task> tasks = getTasks(username);
-        System.out.println("[DAO] Retrieved " + tasks.size() + " tasks for user: " + username);
+        Task foundTask = null;
 
-        for (Task task : tasks) {
-            System.out.println("[DAO] Checking task ID: " + task.getTaskInfo().getId());
+        for (final Task task : getTasks(username)) {
             if (task.getTaskInfo().getId().equals(taskId)) {
-                System.out.println("[DAO] Task matched for ID: " + taskId);
-                return task;
+                foundTask = task;
+                break;
             }
         }
-        System.out.println("[DAO] Task not found for ID: " + taskId);
-        return null;
+
+        return foundTask;
     }
 
     @Override
     public Task getTaskByIdAndEmail(String email, TaskID id) {
+        Task foundTask = null;
+
         try {
-            // Step 1: Find the user by email to get the username
-            HttpUrl url = Objects.requireNonNull(HttpUrl.parse(baseUrl + "/rest/v1/users"))
+            final HttpUrl url = Objects.requireNonNull(HttpUrl.parse(baseUrl + "/rest/v1/users"))
                     .newBuilder()
                     .addQueryParameter("email", "eq." + email)
                     .build();
 
-            Request request = new Request.Builder()
+            final Request request = new Request.Builder()
                     .url(url)
-                    .addHeader("apikey", apiKey)
-                    .addHeader("Authorization", "Bearer " + apiKey)
-                    .addHeader("Accept", "application/json")
+                    .addHeader(API_KEY_HEADER, apiKey)
+                    .addHeader(AUTHORIZATION_HEADER, BEARER_PREFIX + apiKey)
+                    .addHeader("Accept", APPLICATION_JSON)
                     .build();
 
             try (Response response = client.newCall(request).execute()) {
                 if (!response.isSuccessful()) {
                     System.err.println("Failed to find user by email: " + email);
-                    return null;
                 }
+                else {
+                    final String body = Objects.requireNonNull(response.body()).string();
+                    final JsonArray array = JsonParser.parseString(body).getAsJsonArray();
 
-                String body = Objects.requireNonNull(response.body()).string();
-                JsonArray array = JsonParser.parseString(body).getAsJsonArray();
-                if (array.isEmpty()) {
-                    System.err.println("No user found for email: " + email);
-                    return null;
-                }
+                    if (array.isEmpty()) {
+                        System.err.println("No user found for email: " + email);
+                    }
+                    else {
+                        final JsonObject user = array.get(0).getAsJsonObject();
 
-                JsonObject user = array.get(0).getAsJsonObject();
-                if (!user.has("username") || user.get("username").isJsonNull()) {
-                    System.err.println("User record missing username for email: " + email);
-                    return null;
-                }
-
-                String username = user.get("username").getAsString();
-
-                // Step 2: Get tasks for username
-                List<Task> tasks = getTasks(username);
-
-                // Step 3: Find task by id
-                for (Task task : tasks) {
-                    if (task.getTaskInfo().getId().equals(id)) {
-                        return task;
+                        if (!user.has(USERNAME) || user.get(USERNAME).isJsonNull()) {
+                            System.err.println("User record missing username for email: " + email);
+                        }
+                        else {
+                            final String username = user.get(USERNAME).getAsString();
+                            foundTask = getTaskById(username, id);
+                        }
                     }
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        }
+        catch (IOException ioEx) {
+            ioEx.printStackTrace();
         }
 
-        return null;
+        return foundTask;
     }
 
     @Override
     public void updateTask(String username, Task updatedTask) {
-        System.out.println("------UPDATE TASK IS CALLED. Username " + username + " and ID " + updatedTask.getTaskInfo().getId());
-        List<Task> tasks = getTasks(username);
+        final List<Task> tasks = getTasks(username);
+
         for (int i = 0; i < tasks.size(); i++) {
             if (tasks.get(i).getTaskInfo().getId().equals(updatedTask.getTaskInfo().getId())) {
                 tasks.set(i, updatedTask);
@@ -206,24 +250,26 @@ public class SupabaseTaskDataAccessObject implements
 
     @Override
     public void markAsComplete(String username, TaskID taskId) {
-        Task task = getTaskById(username, taskId);
-        if (task == null) throw new IllegalArgumentException("Task not found.");
+        final Task task = getTaskById(username, taskId);
+
+        if (task == null) {
+            throw new IllegalArgumentException("Task not found.");
+        }
+
         task.getTaskInfo().setTaskStatus("Complete");
         updateTask(username, task);
     }
 
     @Override
     public void deleteTask(String username, TaskID taskId) {
-        List<Task> tasks = getTasks(username);
-        tasks.removeIf(t -> t.getTaskInfo().getId().equals(taskId));
+        final List<Task> tasks = getTasks(username);
+        tasks.removeIf(task -> task.getTaskInfo().getId().equals(taskId));
         patchTasks(username, tasks);
     }
 
-    // ---------------------- Helper Conversion ----------------------
-
     private JsonObject taskToJson(Task task) {
-        TaskInfo info = task.getTaskInfo();
-        JsonObject json = new JsonObject();
+        final TaskInfo info = task.getTaskInfo();
+        final JsonObject json = new JsonObject();
 
         json.addProperty("id", info.getId().getIDValue().toString());
         json.addProperty("taskName", info.getTaskName());
@@ -231,75 +277,72 @@ public class SupabaseTaskDataAccessObject implements
         json.addProperty("endDateTime", info.getEndDateTime().toString());
         json.addProperty("taskStatus", info.getTaskStatus());
 
-        if (info.getPriority() != null)
-            json.addProperty("priority", info.getPriority().name());
+        if (info.getPriority() != null) {
+            json.addProperty(PRIORITY, info.getPriority().name());
+        }
 
         if (info.getTag() != null) {
-            JsonObject tag = new JsonObject();
+            final JsonObject tag = new JsonObject();
             tag.addProperty("tagName", info.getTag().getTagName());
             tag.addProperty("tagEmoji", info.getTag().getTagIcon());
-            json.add("customTag", tag);
+            json.add(CUSTOM_TAG, tag);
         }
 
         if (info.getReminder() != null) {
-            JsonObject reminder = new JsonObject();
-
-            int minutesBefore = info.getReminder().getMinutesBefore();
-
-            LocalDateTime reminderTime = info.getStartDateTime()
-                    .minusMinutes(minutesBefore);
-
+            final JsonObject reminder = new JsonObject();
+            final int minutesBefore = info.getReminder().getMinutesBefore();
+            final LocalDateTime reminderTime = info.getStartDateTime().minusMinutes(minutesBefore);
             reminder.addProperty("remindDateTime", reminderTime.toString());
-            json.add("reminder", reminder);
+            json.add(REMINDER, reminder);
         }
 
-        json.addProperty("weatherDescription", info.getWeatherDescription());
-        json.addProperty("weatherIconName", info.getWeatherIconName());
-        json.addProperty("temperature", info.getTemperature());
-        json.addProperty("uvIndex", info.getUvIndex());
+        json.addProperty(WEATHER_DESCRIPTION, info.getWeatherDescription());
+        json.addProperty(WEATHER_ICON_NAME, info.getWeatherIconName());
+        json.addProperty(TEMPERATURE, info.getTemperature());
+        json.addProperty(UV_INDEX, info.getUvIndex());
 
         return json;
     }
 
     private Task jsonToTask(JsonObject json) {
-        String idStr = json.get("id").getAsString();
-        String taskName = json.get("taskName").getAsString();
-        LocalDateTime start = LocalDateTime.parse(json.get("startDateTime").getAsString());
-        LocalDateTime end = LocalDateTime.parse(json.get("endDateTime").getAsString());
-        String status = json.get("taskStatus").getAsString();
+        final String idStr = getString(json, "id");
+        final String taskName = getString(json, "taskName");
+        final LocalDateTime start = LocalDateTime.parse(getString(json, "startDateTime"));
+        final LocalDateTime end = LocalDateTime.parse(getString(json, "endDateTime"));
+        final String status = getString(json, "taskStatus");
 
         Priority priority = null;
-        if (json.has("priority") && !json.get("priority").isJsonNull()) {
-            priority = Priority.valueOf(json.get("priority").getAsString());
+
+        if (json.has(PRIORITY) && !json.get(PRIORITY).isJsonNull()) {
+            priority = Priority.valueOf(getString(json, PRIORITY));
         }
 
         CustomTag tag = null;
-        if (json.has("customTag") && json.get("customTag").isJsonObject()) {
-            JsonObject tagJson = json.getAsJsonObject("customTag");
-            tag = new CustomTag(tagJson.get("tagName").getAsString(), tagJson.get("tagEmoji").getAsString());
+
+        if (json.has(CUSTOM_TAG) && json.get(CUSTOM_TAG).isJsonObject()) {
+            final JsonObject tagJson = json.getAsJsonObject(CUSTOM_TAG);
+            tag = new CustomTag(getString(tagJson, "tagName"), getString(tagJson, "tagEmoji"));
         }
 
         Reminder reminder = null;
-        if (json.has("reminder") && json.get("reminder").isJsonObject()) {
-            JsonObject reminderJson = json.getAsJsonObject("reminder");
-            LocalDateTime remindTime = LocalDateTime.parse(reminderJson.get("remindDateTime").getAsString());
 
-            long minutesBefore = java.time.Duration.between(remindTime, start).toMinutes();
+        if (json.has(REMINDER) && json.get(REMINDER).isJsonObject()) {
+            final JsonObject reminderJson = json.getAsJsonObject(REMINDER);
+            final LocalDateTime remindTime = LocalDateTime.parse(getString(reminderJson, "remindDateTime"));
+            final long minutesBefore = java.time.Duration.between(remindTime, start).toMinutes();
             reminder = new Reminder((int) minutesBefore);
         }
 
-        String isDeleted = "No";
-        if (json.has("isDeleted")) {
-            isDeleted = json.get("isDeleted").getAsString();
-        }
-        String weatherDescription = json.has("weatherDescription") ? json.get("weatherDescription")
-                .getAsString() : null;
-        String weatherIconName = json.has("weatherIconName") ? json.get("weatherIconName")
-                .getAsString() : null;
-        String temperature = json.has("temperature") ? json.get("temperature").getAsString() : null;
-        String uvIndex = json.has("uvIndex") ? json.get("uvIndex").getAsString() : null;
+        final String isDeleted;
 
-        TaskInfo info = new TaskInfo(
+        if (json.has("isDeleted")) {
+            isDeleted = getString(json, "isDeleted");
+        }
+        else {
+            isDeleted = "No";
+        }
+
+        final TaskInfo info = new TaskInfo(
                 TaskID.from(UUID.fromString(idStr)),
                 taskName,
                 start,
@@ -308,13 +351,28 @@ public class SupabaseTaskDataAccessObject implements
                 tag,
                 reminder,
                 isDeleted,
-                weatherDescription,
-                weatherIconName,
-                temperature,
-                uvIndex
+                getNullableString(json, WEATHER_DESCRIPTION),
+                getNullableString(json, WEATHER_ICON_NAME),
+                getNullableString(json, TEMPERATURE),
+                getNullableString(json, UV_INDEX)
         );
+
         info.setTaskStatus(status);
 
         return new Task(info);
+    }
+
+    private String getString(JsonObject json, String memberName) {
+        String result = null;
+
+        if (json.has(memberName) && !json.get(memberName).isJsonNull()) {
+            result = json.get(memberName).getAsString();
+        }
+
+        return result;
+    }
+
+    private String getNullableString(JsonObject json, String memberName) {
+        return getString(json, memberName);
     }
 }

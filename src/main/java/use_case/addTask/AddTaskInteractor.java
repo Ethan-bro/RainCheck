@@ -62,7 +62,12 @@ public class AddTaskInteractor implements AddTaskInputBoundary {
 
         try {
 
-            final List<Map<String, String>> hourly = getHourlyWeatherForTaskTime(inputData);
+            final LocalDateTime startDateTime = inputData.getStartDateTime();
+            final LocalDate date = startDateTime.toLocalDate();
+            final int hour = startDateTime.getHour();
+
+            final List<Map<String, String>> hourly = weatherApiService.getHourlyWeather(
+                    LocationService.getUserCity(), date, hour, hour);
 
             if (!hourly.isEmpty()) {
                 final Map<String, String> hourlyMap = hourly.get(0);
@@ -102,15 +107,6 @@ public class AddTaskInteractor implements AddTaskInputBoundary {
 
         final AddTaskOutputData outputData = new AddTaskOutputData(newTask);
         addTaskPresenter.prepareSuccessView(outputData);
-    }
-
-    private List<Map<String, String>> getHourlyWeatherForTaskTime(AddTaskInputData inputData) throws IOException {
-        final LocalDateTime startDateTime = inputData.getStartDateTime();
-        final LocalDate date = startDateTime.toLocalDate();
-        final int hour = startDateTime.getHour();
-
-        return weatherApiService.getHourlyWeather(
-                LocationService.getUserCity(), date, hour, hour);
     }
 
     private AddTaskOutputData validateInput(AddTaskInputData inputData) {

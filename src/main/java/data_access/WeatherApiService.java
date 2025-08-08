@@ -1,169 +1,300 @@
 package data_access;
 
 import app.Main;
-import com.google.gson.*;
-import okhttp3.*;
+
 import use_case.weather.daily.DailyWeatherDataAccessInterface;
 import use_case.weather.hourly.HourlyWeatherDataAccessInterface;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Image;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.swing.ImageIcon;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
+/**
+ * Service to fetch weather data from Visual Crossing Weather API.
+ * Implements interfaces for daily and hourly weather data access.
+ */
 public class WeatherApiService implements DailyWeatherDataAccessInterface, HourlyWeatherDataAccessInterface {
+
+    private static final String URL_TEMPLATE =
+            "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/%s/%s"
+                    + "?unitGroup=metric&iconSet=icons2&key=%s&contentType=json";
+
+    private static final int ICON_WIDTH = 40;
+    private static final int ICON_HEIGHT = 40;
+
+    private static final double DEFAULT_TEMP_MAX = 25.0;
+    private static final double DEFAULT_TEMP_MIN = 18.0;
+    private static final double DEFAULT_FEELS_LIKE_MAX = 26.0;
+    private static final double DEFAULT_FEELS_LIKE_MIN = 17.0;
+
+    private static final String DEFAULT_ICON_NAME = "clear-day";
+
+    private static final String KEY_TEMP_MAX = "tempmax";
+    private static final String KEY_TEMP_MIN = "tempmin";
+    private static final String KEY_FEELS_LIKE_MAX = "feelslikemax";
+    private static final String KEY_FEELS_LIKE_MIN = "feelslikemin";
+    private static final String KEY_ICON = "icon";
+    private static final String KEY_ICON_NAME = "iconName";
+
+    // New constants to avoid multiple string literal violations
+    private static final String KEY_FEELSLIKE = "feelslike";
+    private static final String KEY_UVINDEX = "uvindex";
+    private static final String KEY_UV_INDEX = "uv_index";
 
     private final String apiKey;
     private final OkHttpClient client = new OkHttpClient();
     private final Gson gson = new Gson();
     private final Map<String, JsonObject> weeklyWeatherCache = new HashMap<>();
 
-    private final boolean USE_FAKE_DATA = true; // Set to true for testing
+    private final boolean useFakeData = true;
 
-    private static final String URL =
-            "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/%s/%s?unitGroup=metric&iconSet=icons2&key=%s&contentType=json";
-
+    /**
+     * Constructs the WeatherApiService by reading the API key from config file.
+     *
+     * @throws IOException if config file reading fails
+     */
     public WeatherApiService() throws IOException {
-        JsonObject config = JsonParser.parseReader(new FileReader("config/secrets.json")).getAsJsonObject();
+        final JsonObject config = JsonParser.parseReader(new FileReader("config/secrets.json")).getAsJsonObject();
         this.apiKey = config.get("weather_api_key").getAsString();
     }
 
-    public Map<String, Object> getDailyWeather(String location, LocalDate date) throws IOException {
-        if (USE_FAKE_DATA) {
+    /**
+     * Returns daily weather data for the given location and date.
+     *
+     * @param location the location name
+     * @param date     the date for weather data
+     * @return map of weather attributes including temperatures and icons
+     * @throws IOException if API call fails
+     */
+    @Override
+    public Map<String, Object> getDailyWeather(final String location, final LocalDate date) throws IOException {
+        final Map<String, Object> result = new HashMap<>();
+
+        if (useFakeData) {
             System.out.println("Using fake data");
-            Map<String, Object> result = new HashMap<>();
-            result.put("tempmax", 25.0);
-            result.put("tempmin", 18.0);
-            result.put("feelslikemax", 26.0);
-            result.put("feelslikemin", 17.0);
-            result.put("icon", getWeatherImageIcon("clear-day")); // use any default
-            result.put("iconName", "clear-day");
-            return result;
+            result.put(KEY_TEMP_MAX, DEFAULT_TEMP_MAX);
+            result.put(KEY_TEMP_MIN, DEFAULT_TEMP_MIN);
+            result.put(KEY_FEELS_LIKE_MAX, DEFAULT_FEELS_LIKE_MAX);
+            result.put(KEY_FEELS_LIKE_MIN, DEFAULT_FEELS_LIKE_MIN);
+            result.put(KEY_ICON, getWeatherImageIcon(DEFAULT_ICON_NAME));
+            result.put(KEY_ICON_NAME, DEFAULT_ICON_NAME);
         }
-
-        JsonObject body = getVisualCrossingJSONBody(location, date);
-
-        if (body == null) {
-            return Collections.emptyMap();
+        else {
+            final JsonObject body = getVisualCrossingJSONBody(location, date);
+            if (body != null) {
+                final JsonArray daysArray = body.getAsJsonArray("days");
+                if (daysArray != null && daysArray.size() > 0) {
+                    extractWeatherAndPutInMap(daysArray, result);
+                }
+            }
         }
-
-        JsonObject day = body.getAsJsonArray("days").get(0).getAsJsonObject();
-
-        Map<String, Object> result = new HashMap<>();
-        result.put("tempmax", day.get("tempmax").getAsDouble());
-        result.put("tempmin", day.get("tempmin").getAsDouble());
-        result.put("feelslikemax", day.has("feelslikemax") && !day.get("feelslikemax").isJsonNull() ? day.get("feelslikemax").getAsDouble() : null);
-        result.put("feelslikemin", day.has("feelslikemin") && !day.get("feelslikemin").isJsonNull() ? day.get("feelslikemin").getAsDouble() : null);
-
-        String iconName = day.get("icon").getAsString(); // e.g. clear-day, thunder-rain, showers-night
-        result.put("icon", getWeatherImageIcon(iconName));  // used in UI
-        result.put("iconName", iconName);                   // used for saving in DB
 
         return result;
     }
 
-    private ImageIcon getWeatherImageIcon(String iconName) {
-        String iconPath = "/weatherIcons/" + iconName + ".png";
+    /**
+     * Extracts weather information from the first day in the given JsonArray
+     * and puts relevant data into the provided map.
+     * The map is mutated by adding keys for maximum and minimum temperatures,
+     * feels-like temperatures (which may be null), and weather icon data.
+     *
+     * @param daysArray JsonArray containing daily weather data; expected to have at least one element
+     * @param map       the Map to be mutated with extracted weather data; keys include temperature,
+     *                  feels-like temperature, and icon information
+     */
+    private void extractWeatherAndPutInMap(JsonArray daysArray, Map<String, Object> map) {
+        final JsonObject day = daysArray.get(0).getAsJsonObject();
 
+        map.put(KEY_TEMP_MAX, day.get(KEY_TEMP_MAX).getAsDouble());
+        map.put(KEY_TEMP_MIN, day.get(KEY_TEMP_MIN).getAsDouble());
+
+        if (day.has(KEY_FEELS_LIKE_MAX) && !day.get(KEY_FEELS_LIKE_MAX).isJsonNull()) {
+            map.put(KEY_FEELS_LIKE_MAX, day.get(KEY_FEELS_LIKE_MAX).getAsDouble());
+        }
+        else {
+            map.put(KEY_FEELS_LIKE_MAX, null);
+        }
+
+        if (day.has(KEY_FEELS_LIKE_MIN) && !day.get(KEY_FEELS_LIKE_MIN).isJsonNull()) {
+            map.put(KEY_FEELS_LIKE_MIN, day.get(KEY_FEELS_LIKE_MIN).getAsDouble());
+        }
+        else {
+            map.put(KEY_FEELS_LIKE_MIN, null);
+        }
+
+        final String iconName = day.get(KEY_ICON).getAsString();
+        map.put(KEY_ICON, getWeatherImageIcon(iconName));
+        map.put(KEY_ICON_NAME, iconName);
+    }
+
+    private ImageIcon getWeatherImageIcon(final String iconName) {
+        final String iconPath = "/weatherIcons/" + iconName + ".png";
         ImageIcon icon = null;
+
         try {
-            java.net.URL imgURL = getClass().getResource(iconPath);
-            if (imgURL != null) {
-                Image img = new ImageIcon(imgURL).getImage();
-                Image scaledImg = img.getScaledInstance(40, 40, Image.SCALE_SMOOTH);
+            final java.net.URL imgUrl = getClass().getResource(iconPath);
+            if (imgUrl != null) {
+                final Image img = new ImageIcon(imgUrl).getImage();
+                final Image scaledImg = img.getScaledInstance(ICON_WIDTH, ICON_HEIGHT, Image.SCALE_SMOOTH);
                 icon = new ImageIcon(scaledImg);
-            } else {
+            }
+            else {
                 System.err.println("Couldn't find icon: " + iconPath);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        }
+        catch (IllegalArgumentException ex) {
+            ex.printStackTrace();
         }
 
         return icon;
     }
 
-    public List<Map<String, String>> getHourlyWeather(String location, LocalDate date, int startHour, int endHour) throws IOException {
-        if (USE_FAKE_DATA) {
+    /**
+     * Returns hourly weather data for the given location and date between startHour and endHour.
+     *
+     * @param location  the location name
+     * @param date      the date for weather data
+     * @param startHour the start hour (inclusive)
+     * @param endHour   the end hour (inclusive)
+     * @return list of maps for each hour containing time, description, feelslike, iconName, and uvindex
+     * @throws IOException if API call fails
+     */
+    @Override
+    public List<Map<String, String>> getHourlyWeather(final String location, final LocalDate date,
+                                                      final int startHour, final int endHour) throws IOException {
+        final List<Map<String, String>> result = new ArrayList<>();
+
+        if (useFakeData) {
             System.out.println("Using fake data");
-            List<Map<String, String>> result = new ArrayList<>();
             for (int i = startHour; i <= endHour; i++) {
-                Map<String, String> mock = new HashMap<>();
-                mock.put("time", String.format("%02d:00", i));
-                mock.put("description", "Sunny");
-                mock.put("feelslike", "22°C");
-                mock.put("iconName", "clear-day");
-                mock.put("uvindex", "3");
+                final Map<String, String> mock = new HashMap<>();
+                populateFakeHourlyWeather(i, mock);
                 result.add(mock);
             }
-            return result;
         }
-
-        JsonObject body = getVisualCrossingJSONBody(location, date);
-
-        if (body == null) {
-            return Collections.emptyList();
-        }
-
-        JsonArray hours = body.getAsJsonArray("days").get(0).getAsJsonObject().getAsJsonArray("hours");
-
-        List<Map<String, String>> result = new ArrayList<>();
-
-        for (int i = startHour; i <= endHour && i < hours.size(); i++) {
-            JsonObject hour = hours.get(i).getAsJsonObject();
-            String time = hour.get("datetime").getAsString();
-            String description = hour.get("conditions").getAsString();
-            String feelsLike = hour.get("feelslike").getAsString();
-
-            String iconName = hour.has("icon") && !hour.get("icon").isJsonNull() ? hour.get("icon").getAsString() : "clear-day";
-
-            // Extract UV index safely
-            String uvIndex = "N/A";
-            if (hour.has("uvindex") && !hour.get("uvindex").isJsonNull()) {
-                uvIndex = String.valueOf(hour.get("uvindex").getAsInt());
-            } else if (hour.has("uv_index") && !hour.get("uv_index").isJsonNull()) {
-                uvIndex = String.valueOf(hour.get("uv_index").getAsInt());
+        else {
+            final JsonObject body = getVisualCrossingJSONBody(location, date);
+            if (body != null) {
+                final JsonArray daysArray = body.getAsJsonArray("days");
+                if (daysArray != null && daysArray.size() > 0) {
+                    final JsonArray hours = daysArray.get(0).getAsJsonObject().getAsJsonArray("hours");
+                    for (int i = startHour; i <= endHour && i < hours.size(); i++) {
+                        final JsonObject hour = hours.get(i).getAsJsonObject();
+                        final Map<String, String> weatherMap = new HashMap<>();
+                        extractHourlyWeatherAndPutInMap(hour, weatherMap);
+                        result.add(weatherMap);
+                    }
+                }
             }
-
-            Map<String, String> weather = new HashMap<>();
-            weather.put("time", time);
-            weather.put("description", description);
-            weather.put("feelslike", feelsLike + "°C");
-            weather.put("iconName", iconName);
-            weather.put("uvindex", uvIndex);
-
-            result.add(weather);
         }
 
         return result;
     }
 
-    private JsonObject getVisualCrossingJSONBody(String location, LocalDate date) throws IOException {
-        String key = location + "-" + date.toString();
+    /**
+     * Populates a map with fake hourly weather data for the given hour.
+     *
+     * @param hour the hour of the day (0-23)
+     * @param map  the map to be mutated with fake weather data
+     */
+    private void populateFakeHourlyWeather(final int hour, final Map<String, String> map) {
+        map.put("time", String.format("%02d:00", hour));
+        map.put("description", "Sunny");
+        map.put(KEY_FEELSLIKE, "22°C");
+        map.put(KEY_ICON_NAME, DEFAULT_ICON_NAME);
+        map.put(KEY_UVINDEX, "3");
+    }
+
+    /**
+     * Extracts weather information from a JsonObject representing an hour,
+     * and puts relevant data into the provided map.
+     * The map is mutated by adding keys for time, description, feels-like temperature,
+     * icon name, and UV index.
+     *
+     * @param hourJson JsonObject containing hourly weather data
+     * @param map      the map to be mutated with extracted weather data
+     */
+    private void extractHourlyWeatherAndPutInMap(final JsonObject hourJson, final Map<String, String> map) {
+        final String time = hourJson.get("datetime").getAsString();
+        final String description = hourJson.get("conditions").getAsString();
+        final String feelsLike = hourJson.get(KEY_FEELSLIKE).getAsString();
+
+        final String iconName;
+        if (hourJson.has(KEY_ICON) && !hourJson.get(KEY_ICON).isJsonNull()) {
+            iconName = hourJson.get(KEY_ICON).getAsString();
+        }
+        else {
+            iconName = DEFAULT_ICON_NAME;
+        }
+
+        String uvIndex = "N/A";
+        if (hourJson.has(KEY_UVINDEX) && !hourJson.get(KEY_UVINDEX).isJsonNull()) {
+            uvIndex = String.valueOf(hourJson.get(KEY_UVINDEX).getAsInt());
+        }
+        else if (hourJson.has(KEY_UV_INDEX) && !hourJson.get(KEY_UV_INDEX).isJsonNull()) {
+            uvIndex = String.valueOf(hourJson.get(KEY_UV_INDEX).getAsInt());
+        }
+
+        map.put("time", time);
+        map.put("description", description);
+        map.put(KEY_FEELSLIKE, feelsLike + "°C");
+        map.put(KEY_ICON_NAME, iconName);
+        map.put(KEY_UVINDEX, uvIndex);
+    }
+
+    /**
+     * Retrieves weather data as a JsonObject for the specified location and date.
+     * Uses a cache to avoid redundant API calls. If not cached, makes an HTTP request
+     * to the Visual Crossing Weather API, parses the response, caches it, and returns it.
+     *
+     * @param location the location name for which to fetch weather data
+     * @param date     the date for the weather forecast
+     * @return a JsonObject representing the weather data, or null if no response body is present
+     * @throws IOException if the HTTP request fails or returns an unsuccessful response
+     */
+    private JsonObject getVisualCrossingJSONBody(final String location, final LocalDate date) throws IOException {
+        final String key = location + "-" + date.toString();
+        JsonObject result = null;
 
         if (weeklyWeatherCache.containsKey(key)) {
-            return weeklyWeatherCache.get(key);
+            result = weeklyWeatherCache.get(key);
+        }
+        else {
+            System.out.println("Making an API call for " + location + ", count = " + Main.getNumOfApiCallsMade());
+
+            final String url = String.format(URL_TEMPLATE, location, date, apiKey);
+            final Request request = new Request.Builder().url(url).build();
+            final Response response = client.newCall(request).execute();
+
+            Main.incrementNumOfApiCallsMade();
+
+            if (!response.isSuccessful()) {
+                throw new IOException("Unexpected code: " + response);
+            }
+
+            if (response.body() != null) {
+                final String bodyString = response.body().string();
+                final JsonObject json = JsonParser.parseString(bodyString).getAsJsonObject();
+                weeklyWeatherCache.put(key, json);
+                result = json;
+            }
         }
 
-        System.out.println("Making an API call for " + location + ", count = " + Main.getNumOfApiCallsMade());
-
-        String url = String.format(URL, location, date, apiKey);
-
-        Request request = new Request.Builder().url(url).build();
-        Response response = client.newCall(request).execute();
-
-        Main.incrementNumOfApiCallsMade();
-
-        if (!response.isSuccessful()) throw new IOException("Unexpected code: " + response);
-
-        if (response.body() != null) {
-            JsonObject json = JsonParser.parseString(response.body().string()).getAsJsonObject();
-            weeklyWeatherCache.put(key, json);
-            return json;
-        }
-
-        return null;
+        return result;
     }
 }
