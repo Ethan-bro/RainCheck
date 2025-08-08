@@ -33,9 +33,6 @@ import javax.swing.border.EmptyBorder;
 /**
  * Abstract base class for task form views with common UI elements and styles.
  */
-// Suppressing ClassDataAbstractionCoupling because this UI form class
-// inherently depends on many UI and entity classes. Refactoring to reduce coupling is planned.
-@SuppressWarnings("checkstyle:ClassDataAbstractionCoupling")
 public abstract class AbstractTaskFormView extends JPanel {
 
     private static final String FONT_NAME = "Segoe UI";
