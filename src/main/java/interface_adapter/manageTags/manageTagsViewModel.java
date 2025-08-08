@@ -1,22 +1,22 @@
-package interface_adapter.ManageTags;
+package interface_adapter.manageTags;
 
 import entity.CustomTag;
 import interface_adapter.ViewModel;
 import interface_adapter.events.TagChangeEventNotifier;
-import use_case.createCustomTag.CustomTagDataAccessInterface;
+import use_case.createCustomTag.customTagDataAccessInterface;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class ManageTagsViewModel extends ViewModel<ManageTagsState> {
+public class manageTagsViewModel extends ViewModel<manageTagsState> {
 
-    private final CustomTagDataAccessInterface tagDao;
+    private final customTagDataAccessInterface tagDao;
     private String username;
 
-    public ManageTagsViewModel(CustomTagDataAccessInterface tagDao, String username) {
+    public manageTagsViewModel(customTagDataAccessInterface tagDao, String username) {
         super("Manage Tags");
-        setState(new ManageTagsState());
+        setState(new manageTagsState());
 
         this.tagDao = tagDao;
         this.username = username;
@@ -27,7 +27,7 @@ public class ManageTagsViewModel extends ViewModel<ManageTagsState> {
     }
 
     public void setUsername(String username) {
-        System.out.println("[ManageTagsViewModel] setUsername called with: " + username);
+        System.out.println("[manageTagsViewModel] setUsername called with: " + username);
         this.username = username;
 
         // Notify listeners that tags have changed (forces UI to re-pull from getTagOptions)

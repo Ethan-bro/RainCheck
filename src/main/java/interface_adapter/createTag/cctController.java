@@ -2,19 +2,19 @@ package interface_adapter.createTag;
 
 import entity.CustomTag;
 
-import use_case.createCustomTag.CCTInputBoundary;
-import use_case.createCustomTag.CCTInputData;
+import use_case.createCustomTag.cctInputBoundary;
+import use_case.createCustomTag.cctInputData;
 
-public class CCTController {
+public class cctController {
 
-    private final CCTInputBoundary createCustomTagInteractor;
+    private final cctInputBoundary createCustomTagInteractor;
 
-    public CCTController(CCTInputBoundary createCustomTagInteractor) {
+    public cctController(cctInputBoundary createCustomTagInteractor) {
         this.createCustomTagInteractor = createCustomTagInteractor;
     }
 
     public void execute(CustomTag customTag, String username) {
-        CCTInputData inputData = new CCTInputData(customTag.getTagName(), customTag.getTagIcon());
+        cctInputData inputData = new cctInputData(customTag.getTagName(), customTag.getTagIcon());
         createCustomTagInteractor.execute(inputData, username);
     }
 }

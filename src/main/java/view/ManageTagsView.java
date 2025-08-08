@@ -1,12 +1,12 @@
 package view;
 
 import entity.CustomTag;
-import interface_adapter.EditTag.EditTagViewModel;
-import interface_adapter.ManageTags.ManageTagsState;
+import interface_adapter.editTag.editTagViewModel;
+import interface_adapter.manageTags.manageTagsState;
 import interface_adapter.ViewManagerModel;
-import interface_adapter.createTag.CCTViewModel;
-import interface_adapter.ManageTags.ManageTagsViewModel;
-import interface_adapter.ManageTags.DeleteTagController;
+import interface_adapter.createTag.cctViewModel;
+import interface_adapter.manageTags.manageTagsViewModel;
+import interface_adapter.manageTags.deleteTagController;
 import interface_adapter.events.TagChangeEventNotifier;
 
 import javax.swing.*;
@@ -22,10 +22,10 @@ public class ManageTagsView extends JPanel implements ActionListener {
     private static final String viewName = "Manage Tags";
 
     private final ViewManagerModel viewManagerModel;
-    private final ManageTagsViewModel manageTagsVM;
-    private final CCTViewModel cctViewModel;
-    private final EditTagViewModel editTagViewModel;
-    private final DeleteTagController deleteTagController;
+    private final manageTagsViewModel manageTagsVM;
+    private final cctViewModel cctViewModel;
+    private final editTagViewModel editTagViewModel;
+    private final deleteTagController deleteTagController;
 
     private final JComboBox<CustomTag> customTagCombo;
     private final JButton editTagButton;
@@ -37,10 +37,10 @@ public class ManageTagsView extends JPanel implements ActionListener {
 
     public ManageTagsView(
             ViewManagerModel viewManagerModel,
-            ManageTagsViewModel manageTagsVM,
-            CCTViewModel cctViewModel,
-            EditTagViewModel editTagViewModel,
-            DeleteTagController deleteTagController
+            manageTagsViewModel manageTagsVM,
+            cctViewModel cctViewModel,
+            editTagViewModel editTagViewModel,
+            deleteTagController deleteTagController
     ) {
         this.viewManagerModel = viewManagerModel;
         this.manageTagsVM = manageTagsVM;
@@ -176,7 +176,7 @@ public class ManageTagsView extends JPanel implements ActionListener {
         if (e.getSource() == editTagButton) {
 
             //.set the current tag to be edited
-            ManageTagsState state = manageTagsVM.getState();
+            manageTagsState state = manageTagsVM.getState();
             state.setCurrTag(selectedTag);
 
             // let EditTagView know a tag has been selected to edit

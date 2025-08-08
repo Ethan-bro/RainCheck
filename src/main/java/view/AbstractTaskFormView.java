@@ -4,7 +4,6 @@ import entity.CustomTag;
 import entity.Priority;
 import entity.Reminder;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -22,7 +21,9 @@ import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
@@ -31,10 +32,13 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 /**
- * Abstract base class for task form views with common UI elements and styles.
+ * Abstract base class for task form views, providing reusable UI components
+ * such as labeled fields, styled buttons, and layout configurations.
+ * This class serves as a template for task creation and editing views.
  */
 public abstract class AbstractTaskFormView extends JPanel {
 
+    // ---- Constants ----
     private static final String FONT_NAME = "Segoe UI";
     private static final String FONT_NAME_EMOJI = "Segoe UI Emoji";
 
@@ -75,6 +79,7 @@ public abstract class AbstractTaskFormView extends JPanel {
     private static final Reminder R_60 = new Reminder(60);
     private static final Reminder R_1440 = new Reminder(1440);
 
+    // ---- Instance fields ----
     private JTextField nameField;
     private JSpinner startSpinner;
     private JSpinner endSpinner;
@@ -86,25 +91,46 @@ public abstract class AbstractTaskFormView extends JPanel {
     private JButton cancelButton;
     private JLabel errorLabel;
 
+    /**
+     * Constructs the base task form view with a given title, save button text, and tag options.
+     *
+     * @param title the title of the form
+     * @param saveButtonText the label for the save button
+     * @param tagOptions the list of custom tags to display
+     */
     public AbstractTaskFormView(final String title, final String saveButtonText,
                                 final List<CustomTag> tagOptions) {
-        setLayout(new BorderLayout());
+        setLayout(new java.awt.BorderLayout());
         setBackground(Color.WHITE);
         setBorder(new EmptyBorder(BORDER_TOP, BORDER_LEFT, BORDER_TOP, BORDER_LEFT));
 
-        add(initTitleLabel(title), BorderLayout.NORTH);
-        add(initFormPanel(tagOptions), BorderLayout.CENTER);
-        add(initSouthPanel(saveButtonText), BorderLayout.SOUTH);
+        add(initTitleLabel(title), java.awt.BorderLayout.NORTH);
+        add(initFormPanel(tagOptions), java.awt.BorderLayout.CENTER);
+        add(initSouthPanel(saveButtonText), java.awt.BorderLayout.SOUTH);
     }
 
+    /**
+     * Creates and styles the title label.
+     *
+     * @param title the text for the title
+     * @return the JLabel for the title
+     */
     private JLabel initTitleLabel(final String title) {
         final JLabel titleLabel = new JLabel(title);
         titleLabel.setFont(new Font(FONT_NAME, Font.BOLD, TITLE_FONT_SIZE));
-        titleLabel.setForeground(new Color(TITLE_COLOR_VALUE, TITLE_COLOR_VALUE, TITLE_COLOR_VALUE));
+        titleLabel.setForeground(
+                new Color(TITLE_COLOR_VALUE, TITLE_COLOR_VALUE, TITLE_COLOR_VALUE)
+        );
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         return titleLabel;
     }
 
+    /**
+     * Initializes the form panel with all input fields.
+     *
+     * @param tagOptions the available custom tags
+     * @return the populated JPanel
+     */
     private JPanel initFormPanel(final List<CustomTag> tagOptions) {
         final JPanel formPanel = new JPanel(new GridBagLayout());
         formPanel.setBackground(Color.WHITE);
@@ -135,22 +161,30 @@ public abstract class AbstractTaskFormView extends JPanel {
         addLabeledField(formPanel, gbc, row++, "Category:", labelFont, labelColor, customTagCombo);
 
         reminderCombo = initReminderCombo(labelFont);
-        addLabeledField(formPanel, gbc, row++, "Reminder (min before):", labelFont, labelColor, reminderCombo);
+        addLabeledField(formPanel, gbc, row++, "Reminder (min before):",
+                labelFont, labelColor, reminderCombo);
 
         return formPanel;
     }
 
+    /**
+     * Creates a combo box for custom tags.
+     *
+     * @param tagOptions available tags
+     * @return the JComboBox for custom tags
+     */
     private JComboBox<Object> initCustomTagCombo(final List<CustomTag> tagOptions) {
         final JComboBox<Object> comboBox;
         if (tagOptions.isEmpty()) {
             comboBox = new JComboBox<>();
             comboBox.setRenderer(new DefaultListCellRenderer() {
                 @Override
-                public Component getListCellRendererComponent(final javax.swing.JList<?> list,
-                                                              final Object value,
-                                                              final int index,
-                                                              final boolean isSelected,
-                                                              final boolean cellHasFocus) {
+                public Component getListCellRendererComponent(
+                        final JList<?> list,
+                        final Object value,
+                        final int index,
+                        final boolean isSelected,
+                        final boolean cellHasFocus) {
                     final JLabel label = (JLabel) super.getListCellRendererComponent(
                             list, value, index, isSelected, cellHasFocus
                     );
@@ -173,6 +207,12 @@ public abstract class AbstractTaskFormView extends JPanel {
         return comboBox;
     }
 
+    /**
+     * Creates a combo box for reminder options.
+     *
+     * @param labelFont the font to use for combo box items
+     * @return the JComboBox for reminders
+     */
     private JComboBox<Reminder> initReminderCombo(final Font labelFont) {
         final Reminder[] reminderOptions = {Reminder.NONE, R_0, R_10, R_30, R_60, R_1440};
         final JComboBox<Reminder> comboBox = new JComboBox<>(reminderOptions);
@@ -180,6 +220,12 @@ public abstract class AbstractTaskFormView extends JPanel {
         return comboBox;
     }
 
+    /**
+     * Initializes the panel containing the save/cancel buttons and error label.
+     *
+     * @param saveButtonText the label for the save button
+     * @return the JPanel for the south section
+     */
     private JPanel initSouthPanel(final String saveButtonText) {
         errorLabel = new JLabel();
         errorLabel.setForeground(new Color(ERROR_COLOR_R, ERROR_COLOR_G, ERROR_COLOR_B));
@@ -210,9 +256,20 @@ public abstract class AbstractTaskFormView extends JPanel {
         return southPanel;
     }
 
+    /**
+     * Adds a labeled field to the form panel.
+     *
+     * @param panel the panel to add the field to
+     * @param gbc the grid bag constraints
+     * @param row the row index
+     * @param labelText the text for the label
+     * @param font the font for the label
+     * @param color the color of the label text
+     * @param field the input field to add
+     */
     private void addLabeledField(final JPanel panel, final GridBagConstraints gbc, final int row,
                                  final String labelText, final Font font, final Color color,
-                                 final javax.swing.JComponent field) {
+                                 final JComponent field) {
         gbc.gridy = row;
 
         gbc.gridx = 0;
@@ -227,6 +284,12 @@ public abstract class AbstractTaskFormView extends JPanel {
         panel.add(field, gbc);
     }
 
+    /**
+     * Styles a given button with specified background color and UI settings.
+     *
+     * @param button the button to style
+     * @param bgColor the background color for the button
+     */
     protected void styleButton(final JButton button, final Color bgColor) {
         button.setFont(new Font(FONT_NAME, Font.BOLD, LABEL_FONT_SIZE));
         button.setBackground(bgColor);
@@ -241,6 +304,11 @@ public abstract class AbstractTaskFormView extends JPanel {
         button.setOpaque(true);
     }
 
+    /**
+     * Creates a date/time spinner with "yyyy-MM-dd HH:mm" format.
+     *
+     * @return the configured JSpinner
+     */
     protected JSpinner makeDateTimeSpinner() {
         final SpinnerDateModel model =
                 new SpinnerDateModel(new Date(), null, null, java.util.Calendar.MINUTE);
@@ -250,41 +318,165 @@ public abstract class AbstractTaskFormView extends JPanel {
         return spinner;
     }
 
+    /**
+     * Gets the task name text field.
+     *
+     * @return the task name text field
+     */
     public final JTextField getNameField() {
         return nameField;
     }
 
+    /**
+     * Sets the task name text field.
+     *
+     * @param nameField the task name text field to set
+     */
+    public final void setNameField(final JTextField nameField) {
+        this.nameField = nameField;
+    }
+
+    /**
+     * Gets the start date/time spinner.
+     *
+     * @return the start date/time spinner
+     */
     public final JSpinner getStartSpinner() {
         return startSpinner;
     }
 
+    /**
+     * Sets the start date/time spinner.
+     *
+     * @param startSpinner the start date/time spinner to set
+     */
+    public final void setStartSpinner(final JSpinner startSpinner) {
+        this.startSpinner = startSpinner;
+    }
+
+    /**
+     * Gets the end date/time spinner.
+     *
+     * @return the end date/time spinner
+     */
     public final JSpinner getEndSpinner() {
         return endSpinner;
     }
 
+    /**
+     * Sets the end date/time spinner.
+     *
+     * @param endSpinner the end date/time spinner to set
+     */
+    public final void setEndSpinner(final JSpinner endSpinner) {
+        this.endSpinner = endSpinner;
+    }
+
+    /**
+     * Gets the priority combo box.
+     *
+     * @return the priority combo box
+     */
     public final JComboBox<Priority> getPriorityCombo() {
         return priorityCombo;
     }
 
+    /**
+     * Sets the priority combo box.
+     *
+     * @param priorityCombo the priority combo box to set
+     */
+    public final void setPriorityCombo(final JComboBox<Priority> priorityCombo) {
+        this.priorityCombo = priorityCombo;
+    }
+
+    /**
+     * Gets the custom tag combo box.
+     *
+     * @return the custom tag combo box
+     */
     public final JComboBox<Object> getCustomTagCombo() {
         return customTagCombo;
     }
 
+    /**
+     * Sets the custom tag combo box.
+     *
+     * @param customTagCombo the custom tag combo box to set
+     */
+    public final void setCustomTagCombo(final JComboBox<Object> customTagCombo) {
+        this.customTagCombo = customTagCombo;
+    }
+
+    /**
+     * Gets the reminder combo box.
+     *
+     * @return the reminder combo box
+     */
     public final JComboBox<Reminder> getReminderCombo() {
         return reminderCombo;
     }
 
+    /**
+     * Sets the reminder combo box.
+     *
+     * @param reminderCombo the reminder combo box to set
+     */
+    public final void setReminderCombo(final JComboBox<Reminder> reminderCombo) {
+        this.reminderCombo = reminderCombo;
+    }
+
+    /**
+     * Gets the save button.
+     *
+     * @return the save button
+     */
     public final JButton getSaveButton() {
         return saveButton;
     }
 
+    /**
+     * Sets the save button.
+     *
+     * @param saveButton the save button to set
+     */
+    public final void setSaveButton(final JButton saveButton) {
+        this.saveButton = saveButton;
+    }
+
+    /**
+     * Gets the cancel button.
+     *
+     * @return the cancel button
+     */
     public final JButton getCancelButton() {
         return cancelButton;
     }
 
+    /**
+     * Sets the cancel button.
+     *
+     * @param cancelButton the cancel button to set
+     */
+    public final void setCancelButton(final JButton cancelButton) {
+        this.cancelButton = cancelButton;
+    }
+
+    /**
+     * Gets the error label.
+     *
+     * @return the error label
+     */
     public final JLabel getErrorLabel() {
         return errorLabel;
     }
 
-    // As well as getters, you should create setters
+    /**
+     * Sets the error label.
+     *
+     * @param errorLabel the error label to set
+     */
+    public final void setErrorLabel(final JLabel errorLabel) {
+        this.errorLabel = errorLabel;
+    }
 }

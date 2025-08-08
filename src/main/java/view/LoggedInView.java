@@ -15,7 +15,7 @@ import java.util.Map;
 
 import data_access.SupabaseTaskDataAccessObject;
 import entity.Task;
-import interface_adapter.ManageTags.ManageTagsViewModel;
+import interface_adapter.manageTags.manageTagsViewModel;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.addTask.AddTaskViewModel;
 import interface_adapter.calendar.TaskClickListener;
@@ -44,7 +44,7 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     private static final String viewName = "logged in";
     private final LoggedInViewModel loggedInViewModel;
     private final AddTaskViewModel addTaskViewModel;
-    private final ManageTagsViewModel manageTagsViewModel;
+    private final manageTagsViewModel manageTagsViewModel;
     private final EditTaskViewModel editTaskViewModel;
     private final ViewManagerModel viewManagerModel;
     private String username;
@@ -68,7 +68,7 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
                         SupabaseTaskDataAccessObject taskDao,
                         AddTaskViewModel addTaskViewModel,
                         TaskBoxDependencies taskBoxDependencies,
-                        ManageTagsViewModel manageTagsViewModel,
+                        manageTagsViewModel manageTagsViewModel,
                         NotificationDataAccessInterface notificationDataAccess
                         ) throws IOException {
         this.taskBoxDependencies = taskBoxDependencies;

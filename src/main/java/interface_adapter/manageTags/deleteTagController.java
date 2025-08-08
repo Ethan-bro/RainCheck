@@ -1,15 +1,15 @@
-package interface_adapter.ManageTags;
+package interface_adapter.manageTags;
 
-import use_case.createCustomTag.CustomTagDataAccessInterface;
+import use_case.createCustomTag.customTagDataAccessInterface;
 import entity.CustomTag;
 import interface_adapter.events.TagChangeEventNotifier;
 
-public class DeleteTagController {
+public class deleteTagController {
 
-    private final CustomTagDataAccessInterface tagDao;
-    private final ManageTagsViewModel manageTagsVM;
+    private final customTagDataAccessInterface tagDao;
+    private final manageTagsViewModel manageTagsVM;
 
-    public DeleteTagController(CustomTagDataAccessInterface tagDao, ManageTagsViewModel manageTagsVM) {
+    public deleteTagController(customTagDataAccessInterface tagDao, manageTagsViewModel manageTagsVM) {
         this.tagDao = tagDao;
         this.manageTagsVM = manageTagsVM;
     }

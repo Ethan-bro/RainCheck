@@ -1,12 +1,12 @@
 package use_case.createCustomTag;
 
-public enum CCTError {
+public enum cctError {
     NAME_TAKEN("Tag name is already in use!"),
     ICON_TAKEN("Tag icon is already in use!"),;
 
     private final String message;
 
-    CCTError(String message) {
+    cctError(String message) {
         this.message = message;
     }
 
@@ -14,4 +14,3 @@ public enum CCTError {
         return message;
     }
 }
-

@@ -7,19 +7,19 @@ import java.util.Map;
 /**
  * Interactor for creating custom tags. Ensures tag name and emoji are unique for the user.
  */
-public class CCTInteractor implements CCTInputBoundary {
+public class cctInteractor implements cctInputBoundary {
 
-    private final CustomTagDataAccessInterface dao;
-    private final CCTOutputBoundary createCustomTagPresenter;
+    private final customTagDataAccessInterface dao;
+    private final cctOutputBoundary createCustomTagPresenter;
 
-    public CCTInteractor(CustomTagDataAccessInterface dao,
-                         CCTOutputBoundary createCustomTagPresenter) {
+    public cctInteractor(customTagDataAccessInterface dao,
+                         cctOutputBoundary createCustomTagPresenter) {
         this.dao = dao;
         this.createCustomTagPresenter = createCustomTagPresenter;
     }
 
     @Override
-    public void execute(CCTInputData customTagInputData, String username) {
+    public void execute(cctInputData customTagInputData, String username) {
         final String tagName = customTagInputData.getTagName();
         final String tagEmoji = customTagInputData.getTagEmoji();
 
@@ -28,16 +28,16 @@ public class CCTInteractor implements CCTInputBoundary {
 
         // Check if tag name is already taken
         if (existingTags.containsKey(tagName)) {
-            final CCTOutputData failedOutput =
-                    new CCTOutputData(CCTError.NAME_TAKEN);
+            final cctOutputData failedOutput =
+                    new cctOutputData(cctError.NAME_TAKEN);
             createCustomTagPresenter.prepareFailView(failedOutput);
             return;
         }
 
         // Check if emoji is already in use
         if (existingTags.containsValue(tagEmoji)) {
-            final CCTOutputData failedOutput =
-                    new CCTOutputData(CCTError.ICON_TAKEN);
+            final cctOutputData failedOutput =
+                    new cctOutputData(cctError.ICON_TAKEN);
             createCustomTagPresenter.prepareFailView(failedOutput);
             return;
         }
@@ -46,7 +46,7 @@ public class CCTInteractor implements CCTInputBoundary {
         final CustomTag finalTag = new CustomTag(tagName, tagEmoji);
         dao.addCustomTag(username, finalTag);
 
-        final CCTOutputData outputData = new CCTOutputData(finalTag);
+        final cctOutputData outputData = new cctOutputData(finalTag);
         createCustomTagPresenter.prepareSuccessView(outputData);
     }
 }

@@ -3,12 +3,12 @@ package use_case.createCustomTag;
 /**
  * The input data required for creating a custom tag.
  */
-public class CCTInputData {
+public class cctInputData {
 
     private String tagName;
     private String tagEmoji;
 
-    public CCTInputData(String tagName, String tagEmoji) {
+    public cctInputData(String tagName, String tagEmoji) {
         this.tagName = tagName;
         this.tagEmoji = tagEmoji;
     }

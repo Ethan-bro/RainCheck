@@ -5,15 +5,15 @@ import entity.CustomTag;
 /**
  * The output data of the custom tag.
  */
-public class CCTOutputData {
+public class cctOutputData {
 
     private final boolean UseCaseFailed;
-    private final CCTError errorType;
+    private final cctError errorType;
     private final String errorMessage;
     private final CustomTag createdTag;
 
     // failed UseCase constructor
-    public CCTOutputData(CCTError errorType) {
+    public cctOutputData(cctError errorType) {
         this.UseCaseFailed = true;
         this.errorType = errorType;
         this.errorMessage = errorType.getMessage();
@@ -25,7 +25,7 @@ public class CCTOutputData {
     }
 
     // successful UseCase constructor
-    public CCTOutputData(CustomTag createdTag) {
+    public cctOutputData(CustomTag createdTag) {
         UseCaseFailed = false;
         errorType = null;
         errorMessage = null;

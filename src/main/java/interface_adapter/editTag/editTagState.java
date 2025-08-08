@@ -1,18 +1,18 @@
-package interface_adapter.EditTag;
+package interface_adapter.editTag;
 
-public class EditTagState {
+public class editTagState {
     private String currTagName = "Custom Tag";
     private String currTagEmoji;
     private String errorMsg = "";
 
-    public EditTagState(EditTagState copy) {
+    public editTagState(editTagState copy) {
         currTagName = copy.currTagName;
         currTagEmoji = copy.currTagEmoji;
         errorMsg = copy.errorMsg;
     }
 
     // Because of the previous copy constructor, the default constructor must be explicit.
-    public EditTagState() {
+    public editTagState() {
 
     }
 

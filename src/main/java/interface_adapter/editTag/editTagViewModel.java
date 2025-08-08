@@ -1,15 +1,15 @@
-package interface_adapter.EditTag;
+package interface_adapter.editTag;
 
 import entity.CustomTag;
 import interface_adapter.ViewModel;
 
-public class EditTagViewModel extends ViewModel<EditTagState> {
+public class editTagViewModel extends ViewModel<editTagState> {
 
     private String username;
 
-    public EditTagViewModel() {
+    public editTagViewModel() {
         super("Edit Custom Tag");
-        setState(new EditTagState());
+        setState(new editTagState());
 
     }
 

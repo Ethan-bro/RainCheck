@@ -147,14 +147,14 @@ public class WeatherApiService implements DailyWeatherDataAccessInterface, Hourl
             return weeklyWeatherCache.get(key);
         }
 
-        System.out.println("Making an API call for " + location + ", count = " + Main.getNumOfAPIcallsMade());
+        System.out.println("Making an API call for " + location + ", count = " + Main.getNumOfApiCallsMade());
 
         String url = String.format(URL, location, date, apiKey);
 
         Request request = new Request.Builder().url(url).build();
         Response response = client.newCall(request).execute();
 
-        Main.incrementNumOfAPIcallsMade();
+        Main.incrementNumOfApiCallsMade();
 
         if (!response.isSuccessful()) throw new IOException("Unexpected code: " + response);
 

@@ -1,21 +1,21 @@
-package interface_adapter.EditTag;
+package interface_adapter.editTag;
 
-import interface_adapter.ManageTags.ManageTagsViewModel;
+import interface_adapter.manageTags.manageTagsViewModel;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.events.TagChangeEventNotifier;
 import use_case.EditCT.EditTagOutputBoundary;
 import use_case.EditCT.EditTagOutputData;
 
-public class EditTagPresenter implements EditTagOutputBoundary {
+public class editTagPresenter implements EditTagOutputBoundary {
 
     ViewManagerModel viewManagerModel;
-    EditTagViewModel editTagViewModel;
-    ManageTagsViewModel manageTagsViewModel;
+    editTagViewModel editTagViewModel;
+    manageTagsViewModel manageTagsViewModel;
 
 
-    public EditTagPresenter(ViewManagerModel viewManagerModel,
-                            EditTagViewModel editTagViewModel,
-                            ManageTagsViewModel manageTagsViewModel) {
+    public editTagPresenter(ViewManagerModel viewManagerModel,
+                            editTagViewModel editTagViewModel,
+                            manageTagsViewModel manageTagsViewModel) {
 
         this.viewManagerModel = viewManagerModel;
         this.manageTagsViewModel = manageTagsViewModel;
@@ -25,7 +25,7 @@ public class EditTagPresenter implements EditTagOutputBoundary {
 
     @Override
     public void prepareSuccessView(EditTagOutputData successOutput) {
-        final EditTagState editTagState = editTagViewModel.getState();
+        final editTagState editTagState = editTagViewModel.getState();
         editTagState.setErrorMsg(null);
         editTagState.setCurrTagName(successOutput.getCreatedTag().getTagName());
         editTagState.setCurrTagEmoji(successOutput.getCreatedTag().getTagIcon());
@@ -45,7 +45,7 @@ public class EditTagPresenter implements EditTagOutputBoundary {
 
     @Override
     public void prepareFailView(EditTagOutputData failedOutput) {
-        final EditTagState editTagState = editTagViewModel.getState();
+        final editTagState editTagState = editTagViewModel.getState();
         editTagState.setErrorMsg(failedOutput.getErrorMessage());
         editTagState.setCurrTagName(null);    // clear prior tag
         editTagState.setCurrTagEmoji("");

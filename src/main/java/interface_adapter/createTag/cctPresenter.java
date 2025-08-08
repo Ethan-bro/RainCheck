@@ -1,19 +1,19 @@
 package interface_adapter.createTag;
 
-import interface_adapter.ManageTags.ManageTagsViewModel;
+import interface_adapter.manageTags.manageTagsViewModel;
 import interface_adapter.ViewManagerModel;
-import use_case.createCustomTag.CCTOutputBoundary;
-import use_case.createCustomTag.CCTOutputData;
+import use_case.createCustomTag.cctOutputBoundary;
+import use_case.createCustomTag.cctOutputData;
 
-public class CCTPresenter implements CCTOutputBoundary {
+public class cctPresenter implements cctOutputBoundary {
 
     private ViewManagerModel viewManagerModel;
-    private final CCTViewModel createCustomTagViewModel;
-    private final ManageTagsViewModel manageTagsViewModel;
+    private final cctViewModel createCustomTagViewModel;
+    private final manageTagsViewModel manageTagsViewModel;
 
-    public CCTPresenter(ViewManagerModel viewManagerModel,
-                        CCTViewModel createCustomTagViewModel,
-                        ManageTagsViewModel manageTagsViewModel) {
+    public cctPresenter(ViewManagerModel viewManagerModel,
+                        cctViewModel createCustomTagViewModel,
+                        manageTagsViewModel manageTagsViewModel) {
 
         this.viewManagerModel = viewManagerModel;
         this.createCustomTagViewModel = createCustomTagViewModel;
@@ -21,8 +21,8 @@ public class CCTPresenter implements CCTOutputBoundary {
     }
 
     @Override
-    public void prepareFailView(CCTOutputData outputData) {
-        final CCTState customTagState = createCustomTagViewModel.getState();
+    public void prepareFailView(cctOutputData outputData) {
+        final cctState customTagState = createCustomTagViewModel.getState();
         customTagState.setErrorMsg(outputData.getErrorMessage());
         customTagState.setCurrTagName(null);
         customTagState.setCurrTagEmoji("");
@@ -30,8 +30,8 @@ public class CCTPresenter implements CCTOutputBoundary {
     }
 
     @Override
-    public void prepareSuccessView(CCTOutputData outputData) {
-        final CCTState customTagState = createCustomTagViewModel.getState();
+    public void prepareSuccessView(cctOutputData outputData) {
+        final cctState customTagState = createCustomTagViewModel.getState();
         customTagState.setErrorMsg(null);
         customTagState.setCurrTagName(outputData.getCreatedTag().getTagName());
         customTagState.setCurrTagEmoji(outputData.getCreatedTag().getTagIcon());

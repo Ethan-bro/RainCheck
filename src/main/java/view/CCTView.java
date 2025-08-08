@@ -2,33 +2,34 @@ package view;
 
 import entity.CustomTag;
 
-import interface_adapter.createTag.CCTController;
-import interface_adapter.createTag.CCTViewModel;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.createTag.cctController;
+import interface_adapter.createTag.cctViewModel;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+
+import javax.swing.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import org.jetbrains.annotations.NotNull;
 
-import static use_case.createCustomTag.CustomTagIcons.IconList;
+import static use_case.createCustomTag.customTagIcons.IconList;
 
 public class CCTView extends JPanel implements PropertyChangeListener {
 
     private static final String viewName = "Create Custom Tag";
     private final ViewManagerModel viewManagerModel;
-    private final CCTViewModel createCustomTagViewModel;
-    private final CCTController createCustomTagController;
+    private final cctViewModel createCustomTagViewModel;
+    private final cctController createCustomTagController;
 
     private final JTextField tagNameTextField = new JTextField(20);
     private final ButtonGroup iconGroup = new ButtonGroup();
     private final JButton createButton = new JButton("Create Tag");
     private final JButton cancelButton = new JButton("Cancel");
 
-    public CCTView(ViewManagerModel viewManagerModel, CCTViewModel model, CCTController controller) {
+    public CCTView(ViewManagerModel viewManagerModel, cctViewModel model, cctController controller) {
         this.viewManagerModel = viewManagerModel;
         this.createCustomTagViewModel = model;
         this.createCustomTagController = controller;

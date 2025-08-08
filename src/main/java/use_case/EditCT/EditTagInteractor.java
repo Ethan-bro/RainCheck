@@ -1,10 +1,7 @@
 package use_case.EditCT;
 
 import entity.CustomTag;
-import interface_adapter.events.TagChangeEventNotifier;
-import use_case.createCustomTag.CCTError;
-import use_case.createCustomTag.CCTOutputData;
-import use_case.createCustomTag.CustomTagDataAccessInterface;
+import use_case.createCustomTag.customTagDataAccessInterface;
 
 import java.util.Map;
 
@@ -13,11 +10,11 @@ import static use_case.EditCT.TagErrorConstants.NAME_TAKEN_ERROR;
 
 public class EditTagInteractor implements EditTagInputBoundary {
 
-    private final CustomTagDataAccessInterface tagDao;
+    private final customTagDataAccessInterface tagDao;
     private final EditTagOutputBoundary editTagPresenter;
 
     public EditTagInteractor(
-            CustomTagDataAccessInterface tagDao,
+            customTagDataAccessInterface tagDao,
             EditTagOutputBoundary editTagPresenter) {
 
         this.tagDao = tagDao;
