@@ -1,12 +1,12 @@
 package app;
 
 import interface_adapter.ViewManagerModel;
-import interface_adapter.createTag.cctViewModel;
-import interface_adapter.editTag.editTagViewModel;
-import interface_adapter.manageTags.deleteTagController;
-import interface_adapter.manageTags.manageTagsViewModel;
+import interface_adapter.createTag.CreateCustomTagViewModel;
+import interface_adapter.editTag.EditTagViewModel;
+import interface_adapter.manageTags.DeleteTagController;
+import interface_adapter.manageTags.ManageTagsViewModel;
 
-import use_case.createCustomTag.customTagDataAccessInterface;
+import use_case.createCustomTag.CustomTagDataAccessInterface;
 
 import view.ManageTagsView;
 
@@ -24,25 +24,25 @@ public final class ManageTagsUseCaseFactory {
      * Creates a ManageTagsView instance with dependencies.
      *
      * @param viewManagerModel the ViewManagerModel to inject
-     * @param viewModel the manageTagsViewModel to inject
-     * @param cctViewModel the cctViewModel to inject
-     * @param editTagViewModel the editTagViewModel to inject
-     * @param tagDao the customTagDataAccessInterface to inject
+     * @param viewModel the ManageTagsViewModel to inject
+     * @param CreateCustomTagViewModel the CreateCustomTagViewModel to inject
+     * @param editTagViewModel the EditTagViewModel to inject
+     * @param tagDao the CustomTagDataAccessInterface to inject
      * @return a ManageTagsView instance
      */
     public static ManageTagsView create(
             final ViewManagerModel viewManagerModel,
-            final manageTagsViewModel viewModel,
-            final cctViewModel cctViewModel,
-            final editTagViewModel editTagViewModel,
-            final customTagDataAccessInterface tagDao
+            final ManageTagsViewModel viewModel,
+            final CreateCustomTagViewModel CreateCustomTagViewModel,
+            final EditTagViewModel editTagViewModel,
+            final CustomTagDataAccessInterface tagDao
     ) {
-        final deleteTagController deleteTagController = new deleteTagController(tagDao, viewModel);
+        final DeleteTagController deleteTagController = new DeleteTagController(tagDao, viewModel);
 
         return new ManageTagsView(
                 viewManagerModel,
                 viewModel,
-                cctViewModel,
+                CreateCustomTagViewModel,
                 editTagViewModel,
                 deleteTagController
         );

@@ -22,5 +22,4 @@ public class SignupViewModel extends ViewModel<SignupState> {
         super("sign up");
         setState(new SignupState());
     }
-
 }

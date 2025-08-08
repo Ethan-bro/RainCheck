@@ -2,20 +2,20 @@ package interface_adapter.manageTags;
 
 import entity.CustomTag;
 
-public class manageTagsState {
+public class ManageTagsState {
 
     private String currUsername;
     private CustomTag currTag;
     private String errorMsg;
 
-    public manageTagsState(manageTagsState copy) {
+    public ManageTagsState(ManageTagsState copy) {
         this.currUsername = copy.currUsername;
         this.currTag = copy.currTag;
         errorMsg = copy.errorMsg;
     }
 
     // Because of the previous copy constructor, the default constructor must be explicit.
-    public manageTagsState() {
+    public ManageTagsState() {
 
     }
 

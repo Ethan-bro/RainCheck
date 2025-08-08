@@ -6,7 +6,7 @@ import interface_adapter.ViewManagerModel;
 import interface_adapter.addTask.AddTaskController;
 import interface_adapter.addTask.AddTaskPresenter;
 import interface_adapter.addTask.AddTaskViewModel;
-import interface_adapter.addTask.UUIDGenerator;
+import interface_adapter.addTask.UuidGenerator;
 import interface_adapter.logged_in.LoggedInViewModel;
 
 import use_case.addTask.AddTaskInputBoundary;
@@ -54,7 +54,7 @@ public final class AddTaskUseCaseFactory {
                 new AddTaskPresenter(addTaskViewModel, viewManagerModel, mainViewKey);
 
         final AddTaskInputBoundary addTaskInteractor =
-                new AddTaskInteractor(taskDao, new UUIDGenerator(), addTaskPresenter,
+                new AddTaskInteractor(taskDao, new UuidGenerator(), addTaskPresenter,
                         weatherApiService, notificationInteractor);
 
         final AddTaskController addTaskController =

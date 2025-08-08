@@ -1,15 +1,15 @@
 package app;
 
 import interface_adapter.ViewManagerModel;
-import interface_adapter.createTag.cctController;
-import interface_adapter.createTag.cctPresenter;
-import interface_adapter.createTag.cctViewModel;
-import interface_adapter.manageTags.manageTagsViewModel;
+import interface_adapter.createTag.CreateCustomTagController;
+import interface_adapter.createTag.CreateCustomTagPresenter;
+import interface_adapter.createTag.CreateCustomTagViewModel;
+import interface_adapter.manageTags.ManageTagsViewModel;
 
+import use_case.createCustomTag.CustomTagDataAccessInterface;
 import use_case.createCustomTag.cctInputBoundary;
 import use_case.createCustomTag.cctInteractor;
 import use_case.createCustomTag.cctOutputBoundary;
-import use_case.createCustomTag.customTagDataAccessInterface;
 
 import view.CCTView;
 
@@ -32,11 +32,11 @@ public final class CctUseCaseFactory {
      * @return the created CCT view
      */
     public static CCTView create(ViewManagerModel viewManagerModel,
-                                 cctViewModel viewModel,
-                                 manageTagsViewModel manageTagsViewModel,
-                                 customTagDataAccessInterface customTagDataAccess) {
+                                 CreateCustomTagViewModel viewModel,
+                                 ManageTagsViewModel manageTagsViewModel,
+                                 CustomTagDataAccessInterface customTagDataAccess) {
 
-        final cctController controller = createCctUseCase(viewManagerModel, viewModel,
+        final CreateCustomTagController controller = createCctUseCase(viewManagerModel, viewModel,
                 manageTagsViewModel, customTagDataAccess);
 
         return new CCTView(viewManagerModel, viewModel, controller);
@@ -46,19 +46,21 @@ public final class CctUseCaseFactory {
      * Creates the CCT use case controller.
      *
      * @param viewManagerModel the view manager model
-     * @param cctViewModel the CCT view model
+     * @param CreateCustomTagViewModel the CCT view model
      * @param manageTagsViewModel the manage tags view model
      * @param customTagDataAccess the custom tag data access interface
      * @return the CCT controller
      */
-    public static cctController createCctUseCase(ViewManagerModel viewManagerModel,
-                                                 cctViewModel cctViewModel,
-                                                 manageTagsViewModel manageTagsViewModel,
-                                                 customTagDataAccessInterface customTagDataAccess) {
+    public static CreateCustomTagController createCctUseCase(ViewManagerModel viewManagerModel,
+                                                             CreateCustomTagViewModel CreateCustomTagViewModel,
+                                                             ManageTagsViewModel manageTagsViewModel,
+                                                             CustomTagDataAccessInterface customTagDataAccess) {
 
-        final cctOutputBoundary presenter = new cctPresenter(viewManagerModel, cctViewModel, manageTagsViewModel);
+        final cctOutputBoundary presenter = new CreateCustomTagPresenter(
+                viewManagerModel, CreateCustomTagViewModel, manageTagsViewModel
+        );
         final cctInputBoundary interactor = new cctInteractor(customTagDataAccess, presenter);
 
-        return new cctController(interactor);
+        return new CreateCustomTagController(interactor);
     }
 }

@@ -1,15 +1,15 @@
 package app;
 
 import interface_adapter.ViewManagerModel;
-import interface_adapter.editTag.editTagController;
-import interface_adapter.editTag.editTagPresenter;
-import interface_adapter.editTag.editTagViewModel;
-import interface_adapter.manageTags.manageTagsViewModel;
+import interface_adapter.editTag.EditTagController;
+import interface_adapter.editTag.EditTagPresenter;
+import interface_adapter.editTag.EditTagViewModel;
+import interface_adapter.manageTags.ManageTagsViewModel;
 
 import use_case.EditCT.EditTagInputBoundary;
 import use_case.EditCT.EditTagInteractor;
 import use_case.EditCT.EditTagOutputBoundary;
-import use_case.createCustomTag.customTagDataAccessInterface;
+import use_case.createCustomTag.CustomTagDataAccessInterface;
 
 import view.EditTagView;
 
@@ -26,39 +26,39 @@ public final class EditTagUseCaseFactory {
      * Creates the EditTagView along with its controller and view models.
      *
      * @param viewManagerModel the ViewManagerModel instance
-     * @param viewModel the editTagViewModel instance
-     * @param manageTagsViewModel the manageTagsViewModel instance
+     * @param viewModel the EditTagViewModel instance
+     * @param manageTagsViewModel the ManageTagsViewModel instance
      * @param customTagDataAccessInterface the data access interface
      * @return a new EditTagView instance
      */
     public static EditTagView create(
             final ViewManagerModel viewManagerModel,
-            final editTagViewModel viewModel,
-            final manageTagsViewModel manageTagsViewModel,
-            final customTagDataAccessInterface customTagDataAccessInterface
+            final EditTagViewModel viewModel,
+            final ManageTagsViewModel manageTagsViewModel,
+            final CustomTagDataAccessInterface customTagDataAccessInterface
     ) {
-        final editTagController controller = createEditTagUseCase(viewManagerModel, viewModel,
+        final EditTagController controller = createEditTagUseCase(viewManagerModel, viewModel,
                 manageTagsViewModel, customTagDataAccessInterface);
         return new EditTagView(viewManagerModel, manageTagsViewModel, viewModel, controller);
     }
 
     /**
-     * Creates the editTagController for the use case.
+     * Creates the EditTagController for the use case.
      *
      * @param viewManagerModel the ViewManagerModel instance
-     * @param viewModel the editTagViewModel instance
-     * @param manageTagsViewModel the manageTagsViewModel instance
+     * @param viewModel the EditTagViewModel instance
+     * @param manageTagsViewModel the ManageTagsViewModel instance
      * @param tagDao the data access interface
-     * @return a new editTagController instance
+     * @return a new EditTagController instance
      */
-    public static editTagController createEditTagUseCase(
+    public static EditTagController createEditTagUseCase(
             final ViewManagerModel viewManagerModel,
-            final editTagViewModel viewModel,
-            final manageTagsViewModel manageTagsViewModel,
-            final customTagDataAccessInterface tagDao
+            final EditTagViewModel viewModel,
+            final ManageTagsViewModel manageTagsViewModel,
+            final CustomTagDataAccessInterface tagDao
     ) {
-        final EditTagOutputBoundary presenter = new editTagPresenter(viewManagerModel, viewModel, manageTagsViewModel);
+        final EditTagOutputBoundary presenter = new EditTagPresenter(viewManagerModel, viewModel, manageTagsViewModel);
         final EditTagInputBoundary interactor = new EditTagInteractor(tagDao, presenter);
-        return new editTagController(tagDao, manageTagsViewModel, interactor);
+        return new EditTagController(tagDao, manageTagsViewModel, interactor);
     }
 }

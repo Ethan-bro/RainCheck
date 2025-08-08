@@ -2,7 +2,7 @@ package data_access;
 
 import entity.CustomTag;
 
-import use_case.createCustomTag.customTagDataAccessInterface;
+import use_case.createCustomTag.CustomTagDataAccessInterface;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -22,11 +22,11 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
- * SupabaseTagDataAccessObject implements methods defined in customTagDataAccessInterface.
+ * SupabaseTagDataAccessObject implements methods defined in CustomTagDataAccessInterface.
  * These methods support tag storage/retrieval for each user using Supabase REST API,
  * where custom_tags is stored as a JSONB dictionary: tagName → emoji.
  */
-public class SupabaseTagDataAccessObject implements customTagDataAccessInterface {
+public class SupabaseTagDataAccessObject implements CustomTagDataAccessInterface {
 
     private final String baseUrl;
     private final String apiKey;

@@ -4,7 +4,7 @@ import entity.TaskID;
 
 import java.util.UUID;
 
-public class UUIDGenerator implements TaskIDGenerator{
+public class UuidGenerator implements TaskIDGenerator {
 
     @Override
     public TaskID generateTaskID() {

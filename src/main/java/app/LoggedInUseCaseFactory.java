@@ -4,7 +4,7 @@ import data_access.SupabaseTaskDataAccessObject;
 
 import interface_adapter.addTask.AddTaskViewModel;
 import interface_adapter.logged_in.LoggedInDependencies;
-import interface_adapter.manageTags.manageTagsViewModel;
+import interface_adapter.manageTags.ManageTagsViewModel;
 import interface_adapter.task.TaskBoxDependencies;
 
 import use_case.notification.NotificationDataAccessInterface;
@@ -37,7 +37,7 @@ public final class LoggedInUseCaseFactory {
     public static LoggedInView createLoggedInView(
             LoggedInDependencies loggedInDependencies,
             AddTaskViewModel addTaskViewModel,
-            manageTagsViewModel manageTagsViewModel,
+            ManageTagsViewModel manageTagsViewModel,
             SupabaseTaskDataAccessObject taskDao,
             TaskBoxDependencies taskBoxDependencies,
             NotificationDataAccessInterface notificationDataAccess

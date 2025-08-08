@@ -13,7 +13,9 @@ public class SignupState {
     private String repeatPassword = "";
     private String repeatPasswordError;
 
-    public String getEmail() { return email; }
+    public String getEmail() {
+        return email;
+    }
 
     public String getUsername() {
         return username;
@@ -39,9 +41,13 @@ public class SignupState {
         return repeatPasswordError;
     }
 
-    public void setEmail(String email) { this.email = email; }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-    public void setEmailError(String emailError) { this.emailError = emailError; }
+    public void setEmailError(String emailError) {
+        this.emailError = emailError;
+    }
 
     public void setUsername(String username) {
         this.username = username;

@@ -2,13 +2,13 @@ package interface_adapter.createTag;
 
 import interface_adapter.ViewModel;
 
-public class cctViewModel extends ViewModel<cctState> {
+public class CreateCustomTagViewModel extends ViewModel<CreateCustomTagState> {
 
     private String username;
 
-    public cctViewModel() {
+    public CreateCustomTagViewModel() {
         super("Create Custom Tag");
-        setState(new cctState());
+        setState(new CreateCustomTagState());
     }
 
     public void setUsername(String username) {

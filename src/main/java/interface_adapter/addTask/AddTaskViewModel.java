@@ -5,7 +5,7 @@ import entity.CustomTag;
 import interface_adapter.ViewModel;
 import interface_adapter.events.TagChangeEventNotifier;
 
-import use_case.createCustomTag.customTagDataAccessInterface;
+import use_case.createCustomTag.CustomTagDataAccessInterface;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  */
 public class AddTaskViewModel extends ViewModel<AddTaskState> {
 
-    private final customTagDataAccessInterface tagDao;
+    private final CustomTagDataAccessInterface tagDao;
     private String username;
 
     // Listener for global tag changes
@@ -31,7 +31,7 @@ public class AddTaskViewModel extends ViewModel<AddTaskState> {
      * @param tagDao   the data access object for custom tags
      * @param username the username of the logged-in user
      */
-    public AddTaskViewModel(customTagDataAccessInterface tagDao, String username) {
+    public AddTaskViewModel(CustomTagDataAccessInterface tagDao, String username) {
         super("Add New Task");
         this.tagDao = tagDao;
         setState(new AddTaskState());
