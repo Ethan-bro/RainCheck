@@ -1,8 +1,10 @@
 package interface_adapter.addTask;
 
 import entity.CustomTag;
+
 import interface_adapter.ViewModel;
 import interface_adapter.events.TagChangeEventNotifier;
+
 import use_case.createCustomTag.CustomTagDataAccessInterface;
 
 import java.beans.PropertyChangeEvent;
@@ -40,13 +42,13 @@ public class AddTaskViewModel extends ViewModel<AddTaskState> {
     }
 
     public void refreshTags() {
-        List<CustomTag> updatedTags = getTagOptions();
+        final List<CustomTag> updatedTags = getTagOptions();
         getState().setTagOptions(updatedTags);
         firePropertyChange("refreshTagOptions", null, updatedTags);
     }
 
     public List<CustomTag> getTagOptions() {
-        Map<String, String> raw = tagDao.getCustomTags(username);
+        final Map<String, String> raw = tagDao.getCustomTags(username);
         return raw.entrySet().stream()
                 .map(e -> new CustomTag(e.getKey(), e.getValue()))
                 .collect(Collectors.toList());

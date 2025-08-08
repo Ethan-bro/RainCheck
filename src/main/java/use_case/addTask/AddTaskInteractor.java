@@ -56,17 +56,13 @@ public class AddTaskInteractor implements AddTaskInputBoundary {
     private void processNewTaskCreation(AddTaskInputData inputData, String username) {
         final TaskID newID = taskIDGenerator.generateTaskID();
 
-        final String description;
-        final String feels;
-        final String iconName;
+        String description = "";
+        String feels = "";
+        String iconName = "";
 
         try {
-            final LocalDateTime startDateTime = inputData.getStartDateTime();
-            final LocalDate date = startDateTime.toLocalDate();
-            final int hour = startDateTime.getHour();
 
-            final List<Map<String, String>> hourly = weatherApiService.getHourlyWeather(
-                    LocationService.getUserCity(), date, hour, hour);
+            final List<Map<String, String>> hourly = getHourlyWeatherForTaskTime(inputData);
 
             if (!hourly.isEmpty()) {
                 final Map<String, String> hourlyMap = hourly.get(0);
@@ -79,21 +75,10 @@ public class AddTaskInteractor implements AddTaskInputBoundary {
                 if (daily.get("iconName") != null) {
                     iconName = daily.get("iconName").toString();
                 }
-                else {
-                    iconName = "";
-                }
-            }
-            else {
-                description = "";
-                feels = "";
-                iconName = "";
             }
         }
         catch (IOException ex) {
             System.err.println("Weather Lookup Failed: " + ex.getMessage());
-            description = "";
-            feels = "";
-            iconName = "";
         }
 
         final String temp = feels;
@@ -117,6 +102,15 @@ public class AddTaskInteractor implements AddTaskInputBoundary {
 
         final AddTaskOutputData outputData = new AddTaskOutputData(newTask);
         addTaskPresenter.prepareSuccessView(outputData);
+    }
+
+    private List<Map<String, String>> getHourlyWeatherForTaskTime(AddTaskInputData inputData) throws IOException {
+        final LocalDateTime startDateTime = inputData.getStartDateTime();
+        final LocalDate date = startDateTime.toLocalDate();
+        final int hour = startDateTime.getHour();
+
+        return weatherApiService.getHourlyWeather(
+                LocationService.getUserCity(), date, hour, hour);
     }
 
     private AddTaskOutputData validateInput(AddTaskInputData inputData) {

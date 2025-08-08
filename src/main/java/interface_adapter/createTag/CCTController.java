@@ -1,6 +1,7 @@
-package interface_adapter.CreateTag;
+package interface_adapter.createTag;
 
 import entity.CustomTag;
+
 import use_case.createCustomTag.CCTInputBoundary;
 import use_case.createCustomTag.CCTInputData;
 
@@ -12,9 +13,6 @@ public class CCTController {
         this.createCustomTagInteractor = createCustomTagInteractor;
     }
 
-    /**
-     *
-     */
     public void execute(CustomTag customTag, String username) {
         CCTInputData inputData = new CCTInputData(customTag.getTagName(), customTag.getTagIcon());
         createCustomTagInteractor.execute(inputData, username);

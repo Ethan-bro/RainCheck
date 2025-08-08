@@ -1,4 +1,4 @@
-package interface_adapter.CreateTag;
+package interface_adapter.createTag;
 
 public class CCTState {
     private String currTagName = "Custom Tag";

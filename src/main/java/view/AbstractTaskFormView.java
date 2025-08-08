@@ -285,4 +285,6 @@ public abstract class AbstractTaskFormView extends JPanel {
     public final JLabel getErrorLabel() {
         return errorLabel;
     }
+
+    // As well as getters, you should create setters
 }

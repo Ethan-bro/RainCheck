@@ -1,4 +1,4 @@
-package interface_adapter.CreateTag;
+package interface_adapter.createTag;
 
 import interface_adapter.ManageTags.ManageTagsViewModel;
 import interface_adapter.ViewManagerModel;
@@ -20,12 +20,11 @@ public class CCTPresenter implements CCTOutputBoundary {
         this.manageTagsViewModel = manageTagsViewModel;
     }
 
-
     @Override
     public void prepareFailView(CCTOutputData outputData) {
         final CCTState customTagState = createCustomTagViewModel.getState();
         customTagState.setErrorMsg(outputData.getErrorMessage());
-        customTagState.setCurrTagName(null);    // clear prior tag
+        customTagState.setCurrTagName(null);
         customTagState.setCurrTagEmoji("");
         createCustomTagViewModel.firePropertyChanged("Failed");
     }
@@ -38,12 +37,8 @@ public class CCTPresenter implements CCTOutputBoundary {
         customTagState.setCurrTagEmoji(outputData.getCreatedTag().getTagIcon());
         createCustomTagViewModel.firePropertyChanged("Success");
 
-        try {
-            String username = createCustomTagViewModel.getUsername();
-            manageTagsViewModel.setUsername(username); // sets the username and refreshes the tags
-            manageTagsViewModel.firePropertyChanged("refreshTagOptions");
-        } catch (Exception e) {
-            System.err.println("Error while refreshing tag options: " + e.getMessage());
-        }
+        final String username = createCustomTagViewModel.getUsername();
+        manageTagsViewModel.setUsername(username);
+        manageTagsViewModel.firePropertyChanged("refreshTagOptions");
     }
 }

@@ -2,10 +2,6 @@ package interface_adapter.EditTag;
 
 import entity.CustomTag;
 import interface_adapter.ManageTags.ManageTagsViewModel;
-import interface_adapter.ViewManagerModel;
-import interface_adapter.CreateTag.CCTController;
-import interface_adapter.CreateTag.CCTPresenter;
-import interface_adapter.events.TagChangeEventNotifier;
 import use_case.EditCT.EditTagInputBoundary;
 import use_case.EditCT.EditTagInputData;
 import use_case.createCustomTag.*;

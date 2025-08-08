@@ -1,19 +1,23 @@
 package app;
 
+import interface_adapter.createTag.CCTController;
+import interface_adapter.createTag.CCTPresenter;
+import interface_adapter.createTag.CCTViewModel;
 import interface_adapter.ManageTags.ManageTagsViewModel;
 import interface_adapter.ViewManagerModel;
-import interface_adapter.CreateTag.CCTController;
-import interface_adapter.CreateTag.CCTPresenter;
-import interface_adapter.CreateTag.CCTViewModel;
+
 import use_case.createCustomTag.CCTInputBoundary;
 import use_case.createCustomTag.CCTInteractor;
 import use_case.createCustomTag.CCTOutputBoundary;
 import use_case.createCustomTag.CustomTagDataAccessInterface;
+
 import view.CCTView;
 
-public class CCTUseCaseFactory {
+public final class CCTUseCaseFactory {
 
-    private CCTUseCaseFactory() {}
+    private CCTUseCaseFactory() {
+
+    }
 
     public static CCTView create (
             ViewManagerModel viewManagerModel,
@@ -32,11 +36,10 @@ public class CCTUseCaseFactory {
                                                  ManageTagsViewModel manageTagsViewModel,
                                                  CustomTagDataAccessInterface customTagDataAccessInterface) {
 
-        final CCTOutputBoundary Presenter = new CCTPresenter(viewManagerModel, cctViewModel, manageTagsViewModel);
+        final CCTOutputBoundary presenter = new CCTPresenter(viewManagerModel, cctViewModel, manageTagsViewModel);
 
-        final CCTInputBoundary Interactor = new CCTInteractor(customTagDataAccessInterface, Presenter);
+        final CCTInputBoundary interactor = new CCTInteractor(customTagDataAccessInterface, presenter);
 
-        return new CCTController(Interactor);
+        return new CCTController(interactor);
     }
-
 }

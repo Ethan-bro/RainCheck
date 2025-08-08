@@ -1,16 +1,18 @@
 package view;
 
 import entity.CustomTag;
+
+import interface_adapter.createTag.CCTController;
+import interface_adapter.createTag.CCTViewModel;
 import interface_adapter.ViewManagerModel;
-import interface_adapter.CreateTag.CCTController;
-import interface_adapter.CreateTag.CCTViewModel;
-import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
+import org.jetbrains.annotations.NotNull;
 
 import static use_case.createCustomTag.CustomTagIcons.IconList;
 

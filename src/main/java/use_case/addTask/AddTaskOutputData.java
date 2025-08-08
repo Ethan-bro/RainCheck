@@ -4,21 +4,21 @@ import entity.Task;
 
 public class AddTaskOutputData {
 
-    private boolean AddTaskFailed;
-    private final AddTaskError errortype;
+    private final boolean addTaskFailed;
+    private final AddTaskError errorType;
     private final String errorMessage;
     private final Task newTask;
 
-    public AddTaskOutputData(AddTaskError errortype) {
-        this.AddTaskFailed = true;
-        this.errortype = errortype;
-        this.errorMessage = errortype.getMessage();
+    public AddTaskOutputData(AddTaskError errorType) {
+        this.addTaskFailed = true;
+        this.errorType = errorType;
+        this.errorMessage = errorType.getMessage();
         this.newTask = null;
     }
 
     public AddTaskOutputData(Task newTask) {
-        this.AddTaskFailed = false;
-        this.errortype = null;
+        this.addTaskFailed = false;
+        this.errorType = null;
         this.errorMessage = null;
         this.newTask = newTask;
     }
@@ -28,7 +28,7 @@ public class AddTaskOutputData {
     }
 
     public boolean isAddTaskFailed() {
-        return AddTaskFailed;
+        return addTaskFailed;
     }
 
     public Task getNewTask() {

@@ -4,7 +4,7 @@ import interface_adapter.EditTag.EditTagViewModel;
 import interface_adapter.ManageTags.ManageTagsViewModel;
 import interface_adapter.ManageTags.DeleteTagController;
 import interface_adapter.ViewManagerModel;
-import interface_adapter.CreateTag.CCTViewModel;
+import interface_adapter.createTag.CCTViewModel;
 import use_case.createCustomTag.CustomTagDataAccessInterface;
 import view.ManageTagsView;
 

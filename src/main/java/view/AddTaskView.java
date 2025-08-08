@@ -3,10 +3,11 @@ package view;
 import entity.CustomTag;
 import entity.Priority;
 import entity.Reminder;
+
 import interface_adapter.ViewManagerModel;
 import interface_adapter.addTask.AddTaskController;
-import interface_adapter.addTask.AddTaskViewModel;
 import interface_adapter.addTask.AddTaskState;
+import interface_adapter.addTask.AddTaskViewModel;
 import interface_adapter.logged_in.LoggedInViewModel;
 
 import javax.swing.*;
@@ -25,7 +26,7 @@ import java.util.List;
  */
 public class AddTaskView extends AbstractTaskFormView implements ActionListener, PropertyChangeListener {
 
-    private static final String viewName = "Add Task";
+    private static final String VIEW_NAME = "Add Task";
 
     private final AddTaskController controller;
     private final AddTaskViewModel viewModel;
@@ -37,7 +38,7 @@ public class AddTaskView extends AbstractTaskFormView implements ActionListener,
                        AddTaskViewModel viewModel,
                        LoggedInViewModel loggedInViewModel,
                        ViewManagerModel viewManagerModel) {
-        super(viewName, "Save", viewModel.getTagOptions());
+        super(VIEW_NAME, "Save", viewModel.getTagOptions());
 
         this.controller = controller;
         this.viewModel = viewModel;
@@ -130,6 +131,6 @@ public class AddTaskView extends AbstractTaskFormView implements ActionListener,
     }
 
     public static String getViewName() {
-        return viewName;
+        return VIEW_NAME;
     }
 }
