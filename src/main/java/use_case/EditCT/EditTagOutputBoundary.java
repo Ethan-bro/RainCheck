@@ -4,5 +4,5 @@ public interface EditTagOutputBoundary {
 
     public void prepareSuccessView(EditTagOutputData successOutput);
 
-    public void prepareFailView(EditTagOutputData successOutput);
+    public void prepareFailView(EditTagOutputData failedOutput);
 }

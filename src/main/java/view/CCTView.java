@@ -12,7 +12,7 @@ import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import static use_case.createCustomTag.CustomTagIcons.IconList;
+import static use_case.CreateCT.CustomTagIcons.IconList;
 
 public class CCTView extends JPanel implements PropertyChangeListener {
 

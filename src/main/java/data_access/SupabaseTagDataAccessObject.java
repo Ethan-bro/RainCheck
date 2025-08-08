@@ -2,7 +2,7 @@ package data_access;
 
 import com.google.gson.*;
 import okhttp3.*;
-import use_case.createCustomTag.CustomTagDataAccessInterface;
+import use_case.CreateCT.CustomTagDataAccessInterface;
 import entity.CustomTag;
 
 import java.io.IOException;

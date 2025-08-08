@@ -5,10 +5,10 @@ import interface_adapter.ViewManagerModel;
 import interface_adapter.CreateTag.CCTController;
 import interface_adapter.CreateTag.CCTPresenter;
 import interface_adapter.CreateTag.CCTViewModel;
-import use_case.createCustomTag.CCTInputBoundary;
-import use_case.createCustomTag.CCTInteractor;
-import use_case.createCustomTag.CCTOutputBoundary;
-import use_case.createCustomTag.CustomTagDataAccessInterface;
+import use_case.CreateCT.CCTInputBoundary;
+import use_case.CreateCT.CCTInteractor;
+import use_case.CreateCT.CCTOutputBoundary;
+import use_case.CreateCT.CustomTagDataAccessInterface;
 import view.CCTView;
 
 public class CCTUseCaseFactory {

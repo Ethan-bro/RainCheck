@@ -3,7 +3,7 @@ package interface_adapter.ManageTags;
 import entity.CustomTag;
 import interface_adapter.ViewModel;
 import interface_adapter.events.TagChangeEventNotifier;
-import use_case.createCustomTag.CustomTagDataAccessInterface;
+import use_case.CreateCT.CustomTagDataAccessInterface;
 
 import java.util.List;
 import java.util.Map;

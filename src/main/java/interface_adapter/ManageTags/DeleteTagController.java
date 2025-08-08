@@ -1,6 +1,6 @@
 package interface_adapter.ManageTags;
 
-import use_case.createCustomTag.CustomTagDataAccessInterface;
+import use_case.CreateCT.CustomTagDataAccessInterface;
 import entity.CustomTag;
 import interface_adapter.events.TagChangeEventNotifier;
 

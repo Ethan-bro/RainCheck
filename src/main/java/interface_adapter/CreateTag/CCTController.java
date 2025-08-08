@@ -1,8 +1,8 @@
 package interface_adapter.CreateTag;
 
 import entity.CustomTag;
-import use_case.createCustomTag.CCTInputBoundary;
-import use_case.createCustomTag.CCTInputData;
+import use_case.CreateCT.CCTInputBoundary;
+import use_case.CreateCT.CCTInputData;
 
 public class CCTController {
 
