@@ -47,8 +47,8 @@ public class EditTaskView extends AbstractTaskFormView implements ActionListener
 
         viewModel.addPropertyChangeListener(this);
 
-        saveButton.addActionListener(this);
-        cancelButton.addActionListener(this);
+        getSaveButton().addActionListener(this);
+        getCancelButton().addActionListener(this);
 
         initializeSpinnersWithDefaults();
     }
@@ -56,8 +56,8 @@ public class EditTaskView extends AbstractTaskFormView implements ActionListener
     private void initializeSpinnersWithDefaults() {
         final LocalDateTime now = LocalDateTime.now();
         final Date nowDate = Date.from(now.atZone(ZoneId.systemDefault()).toInstant());
-        startSpinner.setValue(nowDate);
-        endSpinner.setValue(nowDate);
+        getStartSpinner().setValue(nowDate);
+        getEndSpinner().setValue(nowDate);
     }
 
     /**
@@ -70,15 +70,15 @@ public class EditTaskView extends AbstractTaskFormView implements ActionListener
         if (task != null) {
             final TaskInfo info = task.getTaskInfo();
 
-            nameField.setText(info.getTaskName());
-            startSpinner.setValue(Date.from(info.getStartDateTime().atZone(ZoneId.systemDefault()).toInstant()));
-            endSpinner.setValue(Date.from(info.getEndDateTime().atZone(ZoneId.systemDefault()).toInstant()));
-            priorityCombo.setSelectedItem(info.getPriority());
+            getNameField().setText(info.getTaskName());
+            getStartSpinner().setValue(Date.from(info.getStartDateTime().atZone(ZoneId.systemDefault()).toInstant()));
+            getEndSpinner().setValue(Date.from(info.getEndDateTime().atZone(ZoneId.systemDefault()).toInstant()));
+            getPriorityCombo().setSelectedItem(info.getPriority());
             if (info.getTag() != null) {
-                customTagCombo.setSelectedItem(info.getTag());
+                getCustomTagCombo().setSelectedItem(info.getTag());
             }
             if (info.getReminder() != null) {
-                reminderCombo.setSelectedItem(info.getReminder());
+                getReminderCombo().setSelectedItem(info.getReminder());
             }
         }
     }
@@ -97,12 +97,12 @@ public class EditTaskView extends AbstractTaskFormView implements ActionListener
     }
 
     private Task buildUpdatedTask() {
-        final String name = nameField.getText().trim();
-        final LocalDateTime start = toLocalDateTime((Date) startSpinner.getValue());
-        final LocalDateTime end = toLocalDateTime((Date) endSpinner.getValue());
-        final Priority priority = (Priority) priorityCombo.getSelectedItem();
-        final CustomTag tag = (CustomTag) customTagCombo.getSelectedItem();
-        final Reminder reminder = (Reminder) reminderCombo.getSelectedItem();
+        final String name = getNameField().getText().trim();
+        final LocalDateTime start = toLocalDateTime((Date) getStartSpinner().getValue());
+        final LocalDateTime end = toLocalDateTime((Date) getEndSpinner().getValue());
+        final Priority priority = (Priority) getPriorityCombo().getSelectedItem();
+        final CustomTag tag = (CustomTag) getCustomTagCombo().getSelectedItem();
+        final Reminder reminder = (Reminder) getReminderCombo().getSelectedItem();
 
         final TaskInfo oldInfo = existingTask.getTaskInfo();
 
@@ -139,10 +139,10 @@ public class EditTaskView extends AbstractTaskFormView implements ActionListener
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
-        if (actionEvent.getSource() == saveButton) {
+        if (actionEvent.getSource() == getSaveButton()) {
             controller.editTask(buildUpdatedTask());
         }
-        else if (actionEvent.getSource() == cancelButton) {
+        else if (actionEvent.getSource() == getCancelButton()) {
             viewManagerModel.setState(mainViewKey);
             viewManagerModel.firePropertyChanged();
         }
@@ -155,8 +155,8 @@ public class EditTaskView extends AbstractTaskFormView implements ActionListener
         if ("refreshTagOptions".equals(prop)) {
             final Object newValue = evt.getNewValue();
             if (newValue instanceof List<?> updatedTags) {
-                customTagCombo.setModel(new DefaultComboBoxModel<>(updatedTags.toArray()));
-                customTagCombo.setEnabled(!updatedTags.isEmpty());
+                getCustomTagCombo().setModel(new DefaultComboBoxModel<>(updatedTags.toArray()));
+                getCustomTagCombo().setEnabled(!updatedTags.isEmpty());
             }
         }
         else {
@@ -167,8 +167,8 @@ public class EditTaskView extends AbstractTaskFormView implements ActionListener
                 viewManagerModel.firePropertyChanged();
             }
             else if (state.getError() != null) {
-                errorLabel.setText(state.getError());
-                errorLabel.setVisible(true);
+                getErrorLabel().setText(state.getError());
+                getErrorLabel().setVisible(true);
             }
         }
     }

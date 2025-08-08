@@ -5,6 +5,8 @@
       <w>feelslikeday</w>
       <w>feelslikemax</w>
       <w>feelslikemin</w>
+      <w>gridbag</w>
+      <w>hgap</w>
       <w>icalls</w>
       <w>jbjoxiauljridpmnunuh</w>
       <w>noto</w>
@@ -16,6 +18,7 @@
       <w>testuser</w>
       <w>textfield</w>
       <w>uvindex</w>
+      <w>vgap</w>
     </words>
   </dictionary>
 </component>
