@@ -1,4 +1,4 @@
-package use_case.EditCustomTag;
+package use_case.edit_custom_tag;
 
 /**
  * A container for tag-related error message constants.
@@ -9,7 +9,7 @@ public final class TagErrorConstants {
 
     public static final String ICON_TAKEN_ERROR = "Tag icon is taken";
 
-    private TagErrorConstants() { }
+    private TagErrorConstants() {
+
+    }
 }
-
-

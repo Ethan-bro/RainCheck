@@ -32,7 +32,7 @@ import use_case.notification.ScheduleNotificationInteractor;
 import use_case.notification.ScheduleNotificationOutputBoundary;
 
 import view.AddTaskView;
-import view.CCTView;
+import view.CreateCustomTagView;
 import view.EditTagView;
 import view.EditTaskView;
 import view.LoggedInView;
@@ -328,14 +328,14 @@ public final class AppBuilder {
      */
     public AppBuilder addCctView() {
         if (cctViewModel != null) {
-            final CCTView cctView = CctUseCaseFactory.create(
+            final CreateCustomTagView cctView = CctUseCaseFactory.create(
                     viewManagerModel,
                     cctViewModel,
                     manageTagsViewModel,
                     tagDao
             );
-            cardPanel.add(cctView, CCTView.getViewName());
-            viewMap.put(CCTView.getViewName(), cctView);
+            cardPanel.add(cctView, CreateCustomTagView.getViewName());
+            viewMap.put(CreateCustomTagView.getViewName(), cctView);
         }
         return this;
     }

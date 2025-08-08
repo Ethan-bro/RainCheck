@@ -2,8 +2,10 @@ package use_case.editTask;
 
 import data_access.InMemoryTaskDataAccessObject;
 import data_access.WeatherApiService;
+import data_access.WeatherApiServiceAdapter;
 import entity.*;
 import interface_adapter.addTask.Constants;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -11,17 +13,26 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public class EditTaskInteractorTest {
+class EditTaskInteractorTest {
 
     static String username = "Bob";
+
+    private TaskInfo createTaskInfo(TaskID taskId, String name, LocalDateTime start, LocalDateTime end,
+                                    Priority priority, CustomTag tag, Reminder reminder, String isDeleted,
+                                    String temp, String uvIndex) {
+        TaskInfo info = new TaskInfo();
+        info.setCoreDetails(taskId, name, start, end);
+        info.setAdditionalDetails(priority, tag, reminder, isDeleted);
+        info.setWeatherInfo(name, name, temp, uvIndex); // For simplicity, reuse name for description/icon
+        return info;
+    }
 
     @Test
     void successfulEditTask() throws IOException {
         InMemoryTaskDataAccessObject dao = new InMemoryTaskDataAccessObject();
 
-        // Creating original task
         TaskID taskId = new TaskID(UUID.randomUUID());
-        TaskInfo originalInfo = new TaskInfo(
+        TaskInfo originalInfo = createTaskInfo(
                 taskId, "Original Task",
                 LocalDateTime.now(),
                 LocalDateTime.now().plusHours(1),
@@ -29,15 +40,12 @@ public class EditTaskInteractorTest {
                 new CustomTag("Tag", "📚"),
                 null,
                 "No",
-                "",
-                "",
                 "25.0",
                 "2");
         Task originalTask = new Task(originalInfo);
         dao.addTask(username, originalTask);
 
-        // Creating updated task with same ID
-        TaskInfo updatedInfo = new TaskInfo(
+        TaskInfo updatedInfo = createTaskInfo(
                 taskId,
                 "Updated Task",
                 LocalDateTime.now(),
@@ -46,8 +54,6 @@ public class EditTaskInteractorTest {
                 new CustomTag("Tag", "📚"),
                 null,
                 "No",
-                "",
-                "",
                 "25.0",
                 "2");
         Task updatedTask = new Task(updatedInfo);
@@ -67,7 +73,8 @@ public class EditTaskInteractorTest {
             }
         };
 
-        EditTaskInteractor interactor = new EditTaskInteractor(dao, presenter, new WeatherApiService());
+        WeatherApiServiceAdapter adapter = new WeatherApiServiceAdapter(new WeatherApiService());
+        EditTaskInteractor interactor = new EditTaskInteractor(dao, presenter, adapter);
         EditTaskInputData input = new EditTaskInputData(username, updatedTask);
         interactor.execute(username, input);
     }
@@ -76,9 +83,8 @@ public class EditTaskInteractorTest {
     void failEditNonExistentTask() throws IOException {
         InMemoryTaskDataAccessObject dao = new InMemoryTaskDataAccessObject();
 
-        // Creating updated version of task that has ID that doesn't exist in dao
         TaskID taskId = new TaskID(UUID.randomUUID());
-        TaskInfo updatedInfo = new TaskInfo(
+        TaskInfo updatedInfo = createTaskInfo(
                 taskId, "Updated Task",
                 LocalDateTime.now(),
                 LocalDateTime.now().plusHours(1),
@@ -86,8 +92,6 @@ public class EditTaskInteractorTest {
                 new CustomTag("Tag", "👽"),
                 null,
                 "No",
-                "",
-                "",
                 "25.0",
                 "2");
         Task updatedTask = new Task(updatedInfo);
@@ -103,7 +107,9 @@ public class EditTaskInteractorTest {
                 Assertions.assertEquals("Task not found.", errorMessage);
             }
         };
-        EditTaskInteractor interactor = new EditTaskInteractor(dao, presenter, new WeatherApiService());
+
+        WeatherApiServiceAdapter adapter = new WeatherApiServiceAdapter(new WeatherApiService());
+        EditTaskInteractor interactor = new EditTaskInteractor(dao, presenter, adapter);
         EditTaskInputData input = new EditTaskInputData(username, updatedTask);
         interactor.execute(username, input);
     }
@@ -113,8 +119,7 @@ public class EditTaskInteractorTest {
         InMemoryTaskDataAccessObject dao = new InMemoryTaskDataAccessObject();
 
         TaskID taskId = new TaskID(UUID.randomUUID());
-
-        TaskInfo originalInfo = new TaskInfo(
+        TaskInfo originalInfo = createTaskInfo(
                 taskId, "Original Task",
                 LocalDateTime.now(),
                 LocalDateTime.now().plusHours(1),
@@ -122,14 +127,12 @@ public class EditTaskInteractorTest {
                 new CustomTag("Tag", "👽"),
                 null,
                 "No",
-                "",
-                "",
                 "25.0",
                 "2");
         Task originalTask = new Task(originalInfo);
         dao.addTask(username, originalTask);
 
-        TaskInfo updatedInfo = new TaskInfo(
+        TaskInfo updatedInfo = createTaskInfo(
                 taskId, "",
                 LocalDateTime.now(),
                 LocalDateTime.now().plusHours(1),
@@ -137,8 +140,6 @@ public class EditTaskInteractorTest {
                 new CustomTag("Tag", "👽"),
                 null,
                 "No",
-                "",
-                "",
                 "25.0",
                 "2");
         Task updatedTask = new Task(updatedInfo);
@@ -155,7 +156,8 @@ public class EditTaskInteractorTest {
             }
         };
 
-        EditTaskInteractor interactor = new EditTaskInteractor(dao, presenter, new WeatherApiService());
+        WeatherApiServiceAdapter adapter = new WeatherApiServiceAdapter(new WeatherApiService());
+        EditTaskInteractor interactor = new EditTaskInteractor(dao, presenter, adapter);
         EditTaskInputData input = new EditTaskInputData(username, updatedTask);
         interactor.execute(username, input);
     }
@@ -165,8 +167,7 @@ public class EditTaskInteractorTest {
         InMemoryTaskDataAccessObject dao = new InMemoryTaskDataAccessObject();
 
         TaskID taskId = new TaskID(UUID.randomUUID());
-
-        TaskInfo originalInfo = new TaskInfo(
+        TaskInfo originalInfo = createTaskInfo(
                 taskId, "Original Task",
                 LocalDateTime.now(),
                 LocalDateTime.now().plusHours(1),
@@ -174,23 +175,20 @@ public class EditTaskInteractorTest {
                 new CustomTag("Tag", "🌷"),
                 null,
                 "No",
-                "",
-                "",
                 "25.0",
                 "2");
         Task originalTask = new Task(originalInfo);
         dao.addTask(username, originalTask);
 
-        TaskInfo updatedInfo = new TaskInfo(
-                taskId, "UpdatedUpdatedUpdatedUpdatedUpdatedUpdatedUpdatedUpdatedUpdatedUpdated",
+        TaskInfo updatedInfo = createTaskInfo(
+                taskId,
+                "UpdatedUpdatedUpdatedUpdatedUpdatedUpdatedUpdatedUpdatedUpdatedUpdated",
                 LocalDateTime.now(),
                 LocalDateTime.now().plusHours(1),
                 Priority.HIGH,
                 new CustomTag("Tag", "🌷"),
                 null,
                 "No",
-                "",
-                "",
                 "25.0",
                 "2");
         Task updatedTask = new Task(updatedInfo);
@@ -209,7 +207,8 @@ public class EditTaskInteractorTest {
             }
         };
 
-        EditTaskInteractor interactor = new EditTaskInteractor(dao, presenter, new WeatherApiService());
+        WeatherApiServiceAdapter adapter = new WeatherApiServiceAdapter(new WeatherApiService());
+        EditTaskInteractor interactor = new EditTaskInteractor(dao, presenter, adapter);
         EditTaskInputData input = new EditTaskInputData(username, updatedTask);
         interactor.execute(username, input);
     }
@@ -217,9 +216,9 @@ public class EditTaskInteractorTest {
     @Test
     void failEditEndTimeBeforeStart() throws IOException {
         InMemoryTaskDataAccessObject dao = new InMemoryTaskDataAccessObject();
-        TaskID taskId = new TaskID(UUID.randomUUID());
 
-        TaskInfo originalInfo = new TaskInfo(
+        TaskID taskId = new TaskID(UUID.randomUUID());
+        TaskInfo originalInfo = createTaskInfo(
                 taskId, "Original Task",
                 LocalDateTime.now(),
                 LocalDateTime.now().plusHours(1),
@@ -227,27 +226,31 @@ public class EditTaskInteractorTest {
                 new CustomTag("Tag", "🌷"),
                 null,
                 "No",
-                "",
-                "",
                 "25.0",
                 "2");
         Task originalTask = new Task(originalInfo);
         dao.addTask(username, originalTask);
 
-        TaskInfo updatedInfo = new TaskInfo(
-                taskId, "Updated Task",
+        TaskInfo updatedInfo = createTaskInfo(
+                taskId,
+                "Updated Task",
                 LocalDateTime.now().plusHours(1),
                 LocalDateTime.now(),
                 Priority.HIGH,
                 new CustomTag("Tag", "🌷"),
                 null,
                 "No",
-                "",
-                "",
                 "25.0",
                 "2");
         Task updatedTask = new Task(updatedInfo);
 
+        EditTaskInteractor interactor = getEditTaskInteractor(dao);
+        EditTaskInputData input = new EditTaskInputData(username, updatedTask);
+        interactor.execute(username, input);
+    }
+
+    @NotNull
+    private static EditTaskInteractor getEditTaskInteractor(InMemoryTaskDataAccessObject dao) throws IOException {
         EditTaskOutputBoundary presenter = new EditTaskOutputBoundary() {
             @Override
             public void prepareSuccessView(EditTaskOutputData outputData) {
@@ -260,8 +263,7 @@ public class EditTaskInteractorTest {
             }
         };
 
-        EditTaskInteractor interactor = new EditTaskInteractor(dao, presenter, new WeatherApiService());
-        EditTaskInputData input = new EditTaskInputData(username, updatedTask);
-        interactor.execute(username, input);
+        WeatherApiServiceAdapter adapter = new WeatherApiServiceAdapter(new WeatherApiService());
+        return new EditTaskInteractor(dao, presenter, adapter);
     }
 }

@@ -1,23 +1,67 @@
 package view;
 
-import java.awt.*;
+import interface_adapter.login.LoginController;
+import interface_adapter.login.LoginState;
+import interface_adapter.login.LoginViewModel;
+
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Objects;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-
-import interface_adapter.login.LoginController;
-import interface_adapter.login.LoginState;
-import interface_adapter.login.LoginViewModel;
 
 /**
  * Polished Login View matching the Signup View style.
  */
 public class LoginView extends JPanel implements ActionListener, PropertyChangeListener {
+
+    private static final String FONT_NAME = "Segoe UI";
+    private static final int BORDER_TOP = 30;
+    private static final int BORDER_LEFT = 40;
+    private static final int BORDER_BOTTOM = 30;
+    private static final int BORDER_RIGHT = 40;
+
+    private static final int TITLE_FONT_SIZE = 26;
+    private static final int LABEL_FONT_SIZE = 16;
+    private static final int ERROR_FONT_SIZE = 12;
+    private static final int BUTTON_FONT_SIZE = 14;
+
+    private static final int BUTTON_WIDTH = 120;
+    private static final int BUTTON_HEIGHT = 35;
+
+    private static final int GRIDBAG_INSET_TOP = 12;
+    private static final int GRIDBAG_INSET_LEFT = 12;
+    private static final int GRIDBAG_INSET_BOTTOM = 8;
+    private static final int GRIDBAG_INSET_RIGHT = 12;
+
+    private static final double LABEL_WEIGHT_X = 0.3;
+    private static final double FIELD_WEIGHT_X = 0.7;
+
+    private static final int BUTTON_HGAP = 25;
+    private static final int BUTTON_VGAP = 10;
+
+    private static final Color LOGIN_GREEN = new Color(34, 139, 34);
+    private static final Color CANCEL_RED = new Color(178, 34, 34);
+    private static final Color SIGNUP_BLUE = new Color(30, 144, 255);
 
     private final String viewName = "log in";
 
@@ -29,124 +73,41 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
 
     private final JLabel usernameErrorLabel = new JLabel();
 
-    private final JButton logIn;
-    private final JButton cancel;
-    private final JButton signUp;
+    private JButton logIn;
+    private JButton cancel;
+    private JButton signUp;
 
-    public LoginView(LoginViewModel loginViewModel, LoginController controller) {
+    public LoginView(final LoginViewModel loginViewModel, final LoginController controller) {
         this.loginViewModel = loginViewModel;
         this.loginController = controller;
         this.loginViewModel.addPropertyChangeListener(this);
 
-        setLayout(new BorderLayout());
-        setBorder(BorderFactory.createEmptyBorder(30, 40, 30, 40));
+        setLayout(new java.awt.BorderLayout());
+        setBorder(BorderFactory.createEmptyBorder(BORDER_TOP, BORDER_LEFT, BORDER_BOTTOM, BORDER_RIGHT));
         setBackground(Color.WHITE);
 
-        // Title
-        JLabel title = new JLabel("Login");
-        title.setFont(new Font("Segoe UI", Font.BOLD, 26));
-        title.setHorizontalAlignment(SwingConstants.CENTER);
-        add(title, BorderLayout.NORTH);
+        final JLabel title = buildTitle();
+        add(title, java.awt.BorderLayout.NORTH);
 
-        // Form panel
-        JPanel formPanel = new JPanel(new GridBagLayout());
-        formPanel.setOpaque(false);
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(12, 12, 8, 12);
-        gbc.fill = GridBagConstraints.HORIZONTAL;
+        final JPanel formPanel = buildFormPanel();
+        add(formPanel, java.awt.BorderLayout.CENTER);
 
-        // Username Label
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 0.3;
-        JLabel usernameLabel = new JLabel("Username:");
-        usernameLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-        formPanel.add(usernameLabel, gbc);
-
-        // Username Input
-        gbc.gridx = 1;
-        gbc.weightx = 0.7;
-        formPanel.add(usernameInputField, gbc);
-
-        // Username Error
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        usernameErrorLabel.setForeground(Color.RED);
-        usernameErrorLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        formPanel.add(usernameErrorLabel, gbc);
-
-        // Password Label
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.weightx = 0.3;
-        JLabel passwordLabel = new JLabel("Password:");
-        passwordLabel.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-        formPanel.add(passwordLabel, gbc);
-
-        // Password Input
-        gbc.gridx = 1;
-        gbc.weightx = 0.7;
-        formPanel.add(passwordInputField, gbc);
-
-        add(formPanel, BorderLayout.CENTER);
-
-        // Buttons panel (Log In + Cancel)
-        JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 25, 10));
-        buttonsPanel.setOpaque(false);
-
-        logIn = new JButton("Log In");
-        logIn.setPreferredSize(new Dimension(120, 35));
-        logIn.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        logIn.setFocusPainted(false);
-        logIn.setBorder(BorderFactory.createLineBorder(new Color(34, 139, 34), 2));
-        logIn.setForeground(new Color(34, 139, 34));
-        logIn.setContentAreaFilled(false);
-        logIn.setOpaque(false);
-
-        cancel = new JButton("Cancel");
-        cancel.setPreferredSize(new Dimension(120, 35));
-        cancel.setFont(new Font("Segoe UI", Font.BOLD, 14));
-        cancel.setFocusPainted(false);
-        cancel.setBorder(BorderFactory.createLineBorder(new Color(178, 34, 34), 2));
-        cancel.setForeground(new Color(178, 34, 34));
-        cancel.setContentAreaFilled(false);
-        cancel.setOpaque(false);
-
-        buttonsPanel.add(logIn);
-        buttonsPanel.add(cancel);
-
-        // Signup panel ("Don't have an account?" + Sign Up)
-        JPanel signupPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        signupPanel.setOpaque(false);
-        signupPanel.add(new JLabel("Don't have an account? "));
-        signUp = new JButton("Sign Up");
-        signUp.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        signUp.setBorderPainted(false);
-        signUp.setContentAreaFilled(false);
-        signUp.setForeground(new Color(30, 144, 255));  // blue link style
-        signUp.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        signupPanel.add(signUp);
-
-        // Combine buttonsPanel and signupPanel vertically
-        JPanel combinedPanel = new JPanel();
-        combinedPanel.setLayout(new BoxLayout(combinedPanel, BoxLayout.Y_AXIS));
-        combinedPanel.setOpaque(false);
-        combinedPanel.add(buttonsPanel);
-        combinedPanel.add(signupPanel);
-
-        add(combinedPanel, BorderLayout.SOUTH);
+        final JPanel combinedPanel = buildButtonsAndSignupPanel();
+        add(combinedPanel, java.awt.BorderLayout.SOUTH);
 
         // Listeners
         logIn.addActionListener(evt -> {
-            if (evt.getSource().equals(logIn)) {
-                LoginState currentState = loginViewModel.getState();
-                loginController.execute(currentState.getUsername(), currentState.getPassword(), currentState.getEmail());
+            final Object src = evt.getSource();
+            if (src.equals(logIn)) {
+                final LoginState currentState = loginViewModel.getState();
+                loginController.execute(currentState.getUsername(), currentState.getPassword(), currentState.getEmail()
+                );
             }
         });
 
         cancel.addActionListener(this);
 
-        signUp.addActionListener(e -> loginController.switchToSignupView());
+        signUp.addActionListener(event -> loginController.switchToSignupView());
 
         usernameInputField.getDocument().addDocumentListener(new DocumentListener() {
             private void documentListenerHelper() {
@@ -195,25 +156,119 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
         });
     }
 
+    private JLabel buildTitle() {
+        final JLabel title = new JLabel("Login");
+        title.setFont(new Font(FONT_NAME, Font.BOLD, TITLE_FONT_SIZE));
+        title.setHorizontalAlignment(SwingConstants.CENTER);
+        return title;
+    }
+
+    private JPanel buildFormPanel() {
+        final JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setOpaque(false);
+
+        final GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(GRIDBAG_INSET_TOP, GRIDBAG_INSET_LEFT, GRIDBAG_INSET_BOTTOM, GRIDBAG_INSET_RIGHT);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        // Username Label
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = LABEL_WEIGHT_X;
+        final JLabel usernameLabel = new JLabel("Username:");
+        usernameLabel.setFont(new Font(FONT_NAME, Font.PLAIN, LABEL_FONT_SIZE));
+        formPanel.add(usernameLabel, gbc);
+
+        // Username Input
+        gbc.gridx = 1;
+        gbc.weightx = FIELD_WEIGHT_X;
+        formPanel.add(usernameInputField, gbc);
+
+        // Username Error Label
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        usernameErrorLabel.setForeground(Color.RED);
+        usernameErrorLabel.setFont(new Font(FONT_NAME, Font.PLAIN, ERROR_FONT_SIZE));
+        formPanel.add(usernameErrorLabel, gbc);
+
+        // Password Label
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.weightx = LABEL_WEIGHT_X;
+        final JLabel passwordLabel = new JLabel("Password:");
+        passwordLabel.setFont(new Font(FONT_NAME, Font.PLAIN, LABEL_FONT_SIZE));
+        formPanel.add(passwordLabel, gbc);
+
+        // Password Input
+        gbc.gridx = 1;
+        gbc.weightx = FIELD_WEIGHT_X;
+        formPanel.add(passwordInputField, gbc);
+
+        return formPanel;
+    }
+
+    private JPanel buildButtonsAndSignupPanel() {
+        final JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, BUTTON_HGAP, BUTTON_VGAP));
+        buttonsPanel.setOpaque(false);
+
+        logIn = new JButton("Log In");
+        styleActionButton(logIn, LOGIN_GREEN);
+
+        cancel = new JButton("Cancel");
+        styleActionButton(cancel, CANCEL_RED);
+
+        buttonsPanel.add(logIn);
+        buttonsPanel.add(cancel);
+
+        final JPanel signupPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        signupPanel.setOpaque(false);
+        signupPanel.add(new JLabel("Don't have an account? "));
+        signUp = new JButton("Sign Up");
+        signUp.setFont(new Font(FONT_NAME, Font.PLAIN, BUTTON_FONT_SIZE));
+        signUp.setBorderPainted(false);
+        signUp.setContentAreaFilled(false);
+        signUp.setForeground(SIGNUP_BLUE);
+        signUp.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        signupPanel.add(signUp);
+
+        final JPanel combinedPanel = new JPanel();
+        combinedPanel.setLayout(new BoxLayout(combinedPanel, BoxLayout.Y_AXIS));
+        combinedPanel.setOpaque(false);
+        combinedPanel.add(buttonsPanel);
+        combinedPanel.add(signupPanel);
+
+        return combinedPanel;
+    }
+
+    private void styleActionButton(final JButton button, final Color color) {
+        button.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
+        button.setFont(new Font(FONT_NAME, Font.BOLD, BUTTON_FONT_SIZE));
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createLineBorder(color, 2));
+        button.setForeground(color);
+        button.setContentAreaFilled(false);
+        button.setOpaque(false);
+    }
+
     @Override
-    public void actionPerformed(ActionEvent evt) {
+    public void actionPerformed(final ActionEvent evt) {
         if (evt.getSource() == cancel) {
             System.exit(0);
         }
     }
 
     @Override
-    public void propertyChange(PropertyChangeEvent evt) {
+    public void propertyChange(final PropertyChangeEvent evt) {
         if ("state".equals(evt.getPropertyName())) {
-            LoginState state = (LoginState) evt.getNewValue();
+            final LoginState state = (LoginState) evt.getNewValue();
+
             usernameInputField.setText(state.getUsername());
-            passwordInputField.setText(state.getPassword() != null ? state.getPassword() : "");
-            usernameErrorLabel.setText(state.getLoginError() != null ? state.getLoginError() : "");
+            passwordInputField.setText(Objects.requireNonNull(state.getPassword()));
+            usernameErrorLabel.setText(Objects.requireNonNull(state.getLoginError()));
         }
     }
 
     public String getViewName() {
         return viewName;
     }
-
 }

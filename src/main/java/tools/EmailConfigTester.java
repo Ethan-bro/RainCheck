@@ -1,18 +1,24 @@
 package tools;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import data_access.EmailNotificationService;
 import data_access.FileNotificationDataAccess;
-import entity.*;
-import use_case.notification.ScheduleNotificationInputData;
-import use_case.notification.ScheduleNotificationInteractor;
-import use_case.notification.ScheduleNotificationOutputBoundary;
-import use_case.notification.ScheduleNotificationOutputData;
 
+import entity.EmailNotificationConfig;
+import entity.Priority;
+import entity.Reminder;
+import entity.ScheduledNotification;
+import entity.Task;
+import entity.TaskID;
+import entity.TaskInfo;
+
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.UUID;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 /**
  * Utility to test the full notification flow including email configuration.
@@ -20,128 +26,151 @@ import java.util.UUID;
  */
 public class EmailConfigTester {
 
+    private static final String CONFIG_PATH = "config/secrets.json";
+    private static final String EMAIL_CONFIGS_PATH = "data/email_configs.json";
+    private static final String NOTIFICATIONS_PATH = "data/scheduled_notifications.json";
+    private static final String SMTP_SERVER = "smtp.gmail.com";
+    private static final String SMTP_PORT = "587";
+    private static final String EMAIL_USERNAME_KEY = "email_username";
+    private static final String EMAIL_PASSWORD_KEY = "email_password";
+
+    /**
+     * Entry point to run the email notification flow test.
+     * @param args optional first arg is username to test
+     */
     public static void main(String[] args) {
         try {
             System.out.println("Email Notification Flow Tester");
             System.out.println("============================\n");
 
-            // Step 1: Get username from args or use default
-            String username = args.length > 0 ? args[0] : "testuser";
+            final String username;
+            if (args.length > 0) {
+                username = args[0];
+            }
+            else {
+                username = "testuser";
+            }
             System.out.println("Testing for user: " + username);
 
-            // Step 2: Load email configuration
-            JsonObject config = JsonParser.parseReader(new FileReader("config/secrets.json")).getAsJsonObject();
-            String email = config.get("email_username").getAsString();
+            final JsonObject config = JsonParser.parseReader(new FileReader(CONFIG_PATH)).getAsJsonObject();
 
-            // Step 3: Set up data access objects
-            FileNotificationDataAccess notificationDataAccess = new FileNotificationDataAccess(
-                    "data/email_configs.json",
-                    "data/scheduled_notifications.json"
+            final String email = config.get(EMAIL_USERNAME_KEY).getAsString();
+            final String password = config.get(EMAIL_PASSWORD_KEY).getAsString();
+
+            final FileNotificationDataAccess notificationDataAccess = new FileNotificationDataAccess(
+                    EMAIL_CONFIGS_PATH, NOTIFICATIONS_PATH
             );
 
-            // Step 4: Create email service
-            EmailNotificationService emailService = new EmailNotificationService(
-                    "smtp.gmail.com", // Gmail SMTP server
-                    "587",  // TLS port for Gmail
-                    config.get("email_username").getAsString(),
-                    config.get("email_password").getAsString()
+            final EmailNotificationService emailService = new EmailNotificationService(
+                    SMTP_SERVER, SMTP_PORT, email, password
             );
 
-            // Step 5: Check if user has email config set up
-            EmailNotificationConfig userConfig = notificationDataAccess.getEmailConfig(username);
+            final EmailNotificationConfig userConfig = getOrCreateUserEmailConfig(
+                    username, email, notificationDataAccess
+            );
 
-            if (userConfig == null) {
-                System.out.println("Creating email configuration for user: " + username);
-                userConfig = new EmailNotificationConfig(email, true); // Enable email notifications
-                notificationDataAccess.saveEmailConfig(username, userConfig);
-                System.out.println("✓ Email configuration created\n");
-            } else {
-                System.out.println("Found existing email config for user: " + username);
-                System.out.println("Email: " + userConfig.getUserEmail());
-                System.out.println("Notifications enabled: " + userConfig.isEmailNotificationsEnabled() + "\n");
-            }
+            final Task task = createAndPrintTestTask();
 
-            // Step 6: Create a test task
-            System.out.println("Creating test task...");
-            LocalDateTime startTime = LocalDateTime.now().plusMinutes(2);
-            Task task = createTestTask("Email Test Task", startTime);
+            sendImmediateEmail(emailService, task, userConfig.getUserEmail());
 
-            // Step 7: Send a test immediate email
-            System.out.println("Sending immediate test email...");
-            try {
-                emailService.sendTaskReminder(null, task, userConfig.getUserEmail());
-                System.out.println("✓ Immediate test email sent successfully to " + userConfig.getUserEmail());
-            } catch (Exception e) {
-                System.out.println("✗ Failed to send immediate email: " + e.getMessage());
-                e.printStackTrace();
-            }
-
-            // Step 8: Schedule a notification (if we had a task DAO)
-            System.out.println("\nCreating a scheduled notification...");
-            Reminder reminder = new Reminder(1); // 1 minute before
-            ScheduledNotification notification = emailService.scheduleEmailReminder(task, userConfig.getUserEmail(), reminder);
-
-            System.out.println("Task ID: " + task.getTaskInfo().getId());
-            System.out.println("Notification scheduled for: " + notification.getScheduledTime());
-            System.out.println("Email recipient: " + notification.getUserEmail());
-
-            // Step 9: Save the notification
-            notificationDataAccess.saveScheduledNotification(notification);
-            System.out.println("✓ Notification saved successfully");
+            scheduleAndSaveNotification(emailService, task, userConfig.getUserEmail(),
+                    new Reminder(1), notificationDataAccess);
 
             System.out.println("\nTest completed successfully!");
             System.out.println("You should receive the immediate test email shortly.");
             System.out.println("The scheduled notification will be sent at the scheduled time if the app is running.");
-
-        } catch (Exception e) {
-            System.err.println("Test failed: " + e.getMessage());
-            e.printStackTrace();
+        }
+        catch (FileNotFoundException ex) {
+            System.err.println("Config file not found: " + ex.getMessage());
+            ex.printStackTrace();
+        }
+        catch (IOException ex) {
+            System.err.println("IO error: " + ex.getMessage());
+            ex.printStackTrace();
         }
     }
 
-    private static Task createTestTask(String name, LocalDateTime startTime) {
-        LocalDateTime endTime = startTime.plusHours(1);
+    private static EmailNotificationConfig getOrCreateUserEmailConfig(
+            String username, String email, FileNotificationDataAccess notificationDataAccess
+    ) {
+        EmailNotificationConfig userConfig = notificationDataAccess.getEmailConfig(username);
+        if (userConfig == null) {
+            System.out.println("Creating email configuration for user: " + username);
+            userConfig = new EmailNotificationConfig(email, true);
+            notificationDataAccess.saveEmailConfig(username, userConfig);
+            System.out.println("✓ Email configuration created\n");
+        }
+        else {
+            System.out.println("Found existing email config for user: " + username);
+            System.out.println("Email: " + userConfig.getUserEmail());
+            System.out.println("Notifications enabled: " + userConfig.isEmailNotificationsEnabled() + "\n");
+        }
+        return userConfig;
+    }
 
-        TaskInfo taskInfo = new TaskInfo(
+    private static Task createAndPrintTestTask() {
+        System.out.println("Creating test task...");
+        final LocalDateTime startTime = LocalDateTime.now().plusMinutes(2);
+        return createTestTask(startTime);
+    }
+
+    private static void sendImmediateEmail(EmailNotificationService emailService, Task task, String recipientEmail) {
+        System.out.println("Sending immediate test email...");
+        emailService.sendTaskReminder(null, task, recipientEmail);
+        System.out.println("✓ Immediate test email sent successfully to " + recipientEmail);
+    }
+
+    private static void scheduleAndSaveNotification(
+            EmailNotificationService emailService,
+            Task task,
+            String recipientEmail,
+            Reminder reminder,
+            FileNotificationDataAccess notificationDataAccess
+    ) {
+        System.out.println("\nCreating a scheduled notification...");
+        final ScheduledNotification notification = emailService.scheduleEmailReminder(task, recipientEmail, reminder);
+        System.out.println("Task ID: " + task.getTaskInfo().getId());
+        System.out.println("Notification scheduled for: " + notification.getScheduledTime());
+        System.out.println("Email recipient: " + notification.getUserEmail());
+        notificationDataAccess.saveScheduledNotification(notification);
+        System.out.println("✓ Notification saved successfully");
+    }
+
+    /**
+     * Creates a test Task with the given name and start time.
+     *
+     * @param startTime the task start time
+     * @return a new Task instance
+     */
+    private static Task createTestTask(LocalDateTime startTime) {
+        final LocalDateTime endTime = startTime.plusHours(1);
+
+        final TaskInfo taskInfo = new TaskInfo();
+
+        // Set core details
+        taskInfo.setCoreDetails(
                 TaskID.from(UUID.randomUUID()),
-                name,
+                "Email Test Task",
                 startTime,
-                endTime,
+                endTime
+        );
+
+        // Set additional details
+        taskInfo.setAdditionalDetails(
                 Priority.HIGH,
-                null, // No tag
+                null,
                 new Reminder(1),
-                "No",// 1 minute reminder
+                "No"
+        );
+
+        // Set weather info
+        taskInfo.setWeatherInfo(
                 "Clear skies",
                 "clear-day",
                 "25",
-                ""// 25 degrees
+                ""
         );
 
         return new Task(taskInfo);
-    }
-
-    // Add this to your EmailConfigTester or create a simple test
-    public static void quickTest() {
-        try {
-            JsonObject config = JsonParser.parseReader(new FileReader("config/secrets.json")).getAsJsonObject();
-
-            EmailNotificationService emailService = new EmailNotificationService(
-                    "smtp.gmail.com", "587",
-                    config.get("email_username").getAsString(),
-                    config.get("email_password").getAsString()
-            );
-
-            // Create a simple test task
-            Task testTask = createTestTask("Quick Test", LocalDateTime.now());
-
-            // Send immediate email
-            emailService.sendTaskReminder(null, testTask, config.get("email_username").getAsString());
-
-            System.out.println("✓ Quick test email sent!");
-
-        } catch (Exception e) {
-            System.out.println("✗ Quick test failed: " + e.getMessage());
-            e.printStackTrace();
-        }
     }
 }

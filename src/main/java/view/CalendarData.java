@@ -2,8 +2,6 @@ package view;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,11 +10,6 @@ import java.util.List;
  * and the current week dates.
  */
 public class CalendarData {
-
-    /** Days of the week labels. */
-    public static final String[] DAYS_OF_WEEK = {
-            "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat",
-    };
 
     /** Hours of the day labels in HH:00 format. */
     public static final String[] HOURS_OF_DAY;

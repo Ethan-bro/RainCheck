@@ -1,4 +1,4 @@
-package use_case.EditCustomTag;
+package use_case.edit_custom_tag;
 
 /**
  * Output boundary interface for editing tags.

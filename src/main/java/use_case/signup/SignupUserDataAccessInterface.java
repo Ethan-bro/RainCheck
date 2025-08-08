@@ -1,6 +1,7 @@
 package use_case.signup;
 
 import data_access.DuplicateEmailException;
+
 import entity.User;
 
 /**

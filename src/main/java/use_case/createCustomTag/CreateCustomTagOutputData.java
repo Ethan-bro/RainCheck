@@ -5,35 +5,35 @@ import entity.CustomTag;
 /**
  * The output data of the custom tag.
  */
-public class cctOutputData {
+public class CreateCustomTagOutputData {
 
-    private final boolean UseCaseFailed;
-    private final cctError errorType;
+    private final boolean useCaseFailed;
+    private final CreateCustomTagError errorType;
     private final String errorMessage;
     private final CustomTag createdTag;
 
     // failed UseCase constructor
-    public cctOutputData(cctError errorType) {
-        this.UseCaseFailed = true;
+    public CreateCustomTagOutputData(CreateCustomTagError errorType) {
+        this.useCaseFailed = true;
         this.errorType = errorType;
         this.errorMessage = errorType.getMessage();
         this.createdTag = null;
+    }
+
+    // successful UseCase constructor
+    public CreateCustomTagOutputData(CustomTag createdTag) {
+        useCaseFailed = false;
+        errorType = null;
+        errorMessage = null;
+        this.createdTag = createdTag;
     }
 
     public String getErrorMessage() {
         return errorMessage;
     }
 
-    // successful UseCase constructor
-    public cctOutputData(CustomTag createdTag) {
-        UseCaseFailed = false;
-        errorType = null;
-        errorMessage = null;
-        this.createdTag = createdTag;
-    }
-
     public boolean isUseCaseFailed() {
-        return UseCaseFailed;
+        return useCaseFailed;
     }
 
     public CustomTag getCreatedTag() {

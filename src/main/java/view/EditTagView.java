@@ -1,24 +1,13 @@
 package view;
 
 import entity.CustomTag;
+
 import interface_adapter.ViewManagerModel;
 import interface_adapter.editTag.EditTagController;
 import interface_adapter.editTag.EditTagViewModel;
 import interface_adapter.manageTags.ManageTagsViewModel;
-import org.jetbrains.annotations.NotNull;
 
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JToggleButton;
-import javax.swing.JTextField;
-import javax.swing.AbstractButton;
-import javax.swing.ButtonGroup;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.BorderFactory;
+import use_case.createCustomTag.CustomTagIcons;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -27,32 +16,61 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridLayout;
 import java.awt.GraphicsEnvironment;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.Serial;
 import java.util.Enumeration;
 
-import use_case.createCustomTag.customTagIcons;
+import javax.swing.AbstractButton;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.JToggleButton;
+import javax.swing.SwingConstants;
+
+import org.jetbrains.annotations.NotNull;
 
 public class EditTagView extends JPanel implements PropertyChangeListener, ActionListener {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     private static final String VIEW_NAME = "Edit Custom Tag";
 
+    private static final String FONT_SANS_SERIF = "SansSerif";
+
     private static final int PADDING_TOP_BOTTOM = 20;
     private static final int PADDING_LEFT_RIGHT = 40;
+
     private static final int TEXTFIELD_COLUMNS = 20;
     private static final int TEXTFIELD_WIDTH = 220;
     private static final int TEXTFIELD_HEIGHT = 28;
+
     private static final int ICON_BUTTON_SIZE = 50;
     private static final int ICON_BUTTON_FONT_SIZE = 28;
+
     private static final int TITLE_FONT_SIZE = 24;
     private static final int LABEL_FONT_SIZE = 16;
     private static final int ICON_LABEL_FONT_SIZE = 18;
+
+    private static final int BUTTON_BORDER_TOP_BOTTOM = 10;
+    private static final int BUTTON_BORDER_LEFT_RIGHT = 25;
+
+    private static final int VERTICAL_STRUT_SMALL = 12;
+    private static final int ICON_BUTTON_BORDER_THICKNESS = 3;
+
+    private static final Dimension PREFERRED_SIZE = new Dimension(560, 400);
 
     private static final Color COLOR_DODGER_BLUE = new Color(0x1E90FF);
     private static final Color COLOR_LIGHT_BLUE = new Color(0xD0E7FF);
@@ -69,6 +87,7 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
 
     private final JTextField tagNameTextField = new JTextField(TEXTFIELD_COLUMNS);
     private final ButtonGroup iconGroup = new ButtonGroup();
+
     private final JButton confirmButton = new JButton("Confirm Edit");
     private final JButton cancelButton = new JButton("Cancel");
 
@@ -92,19 +111,23 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
 
         registerListeners();
 
-        setPreferredSize(new Dimension(560, 400));
+        setPreferredSize(PREFERRED_SIZE);
     }
 
     private void setupLayout() {
         setLayout(new BorderLayout());
         setBackground(COLOR_WHITE);
-        setBorder(BorderFactory.createEmptyBorder(PADDING_TOP_BOTTOM, PADDING_LEFT_RIGHT,
-                PADDING_TOP_BOTTOM, PADDING_LEFT_RIGHT));
+        setBorder(BorderFactory.createEmptyBorder(
+                PADDING_TOP_BOTTOM,
+                PADDING_LEFT_RIGHT,
+                PADDING_TOP_BOTTOM,
+                PADDING_LEFT_RIGHT
+        ));
     }
 
     private void setupTitle() {
-        final JLabel titleLabel = new JLabel(VIEW_NAME, JLabel.CENTER);
-        titleLabel.setFont(new Font("SansSerif", Font.BOLD, TITLE_FONT_SIZE));
+        final JLabel titleLabel = new JLabel(VIEW_NAME, SwingConstants.CENTER);
+        titleLabel.setFont(new Font(FONT_SANS_SERIF, Font.BOLD, TITLE_FONT_SIZE));
         titleLabel.setForeground(COLOR_DODGER_BLUE);
         add(titleLabel, BorderLayout.NORTH);
     }
@@ -116,9 +139,9 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
         centerPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         centerPanel.add(createTagNamePanel());
-        centerPanel.add(Box.createVerticalStrut(20));
+        centerPanel.add(Box.createVerticalStrut(PADDING_TOP_BOTTOM));
         centerPanel.add(createIconLabel());
-        centerPanel.add(Box.createVerticalStrut(12));
+        centerPanel.add(Box.createVerticalStrut(VERTICAL_STRUT_SMALL));
         centerPanel.add(createIconPanel());
 
         add(centerPanel, BorderLayout.CENTER);
@@ -129,10 +152,10 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
         tagNamePanel.setBackground(COLOR_WHITE);
 
         final JLabel tagNameLabel = new JLabel("Tag Name:");
-        tagNameLabel.setFont(new Font("SansSerif", Font.PLAIN, LABEL_FONT_SIZE));
+        tagNameLabel.setFont(new Font(FONT_SANS_SERIF, Font.PLAIN, LABEL_FONT_SIZE));
         tagNamePanel.add(tagNameLabel);
 
-        tagNameTextField.setFont(new Font("SansSerif", Font.PLAIN, LABEL_FONT_SIZE));
+        tagNameTextField.setFont(new Font(FONT_SANS_SERIF, Font.PLAIN, LABEL_FONT_SIZE));
         tagNameTextField.setPreferredSize(new Dimension(TEXTFIELD_WIDTH, TEXTFIELD_HEIGHT));
         tagNamePanel.add(tagNameTextField);
 
@@ -141,14 +164,14 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
 
     private JLabel createIconLabel() {
         final JLabel iconLabel = new JLabel("Select Tag Icon:");
-        iconLabel.setFont(new Font("SansSerif", Font.BOLD, ICON_LABEL_FONT_SIZE));
+        iconLabel.setFont(new Font(FONT_SANS_SERIF, Font.BOLD, ICON_LABEL_FONT_SIZE));
         iconLabel.setForeground(COLOR_DODGER_BLUE);
         iconLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         return iconLabel;
     }
 
     private JPanel createIconPanel() {
-        final int iconCount = customTagIcons.IconList.size();
+        final int iconCount = CustomTagIcons.getIconList().size();
         final int rows = 2;
         final int cols = (iconCount + 1) / 2;
 
@@ -158,7 +181,7 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
 
         final Font emojiFont = findEmojiFont();
 
-        for (final String icon : customTagIcons.IconList) {
+        for (final String icon : CustomTagIcons.getIconList()) {
             final JToggleButton iconButton = createToggleButton(icon, emojiFont);
             iconGroup.add(iconButton);
             iconPanel.add(iconButton);
@@ -204,32 +227,50 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
         iconButton.setOpaque(false);
 
         iconButton.addItemListener(event -> {
-            if (iconButton.isSelected()) {
-                iconButton.setBorder(BorderFactory.createLineBorder(COLOR_DODGER_BLUE, 3));
-                iconButton.setOpaque(true);
-                iconButton.setBackground(COLOR_LIGHT_BLUE);
-            } else {
-                iconButton.setBorder(BorderFactory.createEmptyBorder());
-                iconButton.setOpaque(false);
-                iconButton.setBackground(null);
+            toggleIconButtonStyle(iconButton, event.getStateChange() == ItemEvent.SELECTED);
             }
-        });
+        );
 
         return iconButton;
+    }
+
+    private void toggleIconButtonStyle(final JToggleButton iconButton, final boolean selected) {
+        if (selected) {
+            iconButton.setBorder(BorderFactory.createLineBorder(COLOR_DODGER_BLUE, ICON_BUTTON_BORDER_THICKNESS));
+            iconButton.setOpaque(true);
+            iconButton.setBackground(COLOR_LIGHT_BLUE);
+        }
+        else {
+            iconButton.setBorder(BorderFactory.createEmptyBorder());
+            iconButton.setOpaque(false);
+            iconButton.setBackground(null);
+        }
     }
 
     private Font findEmojiFont() {
         final String[] emojiFonts = {"Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji"};
         final GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        Font emojiFont = null;
+        boolean found = false;
 
         for (final String fontName : emojiFonts) {
+            if (found) {
+                break;
+            }
             for (final String availableFont : ge.getAvailableFontFamilyNames()) {
                 if (availableFont.equalsIgnoreCase(fontName)) {
-                    return new Font(fontName, Font.PLAIN, ICON_BUTTON_FONT_SIZE);
+                    emojiFont = new Font(fontName, Font.PLAIN, ICON_BUTTON_FONT_SIZE);
+                    found = true;
+                    break;
                 }
             }
         }
-        return new Font("Segoe UI", Font.PLAIN, ICON_BUTTON_FONT_SIZE);
+
+        if (!found) {
+            emojiFont = new Font("Segoe UI", Font.PLAIN, ICON_BUTTON_FONT_SIZE);
+        }
+
+        return emojiFont;
     }
 
     private void resetForm() {
@@ -239,20 +280,30 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
     }
 
     private void stylePrimaryButton(final JButton button) {
-        button.setFont(new Font("SansSerif", Font.BOLD, LABEL_FONT_SIZE));
+        button.setFont(new Font(FONT_SANS_SERIF, Font.BOLD, LABEL_FONT_SIZE));
         button.setBackground(COLOR_DODGER_BLUE);
         button.setForeground(COLOR_WHITE);
         button.setFocusPainted(false);
-        button.setBorder(BorderFactory.createEmptyBorder(10, 25, 10, 25));
+        button.setBorder(BorderFactory.createEmptyBorder(
+                BUTTON_BORDER_TOP_BOTTOM,
+                BUTTON_BORDER_LEFT_RIGHT,
+                BUTTON_BORDER_TOP_BOTTOM,
+                BUTTON_BORDER_LEFT_RIGHT
+        ));
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }
 
     private void styleSecondaryButton(final JButton button) {
-        button.setFont(new Font("SansSerif", Font.PLAIN, LABEL_FONT_SIZE));
+        button.setFont(new Font(FONT_SANS_SERIF, Font.PLAIN, LABEL_FONT_SIZE));
         button.setBackground(COLOR_LIGHT_GRAY);
         button.setForeground(COLOR_BLACK);
         button.setFocusPainted(false);
-        button.setBorder(BorderFactory.createEmptyBorder(10, 25, 10, 25));
+        button.setBorder(BorderFactory.createEmptyBorder(
+                BUTTON_BORDER_TOP_BOTTOM,
+                BUTTON_BORDER_LEFT_RIGHT,
+                BUTTON_BORDER_TOP_BOTTOM,
+                BUTTON_BORDER_LEFT_RIGHT
+        ));
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }
 
@@ -262,26 +313,21 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
 
     @Override
     public void actionPerformed(final ActionEvent event) {
+        final Object source = event.getSource();
 
-        if (event.getSource() == confirmButton) {
-            final String tagName = tagNameTextField.getText().trim();
-            final AbstractButton selectedButton = getSelectedButton(iconGroup);
-            if (tagName.isEmpty()) {
-                JOptionPane.showMessageDialog(this,
-                        "Please enter a tag name.",
-                        "Validation Error",
-                        JOptionPane.WARNING_MESSAGE);
-                return;
-            }
+        if (source == confirmButton) {
+            handleConfirmAction();
+        }
+        else if (source == cancelButton) {
+            handleCancelAction();
+        }
+    }
 
-            if (selectedButton == null) {
-                JOptionPane.showMessageDialog(this,
-                        "Please select a tag icon.",
-                        "Validation Error",
-                        JOptionPane.WARNING_MESSAGE);
-                return;
-            }
+    private void handleConfirmAction() {
+        final String tagName = tagNameTextField.getText().trim();
+        final AbstractButton selectedButton = getSelectedButton(iconGroup);
 
+        if (validateForm(tagName, selectedButton)) {
             final String selectedIcon = selectedButton.getActionCommand();
 
             final CustomTag supposedTag = new CustomTag(tagName, selectedIcon);
@@ -290,25 +336,47 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
             editTagController.execute(currentTag, supposedTag);
 
             resetForm();
-            return;
-        }
-
-        if (event.getSource() == cancelButton) {
-            resetForm();
-            editTagViewModel.setUsername(null);
-            viewManagerModel.setState(ManageTagsView.getViewName());
-            viewManagerModel.firePropertyChanged();
         }
     }
 
+    private boolean validateForm(final String tagName, final AbstractButton selectedButton) {
+        boolean result = true;
+        if (tagName.isEmpty()) {
+            showValidationError("Please enter a tag name.");
+            result = false;
+        }
+        else if (selectedButton == null) {
+            showValidationError("Please select a tag icon.");
+            result = false;
+        }
+
+        return result;
+    }
+
+    private void showValidationError(String message) {
+        JOptionPane.showMessageDialog(this,
+                message,
+                "Validation Error",
+                JOptionPane.WARNING_MESSAGE);
+    }
+
+    private void handleCancelAction() {
+        resetForm();
+        editTagViewModel.setUsername(null);
+        viewManagerModel.setState(ManageTagsView.getViewName());
+        viewManagerModel.firePropertyChanged();
+    }
+
     private AbstractButton getSelectedButton(final ButtonGroup group) {
+        AbstractButton selected = null;
         for (final Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
             final AbstractButton button = buttons.nextElement();
             if (button.isSelected()) {
-                return button;
+                selected = button;
+                break;
             }
         }
-        return null;
+        return selected;
     }
 
     @Override
@@ -316,44 +384,56 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
         final String propertyName = event.getPropertyName();
 
         switch (propertyName) {
-            case "Success" -> {
-                JOptionPane.showMessageDialog(this,
-                        "Custom tag edited successfully!",
-                        "Success",
-                        JOptionPane.INFORMATION_MESSAGE);
-                resetForm();
-                viewManagerModel.setState(ManageTagsView.getViewName());
-                viewManagerModel.firePropertyChanged();
+            case "Success":
+                handleSuccessProperty();
+                break;
+            case "Failed":
+                handleFailedProperty();
+                break;
+            case "LoadTag":
+                handleLoadTagProperty();
+                break;
+            default:
+                // no action required
+                break;
+        }
+    }
+
+    private void handleSuccessProperty() {
+        JOptionPane.showMessageDialog(this,
+                "Custom tag edited successfully!",
+                "Success",
+                JOptionPane.INFORMATION_MESSAGE);
+        resetForm();
+        viewManagerModel.setState(ManageTagsView.getViewName());
+        viewManagerModel.firePropertyChanged();
+    }
+
+    private void handleFailedProperty() {
+        final String errorMsg = editTagViewModel.getState().getErrorMsg();
+        JOptionPane.showMessageDialog(this,
+                errorMsg,
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        confirmButton.setEnabled(true);
+    }
+
+    private void handleLoadTagProperty() {
+        oldTag = manageTagsViewModel.getState().getCurrTag();
+        if (oldTag != null) {
+            final String oldName = oldTag.getTagName();
+            if (oldName != null) {
+                tagNameTextField.setText(oldName);
             }
-            case "Failed" -> {
-                final String errorMsg = editTagViewModel.getState().getErrorMsg();
-                JOptionPane.showMessageDialog(this,
-                        errorMsg,
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
-                confirmButton.setEnabled(true);
-            }
-            case "LoadTag" -> {
-                oldTag = manageTagsViewModel.getState().getCurrTag();
-                if (oldTag != null) {
-                    final String oldName = oldTag.getTagName();
-                    if (oldName != null) {
-                        tagNameTextField.setText(oldName);
-                    }
-                    final String oldIcon = oldTag.getTagIcon();
-                    if (oldIcon != null) {
-                        for (final Enumeration<AbstractButton> buttons = iconGroup.getElements(); buttons.hasMoreElements();) {
-                            final AbstractButton btn = buttons.nextElement();
-                            if (oldIcon.equals(btn.getActionCommand())) {
-                                btn.setSelected(true);
-                                break;
-                            }
-                        }
+            final String oldIcon = oldTag.getTagIcon();
+            if (oldIcon != null) {
+                for (final Enumeration<AbstractButton> buttons = iconGroup.getElements(); buttons.hasMoreElements();) {
+                    final AbstractButton btn = buttons.nextElement();
+                    if (oldIcon.equals(btn.getActionCommand())) {
+                        btn.setSelected(true);
+                        break;
                     }
                 }
-            }
-            default -> {
-                // no action required for other properties
             }
         }
     }

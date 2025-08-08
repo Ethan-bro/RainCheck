@@ -1,26 +1,13 @@
 package use_case.deleteTask;
 
-
 import entity.TaskID;
 
 /**
  * Input Data for the DeleteTask use case.
+ *
+ * @param username the username of the user requesting the delete
+ * @param taskId the unique identifier of the task to delete
  */
-public class DeleteTaskInputData {
+public record DeleteTaskInputData(String username, TaskID taskId) {
 
-    private final String username;
-    private final TaskID taskId;
-
-    public DeleteTaskInputData(String username, TaskID taskId) {
-        this.username = username;
-        this.taskId = taskId;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public TaskID getTaskId() {
-        return taskId;
-    }
 }

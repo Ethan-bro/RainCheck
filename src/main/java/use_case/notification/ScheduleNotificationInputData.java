@@ -4,19 +4,10 @@ import entity.Reminder;
 
 /**
  * Input data for scheduling email notifications.
+ *
+ * @param taskId   the ID of the task for which the notification is scheduled
+ * @param username the username of the user receiving the notification
+ * @param reminder the reminder details associated with the notification
  */
-public class ScheduleNotificationInputData {
-    private final String taskId;
-    private final String username;
-    private final Reminder reminder;
-
-    public ScheduleNotificationInputData(String taskId, String username, Reminder reminder) {
-        this.taskId = taskId;
-        this.username = username;
-        this.reminder = reminder;
-    }
-
-    public String getTaskId() { return taskId; }
-    public String getUsername() { return username; }
-    public Reminder getReminder() { return reminder; }
+public record ScheduleNotificationInputData(String taskId, String username, Reminder reminder) {
 }

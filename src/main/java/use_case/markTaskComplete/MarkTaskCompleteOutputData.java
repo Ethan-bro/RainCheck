@@ -4,21 +4,10 @@ import entity.TaskID;
 
 /**
  * Output Data for the markTaskComplete Use Case.
+ *
+ * @param taskId the ID of the task being marked complete
+ * @param useCaseFailed true if the use case failed, false otherwise
  */
-public class MarkTaskCompleteOutputData {
-     private final TaskID taskId;
-     private final boolean useCaseFailed;
+public record MarkTaskCompleteOutputData(TaskID taskId, boolean useCaseFailed) {
 
-     public MarkTaskCompleteOutputData(TaskID taskId, boolean useCaseFailed) {
-         this.taskId = taskId;
-         this.useCaseFailed = useCaseFailed;
-     }
-
-     public TaskID getTaskId() {
-         return taskId;
-     }
-
-     public boolean isUseCaseFailed() {
-         return useCaseFailed;
-     }
 }

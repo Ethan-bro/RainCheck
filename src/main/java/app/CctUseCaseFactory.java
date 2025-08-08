@@ -11,7 +11,7 @@ import use_case.createCustomTag.CreateCustomTagInteractor;
 import use_case.createCustomTag.CreateCustomTagOutputBoundary;
 import use_case.createCustomTag.CustomTagDataAccessInterface;
 
-import view.CCTView;
+import view.CreateCustomTagView;
 
 /**
  * Factory class to create CCT use case components.
@@ -31,15 +31,15 @@ public final class CctUseCaseFactory {
      * @param customTagDataAccess the custom tag data access interface
      * @return the created CCT view
      */
-    public static CCTView create(ViewManagerModel viewManagerModel,
-                                 CreateCustomTagViewModel viewModel,
-                                 ManageTagsViewModel manageTagsViewModel,
-                                 CustomTagDataAccessInterface customTagDataAccess) {
+    public static CreateCustomTagView create(ViewManagerModel viewManagerModel,
+                                             CreateCustomTagViewModel viewModel,
+                                             ManageTagsViewModel manageTagsViewModel,
+                                             CustomTagDataAccessInterface customTagDataAccess) {
 
         final CreateCustomTagController controller = createCctUseCase(viewManagerModel, viewModel,
                 manageTagsViewModel, customTagDataAccess);
 
-        return new CCTView(viewManagerModel, viewModel, controller);
+        return new CreateCustomTagView(viewManagerModel, viewModel, controller);
     }
 
     /**

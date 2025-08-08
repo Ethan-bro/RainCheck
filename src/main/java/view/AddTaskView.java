@@ -42,8 +42,8 @@ public class AddTaskView extends AbstractTaskFormView implements ActionListener,
     /**
      * Creates an AddTaskView instance.
      *
-     * @param controller       the Add Task controller
-     * @param viewModel        the Add Task view model
+     * @param controller        the Add Task controller
+     * @param viewModel         the Add Task view model
      * @param loggedInViewModel the logged-in view model
      * @param viewManagerModel  the view manager model
      */
@@ -59,8 +59,8 @@ public class AddTaskView extends AbstractTaskFormView implements ActionListener,
         this.viewManagerModel = viewManagerModel;
         this.mainViewKey = LoggedInView.getViewName();
 
-        saveButton.addActionListener(this);
-        cancelButton.addActionListener(this);
+        getSaveButton().addActionListener(this);
+        getCancelButton().addActionListener(this);
 
         viewModel.addPropertyChangeListener(this);
     }
@@ -71,18 +71,18 @@ public class AddTaskView extends AbstractTaskFormView implements ActionListener,
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == saveButton) {
-            final String name = nameField.getText().trim();
-            final LocalDateTime start = toLocalDateTime((Date) startSpinner.getValue());
-            final LocalDateTime end = toLocalDateTime((Date) endSpinner.getValue());
-            final Priority priority = (Priority) priorityCombo.getSelectedItem();
-            final CustomTag customTag = (CustomTag) customTagCombo.getSelectedItem();
-            final Reminder reminder = (Reminder) reminderCombo.getSelectedItem();
+        if (e.getSource() == getSaveButton()) {
+            final String name = getNameField().getText().trim();
+            final LocalDateTime start = toLocalDateTime((Date) getStartSpinner().getValue());
+            final LocalDateTime end = toLocalDateTime((Date) getEndSpinner().getValue());
+            final Priority priority = (Priority) getPriorityCombo().getSelectedItem();
+            final CustomTag customTag = (CustomTag) getCustomTagCombo().getSelectedItem();
+            final Reminder reminder = (Reminder) getReminderCombo().getSelectedItem();
 
             controller.execute(name, start, end, priority, customTag, reminder);
 
         }
-        else if (e.getSource() == cancelButton) {
+        else if (e.getSource() == getCancelButton()) {
             goBackToCalendarView();
         }
     }
@@ -95,8 +95,8 @@ public class AddTaskView extends AbstractTaskFormView implements ActionListener,
         switch (propertyName) {
             case "errorMessage" -> {
                 final String msg = state.getErrorMessage();
-                errorLabel.setText(msg);
-                errorLabel.setVisible(msg != null && !msg.isBlank());
+                getErrorLabel().setText(msg);
+                getErrorLabel().setVisible(msg != null && !msg.isBlank());
             }
             case "taskAdded" -> {
                 if (state.isTaskAdded()) {
@@ -119,8 +119,8 @@ public class AddTaskView extends AbstractTaskFormView implements ActionListener,
             case "refreshTagOptions" -> {
                 final Object newValue = evt.getNewValue();
                 if (newValue instanceof List<?> updatedTagsRaw) {
-                    customTagCombo.setModel(new DefaultComboBoxModel<>(updatedTagsRaw.toArray()));
-                    customTagCombo.setEnabled(!updatedTagsRaw.isEmpty());
+                    getCustomTagCombo().setModel(new DefaultComboBoxModel<>(updatedTagsRaw.toArray()));
+                    getCustomTagCombo().setEnabled(!updatedTagsRaw.isEmpty());
                 }
             }
             default -> {
@@ -130,15 +130,15 @@ public class AddTaskView extends AbstractTaskFormView implements ActionListener,
     }
 
     private void resetForm() {
-        nameField.setText("");
-        startSpinner.setValue(new Date());
-        endSpinner.setValue(new Date());
-        priorityCombo.setSelectedIndex(0);
-        if (customTagCombo.getItemCount() > 0) {
-            customTagCombo.setSelectedIndex(0);
+        getNameField().setText("");
+        getStartSpinner().setValue(new Date());
+        getEndSpinner().setValue(new Date());
+        getPriorityCombo().setSelectedIndex(0);
+        if (getCustomTagCombo().getItemCount() > 0) {
+            getCustomTagCombo().setSelectedIndex(0);
         }
-        reminderCombo.setSelectedIndex(0);
-        errorLabel.setVisible(false);
+        getReminderCombo().setSelectedIndex(0);
+        getErrorLabel().setVisible(false);
     }
 
     private void goBackToCalendarView() {
