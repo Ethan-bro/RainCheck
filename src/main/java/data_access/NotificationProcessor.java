@@ -1,7 +1,6 @@
 package data_access;
 
 import entity.Task;
-import entity.User;
 import entity.ScheduledNotification;
 import entity.TaskID;
 import use_case.notification.NotificationDataAccessInterface;

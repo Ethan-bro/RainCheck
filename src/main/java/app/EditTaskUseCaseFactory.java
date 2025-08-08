@@ -1,6 +1,5 @@
 package app;
 
-import data_access.SupabaseTagDataAccessObject;
 import data_access.SupabaseTaskDataAccessObject;
 import data_access.WeatherApiService;
 import interface_adapter.ViewManagerModel;

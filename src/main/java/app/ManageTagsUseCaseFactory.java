@@ -2,7 +2,6 @@ package app;
 
 import interface_adapter.EditTag.EditTagViewModel;
 import interface_adapter.ManageTags.ManageTagsViewModel;
-import interface_adapter.EditTag.EditTagController;
 import interface_adapter.ManageTags.DeleteTagController;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.CreateTag.CCTViewModel;
