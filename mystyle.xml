@@ -596,7 +596,7 @@
         <module name="IllegalImport"/>
 
         <module name="ImportOrder">
-            <property name="groups" value="app,data_access,entity,interface_adapter,use_case,constants,view,/^java\./,javax,org"/>
+            <property name="groups" value="app,data_access,entity,interface_adapter,tools,use_case,constants,view,/^java\./,javax,org"/>
             <property name="ordered" value="true"/>
             <property name="separated" value="true"/>
             <property name="option" value="top"/>
@@ -729,7 +729,7 @@
         <module name="OuterTypeFilename"/>
         <module name="TrailingComment"/>
         <module name="UncommentedMain">
-            <property name="excludedClasses" value="\.(Main.*|JavadocPropertiesGenerator)$"/>
+            <property name="excludedClasses" value=".*(Main.*|JavadocPropertiesGenerator|EmailConfigTester|SetupEmailConfig)$"/>
         </module>
         <module name="UpperEll"/>
 
