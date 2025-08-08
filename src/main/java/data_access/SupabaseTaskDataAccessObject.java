@@ -100,7 +100,6 @@ public class SupabaseTaskDataAccessObject implements
                     for (final JsonElement element : taskArray) {
                         result.add(jsonToTask(element.getAsJsonObject()));
                     }
-                    logLoadedTasks(username, result);
                 }
             }
         }
@@ -135,13 +134,6 @@ public class SupabaseTaskDataAccessObject implements
         }
 
         return result;
-    }
-
-    private void logLoadedTasks(String username, List<Task> tasks) {
-        System.out.println("Tasks loaded for user " + username + ":");
-        for (final Task task : tasks) {
-            System.out.println(" -> " + task.getTaskInfo().getId());
-        }
     }
 
     private void patchTasks(String username, List<Task> tasks) {

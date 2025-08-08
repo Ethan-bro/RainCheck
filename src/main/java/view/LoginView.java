@@ -263,8 +263,9 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
             final LoginState state = (LoginState) evt.getNewValue();
 
             usernameInputField.setText(state.getUsername());
-            passwordInputField.setText(Objects.requireNonNull(state.getPassword()));
-            usernameErrorLabel.setText(Objects.requireNonNull(state.getLoginError()));
+            System.out.println("User wants to log out. username: " + state.getUsername());
+            passwordInputField.setText(state.getPassword());
+            usernameErrorLabel.setText(state.getLoginError());
         }
     }
 
