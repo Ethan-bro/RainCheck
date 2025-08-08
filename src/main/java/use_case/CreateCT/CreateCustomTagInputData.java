@@ -1,4 +1,4 @@
-package use_case.createCustomTag;
+package use_case.CreateCT;
 
 /**
  * The input data required for creating a custom tag.
