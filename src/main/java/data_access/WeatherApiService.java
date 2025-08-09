@@ -16,7 +16,6 @@ import java.util.Map;
 
 import javax.swing.ImageIcon;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -58,10 +57,9 @@ public class WeatherApiService implements DailyWeatherDataAccessInterface, Hourl
 
     private final String apiKey;
     private final OkHttpClient client = new OkHttpClient();
-    private final Gson gson = new Gson();
     private final Map<String, JsonObject> weeklyWeatherCache = new HashMap<>();
 
-    private final boolean useFakeData = true;
+    private final boolean useFakeData = false;
 
     /**
      * Constructs the WeatherApiService by reading the API key from config file.
