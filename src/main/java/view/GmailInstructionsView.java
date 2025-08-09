@@ -93,7 +93,7 @@ public class GmailInstructionsView extends JPanel {
                   "database_url": "https://jbjoxiauljridpmnunuh.supabase.co",
                   "database_anon_key": "eyJhbGciOi...7lMfBw",
                   "weather_api_key": "your_weather_api_key",
-                  "email_username": "your.email@gmail.com",
+                  "email_username": "your_email@gmail.com",
                   "email_password": "your-16-character-app-password"
                 }
                 </pre>
