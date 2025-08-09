@@ -59,7 +59,7 @@ public class WeatherApiService implements DailyWeatherDataAccessInterface, Hourl
     private final OkHttpClient client = new OkHttpClient();
     private final Map<String, JsonObject> weeklyWeatherCache = new HashMap<>();
 
-    private final boolean useFakeData = false;
+    private final boolean useFakeData = true;
 
     /**
      * Constructs the WeatherApiService by reading the API key from config file.
@@ -287,7 +287,9 @@ public class WeatherApiService implements DailyWeatherDataAccessInterface, Hourl
 
             if (response.body() != null) {
                 final String bodyString = response.body().string();
+                System.out.println("Full API response JSON: " + bodyString);
                 final JsonObject json = JsonParser.parseString(bodyString).getAsJsonObject();
+                System.out.println("Parsed JSON object: " + json);
                 weeklyWeatherCache.put(key, json);
                 result = json;
             }

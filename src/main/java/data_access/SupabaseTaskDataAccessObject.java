@@ -52,7 +52,7 @@ public class SupabaseTaskDataAccessObject implements
     private static final String WEATHER_DESCRIPTION = "weatherDescription";
     private static final String WEATHER_ICON_NAME = "weatherIconName";
     private static final String TEMPERATURE = "temperature";
-    private static final String UV_INDEX = "uvIndex";
+    private static final String UV_INDEX = "uvindex";
 
     private final String baseUrl;
     private final String apiKey;
@@ -129,6 +129,7 @@ public class SupabaseTaskDataAccessObject implements
         try (Response response = client.newCall(request).execute()) {
             if (response.isSuccessful()) {
                 final String body = Objects.requireNonNull(response.body()).string();
+                System.out.println("Raw JSON response from API:\n" + body);
                 result = JsonParser.parseString(body).getAsJsonArray();
             }
         }
@@ -291,6 +292,7 @@ public class SupabaseTaskDataAccessObject implements
         json.addProperty(WEATHER_DESCRIPTION, info.getWeatherDescription());
         json.addProperty(WEATHER_ICON_NAME, info.getWeatherIconName());
         json.addProperty(TEMPERATURE, info.getTemperature());
+        System.out.println("Uvindex: " + info.getUvIndex());
         json.addProperty(UV_INDEX, info.getUvIndex());
 
         return json;
@@ -362,14 +364,32 @@ public class SupabaseTaskDataAccessObject implements
         return new Task(info);
     }
 
+    /**
+     * Retrieves the value of the specified member from the given JsonObject as a String.
+     * If the member exists and is not null, this method returns its string representation.
+     * It supports JSON primitives of type String or Number, converting numbers to their
+     * string form. If the member does not exist or is null, this method returns null.
+     *
+     * @param json       the JsonObject from which to retrieve the value
+     * @param memberName the name of the member to retrieve
+     * @return the String representation of the member's value, or null if the member
+     *         does not exist or is null
+     */
     private String getString(JsonObject json, String memberName) {
-        String result = null;
+        String returnString = null;
 
         if (json.has(memberName) && !json.get(memberName).isJsonNull()) {
-            result = json.get(memberName).getAsString();
+            final JsonElement elem = json.get(memberName);
+            if (elem.isJsonPrimitive()) {
+                if (elem.getAsJsonPrimitive().isString()) {
+                    returnString = elem.getAsString();
+                }
+                else if (elem.getAsJsonPrimitive().isNumber()) {
+                    returnString = elem.getAsNumber().toString();
+                }
+            }
         }
-
-        return result;
+        return returnString;
     }
 
     private String getNullableString(JsonObject json, String memberName) {
