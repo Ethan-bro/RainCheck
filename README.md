@@ -2,7 +2,7 @@
 <p align="center"><sub><i>A Desktop Task Planner with Weather Integration</i></sub></p>
 
 > ⚠️ Note: All screenshots in this README were taken during development using placeholder (fake) weather data. 
-> The demo videos (can be found under [Usage](#usage)) showcase the app fetching and displaying real weather data. 
+> The demo video (can be found under [Usage](#usage)) showcases the app fetching and displaying real weather data. 
 > While some UI elements may differ slightly from the final version, the core features and layout remain the same.
 
 ## Table of Contents
@@ -267,8 +267,8 @@ Refer to the tutorials above for detailed guidance.
 
 ## Usage
 
-> For the demos below (provided as YouTube video links), weather data is simulated to showcase the UI and weather-aware features.  
-> You can toggle between fake and real data by modifying the `useFakeData` variable in:  
+> For the demo below, real weather data is fetched from the API to showcase the UI and weather-aware features. 
+> You can toggle between fake and real data by modifying the `useFakeData` variable in:
 > `src/main/java/data_access/WeatherApiService.java`.
 
 Modify the `useFakeData` variable as follows:
@@ -279,13 +279,13 @@ private static final boolean useFakeData = true; // or false
 
 This allows you to easily switch between mock data (for testing/dev) and live weather API responses.
 
-[//]: # (TODO: Add demo vids with real weather fetching)
+Click on the image below to play the video on YouTube!
 
-[//]: # (**DEMO VIDEOS** 🎬  )
-
-[//]: # (🔴 [RainCheck App Demo – PART 1]&#40;https://www.youtube.com/watch?v=zJ1nZ8WgueA&#41;  )
-
-[//]: # (🔴 [RainCheck App Demo – PART 2]&#40;https://www.youtube.com/watch?v=uEL7TlSQXfw&#41;)
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=w0pAS-CPcy0&ab_channel=RainCheck" target="_blank">
+    <img src="images/raincheckDemoYtThumbnail.png" width="50%">
+  </a>
+</p>
 
 ## License
 
