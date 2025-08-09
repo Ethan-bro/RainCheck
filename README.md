@@ -1,7 +1,9 @@
 # <p align="center"><b>RainCheck</b></p>
 <p align="center"><sub><i>A Desktop Task Planner with Weather Integration</i></sub></p>
 
-> ⚠️ **Note:** All screenshots were taken during development. Some UI elements may differ slightly from the final version, but the core features and layout remain the same.
+> ⚠️ Note: All screenshots in this README were taken during development using placeholder (fake) weather data. 
+> The demo videos (can be found under [Usage](#usage)) showcase the app fetching and displaying real weather data. 
+> While some UI elements may differ slightly from the final version, the core features and layout remain the same.
 
 ## Table of Contents
 
@@ -31,7 +33,7 @@ RainCheck is useful for anyone who wants to manage time more effectively while s
 
 - **Ethan** – *User Authentication & Account Management*
 - **Brad** – *Task Creation, Reminder Class & Priority Management*
-- **Sean** – *Custom Tag System (`tagName`, `tagEmoji`)*
+- **Sean** – *Custom Tag System, Tag CRUD (create, read, update, delete)*
 - **Clara** – *Task Editing, Deletion, Completion UI*
 - **Kian** – *Reminder Logic, Notification Feature Design*
 - **Team** – *Weekly Weather View, Weather-Integrated Calendar, Core Architecture, UI Enhancement*
@@ -57,11 +59,7 @@ Create, edit, and delete tasks with:
 - **Weather info at task time (e.g., ☀️ 23°C)**
 - **Optional reminders and completion status**
 
-<p align="center">
-  <a href="https://www.youtube.com/watch?v=cbo1l0AgY7o" target="_blank" rel="noopener noreferrer">
-    Watch Task Management Demo on YouTube
-  </a>
-</p>
+[//]: # (TODO: Task management on yt)
 
 ##### 3. Reminder Notifications
 <p align="center">
@@ -75,11 +73,7 @@ Create, edit, and delete tasks with:
 
 ##### 4. Custom Tags
 Create/Edit/Delete tasks using dropdown tag names and emojis.
-<p align="center">
-  <a href="https://www.youtube.com/watch?v=GdjuhhC6-yw" target="_blank" rel="noopener noreferrer">
-    Watch Custom Tags Demo on YouTube
-  </a>
-</p>
+[![Watch the Tag CRUD Demo](images/TagCRUDytVidThumbnail.png)](https://www.youtube.com/watch?v=DM75gLs1ITU&ab_channel=RainCheck)
 
 ##### 5. Secure User Accounts
 Users sign up and log in to access their saved tasks and personalized forecasts.
@@ -273,9 +267,13 @@ private static final boolean useFakeData = true; // or false
 
 This allows you to easily switch between mock data (for testing/dev) and live weather API responses.
 
-**DEMO VIDEOS** 🎬  
-🔴 [RainCheck App Demo – PART 1](https://www.youtube.com/watch?v=zJ1nZ8WgueA)  
-🔴 [RainCheck App Demo – PART 2](https://www.youtube.com/watch?v=uEL7TlSQXfw)
+[//]: # (TODO: Add demo vids with real weather fetching)
+
+[//]: # (**DEMO VIDEOS** 🎬  )
+
+[//]: # (🔴 [RainCheck App Demo – PART 1]&#40;https://www.youtube.com/watch?v=zJ1nZ8WgueA&#41;  )
+
+[//]: # (🔴 [RainCheck App Demo – PART 2]&#40;https://www.youtube.com/watch?v=uEL7TlSQXfw&#41;)
 
 ## License
 
