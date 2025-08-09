@@ -1,14 +1,17 @@
 package use_case.createCustomTag;
 
-import data_access.InMemoryTagDataAccessObject;
-import entity.CustomTag;
-import org.junit.jupiter.api.Test;
-
-import java.util.Map;
-
 import static use_case.createCustomTag.CustomTagIcons.BOOKS;
 import static use_case.createCustomTag.CustomTagIcons.RING;
 import static org.junit.jupiter.api.Assertions.*;
+
+import data_access.InMemoryTagDataAccessObject;
+
+import entity.CustomTag;
+
+import java.util.Map;
+
+import interface_adapter.createTag.CreateCustomTagController;
+import org.junit.jupiter.api.Test;
 
 class CCTInteractorTest {
 
@@ -35,9 +38,8 @@ class CCTInteractorTest {
         final String tagName = tag.getTagName();
         final String tagIcon = tag.getTagIcon();
 
-        final CCTInputBoundary interactor = new CCTInteractor(tagDao, presenter);
-        final interface_adapter.CreateTag.CctController controller =
-                new interface_adapter.CreateTag.CctController(interactor);
+        final CreateCustomTagInputBoundary interactor = new CreateCustomTagInteractor(tagDao, presenter);
+        final CreateCustomTagController controller = new CreateCustomTagController(interactor);
 
         controller.execute(tag, username);
 
@@ -49,18 +51,18 @@ class CCTInteractorTest {
     }
 
     @Test
-    public void testNameTaken() {
+    void testNameTaken() {
         final CustomTagDataAccessInterface tagDao = new InMemoryTagDataAccessObject();
         final String[] errorMsg = new String[1];
 
-        final CCTOutputBoundary presenter = new CCTOutputBoundary() {
+        final CreateCustomTagOutputBoundary presenter = new CreateCustomTagOutputBoundary() {
             @Override
-            public void prepareFailView(CCTOutputData failedOutputData) {
+            public void prepareFailView(CreateCustomTagOutputData failedOutputData) {
                 errorMsg[0] = failedOutputData.getErrorMessage();
             }
 
             @Override
-            public void prepareSuccessView(CCTOutputData createCustomTagOutputData) {
+            public void prepareSuccessView(CreateCustomTagOutputData createCustomTagOutputData) {
                 errorMsg[0] = createCustomTagOutputData.getErrorMessage();
             }
         };
@@ -69,8 +71,7 @@ class CCTInteractorTest {
         final CustomTag tagB = new CustomTag("school", RING);
 
         final CreateCustomTagInputBoundary interactor = new CreateCustomTagInteractor(tagDao, presenter);
-        final interface_adapter.CreateTag.CctController controller =
-                new interface_adapter.CreateTag.CctController(interactor);
+        final CreateCustomTagController controller = new CreateCustomTagController(interactor);
 
         controller.execute(tagA, username);
         controller.execute(tagB, username);

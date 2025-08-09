@@ -36,8 +36,10 @@ public class EditTagInteractor implements EditTagInputBoundary {
 
         final Map<String, String> existingTags = tagDao.getCustomTags(username);
 
-        final boolean isNameTaken = existingTags.containsKey(newName);
-        final boolean isIconTaken = existingTags.containsValue(newIcon);
+        // Ignore the old tag when checking for duplicates so that editing a tag
+        // to keep the same icon or same name does not trigger a "taken" error
+        final boolean isNameTaken = existingTags.containsKey(newName) && !oldTag.getTagName().equals(newName);
+        final boolean isIconTaken = existingTags.containsValue(newIcon) && !oldTag.getTagIcon().equals(newIcon);
 
         if (isNameTaken) {
             final EditTagOutputData failedOutput =

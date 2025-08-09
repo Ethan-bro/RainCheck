@@ -16,12 +16,12 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class EditTagInteractorTest {
+class EditTagInteractorTest {
 
     private final String username = "Barbara";
 
     @Test
-    public void testSuccessfulEdit() {
+    void testSuccessfulEdit() {
         final CustomTagDataAccessInterface tagDao = new InMemoryTagDataAccessObject();
         final ManageTagsViewModel manageTagsViewModel = new ManageTagsViewModel(tagDao, username);
         final String[] errorMsg = new String[1];
@@ -56,7 +56,7 @@ public class EditTagInteractorTest {
     }
 
     @Test
-    public void testSameNameDiffIcon() {
+    void testSameNameDiffIcon() {
         final CustomTagDataAccessInterface tagDao = new InMemoryTagDataAccessObject();
         final ManageTagsViewModel manageTagsViewModel = new ManageTagsViewModel(tagDao, username);
         final String[] errorMsg = new String[1];
@@ -88,7 +88,7 @@ public class EditTagInteractorTest {
     }
 
     @Test
-    public void testSameIconDiffName() {
+    void testSameIconDiffName() {
         final CustomTagDataAccessInterface tagDao = new InMemoryTagDataAccessObject();
         final ManageTagsViewModel manageTagsViewModel = new ManageTagsViewModel(tagDao, username);
         final String[] errorMsg = new String[1];
@@ -122,7 +122,7 @@ public class EditTagInteractorTest {
     }
 
     @Test
-    public void testEditTakenName() {
+    void testEditTakenName() {
         final CustomTagDataAccessInterface tagDao = new InMemoryTagDataAccessObject();
         final ManageTagsViewModel manageTagsViewModel = new ManageTagsViewModel(tagDao, username);
         final String[] errorMsg = new String[1];
@@ -156,7 +156,7 @@ public class EditTagInteractorTest {
     }
 
     @Test
-    public void testEditTakenIcon() {
+    void testEditTakenIcon() {
         final CustomTagDataAccessInterface tagDao = new InMemoryTagDataAccessObject();
         final ManageTagsViewModel manageTagsViewModel = new ManageTagsViewModel(tagDao, username);
         final String[] errorMsg = new String[1];
