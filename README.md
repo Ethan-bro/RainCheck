@@ -59,7 +59,13 @@ Create, edit, and delete tasks with:
 - **Weather info at task time (e.g., ☀️ 23°C)**
 - **Optional reminders and completion status**
 
-[//]: # (TODO: Task management on yt)
+Click on the image below to play the video on YouTube!
+
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=v_BPRbQwGrI&ab_channel=RainCheck" target="_blank">
+    <img src="images/TaskCRUDytVidThumbnail.png" width="50%">
+  </a>
+</p>
 
 ##### 3. Reminder Notifications
 <p align="center">
@@ -73,7 +79,13 @@ Create, edit, and delete tasks with:
 
 ##### 4. Custom Tags
 Create/Edit/Delete tasks using dropdown tag names and emojis.
-[![Watch the Tag CRUD Demo](images/TagCRUDytVidThumbnail.png)](https://www.youtube.com/watch?v=DM75gLs1ITU&ab_channel=RainCheck)
+Click on the image below to play the video on YouTube!
+
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=DM75gLs1ITU&ab_channel=RainCheck" target="_blank">
+    <img src="images/TagCRUDytVidThumbnail.png" width="50%">
+  </a>
+</p>
 
 ##### 5. Secure User Accounts
 Users sign up and log in to access their saved tasks and personalized forecasts.
