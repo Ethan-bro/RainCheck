@@ -4,24 +4,33 @@ import entity.Task;
 import entity.TaskID;
 
 /**
- * DAO for the markTaskComplete Use Case.
+ * Data Access Object interface for the MarkTaskComplete use case.
+ * Defines methods to retrieve, update, and mark tasks as complete for a given user.
  */
 public interface MarkTaskCompleteDataAccessInterface {
 
     /**
-     * Retrieves the task with the given ID from the current user's task list.
+     * Retrieves the task with the specified ID for the given user.
+     *
      * @param username the username of the user whose tasks are being accessed
      * @param taskId the unique identifier of the task to retrieve
-     * @return the task as a JsonObject if found, otherwise null
+     * @return the Task object if found; otherwise, null
      */
     Task getTaskById(String username, TaskID taskId);
 
     /**
-     * Retrieves the task with the given ID from the current user's task list.
+     * Updates the given task in the user's task list.
+     *
      * @param username the username of the user whose task list is being updated
-     * @param task the modified task
+     * @param task the modified Task object to update
      */
     void updateTask(String username, Task task);
 
+    /**
+     * Marks the specified task as complete for the given user.
+     *
+     * @param username the username of the user
+     * @param taskId the unique identifier of the task to mark complete
+     */
     void markAsComplete(String username, TaskID taskId);
 }

@@ -6,14 +6,14 @@ import java.util.List;
 
 public class AddTaskState {
     private String errorMessage = "";
-    private boolean success = false;
+    private boolean success;
     private List<CustomTag> tagOptions;
 
     public AddTaskState() {
-        // empty constructor
+        success = false;
     }
 
-    public String getErrorMessage(){
+    public String getErrorMessage() {
         return errorMessage;
     }
 

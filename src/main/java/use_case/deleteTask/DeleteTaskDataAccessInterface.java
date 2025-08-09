@@ -6,17 +6,25 @@ import entity.TaskID;
 import java.io.IOException;
 
 /**
- * DAO for the DeleteTask Use Case.
+ * Data Access Object interface for the DeleteTask use case.
  */
 public interface DeleteTaskDataAccessInterface {
 
     /**
-     * Retrieves the task with the given ID from the current user's task list.
+     * Retrieves the task with the given ID from the specified user's task list.
+     *
      * @param username the username of the user whose tasks are being accessed
      * @param taskId the unique identifier of the task to retrieve
-     * @return the task as a JsonObject if found, otherwise null
+     * @return the Task object if found, otherwise null
+     * @throws IOException if an I/O error occurs during retrieval
      */
     Task getTaskById(String username, TaskID taskId) throws IOException;
 
+    /**
+     * Deletes the task with the specified ID from the user's task list.
+     *
+     * @param username the username of the user whose task is to be deleted
+     * @param taskId the unique identifier of the task to delete
+     */
     void deleteTask(String username, TaskID taskId);
 }

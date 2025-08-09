@@ -1,19 +1,30 @@
 package interface_adapter.editTask;
 
 import entity.CustomTag;
+
 import interface_adapter.ViewModel;
 import interface_adapter.events.TagChangeEventNotifier;
-import use_case.CreateCT.CustomTagDataAccessInterface;
+
+import use_case.createCustomTag.CustomTagDataAccessInterface;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * ViewModel for editing tasks, manages state and tag options.
+ */
 public class EditTaskViewModel extends ViewModel<EditTaskState> {
 
     private final CustomTagDataAccessInterface tagDao;
     private String username;
 
+    /**
+     * Constructs an EditTaskViewModel with given tag DAO and username.
+     *
+     * @param tagDao   the data access interface for custom tags
+     * @param username the current username
+     */
     public EditTaskViewModel(CustomTagDataAccessInterface tagDao, String username) {
         super("Edit Task");
         this.tagDao = tagDao;
@@ -22,7 +33,7 @@ public class EditTaskViewModel extends ViewModel<EditTaskState> {
 
         // Subscribe to tag change events
         TagChangeEventNotifier.subscribe(() -> {
-            List<CustomTag> updatedTags = getTagOptions();
+            final List<CustomTag> updatedTags = getTagOptions();
             firePropertyChange("refreshTagOptions", null, updatedTags);
         });
     }
@@ -33,18 +44,26 @@ public class EditTaskViewModel extends ViewModel<EditTaskState> {
         firePropertyChanged("state");
     }
 
+    /**
+     * Sets the username and refreshes tag options immediately.
+     *
+     * @param username the username to set
+     */
     public void setUsername(String username) {
         this.username = username;
-
-        // Optionally trigger refresh immediately when username is set
-        List<CustomTag> updatedTags = getTagOptions();
+        final List<CustomTag> updatedTags = getTagOptions();
         firePropertyChange("refreshTagOptions", null, updatedTags);
     }
 
+    /**
+     * Returns the list of available custom tags for the current user.
+     *
+     * @return list of CustomTag objects
+     */
     public List<CustomTag> getTagOptions() {
-        Map<String, String> raw = tagDao.getCustomTags(username);
+        final Map<String, String> raw = tagDao.getCustomTags(username);
         return raw.entrySet().stream()
-                .map(e -> new CustomTag(e.getKey(), e.getValue()))
+                .map(entry -> new CustomTag(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
     }
 }

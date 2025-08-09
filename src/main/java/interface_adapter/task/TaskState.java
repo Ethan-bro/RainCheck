@@ -1,6 +1,7 @@
 package interface_adapter.task;
 
 import entity.CustomTag;
+
 import java.time.LocalDateTime;
 
 /**
@@ -32,6 +33,7 @@ public class TaskState {
     public String getTitle() {
         return title;
     }
+
     public void setTitle(String title) {
         this.title = title;
     }
@@ -39,6 +41,7 @@ public class TaskState {
     public LocalDateTime getStart() {
         return start;
     }
+
     public void setStart(LocalDateTime start) {
         this.start = start;
     }
@@ -46,6 +49,7 @@ public class TaskState {
     public LocalDateTime getEnd() {
         return end;
     }
+
     public void setEnd(LocalDateTime end) {
         this.end = end;
     }
@@ -53,6 +57,7 @@ public class TaskState {
     public String getPriority() {
         return priority;
     }
+
     public void setPriority(String priority) {
         this.priority = priority;
     }
@@ -60,6 +65,7 @@ public class TaskState {
     public String getTagString() {
         return tagString;
     }
+
     public void setTagString(String tagString) {
         this.tagString = tagString;
     }
@@ -67,6 +73,7 @@ public class TaskState {
     public Integer getReminderMinutes() {
         return reminderMinutes;
     }
+
     public void setReminderMinutes(Integer reminderMinutes) {
         this.reminderMinutes = reminderMinutes;
     }
@@ -74,6 +81,7 @@ public class TaskState {
     public CustomTag getTag() {
         return tag;
     }
+
     public void setTag(CustomTag tag) {
         this.tag = tag;
     }
@@ -81,6 +89,7 @@ public class TaskState {
     public boolean isCompleted() {
         return completed;
     }
+
     public void setCompleted(boolean completed) {
         this.completed = completed;
     }
@@ -88,6 +97,7 @@ public class TaskState {
     public String getWeatherDescription() {
         return weatherDescription;
     }
+
     public void setWeatherDescription(String weatherDescription) {
         this.weatherDescription = weatherDescription;
     }
@@ -95,6 +105,7 @@ public class TaskState {
     public String getWeatherEmoji() {
         return weatherEmoji;
     }
+
     public void setWeatherEmoji(String weatherEmoji) {
         this.weatherEmoji = weatherEmoji;
     }
@@ -102,6 +113,7 @@ public class TaskState {
     public String getTemperature() {
         return temperature;
     }
+
     public void setTemperature(String temperature) {
         this.temperature = temperature;
     }

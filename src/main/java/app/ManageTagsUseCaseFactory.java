@@ -1,36 +1,48 @@
 package app;
 
-import interface_adapter.DeleteCT.DeleteCTPresenter;
-import interface_adapter.EditTag.EditTagViewModel;
-import interface_adapter.ManageTags.ManageTagsViewModel;
-import interface_adapter.DeleteCT.DeleteTagController;
 import interface_adapter.ViewManagerModel;
-import interface_adapter.CreateTag.CCTViewModel;
-import use_case.CreateCT.CustomTagDataAccessInterface;
-import use_case.DeleteCT.DeleteCTInputBoundary;
-import use_case.DeleteCT.DeleteCTInteractor;
+import interface_adapter.createTag.CreateCustomTagViewModel;
+import interface_adapter.editTag.EditTagViewModel;
+import interface_adapter.manageTags.DeleteTagController;
+import interface_adapter.manageTags.ManageTagsViewModel;
+
+import use_case.createCustomTag.CustomTagDataAccessInterface;
+
 import view.ManageTagsView;
 
-public class ManageTagsUseCaseFactory {
+/**
+ * Factory class for creating ManageTagsView.
+ */
+public final class ManageTagsUseCaseFactory {
 
-    private ManageTagsUseCaseFactory() {}
+    /** Prevent instantiation. */
+    private ManageTagsUseCaseFactory() {
+        // intentionally empty
+    }
 
+    /**
+     * Creates a ManageTagsView instance with dependencies.
+     *
+     * @param viewManagerModel the ViewManagerModel to inject
+     * @param viewModel the ManageTagsViewModel to inject
+     * @param CreateCustomTagViewModel the CreateCustomTagViewModel to inject
+     * @param editTagViewModel the EditTagViewModel to inject
+     * @param tagDao the CustomTagDataAccessInterface to inject
+     * @return a ManageTagsView instance
+     */
     public static ManageTagsView create(
-            ViewManagerModel viewManagerModel,
-            ManageTagsViewModel viewModel,
-            CCTViewModel cctViewModel,
-            EditTagViewModel editTagViewModel,
-            CustomTagDataAccessInterface tagDao
+            final ViewManagerModel viewManagerModel,
+            final ManageTagsViewModel viewModel,
+            final CreateCustomTagViewModel CreateCustomTagViewModel,
+            final EditTagViewModel editTagViewModel,
+            final CustomTagDataAccessInterface tagDao
     ) {
-
-        DeleteCTPresenter deleteCTPresenter = new DeleteCTPresenter(viewModel);
-        DeleteCTInputBoundary deleteCTInteractor = new DeleteCTInteractor(deleteCTPresenter, tagDao);
-        DeleteTagController deleteTagController = new DeleteTagController(tagDao, viewModel, deleteCTInteractor);
+        final DeleteTagController deleteTagController = new DeleteTagController(tagDao, viewModel);
 
         return new ManageTagsView(
                 viewManagerModel,
                 viewModel,
-                cctViewModel,
+                CreateCustomTagViewModel,
                 editTagViewModel,
                 deleteTagController
         );

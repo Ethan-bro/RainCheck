@@ -1,7 +1,12 @@
 package use_case.notification;
 
-import entity.*;
+import entity.EmailNotificationConfig;
+import entity.ScheduledNotification;
+import entity.Task;
+import entity.TaskID;
+
 import use_case.editTask.EditTaskDataAccessInterface;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -9,65 +14,79 @@ import java.util.UUID;
  * Interactor for scheduling email notifications.
  */
 public class ScheduleNotificationInteractor {
+
     private final NotificationDataAccessInterface notificationDataAccess;
     private final EditTaskDataAccessInterface taskDataAccess;
     private final ScheduleNotificationOutputBoundary outputBoundary;
 
-    public ScheduleNotificationInteractor(NotificationDataAccessInterface notificationDataAccess,
-                                          EditTaskDataAccessInterface taskDataAccess,
-                                          ScheduleNotificationOutputBoundary outputBoundary) {
+    /**
+     * Constructs a ScheduleNotificationInteractor.
+     *
+     * @param notificationDataAccess The data access interface for notification-related data.
+     * @param taskDataAccess The data access interface for task-related data.
+     * @param outputBoundary The output boundary to present scheduling results.
+     */
+    public ScheduleNotificationInteractor(
+            final NotificationDataAccessInterface notificationDataAccess,
+            final EditTaskDataAccessInterface taskDataAccess,
+            final ScheduleNotificationOutputBoundary outputBoundary
+    ) {
         this.notificationDataAccess = notificationDataAccess;
         this.taskDataAccess = taskDataAccess;
         this.outputBoundary = outputBoundary;
     }
 
-    public void scheduleNotification(ScheduleNotificationInputData inputData) {
-        try {
-            String username = inputData.getUsername();
+    /**
+     * Schedules an email notification for a given task and reminder.
+     *
+     * @param inputData Input data containing task ID, username, and reminder details.
+     */
+    public void scheduleNotification(final ScheduleNotificationInputData inputData) {
+        final String username = inputData.username();
+        final ScheduleNotificationOutputData[] outputData = new ScheduleNotificationOutputData[1];
 
-            // Get user's email configuration
-            EmailNotificationConfig emailConfig = notificationDataAccess.getEmailConfig(username);
+        try {
+            final EmailNotificationConfig emailConfig = notificationDataAccess.getEmailConfig(username);
 
             if (emailConfig == null || !emailConfig.isEmailNotificationsEnabled()) {
-                outputBoundary.presentScheduleResult(new ScheduleNotificationOutputData(
-                        null, false, "Email notifications not enabled for user"));
-                return;
+                outputData[0] = new ScheduleNotificationOutputData(
+                        null, false, "Email notifications not enabled for user");
             }
+            else {
+                final TaskID taskId = TaskID.from(UUID.fromString(inputData.taskId()));
+                final Task task = taskDataAccess.getTaskById(username, taskId);
 
-            // Create TaskID from UUID string
-            TaskID taskId = TaskID.from(UUID.fromString(inputData.getTaskId()));
+                if (task == null) {
+                    outputData[0] = new ScheduleNotificationOutputData(
+                            null, false, "Task not found");
+                }
+                else {
+                    final LocalDateTime taskTime = task.getTaskInfo().getStartDateTime();
+                    final LocalDateTime notificationTime = taskTime.minusMinutes(
+                            inputData.reminder().getMinutesBefore()
+                    );
 
-            // Get the task to schedule notification for
-            Task task = taskDataAccess.getTaskById(username, taskId);
-            if (task == null) {
-                outputBoundary.presentScheduleResult(new ScheduleNotificationOutputData(
-                        null, false, "Task not found"));
-                return;
+                    if (notificationTime.isBefore(LocalDateTime.now())) {
+                        outputData[0] = new ScheduleNotificationOutputData(
+                                null, false, "Cannot schedule notification for past time");
+                    }
+                    else {
+                        final ScheduledNotification notification = new ScheduledNotification(
+                                inputData.taskId(), notificationTime, emailConfig.getUserEmail());
+
+                        notificationDataAccess.saveScheduledNotification(notification);
+
+                        outputData[0] = new ScheduleNotificationOutputData(
+                                notification.getNotificationId(), true, "Notification scheduled successfully");
+                    }
+                }
             }
-
-            // Get scheduled date time from task
-            LocalDateTime taskTime = task.getTaskInfo().getStartDateTime();
-            LocalDateTime notificationTime = taskTime.minusMinutes(inputData.getReminder().getMinutesBefore());
-
-            // Don't schedule notifications for past times
-            if (notificationTime.isBefore(LocalDateTime.now())) {
-                outputBoundary.presentScheduleResult(new ScheduleNotificationOutputData(
-                        null, false, "Cannot schedule notification for past time"));
-                return;
-            }
-
-            // Create and save scheduled notification
-            ScheduledNotification notification = new ScheduledNotification(
-                    inputData.getTaskId(), notificationTime, emailConfig.getUserEmail());
-
-            notificationDataAccess.saveScheduledNotification(notification);
-
-            outputBoundary.presentScheduleResult(new ScheduleNotificationOutputData(
-                    notification.getNotificationId(), true, "Notification scheduled successfully"));
-
-        } catch (Exception e) {
-            outputBoundary.presentScheduleResult(new ScheduleNotificationOutputData(
-                    null, false, "Error scheduling notification: " + e.getMessage()));
         }
+        catch (IllegalArgumentException ex) {
+            outputData[0] = new ScheduleNotificationOutputData(
+                    null, false, "Error scheduling notification: " + ex.getMessage());
+        }
+
+        outputBoundary.presentScheduleResult(outputData[0]);
     }
 }

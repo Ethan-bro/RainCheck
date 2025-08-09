@@ -1,6 +1,7 @@
 package interface_adapter.logged_in;
 
 import entity.Task;
+
 import use_case.listTasks.ListTasksOutputBoundary;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public class ListTasksPresenter implements ListTasksOutputBoundary {
      *
      * @param viewModel The view model to update when tasks are listed.
      */
-    public ListTasksPresenter(LoggedInViewModel viewModel) {
+    public ListTasksPresenter(final LoggedInViewModel viewModel) {
         this.viewModel = viewModel;
     }
 
@@ -28,18 +29,22 @@ public class ListTasksPresenter implements ListTasksOutputBoundary {
      * Updates the LoggedInState with the new list of tasks, then fires
      * a property change for the "weekTasks" property to notify the view.
      *
-     * @param tasks The List<Task> containing tasks.
+     * @param tasks the list of {@link Task} containing tasks
      */
     @Override
     public void presentTasks(List<Task> tasks) {
-        LoggedInState currentState = viewModel.getState();
+        final LoggedInState currentState = viewModel.getState();
 
-        // Defensive check: even if null, set empty list
+        final List<Task> safeTasks;
+        
         if (tasks == null) {
-            tasks = List.of();
+            safeTasks = List.of();
+        }
+        else {
+            safeTasks = tasks;
         }
 
-        currentState.setWeekTasks(tasks);
+        currentState.setWeekTasks(safeTasks);
         viewModel.setState(currentState);
 
         // Notify the view that task list has changed

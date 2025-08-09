@@ -2,19 +2,10 @@ package use_case.notification;
 
 /**
  * Output data for notification scheduling results.
+ *
+ * @param notificationId the unique identifier of the notification
+ * @param success       indicates whether the scheduling was successful
+ * @param message       additional information or error message related to scheduling
  */
-public class ScheduleNotificationOutputData {
-    private final String notificationId;
-    private final boolean success;
-    private final String message;
-
-    public ScheduleNotificationOutputData(String notificationId, boolean success, String message) {
-        this.notificationId = notificationId;
-        this.success = success;
-        this.message = message;
-    }
-
-    public String getNotificationId() { return notificationId; }
-    public boolean isSuccess() { return success; }
-    public String getMessage() { return message; }
+public record ScheduleNotificationOutputData(String notificationId, boolean success, String message) {
 }

@@ -1,12 +1,17 @@
 package interface_adapter.deleteTask;
 
 import entity.TaskID;
+
 import use_case.deleteTask.DeleteTaskInputBoundary;
 import use_case.deleteTask.DeleteTaskInputData;
 
 import java.io.IOException;
 
+/**
+ * Controller class for deleting a task.
+ */
 public class DeleteTaskController {
+
     private final DeleteTaskInputBoundary deleteTaskInputInteractor;
     private String username;
 
@@ -14,12 +19,23 @@ public class DeleteTaskController {
         this.deleteTaskInputInteractor = deleteTaskInputInteractor;
     }
 
+    /**
+     * Sets the username for the user performing the deletion.
+     *
+     * @param username the username of the user
+     */
     public void setUsername(String username) {
         this.username = username;
     }
 
+    /**
+     * Deletes a task by its ID.
+     *
+     * @param taskId the ID of the task to delete
+     * @throws IOException if an IO error occurs during deletion
+     */
     public void deleteTask(TaskID taskId) throws IOException {
-        DeleteTaskInputData inputData = new DeleteTaskInputData(username, taskId);
+        final DeleteTaskInputData inputData = new DeleteTaskInputData(username, taskId);
         deleteTaskInputInteractor.execute(inputData);
     }
 }

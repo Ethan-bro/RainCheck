@@ -17,26 +17,39 @@ public class MarkTaskCompleteInteractorTest {
         InMemoryTaskDataAccessObject dao = new InMemoryTaskDataAccessObject();
 
         TaskID taskId = new TaskID(UUID.randomUUID());
-        TaskInfo taskInfo = new TaskInfo(
-                taskId, "Original Task",
+        TaskInfo taskInfo = new TaskInfo();
+
+        taskInfo.setCoreDetails(
+                taskId,
+                "Original Task",
                 LocalDateTime.now(),
-                LocalDateTime.now().plusHours(1),
+                LocalDateTime.now().plusHours(1)
+        );
+
+        taskInfo.setAdditionalDetails(
                 Priority.MEDIUM,
                 new CustomTag("Tag", "📚"),
                 null,
-                "Incomplete",  // <-- more explicit than "No"
+                "No"
+        );
+
+        taskInfo.setTaskStatus("Incomplete");
+
+        taskInfo.setWeatherInfo(
                 "",
                 "",
                 "25.0",
-                "2");
+                "2"
+        );
+
         Task task = new Task(taskInfo);
         dao.addTask(username, task);
 
         MarkTaskCompleteOutputBoundary presenter = new MarkTaskCompleteOutputBoundary() {
             @Override
             public void prepareSuccessView(MarkTaskCompleteOutputData outputData) {
-                Assertions.assertEquals(taskId, outputData.getTaskId());
-                Assertions.assertFalse(outputData.isUseCaseFailed());
+                Assertions.assertEquals(taskId, outputData.taskId());
+                Assertions.assertFalse(outputData.useCaseFailed());
 
                 Task updatedTask = dao.getTaskById(username, taskId);
                 Assertions.assertNotNull(updatedTask);

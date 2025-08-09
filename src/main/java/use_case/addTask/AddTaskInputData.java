@@ -23,42 +23,76 @@ public class AddTaskInputData {
         this.taskName = Objects.requireNonNull(taskName);
         this.startDateTime = Objects.requireNonNull(startDateTime);
         this.endDateTime = Objects.requireNonNull(endDateTime);
-        this.priority = (priority != null) ? priority : Priority.LOW;
+
+        this.priority = Objects.requireNonNullElse(priority, Priority.LOW);
+
         this.customTag = customTag;
         this.taskStatus = "Incomplete";
         this.isDeleted = "No";
         this.reminder = reminder;
     }
 
-    public String getTaskName() {return taskName;}
+    public String getTaskName() {
+        return taskName;
+    }
 
-    public void setTaskName(String taskName) {this.taskName = taskName;}
+    public void setTaskName(String taskName) {
+        this.taskName = taskName;
+    }
 
-    public LocalDateTime getStartDateTime() {return startDateTime;}
+    public LocalDateTime getStartDateTime() {
+        return startDateTime;
+    }
 
-    public void setStartDateTime(LocalDateTime startDateTime) {this.startDateTime = startDateTime;}
+    public void setStartDateTime(LocalDateTime startDateTime) {
+        this.startDateTime = startDateTime;
+    }
 
-    public LocalDateTime getEndDateTime() {return endDateTime;}
+    public LocalDateTime getEndDateTime() {
+        return endDateTime;
+    }
 
-    public void setEndDateTime(LocalDateTime endDateTime) {this.endDateTime = endDateTime;}
+    public void setEndDateTime(LocalDateTime endDateTime) {
+        this.endDateTime = endDateTime;
+    }
 
-    public Priority getPriority() {return priority;}
+    public Priority getPriority() {
+        return priority;
+    }
 
-    public void setPriority(Priority priority) {this.priority = priority;}
+    public void setPriority(Priority priority) {
+        this.priority = priority;
+    }
 
-    public CustomTag getTag() {return customTag;}
+    public CustomTag getTag() {
+        return customTag;
+    }
 
-    public void setTag(CustomTag customTag) {this.customTag = customTag;}
+    public void setTag(CustomTag tag) {
+        this.customTag = tag;
+    }
 
-    public String getTaskStatus() {return taskStatus;}
+    public String getTaskStatus() {
+        return taskStatus;
+    }
 
-    public void setTaskStatus(String taskStatus) {this.taskStatus = taskStatus;}
+    public void setTaskStatus(String taskStatus) {
+        this.taskStatus = taskStatus;
+    }
 
-    public Reminder getReminder() {return reminder;}
+    public Reminder getReminder() {
+        return reminder;
+    }
 
-    public void setReminder(Reminder reminder) {this.reminder = reminder;}
+    public void setReminder(Reminder reminder) {
+        this.reminder = reminder;
+    }
 
-    public void setIsDeleted(String isDeleted) {this.isDeleted = isDeleted;}
+    public void setIsDeleted(String isDeleted) {
+        this.isDeleted = isDeleted;
+    }
 
-    public String getIsDeleted() {return isDeleted;}
+    public String getIsDeleted() {
+        return isDeleted;
+    }
 }

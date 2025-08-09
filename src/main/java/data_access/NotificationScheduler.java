@@ -1,16 +1,14 @@
 package data_access;
 
-import entity.Task;
-import entity.User;
 import entity.ScheduledNotification;
-import use_case.notification.NotificationDataAccessInterface;
-import use_case.notification.EmailNotificationServiceInterface;
+import entity.Task;
+
 import use_case.editTask.EditTaskDataAccessInterface;
+import use_case.notification.EmailNotificationServiceInterface;
+import use_case.notification.NotificationDataAccessInterface;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -34,59 +32,46 @@ public class NotificationScheduler {
     }
 
     /**
-     * Start the notification scheduler - checks every minute for pending notifications
+     * Starts the notification scheduler. Checks every minute for pending notifications.
      */
     public void start() {
         scheduler.scheduleAtFixedRate(this::processPendingNotifications, 0, 1, TimeUnit.MINUTES);
-        System.out.println("Notification scheduler started - checking every minute");
+        System.out.println("Notification scheduler started - checking every minute.");
     }
 
     /**
-     * Stop the notification scheduler
+     * Stops the notification scheduler.
      */
     public void stop() {
         scheduler.shutdown();
-        System.out.println("Notification scheduler stopped");
+        System.out.println("Notification scheduler stopped.");
     }
 
     private void processPendingNotifications() {
-        try {
-            LocalDateTime now = LocalDateTime.now();
-            List<ScheduledNotification> pendingNotifications =
-                    notificationDataAccess.getPendingNotifications(now);
+        final LocalDateTime now = LocalDateTime.now();
+        final List<ScheduledNotification> pendingNotifications =
+                notificationDataAccess.getPendingNotifications(now);
 
-            System.out.println("Found " + pendingNotifications.size() + " pending notifications");
+        System.out.println("Found " + pendingNotifications.size() + " pending notifications.");
 
-            for (ScheduledNotification notification : pendingNotifications) {
-                sendNotification(notification);
-            }
-        } catch (Exception e) {
-            System.err.println("Error processing pending notifications: " + e.getMessage());
-            e.printStackTrace();
+        for (ScheduledNotification notification : pendingNotifications) {
+            sendNotification(notification);
         }
     }
 
     private void sendNotification(ScheduledNotification notification) {
-        try {
-            // Get the task details
-            Task task = taskDataAccess.getTaskByIdAndEmail(
-                    notification.getUserEmail(),
-                    entity.TaskID.from(java.util.UUID.fromString(notification.getTaskId()))
-            );
+        final Task task = taskDataAccess.getTaskByIdAndEmail(
+                notification.getUserEmail(),
+                entity.TaskID.from(java.util.UUID.fromString(notification.getTaskId()))
+        );
 
-            if (task != null) {
-                // Send the email
-                emailService.sendTaskReminder(null, task, notification.getUserEmail());
-
-                // Mark as sent
-                notificationDataAccess.markNotificationAsSent(notification.getNotificationId());
-
-                System.out.println("Sent notification for task: " + task.getTaskInfo().getTaskName());
-            } else {
-                System.err.println("Task not found for notification: " + notification.getTaskId());
-            }
-        } catch (Exception e) {
-            System.err.println("Failed to send notification: " + e.getMessage());
+        if (task != null) {
+            emailService.sendTaskReminder(null, task, notification.getUserEmail());
+            notificationDataAccess.markNotificationAsSent(notification.getNotificationId());
+            System.out.println("Sent notification for task: " + task.getTaskInfo().getTaskName());
+        }
+        else {
+            System.err.println("Task not found for notification: " + notification.getTaskId());
         }
     }
 }

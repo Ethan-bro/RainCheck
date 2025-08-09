@@ -1,9 +1,7 @@
 package data_access;
 
-import com.google.gson.*;
 import entity.CommonUser;
 import entity.User;
-import okhttp3.*;
 
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.logout.LogoutUserDataAccessInterface;
@@ -12,16 +10,36 @@ import use_case.signup.SignupUserDataAccessInterface;
 import java.io.IOException;
 import java.util.Collections;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 public class SupabaseUserDataAccessObject implements
         LoginUserDataAccessInterface,
         SignupUserDataAccessInterface,
         LogoutUserDataAccessInterface {
 
+    private static final String API_KEY_HEADER = "apikey";
+    private static final String AUTHORIZATION_HEADER = "Authorization";
+    private static final String BEARER_PREFIX = "Bearer ";
+    private static final String CONTENT_TYPE_HEADER = "Content-Type";
+    private static final String CONTENT_TYPE_JSON = "application/json";
+    private static final String PREFER_HEADER = "Prefer";
+    private static final String PREFER_VALUE = "return=minimal,resolution=merge-duplicates";
+    private static final String EMAIL_FIELD = "email";
+    private static final int CONFLICT_CODE = 409;
+
     private final OkHttpClient client = new OkHttpClient();
     private final Gson gson = new Gson();
     private final String baseUrl;
     private final String apiKey;
-    private String currentUser = null;
+    private String currentUser;
 
     public SupabaseUserDataAccessObject(String baseUrl, String apiKey) {
         if (!baseUrl.startsWith("http")) {
@@ -33,82 +51,108 @@ public class SupabaseUserDataAccessObject implements
 
     @Override
     public boolean existsByName(String username) {
-        Request request = new Request.Builder()
-                .url(baseUrl + "/rest/v1/users?username=eq." + username + "&select=username")
-                .addHeader("apikey", apiKey)
-                .addHeader("Authorization", "Bearer " + apiKey)
+        final String url = baseUrl + "/rest/v1/users?username=eq." + username + "&select=username";
+        final Request request = new Request.Builder()
+                .url(url)
+                .addHeader(API_KEY_HEADER, apiKey)
+                .addHeader(AUTHORIZATION_HEADER, BEARER_PREFIX + apiKey)
                 .build();
 
+        boolean exists = false;
         try (Response response = client.newCall(request).execute()) {
-            if (!response.isSuccessful()) return false;
-            String responseBody = response.body() != null ? response.body().string() : "";
-            JsonArray result = JsonParser.parseString(responseBody).getAsJsonArray();
-            return !result.isEmpty();
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to check if user exists", e);
+            if (response.isSuccessful()) {
+                final String responseBody;
+                if (response.body() != null) {
+                    responseBody = response.body().string();
+                }
+                else {
+                    responseBody = "";
+                }
+                final JsonArray result = JsonParser.parseString(responseBody).getAsJsonArray();
+                exists = !result.isEmpty();
+            }
         }
+        catch (IOException ex) {
+            throw new RuntimeException("Failed to check if user exists", ex);
+        }
+        return exists;
     }
 
     @Override
     public User get(String username) {
-        Request request = new Request.Builder()
-                .url(baseUrl + "/rest/v1/users?username=eq." + username + "&select=username,password,email")
-                .addHeader("apikey", apiKey)
-                .addHeader("Authorization", "Bearer " + apiKey)
+        final String url = baseUrl + "/rest/v1/users?username=eq." + username + "&select=username,password,email";
+        final Request request = new Request.Builder()
+                .url(url)
+                .addHeader(API_KEY_HEADER, apiKey)
+                .addHeader(AUTHORIZATION_HEADER, BEARER_PREFIX + apiKey)
                 .build();
 
+        User user = null;
         try (Response response = client.newCall(request).execute()) {
-            if (!response.isSuccessful() || response.body() == null) return null;
-
-            String body = response.body().string();
-            JsonArray users = JsonParser.parseString(body).getAsJsonArray();
-            if (users.isEmpty()) return null;
-
-            JsonObject user = users.get(0).getAsJsonObject();
-            return new CommonUser(
-                    user.get("username").getAsString(),
-                    user.get("password").getAsString(),
-                    user.get("email").getAsString()
-            );
-
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to get user", e);
+            if (response.isSuccessful() && response.body() != null) {
+                final String body = response.body().string();
+                final JsonArray users = JsonParser.parseString(body).getAsJsonArray();
+                if (!users.isEmpty()) {
+                    final JsonObject userJson = users.get(0).getAsJsonObject();
+                    user = new CommonUser(
+                            userJson.get("username").getAsString(),
+                            userJson.get("password").getAsString(),
+                            userJson.get(EMAIL_FIELD).getAsString()
+                    );
+                }
+            }
         }
+        catch (IOException ex) {
+            throw new RuntimeException("Failed to get user", ex);
+        }
+        return user;
     }
 
     @Override
     public void save(User user) throws DuplicateEmailException {
-        JsonObject newUser = new JsonObject();
+        final JsonObject newUser = new JsonObject();
         newUser.addProperty("username", user.getName());
         newUser.addProperty("password", user.getPassword());
         newUser.addProperty("email", user.getEmail());
-        newUser.add("tasks", new JsonArray()); // []
-        newUser.add("custom_tags", new JsonObject()); // {}
+        newUser.add("tasks", new JsonArray());
+        newUser.add("custom_tags", new JsonObject());
 
-        String json = gson.toJson(Collections.singletonList(newUser));
-        RequestBody body = RequestBody.create(json, MediaType.get("application/json"));
+        final String json = gson.toJson(Collections.singletonList(newUser));
+        final RequestBody body = RequestBody.create(json, MediaType.get(CONTENT_TYPE_JSON));
 
-        Request request = new Request.Builder()
+        final Request request = new Request.Builder()
                 .url(baseUrl + "/rest/v1/users")
-                .addHeader("apikey", apiKey)
-                .addHeader("Authorization", "Bearer " + apiKey)
-                .addHeader("Content-Type", "application/json")
-                .addHeader("Prefer", "return=minimal,resolution=merge-duplicates")
+                .addHeader(API_KEY_HEADER, apiKey)
+                .addHeader(AUTHORIZATION_HEADER, BEARER_PREFIX + apiKey)
+                .addHeader(CONTENT_TYPE_HEADER, CONTENT_TYPE_JSON)
+                .addHeader(PREFER_HEADER, PREFER_VALUE)
                 .post(body)
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful()) {
-                String errorDetails = response.body() != null ? response.body().string() : "No response body";
+                final String errorDetails;
+                if (response.body() != null) {
+                    errorDetails = response.body().string();
+                }
+                else {
+                    errorDetails = "No response body";
+                }
 
-                if (response.code() == 409 && errorDetails.contains("duplicate key") && errorDetails.contains("email")) {
+                if (response.code() == CONFLICT_CODE
+                        && errorDetails.contains("duplicate key")
+                        && errorDetails.contains(EMAIL_FIELD)) {
                     throw new DuplicateEmailException("Email already exists.");
                 }
 
-                throw new RuntimeException("Save failed: " + response.code() + " - " + response.message() + " - " + errorDetails);
+                throw new RuntimeException(
+                        "Save failed: " + response.code() + " - " + response.message()
+                                + " - " + errorDetails
+                );
             }
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to save user", e);
+        }
+        catch (IOException ex) {
+            throw new RuntimeException("Failed to save user", ex);
         }
     }
 

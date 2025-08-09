@@ -5,6 +5,7 @@ import interface_adapter.logged_in.LoggedInState;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginState;
 import interface_adapter.login.LoginViewModel;
+
 import use_case.logout.LogoutOutputBoundary;
 import use_case.logout.LogoutOutputData;
 

@@ -5,13 +5,12 @@ import entity.Priority;
 import entity.Reminder;
 import entity.Task;
 import entity.TaskInfo;
+
 import interface_adapter.ViewManagerModel;
 import interface_adapter.editTask.EditTaskController;
-import interface_adapter.editTask.EditTaskViewModel;
 import interface_adapter.editTask.EditTaskState;
+import interface_adapter.editTask.EditTaskViewModel;
 
-import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -20,6 +19,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+
+import javax.swing.DefaultComboBoxModel;
 
 public class EditTaskView extends AbstractTaskFormView implements ActionListener, PropertyChangeListener {
 
@@ -46,34 +47,46 @@ public class EditTaskView extends AbstractTaskFormView implements ActionListener
 
         viewModel.addPropertyChangeListener(this);
 
-        saveButton.addActionListener(this);
-        cancelButton.addActionListener(this);
+        getSaveButton().addActionListener(this);
+        getCancelButton().addActionListener(this);
 
         initializeSpinnersWithDefaults();
     }
 
     private void initializeSpinnersWithDefaults() {
-        LocalDateTime now = LocalDateTime.now();
-        Date nowDate = Date.from(now.atZone(ZoneId.systemDefault()).toInstant());
-        startSpinner.setValue(nowDate);
-        endSpinner.setValue(nowDate);
-    }
-
-    public void setExistingTask(Task task) {
-        this.existingTask = task;
-        if (task == null) return;
-
-        TaskInfo info = task.getTaskInfo();
-        nameField.setText(info.getTaskName());
-        startSpinner.setValue(Date.from(info.getStartDateTime().atZone(ZoneId.systemDefault()).toInstant()));
-        endSpinner.setValue(Date.from(info.getEndDateTime().atZone(ZoneId.systemDefault()).toInstant()));
-        priorityCombo.setSelectedItem(info.getPriority());
-        if (info.getTag() != null) customTagCombo.setSelectedItem(info.getTag());
-        if (info.getReminder() != null) reminderCombo.setSelectedItem(info.getReminder());
+        final LocalDateTime now = LocalDateTime.now();
+        final Date nowDate = Date.from(now.atZone(ZoneId.systemDefault()).toInstant());
+        getStartSpinner().setValue(nowDate);
+        getEndSpinner().setValue(nowDate);
     }
 
     /**
-     * For debugging print purposes
+     * Sets the existing task data to be edited.
+     *
+     * @param task The task to edit.
+     */
+    public void setExistingTask(Task task) {
+        this.existingTask = task;
+        if (task != null) {
+            final TaskInfo info = task.getTaskInfo();
+
+            getNameField().setText(info.getTaskName());
+            getStartSpinner().setValue(Date.from(info.getStartDateTime().atZone(ZoneId.systemDefault()).toInstant()));
+            getEndSpinner().setValue(Date.from(info.getEndDateTime().atZone(ZoneId.systemDefault()).toInstant()));
+            getPriorityCombo().setSelectedItem(info.getPriority());
+            if (info.getTag() != null) {
+                getCustomTagCombo().setSelectedItem(info.getTag());
+            }
+            if (info.getReminder() != null) {
+                getReminderCombo().setSelectedItem(info.getReminder());
+            }
+        }
+    }
+
+    /**
+     * Returns the existing task being edited.
+     *
+     * @return The existing Task object.
      */
     public Task getExistingTask() {
         return existingTask;
@@ -84,38 +97,52 @@ public class EditTaskView extends AbstractTaskFormView implements ActionListener
     }
 
     private Task buildUpdatedTask() {
-        String name = nameField.getText().trim();
-        LocalDateTime start = toLocalDateTime((Date) startSpinner.getValue());
-        LocalDateTime end = toLocalDateTime((Date) endSpinner.getValue());
-        Priority priority = (Priority) priorityCombo.getSelectedItem();
-        CustomTag tag = (CustomTag) customTagCombo.getSelectedItem();
-        Reminder reminder = (Reminder) reminderCombo.getSelectedItem();
+        final String name = getNameField().getText().trim();
+        final LocalDateTime start = toLocalDateTime((Date) getStartSpinner().getValue());
+        final LocalDateTime end = toLocalDateTime((Date) getEndSpinner().getValue());
+        final Priority priority = (Priority) getPriorityCombo().getSelectedItem();
+        final CustomTag tag = (CustomTag) getCustomTagCombo().getSelectedItem();
+        final Reminder reminder = (Reminder) getReminderCombo().getSelectedItem();
 
-        TaskInfo oldInfo = existingTask.getTaskInfo();
+        final TaskInfo oldInfo = existingTask.getTaskInfo();
 
-        TaskInfo updatedInfo = new TaskInfo(
+        final TaskInfo updatedInfo = new TaskInfo();
+
+        // Step 1: Core details
+        updatedInfo.setCoreDetails(
                 oldInfo.getId(),
                 name,
                 start,
-                end,
+                end
+        );
+
+        // Step 2: Additional details
+        updatedInfo.setAdditionalDetails(
                 priority,
                 tag,
                 reminder,
-                oldInfo.getIsDeleted(),
+                oldInfo.getIsDeleted()
+        );
+
+        // Step 3: Weather details
+        updatedInfo.setWeatherInfo(
                 oldInfo.getWeatherDescription(),
                 oldInfo.getWeatherIconName(),
                 oldInfo.getTemperature(),
                 oldInfo.getUvIndex()
         );
+
         updatedInfo.setTaskStatus(oldInfo.getTaskStatus());
+
         return new Task(updatedInfo);
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == saveButton) {
+    public void actionPerformed(ActionEvent actionEvent) {
+        if (actionEvent.getSource() == getSaveButton()) {
             controller.editTask(buildUpdatedTask());
-        } else if (e.getSource() == cancelButton) {
+        }
+        else if (actionEvent.getSource() == getCancelButton()) {
             viewManagerModel.setState(mainViewKey);
             viewManagerModel.firePropertyChanged();
         }
@@ -123,24 +150,26 @@ public class EditTaskView extends AbstractTaskFormView implements ActionListener
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        String prop = evt.getPropertyName();
+        final String prop = evt.getPropertyName();
 
         if ("refreshTagOptions".equals(prop)) {
-            Object newValue = evt.getNewValue();
+            final Object newValue = evt.getNewValue();
             if (newValue instanceof List<?> updatedTags) {
-                customTagCombo.setModel(new DefaultComboBoxModel<>(updatedTags.toArray()));
-                customTagCombo.setEnabled(!updatedTags.isEmpty());
+                getCustomTagCombo().setModel(new DefaultComboBoxModel<>(updatedTags.toArray()));
+                getCustomTagCombo().setEnabled(!updatedTags.isEmpty());
             }
-            return;
         }
+        else {
+            final EditTaskState state = viewModel.getState();
 
-        EditTaskState state = viewModel.getState();
-        if (state.isSuccess()) {
-            viewManagerModel.setState(mainViewKey);
-            viewManagerModel.firePropertyChanged();
-        } else if (state.getError() != null) {
-            errorLabel.setText(state.getError());
-            errorLabel.setVisible(true);
+            if (state.isSuccess()) {
+                viewManagerModel.setState(mainViewKey);
+                viewManagerModel.firePropertyChanged();
+            }
+            else if (state.getError() != null) {
+                getErrorLabel().setText(state.getError());
+                getErrorLabel().setVisible(true);
+            }
         }
     }
 

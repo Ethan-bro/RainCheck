@@ -29,5 +29,7 @@ public class SignupInputData {
         return repeatPassword;
     }
 
-    public String getEmail() { return email; }
+    public String getEmail() {
+        return email;
+    }
 }

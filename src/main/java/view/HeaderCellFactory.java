@@ -1,7 +1,11 @@
 package view;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.LocalDate;
@@ -9,56 +13,91 @@ import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
 /**
  * Utility to build one “day header” cell: day name + date + weather icon + temps,
  * styled with lighter borders, padding, and hover effect.
  */
-public class HeaderCellFactory {
+public final class HeaderCellFactory {
 
-    public static JPanel makeHeader(LocalDate date, Map<String,Object> weather) {
-        JPanel header = new JPanel(new BorderLayout(5, 5));
+    private static final int BORDER_THICKNESS = 1;
+    private static final int PADDING = 8;
+    private static final int FONT_SIZE_TITLE = 14;
+    private static final int FONT_SIZE_TEMP = 12;
+    private static final int TEMP_PANEL_HEIGHT = 22;
+    private static final int TEMP_PANEL_GAP = 5;
+    private static final int GRID_ROWS = 1;
+    private static final int GRID_COLS = 2;
+    private static final int BORDER_ARGB_GRAY = 0xCCCCCC;
+    private static final int COLOR_TEMP_TEXT = 0x555555;
+    private static final int COLOR_HOVER_BG = 0xF0F8FF;
+
+    private static final int ORDINAL_TEEN_START = 11;
+    private static final int ORDINAL_TEEN_END = 13;
+    private static final int ORDINAL_MODULO_BASE = 10;
+    private static final int ORDINAL_ST = 1;
+    private static final int ORDINAL_ND = 2;
+    private static final int ORDINAL_RD = 3;
+
+    private HeaderCellFactory() {
+        // hiding the public empty constructor
+    }
+    /**
+     * Creates a JPanel representing a header cell with date info and weather.
+     *
+     * @param date    the LocalDate to display
+     * @param weather a map containing weather info: expects keys "icon" (ImageIcon),
+     *                "tempmin" and "tempmax"
+     * @return a JPanel configured with day name, date, weather icon, and temps
+     */
+
+    public static JPanel makeHeader(final LocalDate date, final Map<String, Object> weather) {
+        final JPanel header = new JPanel(new BorderLayout(TEMP_PANEL_GAP, TEMP_PANEL_GAP));
         header.setBackground(Color.WHITE);
         header.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(0xCCCCCC)), // light gray border
-                BorderFactory.createEmptyBorder(8, 8, 8, 8)          // padding inside
+                BorderFactory.createLineBorder(new Color(BORDER_ARGB_GRAY), BORDER_THICKNESS),
+                BorderFactory.createEmptyBorder(PADDING, PADDING, PADDING, PADDING)
         ));
 
-        // Day name + ordinal date label
-        String dayName = date.getDayOfWeek()
-                .getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
-        String title = dayName + " the " + getOrdinal(date.getDayOfMonth());
-        JLabel lbl = new JLabel(title, SwingConstants.CENTER);
-        lbl.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        final String dayName = date.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
+        final String title = dayName + " the " + getOrdinal(date.getDayOfMonth());
+        final JLabel lbl = new JLabel(title, SwingConstants.CENTER);
+        lbl.setFont(new Font("Segoe UI", Font.BOLD, FONT_SIZE_TITLE));
         header.add(lbl, BorderLayout.NORTH);
 
-        // Weather icon
-        JLabel icon = new JLabel();
-        if (weather != null && weather.get("icon") instanceof ImageIcon) {
-            icon.setIcon((ImageIcon) weather.get("icon"));
+        final JLabel icon = new JLabel();
+        if (weather != null) {
+            final Object iconObj = weather.get("icon");
+            if (iconObj instanceof ImageIcon) {
+                icon.setIcon((ImageIcon) iconObj);
+            }
         }
         icon.setHorizontalAlignment(SwingConstants.CENTER);
         header.add(icon, BorderLayout.CENTER);
 
-        // Temperature panel
-        JPanel temps = new JPanel(new GridLayout(1, 2, 5, 0));
+        final JPanel temps = new JPanel(new GridLayout(GRID_ROWS, GRID_COLS, TEMP_PANEL_GAP, 0));
         temps.setBackground(Color.WHITE);
-        temps.setPreferredSize(new Dimension(0, 22));
+        temps.setPreferredSize(new Dimension(0, TEMP_PANEL_HEIGHT));
         if (weather != null) {
             temps.add(makeTempLabel(weather.get("tempmin")));
             temps.add(makeTempLabel(weather.get("tempmax")));
         }
         header.add(temps, BorderLayout.SOUTH);
 
-        // Add subtle hover effect to highlight header
         header.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseEntered(MouseEvent e) {
-                header.setBackground(new Color(0xF0F8FF)); // light blue highlight
+            public void mouseEntered(final MouseEvent e) {
+                header.setBackground(new Color(COLOR_HOVER_BG));
                 header.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             }
 
             @Override
-            public void mouseExited(MouseEvent e) {
+            public void mouseExited(final MouseEvent e) {
                 header.setBackground(Color.WHITE);
                 header.setCursor(Cursor.getDefaultCursor());
             }
@@ -67,23 +106,33 @@ public class HeaderCellFactory {
         return header;
     }
 
-    private static JLabel makeTempLabel(Object tempObj) {
-        String text = tempObj instanceof Number
-                ? String.format("%.1f°C", ((Number) tempObj).doubleValue())
-                : "--";
-        JLabel lbl = new JLabel(text, SwingConstants.CENTER);
-        lbl.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        lbl.setForeground(new Color(0x555555));
+    private static JLabel makeTempLabel(final Object tempObj) {
+        final String text;
+        if (tempObj instanceof Number) {
+            text = String.format("%.1f°C", ((Number) tempObj).doubleValue());
+        }
+        else {
+            text = "--";
+        }
+        final JLabel lbl = new JLabel(text, SwingConstants.CENTER);
+        lbl.setFont(new Font("Segoe UI", Font.PLAIN, FONT_SIZE_TEMP));
+        lbl.setForeground(new Color(COLOR_TEMP_TEXT));
         return lbl;
     }
 
-    private static String getOrdinal(int n) {
-        if (n >= 11 && n <= 13) return n + "th";
-        return switch (n % 10) {
-            case 1 -> n + "st";
-            case 2 -> n + "nd";
-            case 3 -> n + "rd";
-            default -> n + "th";
-        };
+    private static String getOrdinal(final int dayOfMonth) {
+        final String suffix;
+        if (dayOfMonth >= ORDINAL_TEEN_START && dayOfMonth <= ORDINAL_TEEN_END) {
+            suffix = "th";
+        }
+        else {
+            switch (dayOfMonth % ORDINAL_MODULO_BASE) {
+                case ORDINAL_ST -> suffix = "st";
+                case ORDINAL_ND -> suffix = "nd";
+                case ORDINAL_RD -> suffix = "rd";
+                default -> suffix = "th";
+            }
+        }
+        return dayOfMonth + suffix;
     }
 }

@@ -2,7 +2,7 @@ package use_case.login;
 
 /**
  * Output data object for the Login use case.
- * Sent from the interactor to the presenter after login attempt.
+ * Sent from the interactor to the presenter after a login attempt.
  */
 public class LoginOutputData {
 
@@ -24,6 +24,8 @@ public class LoginOutputData {
     }
 
     /**
+     * Returns the username of the user.
+     *
      * @return The username.
      */
     public String getUsername() {
@@ -31,6 +33,8 @@ public class LoginOutputData {
     }
 
     /**
+     * Returns the email address of the user.
+     *
      * @return The email.
      */
     public String getEmail() {
@@ -38,7 +42,9 @@ public class LoginOutputData {
     }
 
     /**
-     * @return true if the login use case failed; false if successful.
+     * Returns whether the login use case failed.
+     *
+     * @return true if the login failed; false if successful.
      */
     public boolean isUseCaseFailed() {
         return useCaseFailed;

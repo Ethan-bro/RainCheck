@@ -2,7 +2,6 @@ package interface_adapter.markTaskComplete;
 
 import interface_adapter.ViewModel;
 
-
 public class MarkTaskCompleteViewModel extends ViewModel<MarkTaskCompleteState> {
 
     public MarkTaskCompleteViewModel() {
@@ -10,5 +9,3 @@ public class MarkTaskCompleteViewModel extends ViewModel<MarkTaskCompleteState> 
         setState(new MarkTaskCompleteState());
     }
 }
-
-

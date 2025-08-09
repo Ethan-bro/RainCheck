@@ -18,18 +18,28 @@ public class DeleteTaskInteractorTest {
         InMemoryTaskDataAccessObject dao = new InMemoryTaskDataAccessObject();
 
         TaskID taskId = new TaskID(UUID.randomUUID());
-        TaskInfo taskInfo = new TaskInfo(
-                taskId, "Original Task",
+        TaskInfo taskInfo = new TaskInfo();
+
+        taskInfo.setCoreDetails(
+                taskId,
+                "Original Task",
                 LocalDateTime.now(),
-                LocalDateTime.now().plusHours(1),
+                LocalDateTime.now().plusHours(1)
+        );
+
+        taskInfo.setAdditionalDetails(
                 Priority.MEDIUM,
                 new CustomTag("Tag", "📚"),
                 null,
-                "No",
+                "No"
+        );
+
+        taskInfo.setWeatherInfo(
                 "",
                 "",
                 "25.0",
-                "2");
+                "2"
+        );
         Task task = new Task(taskInfo);
         dao.addTask(username, task);
 

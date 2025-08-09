@@ -3,23 +3,25 @@ package use_case.editTask;
 import entity.Task;
 import entity.TaskInfo;
 import entity.WeatherInfo;
-import interface_adapter.addTask.Constants;
-import data_access.WeatherApiService;
+
+import use_case.weather.WeatherApiInterface;
+
+import constants.Constants;
+
 import org.jetbrains.annotations.NotNull;
-import use_case.weather.WeatherInfoGetter;
 
 /**
- * Interactor for the editTask use case
+ * Interactor for the editTask use case.
  */
 public class EditTaskInteractor implements EditTaskInputBoundary {
 
     private final EditTaskDataAccessInterface dataAccess;
     private final EditTaskOutputBoundary presenter;
-    private final WeatherApiService weatherApiService;
+    private final WeatherApiInterface weatherApiService;
 
     public EditTaskInteractor(EditTaskDataAccessInterface dataAccess,
                               EditTaskOutputBoundary presenter,
-                              WeatherApiService weatherApiService) {
+                              WeatherApiInterface weatherApiService) {
         this.dataAccess = dataAccess;
         this.presenter = presenter;
         this.weatherApiService = weatherApiService;
@@ -27,71 +29,80 @@ public class EditTaskInteractor implements EditTaskInputBoundary {
 
     @Override
     public void execute(String username, EditTaskInputData inputData) {
-        Task updatedTask = inputData.getUpdatedTask();
-        System.out.println("[Interactor] Looking for task ID: " + updatedTask.getTaskInfo().getId());
-        Task existingTask = dataAccess.getTaskById(username, updatedTask.getTaskInfo().getId());
+        final Task updatedTask = inputData.updatedTask();
+        final TaskInfo taskInfo = updatedTask.getTaskInfo();
+        final Task existingTask = dataAccess.getTaskById(username, taskInfo.getId());
+
+        boolean failed = false;
+        String failureMessage = "";
 
         if (existingTask == null) {
-            System.out.println("[Interactor] Task not found for ID: " + updatedTask.getTaskInfo().getId());
-            presenter.prepareFailView("Task not found.");
-            return;
+            failed = true;
+            failureMessage = "Task not found.";
         }
-        System.out.println("[Interactor] Found existing task with ID: " + existingTask.getTaskInfo().getId());
+        else {
+            final String taskName = taskInfo.getTaskName();
 
-        TaskInfo info = updatedTask.getTaskInfo();
-
-        // Validation checks:
-        if (info.getTaskName() == null || info.getTaskName().isEmpty()) {
-            presenter.prepareFailView("Task name cannot be empty.");
-            return;
-        }
-
-        if (info.getTaskName().length() > Constants.CHAR_LIMIT) {
-            presenter.prepareFailView("Task name exceeds character limit of " + Constants.CHAR_LIMIT);
-            return;
-        }
-
-        if (!info.getEndDateTime().isAfter(info.getStartDateTime())) {
-            presenter.prepareFailView("End time must be after start time.");
-            return;
-        }
-
-        if (info.getTag() == null) {
-            presenter.prepareFailView("Please select a category/tag.");
-            return;
+            if (taskName == null || taskName.isEmpty()) {
+                failed = true;
+                failureMessage = "Task name cannot be empty.";
+            }
+            else if (taskName.length() > Constants.TASK_NAME_CHAR_LIMIT) {
+                failed = true;
+                failureMessage = "Task name exceeds character limit of " + Constants.TASK_NAME_CHAR_LIMIT;
+            }
+            else if (!taskInfo.getEndDateTime().isAfter(taskInfo.getStartDateTime())) {
+                failed = true;
+                failureMessage = "End time must be after start time.";
+            }
+            else if (taskInfo.getTag() == null) {
+                failed = true;
+                failureMessage = "Please select a category/tag.";
+            }
         }
 
-        // Update weather info based on updated start time
-        WeatherInfo weatherInfo = WeatherInfoGetter.getWeatherInfo(weatherApiService, info.getStartDateTime());
+        if (failed) {
+            presenter.prepareFailView(failureMessage);
+        }
+        else {
+            final WeatherInfo weatherInfo = weatherApiService.getWeatherInfo(taskInfo.getStartDateTime());
+            final Task taskToUpdate = getTask(taskInfo, weatherInfo);
 
-        Task taskToUpdate = getTask(info, weatherInfo);
+            dataAccess.updateTask(username, taskToUpdate);
 
-        // Update in data access
-        dataAccess.updateTask(username, taskToUpdate);
-
-        EditTaskOutputData outputData = new EditTaskOutputData(
-                taskToUpdate.getTaskInfo().getId(),
-                false
-        );
-        presenter.prepareSuccessView(outputData);
+            final EditTaskOutputData outputData = new EditTaskOutputData(
+                    taskToUpdate.getTaskInfo().getId(),
+                    false
+            );
+            presenter.prepareSuccessView(outputData);
+        }
     }
 
     @NotNull
     private static Task getTask(TaskInfo info, WeatherInfo weatherInfo) {
-        TaskInfo updatedTaskInfo = new TaskInfo(
+        final TaskInfo updatedTaskInfo = new TaskInfo();
+
+        updatedTaskInfo.setCoreDetails(
                 info.getId(),
                 info.getTaskName(),
                 info.getStartDateTime(),
-                info.getEndDateTime(),
+                info.getEndDateTime()
+        );
+
+        updatedTaskInfo.setAdditionalDetails(
                 info.getPriority(),
                 info.getTag(),
                 info.getReminder(),
-                info.getIsDeleted(),
+                info.getIsDeleted()
+        );
+
+        updatedTaskInfo.setWeatherInfo(
                 weatherInfo.description(),
                 weatherInfo.iconName(),
                 weatherInfo.temperature(),
                 weatherInfo.uvIndex()
         );
+
         updatedTaskInfo.setTaskStatus(info.getTaskStatus());
 
         return new Task(updatedTaskInfo);

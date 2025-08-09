@@ -1,10 +1,11 @@
 package use_case.listTasks;
 
 import entity.Task;
+
 import java.time.LocalDate;
 import java.util.List;
 
-public class ListTasksInteractor implements ListTasksInputBoundary{
+public class ListTasksInteractor implements ListTasksInputBoundary {
     private final TaskDataAccessInterface taskDao;
     private final ListTasksOutputBoundary presenter;
 
@@ -15,7 +16,7 @@ public class ListTasksInteractor implements ListTasksInputBoundary{
 
     @Override
     public void listTasks(String username, LocalDate startDate, LocalDate endDate) {
-        List<Task> tasks = taskDao.getTasksByDateRange(username, startDate, endDate);
+        final List<Task> tasks = taskDao.getTasksByDateRange(username, startDate, endDate);
         presenter.presentTasks(tasks);
     }
 }

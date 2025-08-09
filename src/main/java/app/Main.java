@@ -1,19 +1,28 @@
 package app;
 
-import javax.swing.*;
+import java.io.IOException;
 
+import javax.swing.JFrame;
+
+/**
+ * Main application entry point.
+ */
 public class Main {
 
-    public static int numOfAPIcallsMade = 0;
+    private static int numOfApiCallsMade;
 
+    /**
+     * Main method to start the application.
+     * @param args command-line arguments (unused)
+     */
     public static void main(String[] args) {
         try {
-            JFrame application = new AppBuilder()
+            final JFrame application = new AppBuilder()
                     .addDatabase()
                     .addViewModels()
                     .addSignupView()
                     .addLoginView()
-                    .addCCTView()
+                    .addCctView()
                     .addEditTagView()
                     .addManageTagsView()
                     .addEditTaskView()
@@ -23,20 +32,30 @@ public class Main {
                     .addListTasksUseCase()
                     .build();
 
-            int appWidth = 860;
-            application.setSize(appWidth, (int) (appWidth / 1.4)); // Making the app proportional based on it's width
-            application.setLocationRelativeTo(null); // centers window
+            final int appWidth = 860;
+            final double aspectRatio = 1.4;
+
+            application.setSize(appWidth, (int) (appWidth / aspectRatio));
+            application.setLocationRelativeTo(null);
             application.setVisible(true);
-        } catch (Exception e) {
-            e.printStackTrace();
+        }
+        catch (IOException ioEx) {
+            ioEx.printStackTrace();
         }
     }
 
-    public static void incrementNumOfAPIcallsMade() {
-        numOfAPIcallsMade ++;
+    /**
+     * Increment the count of API calls made by one.
+     */
+    public static void incrementNumOfApiCallsMade() {
+        numOfApiCallsMade++;
     }
 
-    public static int getNumOfAPIcallsMade() {
-        return numOfAPIcallsMade;
+    /**
+     * Get the current count of API calls made.
+     * @return number of API calls made
+     */
+    public static int getNumOfApiCallsMade() {
+        return numOfApiCallsMade;
     }
 }

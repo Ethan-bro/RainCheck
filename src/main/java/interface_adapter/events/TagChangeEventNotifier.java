@@ -4,42 +4,51 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 /**
- * Global event broadcaster for notifying tag updates across views/viewmodels.
+ * Global event broadcaster for notifying tag updates across views/viewModels.
  */
-public class TagChangeEventNotifier {
+public final class TagChangeEventNotifier {
 
-    private TagChangeEventNotifier() {}
+    private static final String TAGS_UPDATED = "tagsUpdated";
+    private static final PropertyChangeSupport PCS = new PropertyChangeSupport(new Object());
 
-    private static final PropertyChangeSupport pcs = new PropertyChangeSupport(new Object());
+    private TagChangeEventNotifier() {
 
-    /**
-     * Add a listener that responds to "tagsUpdated" property changes.
-     */
-    public static void addListener(PropertyChangeListener listener) {
-        pcs.addPropertyChangeListener("tagsUpdated", listener);
     }
 
     /**
-     * Remove a listener.
+     * Adds a listener that responds to the {@value #TAGS_UPDATED} property changes.
+     *
+     * @param listener the PropertyChangeListener to add
      */
-    public static void removeListener(PropertyChangeListener listener) {
-        pcs.removePropertyChangeListener("tagsUpdated", listener);
+    public static void addListener(final PropertyChangeListener listener) {
+        PCS.addPropertyChangeListener(TAGS_UPDATED, listener);
     }
 
     /**
-     * Fire the "tagsUpdated" event to all listeners.
+     * Removes a listener.
+     *
+     * @param listener the PropertyChangeListener to remove
+     */
+    public static void removeListener(final PropertyChangeListener listener) {
+        PCS.removePropertyChangeListener(TAGS_UPDATED, listener);
+    }
+
+    /**
+     * Fires the {@value #TAGS_UPDATED} event to all listeners.
      */
     public static void fire() {
-        pcs.firePropertyChange("tagsUpdated", null, null);
+        PCS.firePropertyChange(TAGS_UPDATED, null, null);
     }
 
     /**
-     * Subscribe with a Runnable (e.g., lambda) that runs when tags are updated.
+     * Subscribes with a Runnable (e.g., lambda) that runs when tags are updated.
      * Internally wraps the runnable as a PropertyChangeListener.
+     *
+     * @param onChange the Runnable to run on tags update
      */
-    public static void subscribe(Runnable onChange) {
-        PropertyChangeListener listener = evt -> {
-            if ("tagsUpdated".equals(evt.getPropertyName())) {
+    public static void subscribe(final Runnable onChange) {
+        final PropertyChangeListener listener = evt -> {
+            if (TAGS_UPDATED.equals(evt.getPropertyName())) {
                 onChange.run();
             }
         };

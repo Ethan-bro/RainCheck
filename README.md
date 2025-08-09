@@ -238,11 +238,11 @@ Fix: Ensure the file exists in `config/secrets.json` with the following structur
 ```
 For more info, see the [Configure Secrets](#2-configure-secrets) section.
 ---
-If you experience issues with weather data not loading correctly, check the `USE_FAKE_DATA` variable in
+If you experience issues with weather data not loading correctly, check the `useFakeData` variable in
 `src/main/java/data_access/WeatherApiService.java`. <br />
 
 This variable controls whether RainCheck fetches real weather data from the API or uses fake (mock) data for testing and offline development.
- - When `USE_FAKE_DATA` is set to `false` (default), RainCheck fetches live weather data using your API key from `secrets.json`.
+ - When `useFakeData` is set to `false` (default), RainCheck fetches live weather data using your API key from `secrets.json`.
  - When set to `true`, the app uses pre-defined fake weather data, which is useful for faster testing or when offline.
 Make sure to set this variable according to your needs and verify that your API key in secrets.json is valid to avoid errors.
 
@@ -262,13 +262,13 @@ Refer to the tutorials above for detailed guidance.
 ## Usage
 
 > For the demos below (provided as YouTube video links), weather data is simulated to showcase the UI and weather-aware features.  
-> You can toggle between fake and real data by modifying the `USE_FAKE_DATA` variable in:  
+> You can toggle between fake and real data by modifying the `useFakeData` variable in:  
 > `src/main/java/data_access/WeatherApiService.java`.
 
-Modify the `USE_FAKE_DATA` variable as follows:
+Modify the `useFakeData` variable as follows:
 
 ```java
-private static final boolean USE_FAKE_DATA = true; // or false
+private static final boolean useFakeData = true; // or false
 ```
 
 This allows you to easily switch between mock data (for testing/dev) and live weather API responses.

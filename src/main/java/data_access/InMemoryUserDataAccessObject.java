@@ -1,6 +1,7 @@
 package data_access;
 
 import entity.User;
+
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.logout.LogoutUserDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
@@ -17,7 +18,11 @@ public class InMemoryUserDataAccessObject implements
         LogoutUserDataAccessInterface {
 
     private final Map<String, User> users = new HashMap<>();
-    private String currentUser = null;
+    private String currentUser;
+
+    public InMemoryUserDataAccessObject() {
+        this.currentUser = null;
+    }
 
     @Override
     public void save(User user) {

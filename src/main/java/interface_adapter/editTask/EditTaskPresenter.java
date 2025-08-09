@@ -13,7 +13,7 @@ public class EditTaskPresenter implements EditTaskOutputBoundary {
 
     @Override
     public void prepareSuccessView(EditTaskOutputData outputData) {
-        EditTaskState newState = new EditTaskState();
+        final EditTaskState newState = new EditTaskState();
         newState.setSuccess(true);
         viewModel.setState(newState);
         viewModel.firePropertyChange("task updated", null, null);
@@ -22,7 +22,7 @@ public class EditTaskPresenter implements EditTaskOutputBoundary {
 
     @Override
     public void prepareFailView(String errorMessage) {
-        EditTaskState newState = new EditTaskState();
+        final EditTaskState newState = new EditTaskState();
         newState.setSuccess(false);
         newState.setError("task failed to update");
         viewModel.setState(newState);

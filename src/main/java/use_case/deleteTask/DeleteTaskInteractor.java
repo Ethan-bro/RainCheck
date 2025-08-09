@@ -14,18 +14,16 @@ public class DeleteTaskInteractor implements DeleteTaskInputBoundary {
 
     @Override
     public void execute(DeleteTaskInputData inputData) throws IOException {
-        // Confirm the task exists first
-        if (dataAccess.getTaskById(inputData.getUsername(), inputData.getTaskId()) == null) {
+
+        if (dataAccess.getTaskById(inputData.username(), inputData.taskId()) == null) {
             presenter.prepareFailView("Task not found.");
-            return;
         }
+        else {
+            dataAccess.deleteTask(inputData.username(), inputData.taskId());
 
-        // Delete the task
-        dataAccess.deleteTask(inputData.getUsername(), inputData.getTaskId());
-
-        // Success response
-        DeleteTaskOutputData outputData = new DeleteTaskOutputData(inputData.getTaskId(), false);
-        presenter.prepareSuccessView(outputData);
+            final DeleteTaskOutputData outputData = new DeleteTaskOutputData(inputData.taskId(), false);
+            presenter.prepareSuccessView(outputData);
+        }
 
     }
 }
