@@ -1,4 +1,4 @@
-package use_case.CreateCT;
+package use_case.createCustomTag;
 
 public interface CreateCustomTagInputBoundary {
 

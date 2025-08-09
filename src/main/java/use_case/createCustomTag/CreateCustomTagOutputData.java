@@ -1,4 +1,4 @@
-package use_case.CreateCT;
+package use_case.createCustomTag;
 
 import entity.CustomTag;
 

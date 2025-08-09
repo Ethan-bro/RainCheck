@@ -1,7 +1,7 @@
 package data_access;
 
 import entity.CustomTag;
-import use_case.CreateCT.CustomTagDataAccessInterface;
+import use_case.createCustomTag.CustomTagDataAccessInterface;
 
 import java.util.HashMap;
 import java.util.Map;

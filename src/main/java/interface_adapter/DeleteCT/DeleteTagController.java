@@ -1,25 +1,23 @@
 package interface_adapter.DeleteCT;
 
-import interface_adapter.ManageTags.ManageTagsViewModel;
-import use_case.CreateCT.CustomTagDataAccessInterface;
+import interface_adapter.manageTags.ManageTagsViewModel;
+import use_case.createCustomTag.CustomTagDataAccessInterface;
 import entity.CustomTag;
-import interface_adapter.events.TagChangeEventNotifier;
-import use_case.DeleteCT.DeleteCTInputBoundary;
-import use_case.DeleteCT.DeleteCTInputData;
-import use_case.EditCT.EditTagInputData;
+import use_case.DeleteCustomTag.DeleteCustomTagInputBoundary;
+import use_case.DeleteCustomTag.DeleteCustomTagInputData;
 
 public class DeleteTagController {
 
     private final CustomTagDataAccessInterface tagDao;
     private final ManageTagsViewModel manageTagsVM;
-    private final DeleteCTInputBoundary Interactor;
+    private final DeleteCustomTagInputBoundary interactor;
 
     public DeleteTagController(CustomTagDataAccessInterface tagDao,
                                ManageTagsViewModel manageTagsVM,
-                               DeleteCTInputBoundary Interactor) {
+                               DeleteCustomTagInputBoundary Interactor) {
         this.tagDao = tagDao;
         this.manageTagsVM = manageTagsVM;
-        this.Interactor = Interactor;
+        this.interactor = Interactor;
     }
 
     /**
@@ -30,8 +28,8 @@ public class DeleteTagController {
     public void execute(CustomTag tagToDelete) {
         String username = manageTagsVM.getUsername();
 
-        // Convert user fields into input data and call the Interactor
-        DeleteCTInputData input = new DeleteCTInputData(username, tagToDelete);
-        Interactor.execute(input);
+        // Convert user fields into input data and call the interactor
+        DeleteCustomTagInputData input = new DeleteCustomTagInputData(username, tagToDelete);
+        interactor.execute(input);
     }
 }

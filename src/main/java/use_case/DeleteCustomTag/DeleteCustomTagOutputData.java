@@ -1,11 +1,11 @@
-package use_case.DeleteCT;
+package use_case.DeleteCustomTag;
 
-public class DeleteCTOutputData {
+public class DeleteCustomTagOutputData {
 
     private final String message;
     private final boolean isUseCaseFailed;
 
-    public DeleteCTOutputData(String message) {
+    public DeleteCustomTagOutputData(String message) {
         this.isUseCaseFailed = false;
         this.message = message;
     }

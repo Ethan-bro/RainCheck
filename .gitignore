@@ -3,7 +3,10 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 /.idea/sonarlint
+
+### Sensetive project directories and packages we will exclude from pushing to git ###
 /target
+/data
 
 ### Eclipse ###
 .apt_generated

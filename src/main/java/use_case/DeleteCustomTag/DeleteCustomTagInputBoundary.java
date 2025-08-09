@@ -1,5 +1,5 @@
-package use_case.DeleteCT;
+package use_case.DeleteCustomTag;
 
-public interface DeleteCTInputBoundary {
-    public void execute(DeleteCTInputData input);
+public interface DeleteCustomTagInputBoundary {
+    public void execute(DeleteCustomTagInputData input);
 }

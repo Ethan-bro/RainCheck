@@ -1,6 +1,6 @@
-package use_case.DeleteCT;
+package use_case.DeleteCustomTag;
 
-public interface DeleteCTOutputBoundary {
-    public void prepareSuccessView(DeleteCTOutputData successOutput);
+public interface DeleteCustomTagOutputBoundary {
+    public void prepareSuccessView(DeleteCustomTagOutputData successOutput);
 
 }

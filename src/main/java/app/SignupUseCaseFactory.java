@@ -40,7 +40,7 @@ public final class SignupUseCaseFactory {
 
         final SignupController signupController = createUserSignupUseCase(viewManagerModel, signupViewModel,
                 loginViewModel, userDataAccessObject);
-        return new SignupView(signupController, signupViewModel, viewManagerModel);
+        return new SignupView(signupController, signupViewModel);
 
     }
 

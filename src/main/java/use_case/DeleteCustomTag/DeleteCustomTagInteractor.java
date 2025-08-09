@@ -1,29 +1,29 @@
-package use_case.DeleteCT;
+package use_case.DeleteCustomTag;
 
 import entity.CustomTag;
+
 import use_case.createCustomTag.CustomTagDataAccessInterface;
-import use_case.EditCT.EditTagOutputData;
 
-public class DeleteCTInteractor implements DeleteCTInputBoundary {
+public class DeleteCustomTagInteractor implements DeleteCustomTagInputBoundary {
 
-    private final DeleteCTOutputBoundary deleteCTPresenter;
+    private final DeleteCustomTagOutputBoundary deleteCTPresenter;
     private final CustomTagDataAccessInterface tagDao;
 
-    public DeleteCTInteractor(DeleteCTOutputBoundary deleteCTPresenter,
-                              CustomTagDataAccessInterface tagDao) {
+    public DeleteCustomTagInteractor(DeleteCustomTagOutputBoundary deleteCTPresenter,
+                                     CustomTagDataAccessInterface tagDao) {
 
         this.deleteCTPresenter = deleteCTPresenter;
         this.tagDao = tagDao;
     }
 
-    public void execute(DeleteCTInputData inputData) {
+    public void execute(DeleteCustomTagInputData inputData) {
 
         CustomTag oldTag = inputData.getTag();
         String username = inputData.getUsername();
 
         tagDao.deleteCustomTag(username, oldTag);
 
-        DeleteCTOutputData successOutput = new DeleteCTOutputData("success");
+        DeleteCustomTagOutputData successOutput = new DeleteCustomTagOutputData("success");
         deleteCTPresenter.prepareSuccessView(successOutput);
     }
 }

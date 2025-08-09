@@ -1,14 +1,13 @@
-package use_case.CreateCT;
+package use_case.createCustomTag;
 
 import data_access.InMemoryTagDataAccessObject;
 import entity.CustomTag;
-import interface_adapter.CreateTag.CCTController;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-import static use_case.CreateCT.CustomTagIcons.BOOKS;
-import static use_case.CreateCT.CustomTagIcons.RING;
+import static use_case.createCustomTag.CustomTagIcons.BOOKS;
+import static use_case.createCustomTag.CustomTagIcons.RING;
 
 public class CCTInteractorTest {
 
@@ -38,7 +37,7 @@ public class CCTInteractorTest {
         String tagIcon = tag.getTagIcon();
 
         final CCTInputBoundary interactor = new CCTInteractor(tagDao, presenter);
-        final CCTController controller = new CCTController(interactor);
+        final interface_adapter.CreateTag.CctController controller = new interface_adapter.CreateTag.CctController(interactor);
 
         // execute tag creation
         controller.execute(tag, username);
@@ -74,7 +73,7 @@ public class CCTInteractorTest {
         CustomTag tagB = new CustomTag("school", RING);
 
         final CCTInputBoundary interactor = new CCTInteractor(tagDao, presenter);
-        final CCTController controller = new CCTController(interactor);
+        final interface_adapter.CreateTag.CctController controller = new interface_adapter.CreateTag.CctController(interactor);
 
         controller.execute(tagA, username);
         controller.execute(tagB, username);

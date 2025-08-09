@@ -5,7 +5,7 @@ import entity.CustomTag;
 import interface_adapter.EditTag.EditTagController;
 import interface_adapter.ManageTags.ManageTagsViewModel;
 import org.junit.jupiter.api.Test;
-import use_case.CreateCT.CustomTagDataAccessInterface;
+import use_case.createCustomTag.CustomTagDataAccessInterface;
 import use_case.EditCT.EditTagInputBoundary;
 import use_case.EditCT.EditTagInteractor;
 import use_case.EditCT.EditTagOutputBoundary;
@@ -13,7 +13,7 @@ import use_case.EditCT.EditTagOutputData;
 
 import java.util.Map;
 
-import static use_case.CreateCT.CustomTagIcons.*;
+import static use_case.createCustomTag.CustomTagIcons.*;
 
 public class EditTagInteractorTest {
 
