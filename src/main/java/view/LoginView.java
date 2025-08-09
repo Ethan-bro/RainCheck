@@ -1,31 +1,18 @@
 package view;
 
+import interface_adapter.ViewManagerModel;
 import interface_adapter.login.LoginController;
 import interface_adapter.login.LoginState;
 import interface_adapter.login.LoginViewModel;
 
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Objects;
 
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -65,8 +52,8 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
 
     private final String viewName = "log in";
 
-    private final LoginViewModel loginViewModel;
     private final LoginController loginController;
+    private final ViewManagerModel viewManagerModel;
 
     private final JTextField usernameInputField = new JTextField(20);
     private final JPasswordField passwordInputField = new JPasswordField(20);
@@ -77,10 +64,11 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
     private JButton cancel;
     private JButton signUp;
 
-    public LoginView(final LoginViewModel loginViewModel, final LoginController controller) {
-        this.loginViewModel = loginViewModel;
+    public LoginView(final LoginViewModel loginViewModel, final LoginController controller, final ViewManagerModel viewManagerModel) {
+        loginViewModel.addPropertyChangeListener(this);
+
         this.loginController = controller;
-        this.loginViewModel.addPropertyChangeListener(this);
+        this.viewManagerModel = viewManagerModel;
 
         setLayout(new java.awt.BorderLayout());
         setBorder(BorderFactory.createEmptyBorder(BORDER_TOP, BORDER_LEFT, BORDER_BOTTOM, BORDER_RIGHT));
@@ -231,11 +219,19 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
         signUp.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         signupPanel.add(signUp);
 
-        final JPanel combinedPanel = new JPanel();
+        JPanel combinedPanel = new JPanel();
         combinedPanel.setLayout(new BoxLayout(combinedPanel, BoxLayout.Y_AXIS));
         combinedPanel.setOpaque(false);
         combinedPanel.add(buttonsPanel);
         combinedPanel.add(signupPanel);
+
+        // Add Gmail Setup Instructions button below signupPanel
+        JButton gmailButton = GmailSetupInstructionsFactory.createButton(viewManagerModel, getViewName());
+        gmailButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        combinedPanel.add(Box.createVerticalStrut(10)); // spacing between signupPanel and button
+        combinedPanel.add(gmailButton);
+
+        add(combinedPanel, BorderLayout.SOUTH);
 
         return combinedPanel;
     }

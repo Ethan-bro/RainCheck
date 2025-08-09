@@ -46,8 +46,8 @@ public class GmailInstructionsView extends JPanel {
                 <h2 style='color: #1a73e8;'>Step 2: Sample JSON Format</h2>
                 <pre style='background:#f1f1f1; padding:12px; border-radius:6px; font-size: 12px;'>
 {
-  "database_url": "https://your-db.supabase.co",
-  "database_anon_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impiam94aWF1bGpyaWRwbW51bnVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIyMDE5MDQsImV4cCI6MjA2Nzc3NzkwNH0.rLCXZN4wuDANPaIy3kU0uxKrhm_Ne3yb2KlLP7lMfBw",
+  "database_url": "https://jbjoxiauljridpmnunuh.supabase.co",
+  "database_anon_key": "eyJhbGciOi...7lMfBw",
   "weather_api_key": "your_weather_api_key",
   "email_username": "your.email@gmail.com",
   "email_password": "your-16-character-app-password"

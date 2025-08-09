@@ -1,31 +1,16 @@
 package view;
 
+import interface_adapter.ViewManagerModel;
 import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupState;
 import interface_adapter.signup.SignupViewModel;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -65,6 +50,7 @@ public class SignupView extends JPanel implements PropertyChangeListener {
 
     private final SignupViewModel signupViewModel;
     private final SignupController signupController;
+    private final ViewManagerModel viewManagerModel;
 
     private final JTextField emailInputField = new JTextField(FIELD_COLUMNS);
     private final JTextField usernameInputField = new JTextField(FIELD_COLUMNS);
@@ -75,10 +61,12 @@ public class SignupView extends JPanel implements PropertyChangeListener {
     private final JButton cancel;
     private JButton toLogin;
 
-    public SignupView(final SignupController controller, final SignupViewModel model) {
-        this.signupController = controller;
+    public SignupView(final SignupController controller, final SignupViewModel model, final ViewManagerModel viewManagerModel) {
         this.signupViewModel = model;
         signupViewModel.addPropertyChangeListener(this);
+
+        this.signupController = controller;
+        this.viewManagerModel = viewManagerModel;
 
         setLayout(new BorderLayout());
         setBorder(BorderFactory.createEmptyBorder(BORDER_TOP, BORDER_LEFT, BORDER_BOTTOM, BORDER_RIGHT));
@@ -101,6 +89,12 @@ public class SignupView extends JPanel implements PropertyChangeListener {
         combinedPanel.setOpaque(false);
         combinedPanel.add(buttonsPanel);
         combinedPanel.add(loginPanel);
+
+        // Add Gmail Setup Instructions button
+        JButton gmailButton = GmailSetupInstructionsFactory.createButton(viewManagerModel, getViewName());
+        gmailButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        combinedPanel.add(Box.createVerticalStrut(10));
+        combinedPanel.add(gmailButton);
 
         add(combinedPanel, BorderLayout.SOUTH);
 

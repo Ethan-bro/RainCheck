@@ -161,18 +161,29 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     }
 
     private void initBottomPanel() {
-        final JButton logoutButton = new JButton("Log Out");
-        final JButton addTaskButton = new JButton("+ Add Task");
+        // --- Bottom: Logout + Add Task Buttons ---
+        JButton logoutButton = new JButton("Log Out");
+        JButton addTaskButton = new JButton("+ Add Task");
+        JButton gmailSetupButton = GmailSetupInstructionsFactory.createButton(viewManagerModel, getViewName());
+        gmailSetupButton.setPreferredSize(new Dimension(200, 35));
 
-        final JPanel bottomPanel = new JPanel(new BorderLayout());
+        JPanel bottomPanel = new JPanel(new BorderLayout());
 
-        final JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        // Left side: Log Out button
+        JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         leftPanel.add(logoutButton);
 
-        final JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        // Middle: Gmail Setup Instructions button (centered)
+        JPanel middlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        middlePanel.add(gmailSetupButton);
+
+        // Right side: + Add Task button
+        JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         rightPanel.add(addTaskButton);
 
+        // Add panels to bottomPanel
         bottomPanel.add(leftPanel, BorderLayout.WEST);
+        bottomPanel.add(middlePanel, BorderLayout.CENTER);
         bottomPanel.add(rightPanel, BorderLayout.EAST);
 
         add(bottomPanel, BorderLayout.SOUTH);
