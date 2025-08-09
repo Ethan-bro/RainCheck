@@ -1,7 +1,7 @@
 package use_case.DeleteCT;
 
 import entity.CustomTag;
-import use_case.CreateCT.CustomTagDataAccessInterface;
+import use_case.createCustomTag.CustomTagDataAccessInterface;
 import use_case.EditCT.EditTagOutputData;
 
 public class DeleteCTInteractor implements DeleteCTInputBoundary {
