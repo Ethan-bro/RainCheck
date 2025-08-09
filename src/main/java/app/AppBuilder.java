@@ -26,13 +26,21 @@ import interface_adapter.markTaskComplete.MarkTaskCompleteViewModel;
 import interface_adapter.signup.SignupViewModel;
 import interface_adapter.task.TaskBoxDependencies;
 
-import use_case.createCustomTag.CustomTagDataAccessInterface;
 import use_case.notification.EmailNotificationServiceInterface;
 import use_case.notification.NotificationDataAccessInterface;
 import use_case.notification.ScheduleNotificationInteractor;
 import use_case.notification.ScheduleNotificationOutputBoundary;
 
-import view.*;
+import view.AddTaskView;
+import view.CreateCustomTagView;
+import view.EditTagView;
+import view.EditTaskView;
+import view.GmailInstructionsView;
+import view.LoggedInView;
+import view.LoginView;
+import view.ManageTagsView;
+import view.SignupView;
+import view.ViewManager;
 
 import java.awt.CardLayout;
 import java.io.FileNotFoundException;
@@ -283,7 +291,7 @@ public final class AppBuilder {
      * @return the current AppBuilder instance for method chaining
      */
     public AppBuilder addGmailInstructionsView() {
-        GmailInstructionsView gmailInstructionsView = new GmailInstructionsView(viewManagerModel);
+        final GmailInstructionsView gmailInstructionsView = new GmailInstructionsView(viewManagerModel);
 
         cardPanel.add(gmailInstructionsView, GmailInstructionsView.getViewName());
         viewMap.put(GmailInstructionsView.getViewName(), gmailInstructionsView);

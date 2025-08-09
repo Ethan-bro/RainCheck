@@ -2,32 +2,31 @@ package use_case.EditTag;
 
 import data_access.InMemoryTagDataAccessObject;
 import entity.CustomTag;
-import interface_adapter.EditTag.EditTagController;
-import interface_adapter.ManageTags.ManageTagsViewModel;
+import interface_adapter.editTag.EditTagController;
+import interface_adapter.manageTags.ManageTagsViewModel;
 import org.junit.jupiter.api.Test;
 import use_case.createCustomTag.CustomTagDataAccessInterface;
-import use_case.EditCT.EditTagInputBoundary;
-import use_case.EditCT.EditTagInteractor;
-import use_case.EditCT.EditTagOutputBoundary;
-import use_case.EditCT.EditTagOutputData;
+import use_case.createCustomTag.CustomTagIcons;
+import use_case.edit_custom_tag.EditTagInputBoundary;
+import use_case.edit_custom_tag.EditTagInteractor;
+import use_case.edit_custom_tag.EditTagOutputBoundary;
+import use_case.edit_custom_tag.EditTagOutputData;
 
 import java.util.Map;
 
-import static use_case.createCustomTag.CustomTagIcons.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class EditTagInteractorTest {
 
     private final String username = "Barbara";
 
     @Test
-    public void testSuccessfulEdit () {
+    public void testSuccessfulEdit() {
+        final CustomTagDataAccessInterface tagDao = new InMemoryTagDataAccessObject();
+        final ManageTagsViewModel manageTagsViewModel = new ManageTagsViewModel(tagDao, username);
+        final String[] errorMsg = new String[1];
 
-        CustomTagDataAccessInterface tagDao = new InMemoryTagDataAccessObject();
-        ManageTagsViewModel manageTagsViewModel = new ManageTagsViewModel(tagDao, username);
-        String[] errorMsg = new String[1];
-
-        // create the interactor
-        EditTagOutputBoundary presenter = new EditTagOutputBoundary() {
+        final EditTagOutputBoundary presenter = new EditTagOutputBoundary() {
             @Override
             public void prepareSuccessView(EditTagOutputData successOutput) {
                 errorMsg[0] = successOutput.getErrorMessage();
@@ -39,37 +38,30 @@ public class EditTagInteractorTest {
             }
         };
 
-        EditTagInputBoundary interactor = new EditTagInteractor(tagDao, presenter);
-        EditTagController controller = new EditTagController(tagDao, manageTagsViewModel, interactor);
+        final EditTagInputBoundary interactor = new EditTagInteractor(tagDao, presenter);
+        final EditTagController controller = new EditTagController(tagDao, manageTagsViewModel, interactor);
 
-        // create tag to edit
-        CustomTag oldTag = new CustomTag("home", HOUSE);
-        CustomTag newTag = new CustomTag("gym", MUSCLE);
+        final CustomTag oldTag = new CustomTag("home", CustomTagIcons.HOUSE);
+        final CustomTag newTag = new CustomTag("gym", CustomTagIcons.MUSCLE);
 
         controller.execute(oldTag, newTag);
 
-        // fetch user's tags
-        Map<String, String> tags = tagDao.getCustomTags(username);
+        final Map<String, String> tags = tagDao.getCustomTags(username);
 
-        // check if newtag was registered
-        boolean containsNewName = tags.containsKey("gym");
-        boolean containsNewIcon = tags.get("gym").equals(MUSCLE);
-
-        // check if old tag was deleted
-        boolean notContainsOldName = !tags.containsKey("home");
-        boolean notContainsOldIcon = !tags.containsValue(HOUSE);
-
-        assert (containsNewName && containsNewIcon && notContainsOldName && notContainsOldIcon && errorMsg[0] == null);
-
+        assertTrue(tags.containsKey("gym"), "New tag name 'gym' should be present");
+        assertEquals(CustomTagIcons.MUSCLE, tags.get("gym"), "New tag icon should be MUSCLE");
+        assertFalse(tags.containsKey("home"), "Old tag name 'home' should be removed");
+        assertFalse(tags.containsValue(CustomTagIcons.HOUSE), "Old tag icon HOUSE should be removed");
+        assertNull(errorMsg[0], "No error message expected on successful edit");
     }
 
     @Test
-    public void testSameNameDiffIcon () {
-        CustomTagDataAccessInterface tagDao = new InMemoryTagDataAccessObject();
-        ManageTagsViewModel manageTagsViewModel = new ManageTagsViewModel(tagDao, username);
-        String[] errorMsg = new String[1];
+    public void testSameNameDiffIcon() {
+        final CustomTagDataAccessInterface tagDao = new InMemoryTagDataAccessObject();
+        final ManageTagsViewModel manageTagsViewModel = new ManageTagsViewModel(tagDao, username);
+        final String[] errorMsg = new String[1];
 
-        EditTagOutputBoundary presenter = new EditTagOutputBoundary() {
+        final EditTagOutputBoundary presenter = new EditTagOutputBoundary() {
             @Override
             public void prepareSuccessView(EditTagOutputData successOutput) {
                 errorMsg[0] = successOutput.getErrorMessage();
@@ -81,28 +73,27 @@ public class EditTagInteractorTest {
             }
         };
 
-        EditTagInputBoundary interactor = new EditTagInteractor(tagDao, presenter);
-        EditTagController controller = new EditTagController(tagDao, manageTagsViewModel, interactor);
+        final EditTagInputBoundary interactor = new EditTagInteractor(tagDao, presenter);
+        final EditTagController controller = new EditTagController(tagDao, manageTagsViewModel, interactor);
 
-        CustomTag oldTag = new CustomTag("home", HOUSE);
-        CustomTag newTag = new CustomTag("home", MUSCLE);
+        final CustomTag oldTag = new CustomTag("home", CustomTagIcons.HOUSE);
+        final CustomTag newTag = new CustomTag("home", CustomTagIcons.MUSCLE);
 
         controller.execute(oldTag, newTag);
 
-        Map<String, String> tags = tagDao.getCustomTags(username);
-        boolean containsName = tags.containsKey("home");
-        boolean containsNewIcon = tags.get("home").equals(MUSCLE);
+        final Map<String, String> tags = tagDao.getCustomTags(username);
 
-        assert containsName && containsNewIcon;
+        assertTrue(tags.containsKey("home"), "Tag name 'home' should exist");
+        assertEquals(CustomTagIcons.MUSCLE, tags.get("home"), "Tag icon should be updated to MUSCLE");
     }
 
     @Test
-    public void testSameIconDiffName () {
-        CustomTagDataAccessInterface tagDao = new InMemoryTagDataAccessObject();
-        ManageTagsViewModel manageTagsViewModel = new ManageTagsViewModel(tagDao, username);
-        String[] errorMsg = new String[1];
+    public void testSameIconDiffName() {
+        final CustomTagDataAccessInterface tagDao = new InMemoryTagDataAccessObject();
+        final ManageTagsViewModel manageTagsViewModel = new ManageTagsViewModel(tagDao, username);
+        final String[] errorMsg = new String[1];
 
-        EditTagOutputBoundary presenter = new EditTagOutputBoundary() {
+        final EditTagOutputBoundary presenter = new EditTagOutputBoundary() {
             @Override
             public void prepareSuccessView(EditTagOutputData successOutput) {
                 errorMsg[0] = successOutput.getErrorMessage();
@@ -114,30 +105,29 @@ public class EditTagInteractorTest {
             }
         };
 
-        EditTagInputBoundary interactor = new EditTagInteractor(tagDao, presenter);
-        EditTagController controller = new EditTagController(tagDao, manageTagsViewModel, interactor);
+        final EditTagInputBoundary interactor = new EditTagInteractor(tagDao, presenter);
+        final EditTagController controller = new EditTagController(tagDao, manageTagsViewModel, interactor);
 
-        CustomTag oldTag = new CustomTag("home", HOUSE);
+        final CustomTag oldTag = new CustomTag("home", CustomTagIcons.HOUSE);
         tagDao.addCustomTag(username, oldTag);
-        CustomTag newTag = new CustomTag("house", HOUSE);
+        final CustomTag newTag = new CustomTag("house", CustomTagIcons.HOUSE);
 
         controller.execute(oldTag, newTag);
 
-        Map<String, String> tags = tagDao.getCustomTags(username);
-        boolean notContainsOldName = !tags.containsKey("home");
-        boolean containsNewName = tags.containsKey("house");
-        boolean containsSameIcon = tags.get("house").equals(HOUSE);
+        final Map<String, String> tags = tagDao.getCustomTags(username);
 
-        assert notContainsOldName && containsNewName && containsSameIcon;
+        assertFalse(tags.containsKey("home"), "Old tag name 'home' should be removed");
+        assertTrue(tags.containsKey("house"), "New tag name 'house' should exist");
+        assertEquals(CustomTagIcons.HOUSE, tags.get("house"), "Tag icon should remain HOUSE");
     }
 
     @Test
-    public void testEditTakenName () {
-        CustomTagDataAccessInterface tagDao = new InMemoryTagDataAccessObject();
-        ManageTagsViewModel manageTagsViewModel = new ManageTagsViewModel(tagDao, username);
+    public void testEditTakenName() {
+        final CustomTagDataAccessInterface tagDao = new InMemoryTagDataAccessObject();
+        final ManageTagsViewModel manageTagsViewModel = new ManageTagsViewModel(tagDao, username);
         final String[] errorMsg = new String[1];
 
-        EditTagOutputBoundary presenter = new EditTagOutputBoundary() {
+        final EditTagOutputBoundary presenter = new EditTagOutputBoundary() {
             @Override
             public void prepareSuccessView(EditTagOutputData successOutput) {
                 errorMsg[0] = successOutput.getErrorMessage();
@@ -149,30 +139,29 @@ public class EditTagInteractorTest {
             }
         };
 
-        EditTagInputBoundary interactor = new EditTagInteractor(tagDao, presenter);
-        EditTagController controller = new EditTagController(tagDao, manageTagsViewModel, interactor);
+        final EditTagInputBoundary interactor = new EditTagInteractor(tagDao, presenter);
+        final EditTagController controller = new EditTagController(tagDao, manageTagsViewModel, interactor);
 
-        CustomTag TagA = new CustomTag("home", HOUSE);
-        tagDao.addCustomTag(username, TagA);
+        final CustomTag tagA = new CustomTag("home", CustomTagIcons.HOUSE);
+        tagDao.addCustomTag(username, tagA);
 
-        CustomTag TagB = new CustomTag("gym", MUSCLE);
-        tagDao.addCustomTag(username, TagB);
+        final CustomTag tagB = new CustomTag("gym", CustomTagIcons.MUSCLE);
+        tagDao.addCustomTag(username, tagB);
 
-        CustomTag TagC = new CustomTag("home", FOOD);
+        final CustomTag tagC = new CustomTag("home", CustomTagIcons.FOOD);
 
-        controller.execute(TagB, TagC);
+        controller.execute(tagB, tagC);
 
-        assert errorMsg[0] == "Tag name is taken";
-
+        assertEquals("Tag name is taken", errorMsg[0], "Should show error for taken tag name");
     }
 
     @Test
-    public void testEditTakenIcon () {
-        CustomTagDataAccessInterface tagDao = new InMemoryTagDataAccessObject();
-        ManageTagsViewModel manageTagsViewModel = new ManageTagsViewModel(tagDao, username);
+    public void testEditTakenIcon() {
+        final CustomTagDataAccessInterface tagDao = new InMemoryTagDataAccessObject();
+        final ManageTagsViewModel manageTagsViewModel = new ManageTagsViewModel(tagDao, username);
         final String[] errorMsg = new String[1];
 
-        EditTagOutputBoundary presenter = new EditTagOutputBoundary() {
+        final EditTagOutputBoundary presenter = new EditTagOutputBoundary() {
             @Override
             public void prepareSuccessView(EditTagOutputData successOutput) {
                 errorMsg[0] = successOutput.getErrorMessage();
@@ -184,21 +173,19 @@ public class EditTagInteractorTest {
             }
         };
 
-        EditTagInputBoundary interactor = new EditTagInteractor(tagDao, presenter);
-        EditTagController controller = new EditTagController(tagDao, manageTagsViewModel, interactor);
+        final EditTagInputBoundary interactor = new EditTagInteractor(tagDao, presenter);
+        final EditTagController controller = new EditTagController(tagDao, manageTagsViewModel, interactor);
 
-        CustomTag TagA = new CustomTag("home", HOUSE);
-        tagDao.addCustomTag(username, TagA);
+        final CustomTag tagA = new CustomTag("home", CustomTagIcons.HOUSE);
+        tagDao.addCustomTag(username, tagA);
 
-        CustomTag TagB = new CustomTag("gym", MUSCLE);
-        tagDao.addCustomTag(username, TagB);
+        final CustomTag tagB = new CustomTag("gym", CustomTagIcons.MUSCLE);
+        tagDao.addCustomTag(username, tagB);
 
-        CustomTag TagC = new CustomTag("house", HOUSE);
+        final CustomTag tagC = new CustomTag("house", CustomTagIcons.HOUSE);
 
-        controller.execute(TagB, TagC);
+        controller.execute(tagB, tagC);
 
-        assert errorMsg[0] == "Tag icon is taken";
+        assertEquals("Tag icon is taken", errorMsg[0], "Should show error for taken tag icon");
     }
-
-
 }

@@ -8,52 +8,49 @@ import java.util.Map;
 
 import static use_case.createCustomTag.CustomTagIcons.BOOKS;
 import static use_case.createCustomTag.CustomTagIcons.RING;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class CCTInteractorTest {
+class CCTInteractorTest {
 
-    static String username = "Bobette";
+    private static final String username = "Bobette";
 
     @Test
-    public void testSuccessfulCreation() {
+    void testSuccessfulCreation() {
+        final CustomTagDataAccessInterface tagDao = new InMemoryTagDataAccessObject();
+        final String[] errorMsg = new String[1];
 
-        CustomTagDataAccessInterface tagDao = new InMemoryTagDataAccessObject();
-        String[] errorMsg = new String[1];
-
-        final CCTOutputBoundary presenter = new CCTOutputBoundary() {
+        final CreateCustomTagOutputBoundary presenter = new CreateCustomTagOutputBoundary() {
             @Override
-            public void prepareFailView(CCTOutputData failedOutputData) {
+            public void prepareFailView(CreateCustomTagOutputData failedOutputData) {
                 errorMsg[0] = failedOutputData.getErrorMessage();
             }
 
             @Override
-            public void prepareSuccessView(CCTOutputData createCustomTagOutputData) {
+            public void prepareSuccessView(CreateCustomTagOutputData createCustomTagOutputData) {
                 errorMsg[0] = createCustomTagOutputData.getErrorMessage();
             }
         };
 
-        // construct new tag
-        CustomTag tag = new CustomTag("school", BOOKS);
-        String tagName = tag.getTagName();
-        String tagIcon = tag.getTagIcon();
+        final CustomTag tag = new CustomTag("school", BOOKS);
+        final String tagName = tag.getTagName();
+        final String tagIcon = tag.getTagIcon();
 
         final CCTInputBoundary interactor = new CCTInteractor(tagDao, presenter);
-        final interface_adapter.CreateTag.CctController controller = new interface_adapter.CreateTag.CctController(interactor);
+        final interface_adapter.CreateTag.CctController controller =
+                new interface_adapter.CreateTag.CctController(interactor);
 
-        // execute tag creation
         controller.execute(tag, username);
 
-        // test if tagDao contains the newly created tag
-        Map<String, String> tags = tagDao.getCustomTags(username);
-        boolean containsTagName = tags.containsKey(tagName);
-        boolean containsTagIcon = tags.get(tagName).equals(tagIcon);
+        final Map<String, String> tags = tagDao.getCustomTags(username);
 
-        assert (containsTagName && containsTagIcon && errorMsg[0] == null);
+        assertTrue(tags.containsKey(tagName), "Tag name should be present in tagDao");
+        assertEquals(tagIcon, tags.get(tagName), "Tag icon should match the created tag");
+        assertNull(errorMsg[0], "No error message expected on successful creation");
     }
 
     @Test
     public void testNameTaken() {
-
-        CustomTagDataAccessInterface tagDao = new InMemoryTagDataAccessObject();
+        final CustomTagDataAccessInterface tagDao = new InMemoryTagDataAccessObject();
         final String[] errorMsg = new String[1];
 
         final CCTOutputBoundary presenter = new CCTOutputBoundary() {
@@ -68,17 +65,16 @@ public class CCTInteractorTest {
             }
         };
 
-        // construct 2 tags with the same icon
-        CustomTag tagA = new CustomTag("school", BOOKS);
-        CustomTag tagB = new CustomTag("school", RING);
+        final CustomTag tagA = new CustomTag("school", BOOKS);
+        final CustomTag tagB = new CustomTag("school", RING);
 
-        final CCTInputBoundary interactor = new CCTInteractor(tagDao, presenter);
-        final interface_adapter.CreateTag.CctController controller = new interface_adapter.CreateTag.CctController(interactor);
+        final CreateCustomTagInputBoundary interactor = new CreateCustomTagInteractor(tagDao, presenter);
+        final interface_adapter.CreateTag.CctController controller =
+                new interface_adapter.CreateTag.CctController(interactor);
 
         controller.execute(tagA, username);
         controller.execute(tagB, username);
 
-        assert (errorMsg[0] == "Tag name is already in use!");
+        assertEquals("Tag name is already in use!", errorMsg[0], "Expected error message for taken tag name");
     }
-
 }

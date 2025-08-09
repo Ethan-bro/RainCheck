@@ -1,9 +1,10 @@
-package interface_adapter.DeleteCT;
+package interface_adapter.deleteCustomTag;
 
-import interface_adapter.manageTags.ManageTagsViewModel;
 import interface_adapter.events.TagChangeEventNotifier;
-import use_case.DeleteCustomTag.DeleteCustomTagOutputBoundary;
-import use_case.DeleteCustomTag.DeleteCustomTagOutputData;
+import interface_adapter.manageTags.ManageTagsViewModel;
+
+import use_case.deleteCustomTag.DeleteCustomTagOutputBoundary;
+import use_case.deleteCustomTag.DeleteCustomTagOutputData;
 
 public class DeleteCustomTagPresenter implements DeleteCustomTagOutputBoundary {
 

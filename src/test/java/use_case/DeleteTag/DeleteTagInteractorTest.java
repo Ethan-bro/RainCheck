@@ -2,58 +2,50 @@ package use_case.DeleteTag;
 
 import data_access.InMemoryTagDataAccessObject;
 import entity.CustomTag;
-import interface_adapter.DeleteCT.DeleteTagController;
-import interface_adapter.ManageTags.ManageTagsViewModel;
+import interface_adapter.deleteCustomTag.DeleteTagController;
+import interface_adapter.manageTags.ManageTagsViewModel;
 import org.junit.jupiter.api.Test;
 import use_case.createCustomTag.CustomTagDataAccessInterface;
-import use_case.DeleteCustomTag.DeleteCustomTagInputBoundary;
-import use_case.DeleteCustomTag.DeleteCustomTagInteractor;
-import use_case.DeleteCustomTag.DeleteCustomTagOutputBoundary;
-import use_case.DeleteCustomTag.DeleteCustomTagOutputData;
-import use_case.EditCT.EditTagInputBoundary;
-import use_case.EditCT.EditTagInteractor;
-import use_case.EditCT.EditTagOutputBoundary;
-import use_case.EditCT.EditTagOutputData;
+import use_case.createCustomTag.CustomTagIcons;
+import use_case.deleteCustomTag.DeleteCustomTagInputBoundary;
+import use_case.deleteCustomTag.DeleteCustomTagInteractor;
+import use_case.deleteCustomTag.DeleteCustomTagOutputBoundary;
 
 import java.util.Map;
 
-import static use_case.createCustomTag.CustomTagIcons.HOUSE;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class DeleteTagInteractorTest {
+class DeleteTagInteractorTest {
 
     private final String username = "Boris";
 
     @Test
-    public void testSuccessfulDelete() {
+    void testSuccessfulDelete() {
 
         CustomTagDataAccessInterface tagDao = new InMemoryTagDataAccessObject();
         ManageTagsViewModel manageTagsViewModel = new ManageTagsViewModel(tagDao, username);
-        String[] errorMsg = new String[1];
+        final String[] errorMsg = new String[1];
 
-        // create the interactor
-        DeleteCustomTagOutputBoundary presenter = new DeleteCustomTagOutputBoundary() {
-            @Override
-            public void prepareSuccessView(DeleteCustomTagOutputData successOutput) {
-                errorMsg[0] = successOutput.getMessage();
-            }
-        };
+        DeleteCustomTagOutputBoundary presenter = successOutput -> errorMsg[0] = successOutput.getMessage();
 
-            DeleteCustomTagInputBoundary interactor = new DeleteCustomTagInteractor(presenter, tagDao);
-            DeleteTagController controller = new DeleteTagController(tagDao, manageTagsViewModel, interactor);
+        DeleteCustomTagInputBoundary interactor = new DeleteCustomTagInteractor(presenter, tagDao);
+        DeleteTagController controller = new DeleteTagController(tagDao, manageTagsViewModel, interactor);
 
-            // create tag to delete
-            CustomTag tag = new CustomTag("home", HOUSE);
+        // create tag to delete
+        CustomTag tag = new CustomTag("home", CustomTagIcons.HOUSE);
 
         controller.execute(tag);
 
-            // fetch user's tags
-            Map<String, String> tags = tagDao.getCustomTags(username);
+        // fetch user's tags
+        Map<String, String> tags = tagDao.getCustomTags(username);
 
-            // check if tag was deleted
-            boolean notContainsName = !tags.containsKey("home");
-            boolean notContainsIcon = !tags.containsValue(HOUSE);
+        // check if tag was deleted
+        boolean notContainsName = !tags.containsKey("home");
+        boolean notContainsIcon = !tags.containsValue(CustomTagIcons.HOUSE);
 
-        assert(notContainsName &&notContainsIcon &&errorMsg[0]=="success");
-
-        }
+        assertTrue(notContainsName, "Tag name 'home' should be deleted");
+        assertTrue(notContainsIcon, "Tag icon HOUSE should be deleted");
+        assertEquals("success", errorMsg[0], "Output message should be 'success'");
     }
+}

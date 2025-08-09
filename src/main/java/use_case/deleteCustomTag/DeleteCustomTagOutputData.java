@@ -1,4 +1,4 @@
-package use_case.DeleteCustomTag;
+package use_case.deleteCustomTag;
 
 public class DeleteCustomTagOutputData {
 

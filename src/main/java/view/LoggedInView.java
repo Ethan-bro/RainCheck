@@ -68,6 +68,10 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     private static final int MENU_BUTTON_WIDTH = 60;
     private static final int HOUR_LABEL_WIDTH = 60;
 
+    // Extract magic numbers for button size
+    private static final int GMAIL_BUTTON_WIDTH = 200;
+    private static final int GMAIL_BUTTON_HEIGHT = 35;
+
     private final LoggedInViewModel loggedInViewModel;
     private final AddTaskViewModel addTaskViewModel;
     private final ManageTagsViewModel manageTagsViewModel;
@@ -161,27 +165,22 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     }
 
     private void initBottomPanel() {
-        // --- Bottom: Logout + Add Task Buttons ---
-        JButton logoutButton = new JButton("Log Out");
-        JButton addTaskButton = new JButton("+ Add Task");
-        JButton gmailSetupButton = GmailSetupInstructionsFactory.createButton(viewManagerModel, getViewName());
-        gmailSetupButton.setPreferredSize(new Dimension(200, 35));
+        final JButton logoutButton = new JButton("Log Out");
+        final JButton addTaskButton = new JButton("+ Add Task");
+        final JButton gmailSetupButton = GmailSetupInstructionsFactory.createButton(viewManagerModel, getViewName());
+        gmailSetupButton.setPreferredSize(new Dimension(GMAIL_BUTTON_WIDTH, GMAIL_BUTTON_HEIGHT));
 
-        JPanel bottomPanel = new JPanel(new BorderLayout());
+        final JPanel bottomPanel = new JPanel(new BorderLayout());
 
-        // Left side: Log Out button
-        JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        final JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         leftPanel.add(logoutButton);
 
-        // Middle: Gmail Setup Instructions button (centered)
-        JPanel middlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        final JPanel middlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         middlePanel.add(gmailSetupButton);
 
-        // Right side: + Add Task button
-        JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        final JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         rightPanel.add(addTaskButton);
 
-        // Add panels to bottomPanel
         bottomPanel.add(leftPanel, BorderLayout.WEST);
         bottomPanel.add(middlePanel, BorderLayout.CENTER);
         bottomPanel.add(rightPanel, BorderLayout.EAST);

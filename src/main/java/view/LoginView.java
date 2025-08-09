@@ -5,14 +5,30 @@ import interface_adapter.login.LoginController;
 import interface_adapter.login.LoginState;
 import interface_adapter.login.LoginViewModel;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Objects;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -50,6 +66,8 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
     private static final Color CANCEL_RED = new Color(178, 34, 34);
     private static final Color SIGNUP_BLUE = new Color(30, 144, 255);
 
+    private static final int VERTICAL_SPACING_BETWEEN_SIGNUP_AND_GMAIL = 10;
+
     private final String viewName = "log in";
 
     private final LoginController loginController;
@@ -64,24 +82,28 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
     private JButton cancel;
     private JButton signUp;
 
-    public LoginView(final LoginViewModel loginViewModel, final LoginController controller, final ViewManagerModel viewManagerModel) {
+    public LoginView(
+            final LoginViewModel loginViewModel,
+            final LoginController controller,
+            final ViewManagerModel viewManagerModel
+    ) {
         loginViewModel.addPropertyChangeListener(this);
 
         this.loginController = controller;
         this.viewManagerModel = viewManagerModel;
 
-        setLayout(new java.awt.BorderLayout());
+        setLayout(new BorderLayout());
         setBorder(BorderFactory.createEmptyBorder(BORDER_TOP, BORDER_LEFT, BORDER_BOTTOM, BORDER_RIGHT));
         setBackground(Color.WHITE);
 
         final JLabel title = buildTitle();
-        add(title, java.awt.BorderLayout.NORTH);
+        add(title, BorderLayout.NORTH);
 
         final JPanel formPanel = buildFormPanel();
-        add(formPanel, java.awt.BorderLayout.CENTER);
+        add(formPanel, BorderLayout.CENTER);
 
         final JPanel combinedPanel = buildButtonsAndSignupPanel();
-        add(combinedPanel, java.awt.BorderLayout.SOUTH);
+        add(combinedPanel, BorderLayout.SOUTH);
 
         // Listeners
         logIn.addActionListener(evt -> {
@@ -219,16 +241,15 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
         signUp.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         signupPanel.add(signUp);
 
-        JPanel combinedPanel = new JPanel();
+        final JPanel combinedPanel = new JPanel();
         combinedPanel.setLayout(new BoxLayout(combinedPanel, BoxLayout.Y_AXIS));
         combinedPanel.setOpaque(false);
         combinedPanel.add(buttonsPanel);
         combinedPanel.add(signupPanel);
 
-        // Add Gmail Setup Instructions button below signupPanel
-        JButton gmailButton = GmailSetupInstructionsFactory.createButton(viewManagerModel, getViewName());
+        final JButton gmailButton = GmailSetupInstructionsFactory.createButton(viewManagerModel, getViewName());
         gmailButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        combinedPanel.add(Box.createVerticalStrut(10)); // spacing between signupPanel and button
+        combinedPanel.add(Box.createVerticalStrut(VERTICAL_SPACING_BETWEEN_SIGNUP_AND_GMAIL));
         combinedPanel.add(gmailButton);
 
         add(combinedPanel, BorderLayout.SOUTH);
