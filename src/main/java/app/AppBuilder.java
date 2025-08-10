@@ -40,7 +40,6 @@ import view.LoggedInView;
 import view.LoginView;
 import view.ManageTagsView;
 import view.SignupView;
-import view.ViewManager;
 
 import java.awt.CardLayout;
 import java.io.FileNotFoundException;
@@ -71,7 +70,6 @@ public final class AppBuilder {
     private final JPanel cardPanel = new JPanel();
     private final CardLayout cardLayout = new CardLayout();
     private final ViewManagerModel viewManagerModel = new ViewManagerModel();
-    private final ViewManager viewManager = new ViewManager(cardPanel, cardLayout, viewManagerModel);
     private final Map<String, JPanel> viewMap = new HashMap<>();
 
     private final WeatherApiService weatherApiService = new WeatherApiService();
