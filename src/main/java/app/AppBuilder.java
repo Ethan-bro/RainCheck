@@ -26,6 +26,8 @@ import interface_adapter.markTaskComplete.MarkTaskCompleteViewModel;
 import interface_adapter.signup.SignupViewModel;
 import interface_adapter.task.TaskBoxDependencies;
 
+import use_case.edit_custom_tag.tagReplacement.DeleteAndCreate;
+import use_case.edit_custom_tag.tagReplacement.TagReplacementStrategy;
 import use_case.notification.EmailNotificationServiceInterface;
 import use_case.notification.NotificationDataAccessInterface;
 import use_case.notification.ScheduleNotificationInteractor;
@@ -75,6 +77,7 @@ public final class AppBuilder {
     private final Map<String, JPanel> viewMap = new HashMap<>();
 
     private final WeatherApiService weatherApiService = new WeatherApiService();
+    private final TagReplacementStrategy replacementStrategy = new DeleteAndCreate();
 
     private SupabaseUserDataAccessObject userDao;
     private SupabaseTagDataAccessObject tagDao;
@@ -363,7 +366,8 @@ public final class AppBuilder {
                     viewManagerModel,
                     editTagViewModel,
                     manageTagsViewModel,
-                    tagDao
+                    tagDao,
+                    replacementStrategy
             );
             cardPanel.add(editTagView, EditTagView.getViewName());
             viewMap.put(EditTagView.getViewName(), editTagView);

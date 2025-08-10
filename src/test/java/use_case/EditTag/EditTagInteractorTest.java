@@ -11,6 +11,7 @@ import use_case.edit_custom_tag.EditTagInputBoundary;
 import use_case.edit_custom_tag.EditTagInteractor;
 import use_case.edit_custom_tag.EditTagOutputBoundary;
 import use_case.edit_custom_tag.EditTagOutputData;
+import use_case.edit_custom_tag.tagReplacement.DeleteAndCreate;
 
 import java.util.Map;
 
@@ -38,7 +39,7 @@ class EditTagInteractorTest {
             }
         };
 
-        final EditTagInputBoundary interactor = new EditTagInteractor(tagDao, presenter);
+        final EditTagInputBoundary interactor = new EditTagInteractor(tagDao, presenter, new DeleteAndCreate());
         final EditTagController controller = new EditTagController(tagDao, manageTagsViewModel, interactor);
 
         final CustomTag oldTag = new CustomTag("home", CustomTagIcons.HOUSE);
@@ -73,7 +74,7 @@ class EditTagInteractorTest {
             }
         };
 
-        final EditTagInputBoundary interactor = new EditTagInteractor(tagDao, presenter);
+        final EditTagInputBoundary interactor = new EditTagInteractor(tagDao, presenter, new DeleteAndCreate());
         final EditTagController controller = new EditTagController(tagDao, manageTagsViewModel, interactor);
 
         final CustomTag oldTag = new CustomTag("home", CustomTagIcons.HOUSE);
@@ -105,7 +106,7 @@ class EditTagInteractorTest {
             }
         };
 
-        final EditTagInputBoundary interactor = new EditTagInteractor(tagDao, presenter);
+        final EditTagInputBoundary interactor = new EditTagInteractor(tagDao, presenter, new DeleteAndCreate());
         final EditTagController controller = new EditTagController(tagDao, manageTagsViewModel, interactor);
 
         final CustomTag oldTag = new CustomTag("home", CustomTagIcons.HOUSE);
@@ -139,7 +140,7 @@ class EditTagInteractorTest {
             }
         };
 
-        final EditTagInputBoundary interactor = new EditTagInteractor(tagDao, presenter);
+        final EditTagInputBoundary interactor = new EditTagInteractor(tagDao, presenter, new DeleteAndCreate());
         final EditTagController controller = new EditTagController(tagDao, manageTagsViewModel, interactor);
 
         final CustomTag tagA = new CustomTag("home", CustomTagIcons.HOUSE);
@@ -173,7 +174,7 @@ class EditTagInteractorTest {
             }
         };
 
-        final EditTagInputBoundary interactor = new EditTagInteractor(tagDao, presenter);
+        final EditTagInputBoundary interactor = new EditTagInteractor(tagDao, presenter, new DeleteAndCreate());
         final EditTagController controller = new EditTagController(tagDao, manageTagsViewModel, interactor);
 
         final CustomTag tagA = new CustomTag("home", CustomTagIcons.HOUSE);
