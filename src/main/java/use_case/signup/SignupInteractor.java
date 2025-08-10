@@ -12,18 +12,14 @@ import java.util.Set;
  */
 public class SignupInteractor implements SignupInputBoundary {
 
-    private static final Set<String> ALLOWED_DOMAINS = Set.of(
-            "gmail.com", "yahoo.com", "outlook.com", "hotmail.com", "aol.com",
-            "icloud.com", "mail.com", "zoho.com", "protonmail.com", "live.com",
-            "msn.com", "comcast.net", "verizon.net", "att.net", "me.com",
-            "mail.ru", "yandex.ru", "qq.com", "gmx.com", "cox.net",
-            "hotmail.co.uk", "btinternet.com", "sbcglobal.net", "bellsouth.net", "rocketmail.com",
-            "aim.com", "yahoo.co.uk", "mac.com", "earthlink.net", "charter.net",
-            "shaw.ca", "telus.net", "sympatico.ca", "rogers.com", "mail.utoronto.ca",
-            "live.ca", "googlemail.com", "facebook.com", "verizon.com", "bt.com",
-            "inbox.com", "web.de", "naver.com", "hanmail.net", "qqmail.com",
-            "mailinator.com", "fastmail.com", "tutanota.com", "hushmail.com", "posteo.de"
-    );
+    /*
+     * Changing the allowed email domains set to only include "gmail.com" because:
+     *
+     * The email configuration currently supports only Gmail accounts using a 16-character
+     * Google App Password. This specialized password setup is specific to Google accounts,
+     * and other domains do not support or require this kind of app-specific password.
+     */
+    private static final Set<String> ALLOWED_DOMAINS = Set.of("gmail.com");
 
     private final SignupUserDataAccessInterface userDataAccessObject;
     private final SignupOutputBoundary userPresenter;
