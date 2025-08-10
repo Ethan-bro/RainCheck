@@ -35,7 +35,7 @@ public class EditTagInteractor implements EditTagInputBoundary {
         if (!status) {
             EditTagOutputData failedOutput = new EditTagOutputData(statusMsg);
             editTagPresenter.prepareFailView(failedOutput);
-            return;
+
         } else {
             CustomTag newTag = replacementStrategy.getCreatedTag();
             EditTagOutputData successOutput = new EditTagOutputData(newTag);
