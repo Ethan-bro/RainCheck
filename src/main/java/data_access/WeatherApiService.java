@@ -53,7 +53,6 @@ public class WeatherApiService implements DailyWeatherDataAccessInterface, Hourl
     // New constants to avoid multiple string literal violations
     private static final String KEY_FEELSLIKE = "feelslike";
     private static final String KEY_UVINDEX = "uvindex";
-    private static final String KEY_UV_INDEX = "uv_index";
 
     private final String apiKey;
     private final OkHttpClient client = new OkHttpClient();
@@ -96,7 +95,7 @@ public class WeatherApiService implements DailyWeatherDataAccessInterface, Hourl
             final JsonObject body = getVisualCrossingJSONBody(location, date);
             if (body != null) {
                 final JsonArray daysArray = body.getAsJsonArray("days");
-                if (daysArray != null && daysArray.size() > 0) {
+                if (daysArray != null && !daysArray.isEmpty()) {
                     extractWeatherAndPutInMap(daysArray, result);
                 }
             }
@@ -189,7 +188,7 @@ public class WeatherApiService implements DailyWeatherDataAccessInterface, Hourl
             final JsonObject body = getVisualCrossingJSONBody(location, date);
             if (body != null) {
                 final JsonArray daysArray = body.getAsJsonArray("days");
-                if (daysArray != null && daysArray.size() > 0) {
+                if (daysArray != null && !daysArray.isEmpty()) {
                     final JsonArray hours = daysArray.get(0).getAsJsonObject().getAsJsonArray("hours");
                     for (int i = startHour; i <= endHour && i < hours.size(); i++) {
                         final JsonObject hour = hours.get(i).getAsJsonObject();
@@ -244,9 +243,6 @@ public class WeatherApiService implements DailyWeatherDataAccessInterface, Hourl
         if (hourJson.has(KEY_UVINDEX) && !hourJson.get(KEY_UVINDEX).isJsonNull()) {
             uvIndex = String.valueOf(hourJson.get(KEY_UVINDEX).getAsInt());
         }
-        else if (hourJson.has(KEY_UV_INDEX) && !hourJson.get(KEY_UV_INDEX).isJsonNull()) {
-            uvIndex = String.valueOf(hourJson.get(KEY_UV_INDEX).getAsInt());
-        }
 
         map.put("time", time);
         map.put("description", description);
@@ -287,9 +283,7 @@ public class WeatherApiService implements DailyWeatherDataAccessInterface, Hourl
 
             if (response.body() != null) {
                 final String bodyString = response.body().string();
-                System.out.println("Full API response JSON: " + bodyString);
                 final JsonObject json = JsonParser.parseString(bodyString).getAsJsonObject();
-                System.out.println("Parsed JSON object: " + json);
                 weeklyWeatherCache.put(key, json);
                 result = json;
             }

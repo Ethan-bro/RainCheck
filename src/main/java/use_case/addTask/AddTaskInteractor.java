@@ -59,6 +59,7 @@ public class AddTaskInteractor implements AddTaskInputBoundary {
         String description = "";
         String feels = "";
         String iconName = "";
+        String uvindex = "";
 
         try {
 
@@ -73,6 +74,7 @@ public class AddTaskInteractor implements AddTaskInputBoundary {
                 final Map<String, String> hourlyMap = hourly.get(0);
                 description = hourlyMap.get("description");
                 feels = hourlyMap.get("feelslike");
+                uvindex = hourlyMap.get("uvindex");
 
                 final Map<String, Object> daily = weatherApiService.getDailyWeather(
                         LocationService.getUserCity(), date);
@@ -105,7 +107,7 @@ public class AddTaskInteractor implements AddTaskInputBoundary {
                 description,
                 iconName,
                 temp,
-                ""
+                uvindex
         );
 
         final Task newTask = new Task(newTaskInfo);

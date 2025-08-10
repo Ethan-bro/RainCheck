@@ -129,7 +129,6 @@ public class SupabaseTaskDataAccessObject implements
         try (Response response = client.newCall(request).execute()) {
             if (response.isSuccessful()) {
                 final String body = Objects.requireNonNull(response.body()).string();
-                System.out.println("Raw JSON response from API:\n" + body);
                 result = JsonParser.parseString(body).getAsJsonArray();
             }
         }
@@ -292,7 +291,6 @@ public class SupabaseTaskDataAccessObject implements
         json.addProperty(WEATHER_DESCRIPTION, info.getWeatherDescription());
         json.addProperty(WEATHER_ICON_NAME, info.getWeatherIconName());
         json.addProperty(TEMPERATURE, info.getTemperature());
-        System.out.println("Uvindex: " + info.getUvIndex());
         json.addProperty(UV_INDEX, info.getUvIndex());
 
         return json;

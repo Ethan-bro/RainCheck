@@ -39,7 +39,6 @@ public class ManageTagsViewModel extends ViewModel<ManageTagsState> {
      * @param username the new username to set
      */
     public void setUsername(String username) {
-        System.out.println("[ManageTagsViewModel] setUsername called with: " + username);
         this.username = username;
 
         // Notify listeners that tags have changed (forces UI to re-pull from getTagOptions)
