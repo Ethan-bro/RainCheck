@@ -1,11 +1,9 @@
-package use_case.edit_custom_tag;
+package use_case.editCustomTag;
 
 import entity.CustomTag;
 
 import use_case.createCustomTag.CustomTagDataAccessInterface;
-import use_case.edit_custom_tag.tagReplacement.TagReplacementStrategy;
-
-import java.util.Map;
+import use_case.editCustomTag.TagReplacement.TagReplacementStrategy;
 
 /**
  * Interactor class implementing the EditTagInputBoundary.

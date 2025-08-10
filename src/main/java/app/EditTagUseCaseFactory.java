@@ -7,11 +7,11 @@ import interface_adapter.editTag.EditTagViewModel;
 import interface_adapter.manageTags.ManageTagsViewModel;
 
 import use_case.createCustomTag.CustomTagDataAccessInterface;
-import use_case.edit_custom_tag.EditTagInputBoundary;
-import use_case.edit_custom_tag.EditTagInteractor;
-import use_case.edit_custom_tag.EditTagOutputBoundary;
+import use_case.editCustomTag.EditTagInputBoundary;
+import use_case.editCustomTag.EditTagInteractor;
+import use_case.editCustomTag.EditTagOutputBoundary;
 
-import use_case.edit_custom_tag.tagReplacement.TagReplacementStrategy;
+import use_case.editCustomTag.TagReplacement.TagReplacementStrategy;
 import view.EditTagView;
 
 /**

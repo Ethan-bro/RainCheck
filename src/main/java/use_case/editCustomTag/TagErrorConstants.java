@@ -1,4 +1,4 @@
-package use_case.edit_custom_tag;
+package use_case.editCustomTag;
 
 /**
  * A container for tag-related error message constants.

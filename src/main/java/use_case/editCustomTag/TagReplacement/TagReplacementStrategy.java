@@ -1,8 +1,8 @@
-package use_case.edit_custom_tag.tagReplacement;
+package use_case.editCustomTag.TagReplacement;
 
 import entity.CustomTag;
 import use_case.createCustomTag.CustomTagDataAccessInterface;
-import use_case.edit_custom_tag.EditTagInputData;
+import use_case.editCustomTag.EditTagInputData;
 
 public interface TagReplacementStrategy {
 

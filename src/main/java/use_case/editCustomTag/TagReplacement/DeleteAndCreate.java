@@ -1,13 +1,13 @@
-package use_case.edit_custom_tag.tagReplacement;
+package use_case.editCustomTag.TagReplacement;
 
 import entity.CustomTag;
 import use_case.createCustomTag.CustomTagDataAccessInterface;
-import use_case.edit_custom_tag.EditTagInputData;
+import use_case.editCustomTag.EditTagInputData;
 
 import java.util.Map;
 
-import static use_case.edit_custom_tag.TagErrorConstants.ICON_TAKEN_ERROR;
-import static use_case.edit_custom_tag.TagErrorConstants.NAME_TAKEN_ERROR;
+import static use_case.editCustomTag.TagErrorConstants.ICON_TAKEN_ERROR;
+import static use_case.editCustomTag.TagErrorConstants.NAME_TAKEN_ERROR;
 
 public class DeleteAndCreate implements TagReplacementStrategy {
 

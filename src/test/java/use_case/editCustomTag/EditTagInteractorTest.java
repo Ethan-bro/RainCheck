@@ -1,4 +1,4 @@
-package use_case.EditTag;
+package use_case.editCustomTag;
 
 import data_access.InMemoryTagDataAccessObject;
 import entity.CustomTag;
@@ -7,11 +7,7 @@ import interface_adapter.manageTags.ManageTagsViewModel;
 import org.junit.jupiter.api.Test;
 import use_case.createCustomTag.CustomTagDataAccessInterface;
 import use_case.createCustomTag.CustomTagIcons;
-import use_case.edit_custom_tag.EditTagInputBoundary;
-import use_case.edit_custom_tag.EditTagInteractor;
-import use_case.edit_custom_tag.EditTagOutputBoundary;
-import use_case.edit_custom_tag.EditTagOutputData;
-import use_case.edit_custom_tag.tagReplacement.DeleteAndCreate;
+import use_case.editCustomTag.TagReplacement.DeleteAndCreate;
 
 import java.util.Map;
 

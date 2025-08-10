@@ -1,4 +1,4 @@
-package use_case.edit_custom_tag;
+package use_case.editCustomTag;
 
 /**
  * Input boundary interface for the EditTag use case.

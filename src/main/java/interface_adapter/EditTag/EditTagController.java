@@ -5,8 +5,8 @@ import entity.CustomTag;
 import interface_adapter.manageTags.ManageTagsViewModel;
 
 import use_case.createCustomTag.CustomTagDataAccessInterface;
-import use_case.edit_custom_tag.EditTagInputBoundary;
-import use_case.edit_custom_tag.EditTagInputData;
+import use_case.editCustomTag.EditTagInputBoundary;
+import use_case.editCustomTag.EditTagInputData;
 
 public class EditTagController {
 
