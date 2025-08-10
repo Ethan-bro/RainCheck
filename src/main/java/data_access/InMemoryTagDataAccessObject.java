@@ -1,12 +1,12 @@
 package data_access;
 
 import entity.CustomTag;
-import use_case.CreateCT.CustomTagDataAccessInterface;
+import use_case.CreateTag.TagDataAccessInterface;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class InMemoryTagDataAccessObject implements CustomTagDataAccessInterface {
+public class InMemoryTagDataAccessObject implements TagDataAccessInterface {
 
     private Map<String, String> customTags;
 

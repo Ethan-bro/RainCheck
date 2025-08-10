@@ -3,7 +3,7 @@ package interface_adapter.editTask;
 import entity.CustomTag;
 import interface_adapter.ViewModel;
 import interface_adapter.events.TagChangeEventNotifier;
-import use_case.CreateCT.CustomTagDataAccessInterface;
+import use_case.CreateTag.TagDataAccessInterface;
 
 import java.util.List;
 import java.util.Map;
@@ -11,10 +11,10 @@ import java.util.stream.Collectors;
 
 public class EditTaskViewModel extends ViewModel<EditTaskState> {
 
-    private final CustomTagDataAccessInterface tagDao;
+    private final TagDataAccessInterface tagDao;
     private String username;
 
-    public EditTaskViewModel(CustomTagDataAccessInterface tagDao, String username) {
+    public EditTaskViewModel(TagDataAccessInterface tagDao, String username) {
         super("Edit Task");
         this.tagDao = tagDao;
         this.username = username;

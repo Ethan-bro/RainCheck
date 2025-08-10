@@ -2,41 +2,41 @@ package app;
 
 import interface_adapter.ManageTags.ManageTagsViewModel;
 import interface_adapter.ViewManagerModel;
-import interface_adapter.CreateTag.CCTController;
-import interface_adapter.CreateTag.CCTPresenter;
-import interface_adapter.CreateTag.CCTViewModel;
-import use_case.CreateCT.CCTInputBoundary;
-import use_case.CreateCT.CCTInteractor;
-import use_case.CreateCT.CCTOutputBoundary;
-import use_case.CreateCT.CustomTagDataAccessInterface;
-import view.CCTView;
+import interface_adapter.CreateTag.CreateTagController;
+import interface_adapter.CreateTag.CreateTagPresenter;
+import interface_adapter.CreateTag.CreateTagViewModel;
+import use_case.CreateTag.CreateTagInputBoundary;
+import use_case.CreateTag.CreateTagInteractor;
+import use_case.CreateTag.CreateTagOutputBoundary;
+import use_case.CreateTag.TagDataAccessInterface;
+import view.CreateTagView;
 
 public class CCTUseCaseFactory {
 
     private CCTUseCaseFactory() {}
 
-    public static CCTView create (
+    public static CreateTagView create (
             ViewManagerModel viewManagerModel,
-            CCTViewModel viewModel,
+            CreateTagViewModel viewModel,
             ManageTagsViewModel manageTagsViewModel,
-            CustomTagDataAccessInterface CTDataAccessInterface) {
+            TagDataAccessInterface CTDataAccessInterface) {
 
-        final CCTController controller = createCCTUseCase(viewManagerModel, viewModel, manageTagsViewModel,
+        final CreateTagController controller = createCCTUseCase(viewManagerModel, viewModel, manageTagsViewModel,
                 CTDataAccessInterface);
 
-        return new CCTView(viewManagerModel, viewModel, controller);
+        return new CreateTagView(viewManagerModel, viewModel, controller);
     }
 
-    public static CCTController createCCTUseCase(ViewManagerModel viewManagerModel,
-                                                 CCTViewModel cctViewModel,
-                                                 ManageTagsViewModel manageTagsViewModel,
-                                                 CustomTagDataAccessInterface customTagDataAccessInterface) {
+    public static CreateTagController createCCTUseCase(ViewManagerModel viewManagerModel,
+                                                       CreateTagViewModel cctViewModel,
+                                                       ManageTagsViewModel manageTagsViewModel,
+                                                       TagDataAccessInterface customTagDataAccessInterface) {
 
-        final CCTOutputBoundary Presenter = new CCTPresenter(viewManagerModel, cctViewModel, manageTagsViewModel);
+        final CreateTagOutputBoundary Presenter = new CreateTagPresenter(viewManagerModel, cctViewModel, manageTagsViewModel);
 
-        final CCTInputBoundary Interactor = new CCTInteractor(customTagDataAccessInterface, Presenter);
+        final CreateTagInputBoundary Interactor = new CreateTagInteractor(customTagDataAccessInterface, Presenter);
 
-        return new CCTController(Interactor);
+        return new CreateTagController(Interactor);
     }
 
 }

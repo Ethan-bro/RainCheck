@@ -5,15 +5,12 @@ import entity.CustomTag;
 import interface_adapter.EditTag.EditTagController;
 import interface_adapter.ManageTags.ManageTagsViewModel;
 import org.junit.jupiter.api.Test;
-import use_case.CreateCT.CustomTagDataAccessInterface;
-import use_case.EditCT.EditTagInputBoundary;
-import use_case.EditCT.EditTagInteractor;
-import use_case.EditCT.EditTagOutputBoundary;
-import use_case.EditCT.EditTagOutputData;
+import use_case.CreateTag.TagDataAccessInterface;
+import use_case.EditTag.TagReplacement.DeleteAndCreate;
 
 import java.util.Map;
 
-import static use_case.CreateCT.CustomTagIcons.*;
+import static use_case.CreateTag.TagIcons.*;
 
 public class EditTagInteractorTest {
 
@@ -22,7 +19,7 @@ public class EditTagInteractorTest {
     @Test
     public void testSuccessfulEdit () {
 
-        CustomTagDataAccessInterface tagDao = new InMemoryTagDataAccessObject();
+        TagDataAccessInterface tagDao = new InMemoryTagDataAccessObject();
         ManageTagsViewModel manageTagsViewModel = new ManageTagsViewModel(tagDao, username);
         String[] errorMsg = new String[1];
 
@@ -39,7 +36,7 @@ public class EditTagInteractorTest {
             }
         };
 
-        EditTagInputBoundary interactor = new EditTagInteractor(tagDao, presenter);
+        EditTagInputBoundary interactor = new EditTagInteractor(tagDao, presenter, new DeleteAndCreate());
         EditTagController controller = new EditTagController(tagDao, manageTagsViewModel, interactor);
 
         // create tag to edit
@@ -65,7 +62,7 @@ public class EditTagInteractorTest {
 
     @Test
     public void testSameNameDiffIcon () {
-        CustomTagDataAccessInterface tagDao = new InMemoryTagDataAccessObject();
+        TagDataAccessInterface tagDao = new InMemoryTagDataAccessObject();
         ManageTagsViewModel manageTagsViewModel = new ManageTagsViewModel(tagDao, username);
         String[] errorMsg = new String[1];
 
@@ -81,7 +78,7 @@ public class EditTagInteractorTest {
             }
         };
 
-        EditTagInputBoundary interactor = new EditTagInteractor(tagDao, presenter);
+        EditTagInputBoundary interactor = new EditTagInteractor(tagDao, presenter, new DeleteAndCreate());
         EditTagController controller = new EditTagController(tagDao, manageTagsViewModel, interactor);
 
         CustomTag oldTag = new CustomTag("home", HOUSE);
@@ -98,7 +95,7 @@ public class EditTagInteractorTest {
 
     @Test
     public void testSameIconDiffName () {
-        CustomTagDataAccessInterface tagDao = new InMemoryTagDataAccessObject();
+        TagDataAccessInterface tagDao = new InMemoryTagDataAccessObject();
         ManageTagsViewModel manageTagsViewModel = new ManageTagsViewModel(tagDao, username);
         String[] errorMsg = new String[1];
 
@@ -114,7 +111,7 @@ public class EditTagInteractorTest {
             }
         };
 
-        EditTagInputBoundary interactor = new EditTagInteractor(tagDao, presenter);
+        EditTagInputBoundary interactor = new EditTagInteractor(tagDao, presenter, new DeleteAndCreate());
         EditTagController controller = new EditTagController(tagDao, manageTagsViewModel, interactor);
 
         CustomTag oldTag = new CustomTag("home", HOUSE);
@@ -133,7 +130,7 @@ public class EditTagInteractorTest {
 
     @Test
     public void testEditTakenName () {
-        CustomTagDataAccessInterface tagDao = new InMemoryTagDataAccessObject();
+        TagDataAccessInterface tagDao = new InMemoryTagDataAccessObject();
         ManageTagsViewModel manageTagsViewModel = new ManageTagsViewModel(tagDao, username);
         final String[] errorMsg = new String[1];
 
@@ -149,7 +146,7 @@ public class EditTagInteractorTest {
             }
         };
 
-        EditTagInputBoundary interactor = new EditTagInteractor(tagDao, presenter);
+        EditTagInputBoundary interactor = new EditTagInteractor(tagDao, presenter, new DeleteAndCreate());
         EditTagController controller = new EditTagController(tagDao, manageTagsViewModel, interactor);
 
         CustomTag TagA = new CustomTag("home", HOUSE);
@@ -168,7 +165,7 @@ public class EditTagInteractorTest {
 
     @Test
     public void testEditTakenIcon () {
-        CustomTagDataAccessInterface tagDao = new InMemoryTagDataAccessObject();
+        TagDataAccessInterface tagDao = new InMemoryTagDataAccessObject();
         ManageTagsViewModel manageTagsViewModel = new ManageTagsViewModel(tagDao, username);
         final String[] errorMsg = new String[1];
 
@@ -184,7 +181,7 @@ public class EditTagInteractorTest {
             }
         };
 
-        EditTagInputBoundary interactor = new EditTagInteractor(tagDao, presenter);
+        EditTagInputBoundary interactor = new EditTagInteractor(tagDao, presenter, new DeleteAndCreate());
         EditTagController controller = new EditTagController(tagDao, manageTagsViewModel, interactor);
 
         CustomTag TagA = new CustomTag("home", HOUSE);

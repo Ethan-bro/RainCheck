@@ -4,9 +4,9 @@ import entity.CustomTag;
 import interface_adapter.EditTag.EditTagViewModel;
 import interface_adapter.ManageTags.ManageTagsState;
 import interface_adapter.ViewManagerModel;
-import interface_adapter.CreateTag.CCTViewModel;
+import interface_adapter.CreateTag.CreateTagViewModel;
 import interface_adapter.ManageTags.ManageTagsViewModel;
-import interface_adapter.DeleteCT.DeleteTagController;
+import interface_adapter.DeleteTag.DeleteTagController;
 import interface_adapter.events.TagChangeEventNotifier;
 
 import javax.swing.*;
@@ -23,7 +23,7 @@ public class ManageTagsView extends JPanel implements ActionListener, PropertyCh
 
     private final ViewManagerModel viewManagerModel;
     private final ManageTagsViewModel manageTagsVM;
-    private final CCTViewModel cctViewModel;
+    private final CreateTagViewModel cctViewModel;
     private final EditTagViewModel editTagViewModel;
     private final DeleteTagController deleteTagController;
 
@@ -38,7 +38,7 @@ public class ManageTagsView extends JPanel implements ActionListener, PropertyCh
     public ManageTagsView(
             ViewManagerModel viewManagerModel,
             ManageTagsViewModel manageTagsVM,
-            CCTViewModel cctViewModel,
+            CreateTagViewModel cctViewModel,
             EditTagViewModel editTagViewModel,
             DeleteTagController deleteTagController
     ) {
@@ -165,7 +165,7 @@ public class ManageTagsView extends JPanel implements ActionListener, PropertyCh
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == createTagButton) {
             cctViewModel.setUsername(manageTagsVM.getUsername());
-            viewManagerModel.setState(CCTView.getViewName());
+            viewManagerModel.setState(CreateTagView.getViewName());
             viewManagerModel.firePropertyChanged();
             return;
         }

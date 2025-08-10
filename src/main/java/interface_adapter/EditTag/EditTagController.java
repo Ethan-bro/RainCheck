@@ -2,19 +2,20 @@ package interface_adapter.EditTag;
 
 import entity.CustomTag;
 import interface_adapter.ManageTags.ManageTagsViewModel;
-import use_case.EditCT.EditTagInputBoundary;
-import use_case.EditCT.EditTagInputData;
-import use_case.CreateCT.*;
+import use_case.EditTag.EditTagInputBoundary;
+import use_case.EditTag.EditTagInputData;
+import use_case.CreateTag.*;
 
 public class EditTagController {
 
-    private final CustomTagDataAccessInterface tagDao;
+    private final TagDataAccessInterface tagDao;
     private final ManageTagsViewModel manageTagsVM;
     private final EditTagInputBoundary Interactor;
 
-    public EditTagController(CustomTagDataAccessInterface tagDao,
+    public EditTagController(TagDataAccessInterface tagDao,
                              ManageTagsViewModel manageTagsVM,
                              EditTagInputBoundary Interactor) {
+
         this.tagDao = tagDao;
         this.manageTagsVM = manageTagsVM;
         this.Interactor = Interactor;

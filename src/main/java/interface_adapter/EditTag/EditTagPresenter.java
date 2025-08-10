@@ -3,8 +3,8 @@ package interface_adapter.EditTag;
 import interface_adapter.ManageTags.ManageTagsViewModel;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.events.TagChangeEventNotifier;
-import use_case.EditCT.EditTagOutputBoundary;
-import use_case.EditCT.EditTagOutputData;
+import use_case.EditTag.EditTagOutputBoundary;
+import use_case.EditTag.EditTagOutputData;
 
 public class EditTagPresenter implements EditTagOutputBoundary {
 

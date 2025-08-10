@@ -5,10 +5,11 @@ import interface_adapter.EditTag.EditTagPresenter;
 import interface_adapter.EditTag.EditTagViewModel;
 import interface_adapter.ManageTags.ManageTagsViewModel;
 import interface_adapter.ViewManagerModel;
-import use_case.EditCT.EditTagInputBoundary;
-import use_case.EditCT.EditTagInteractor;
-import use_case.EditCT.EditTagOutputBoundary;
-import use_case.CreateCT.CustomTagDataAccessInterface;
+import use_case.EditTag.EditTagInputBoundary;
+import use_case.EditTag.EditTagInteractor;
+import use_case.EditTag.EditTagOutputBoundary;
+import use_case.CreateTag.TagDataAccessInterface;
+import use_case.EditTag.TagReplacement.TagReplacementStrategy;
 import view.EditTagView;
 
 public class EditTagUseCaseFactory {
@@ -17,10 +18,11 @@ public class EditTagUseCaseFactory {
 
     public static EditTagView create(ViewManagerModel viewManagerModel,
                                      EditTagViewModel viewModel, ManageTagsViewModel manageTagsViewModel,
-                                     CustomTagDataAccessInterface customTagDataAccessInterface) {
+                                     TagDataAccessInterface customTagDataAccessInterface,
+                                     TagReplacementStrategy replacementStrategy) {
 
         EditTagController controller = createEditTagUseCase(viewManagerModel, viewModel,
-                manageTagsViewModel, customTagDataAccessInterface);
+                manageTagsViewModel, customTagDataAccessInterface, replacementStrategy);
 
         return new EditTagView(viewManagerModel, manageTagsViewModel, viewModel, controller);
     }
@@ -28,11 +30,12 @@ public class EditTagUseCaseFactory {
     public static EditTagController createEditTagUseCase(ViewManagerModel viewManagerModel,
                                                   EditTagViewModel viewModel,
                                                   ManageTagsViewModel manageTagsViewModel,
-                                                  CustomTagDataAccessInterface tagDao) {
+                                                  TagDataAccessInterface tagDao,
+                                                 TagReplacementStrategy replacementStrategy) {
 
         EditTagOutputBoundary presenter = new EditTagPresenter(viewManagerModel, viewModel, manageTagsViewModel);
 
-        EditTagInputBoundary interactor = new EditTagInteractor(tagDao, presenter);
+        EditTagInputBoundary interactor = new EditTagInteractor(tagDao, presenter, replacementStrategy);
 
         return new EditTagController(tagDao, manageTagsViewModel, interactor);
     }

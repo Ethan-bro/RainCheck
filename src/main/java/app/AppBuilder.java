@@ -17,12 +17,14 @@ import data_access.FileNotificationDataAccess;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.addTask.AddTaskViewModel;
 
-import interface_adapter.CreateTag.CCTViewModel;
+import interface_adapter.CreateTag.CreateTagViewModel;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.logout.LogoutController;
 import interface_adapter.signup.SignupViewModel;
 import org.jetbrains.annotations.NotNull;
+import use_case.EditTag.TagReplacement.DeleteAndCreate;
+import use_case.EditTag.TagReplacement.TagReplacementStrategy;
 import use_case.notification.ScheduleNotificationInteractor;
 import use_case.notification.ScheduleNotificationOutputBoundary;
 import use_case.notification.NotificationDataAccessInterface;
@@ -53,6 +55,9 @@ public class AppBuilder {
     // Weather:
     private final WeatherApiService weatherApiService = new WeatherApiService();
 
+    // implementation choice of logic for replacing tags:
+    private final TagReplacementStrategy replacementStrategy = new DeleteAndCreate();
+
     // databases:
     private SupabaseUserDataAccessObject userDao;
     private SupabaseTagDataAccessObject tagDao;
@@ -62,7 +67,7 @@ public class AppBuilder {
     private LoginViewModel loginViewModel;
     private LoggedInViewModel loggedInViewModel;
     private SignupViewModel signupViewModel;
-    private CCTViewModel cctViewModel;
+    private CreateTagViewModel cctViewModel;
     private EditTagViewModel editTagViewModel;
     private ManageTagsViewModel manageTagsViewModel;
     private AddTaskViewModel addTaskViewModel;
@@ -170,7 +175,7 @@ public class AppBuilder {
         loginViewModel = new LoginViewModel();
         loggedInViewModel = new LoggedInViewModel();
         signupViewModel = new SignupViewModel();
-        cctViewModel = new CCTViewModel();
+        cctViewModel = new CreateTagViewModel();
         editTagViewModel = new EditTagViewModel();
         manageTagsViewModel = new ManageTagsViewModel(tagDao, userDao.getCurrentUsername());
         addTaskViewModel = new AddTaskViewModel(tagDao, userDao.getCurrentUsername());
@@ -281,14 +286,14 @@ public class AppBuilder {
     public AppBuilder addCCTView() {
         if (this.cctViewModel == null) return this; // do nothing
 
-        CCTView cctView = CCTUseCaseFactory.create(
+        CreateTagView cctView = CCTUseCaseFactory.create(
                 this.viewManagerModel,
                 this.cctViewModel,
                 this.manageTagsViewModel,
                 this.tagDao
         );
-        cardPanel.add(cctView, CCTView.getViewName());
-        viewMap.put(CCTView.getViewName(), cctView);
+        cardPanel.add(cctView, CreateTagView.getViewName());
+        viewMap.put(CreateTagView.getViewName(), cctView);
         return this;
     }
 
@@ -299,7 +304,8 @@ public class AppBuilder {
                 this.viewManagerModel,
                 this.editTagViewModel,
                 this.manageTagsViewModel,
-                this.tagDao
+                this.tagDao,
+                this.replacementStrategy
         );
         cardPanel.add(editTagView, EditTagView.getViewName());
         viewMap.put(EditTagView.getViewName(), editTagView);

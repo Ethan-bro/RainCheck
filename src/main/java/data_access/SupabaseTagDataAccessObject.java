@@ -2,7 +2,7 @@ package data_access;
 
 import com.google.gson.*;
 import okhttp3.*;
-import use_case.CreateCT.CustomTagDataAccessInterface;
+import use_case.CreateTag.TagDataAccessInterface;
 import entity.CustomTag;
 
 import java.io.IOException;
@@ -15,7 +15,7 @@ import java.util.Objects;
  * These methods support tag storage/retrieval for each user using Supabase REST API,
  * where custom_tags is stored as a JSONB dictionary: tagName → emoji.
  */
-public class SupabaseTagDataAccessObject implements CustomTagDataAccessInterface {
+public class SupabaseTagDataAccessObject implements TagDataAccessInterface {
 
     private final String baseUrl;
     private final String apiKey;

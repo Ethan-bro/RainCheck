@@ -1,14 +1,14 @@
 package app;
 
-import interface_adapter.DeleteCT.DeleteCTPresenter;
+import interface_adapter.DeleteTag.DeleteTagPresenter;
 import interface_adapter.EditTag.EditTagViewModel;
 import interface_adapter.ManageTags.ManageTagsViewModel;
-import interface_adapter.DeleteCT.DeleteTagController;
+import interface_adapter.DeleteTag.DeleteTagController;
 import interface_adapter.ViewManagerModel;
-import interface_adapter.CreateTag.CCTViewModel;
-import use_case.CreateCT.CustomTagDataAccessInterface;
-import use_case.DeleteCT.DeleteCTInputBoundary;
-import use_case.DeleteCT.DeleteCTInteractor;
+import interface_adapter.CreateTag.CreateTagViewModel;
+import use_case.CreateTag.TagDataAccessInterface;
+import use_case.DeleteTag.DeleteTagInputBoundary;
+import use_case.DeleteTag.DeleteTagInteractor;
 import view.ManageTagsView;
 
 public class ManageTagsUseCaseFactory {
@@ -18,13 +18,13 @@ public class ManageTagsUseCaseFactory {
     public static ManageTagsView create(
             ViewManagerModel viewManagerModel,
             ManageTagsViewModel viewModel,
-            CCTViewModel cctViewModel,
+            CreateTagViewModel cctViewModel,
             EditTagViewModel editTagViewModel,
-            CustomTagDataAccessInterface tagDao
+            TagDataAccessInterface tagDao
     ) {
 
-        DeleteCTPresenter deleteCTPresenter = new DeleteCTPresenter(viewModel);
-        DeleteCTInputBoundary deleteCTInteractor = new DeleteCTInteractor(deleteCTPresenter, tagDao);
+        DeleteTagPresenter deleteCTPresenter = new DeleteTagPresenter(viewModel);
+        DeleteTagInputBoundary deleteCTInteractor = new DeleteTagInteractor(deleteCTPresenter, tagDao);
         DeleteTagController deleteTagController = new DeleteTagController(tagDao, viewModel, deleteCTInteractor);
 
         return new ManageTagsView(
