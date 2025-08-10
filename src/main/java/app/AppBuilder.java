@@ -305,22 +305,17 @@ public final class AppBuilder {
      * @return this AppBuilder instance
      */
     public AppBuilder addAddTaskView() {
-        try {
-            final ScheduleNotificationInteractor notificationInteractor = getScheduleNotificationInteractor();
+        final ScheduleNotificationInteractor notificationInteractor = getScheduleNotificationInteractor();
 
-            addTaskView = AddTaskUseCaseFactory.create(
-                    viewManagerModel,
-                    addTaskViewModel,
-                    loggedInViewModel,
-                    taskDao,
-                    new WeatherApiService(),
-                    notificationInteractor,
-                    LoggedInView.getViewName()
-            );
-        }
-        catch (IOException ex) {
-            System.err.println("Weather Lookup Failed: " + ex.getMessage());
-        }
+        addTaskView = AddTaskUseCaseFactory.create(
+                viewManagerModel,
+                addTaskViewModel,
+                loggedInViewModel,
+                taskDao,
+                weatherApiService,
+                notificationInteractor,
+                LoggedInView.getViewName()
+        );
 
         cardPanel.add(addTaskView, AddTaskView.getViewName());
         viewMap.put(AddTaskView.getViewName(), addTaskView);
