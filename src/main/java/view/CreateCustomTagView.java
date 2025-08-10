@@ -326,7 +326,7 @@ public class CreateCustomTagView extends JPanel implements PropertyChangeListene
 
         resetForm();
 
-        viewManagerModel.setState(LoggedInView.getViewName());
+        viewManagerModel.setState(ManageTagsView.getViewName());
         viewManagerModel.firePropertyChanged();
     }
 

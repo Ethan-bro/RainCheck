@@ -3,6 +3,7 @@ package use_case.edit_custom_tag;
 import entity.CustomTag;
 
 import use_case.createCustomTag.CustomTagDataAccessInterface;
+import use_case.edit_custom_tag.tagReplacement.TagReplacementStrategy;
 
 import java.util.Map;
 
@@ -13,49 +14,33 @@ public class EditTagInteractor implements EditTagInputBoundary {
 
     private final CustomTagDataAccessInterface tagDao;
     private final EditTagOutputBoundary editTagPresenter;
+    private final TagReplacementStrategy replacementStrategy;
 
     public EditTagInteractor(
             CustomTagDataAccessInterface tagDao,
-            EditTagOutputBoundary editTagPresenter) {
+            EditTagOutputBoundary editTagPresenter,
+            TagReplacementStrategy replacementStrategy) {
+
         this.tagDao = tagDao;
         this.editTagPresenter = editTagPresenter;
+        this.replacementStrategy = replacementStrategy;
     }
 
-    /**
-     * Executes the tag editing use case.
-     *
-     * @param inputData the input data containing old and new tag information
-     */
-    @Override
-    public void execute(final EditTagInputData inputData) {
-        final CustomTag oldTag = inputData.getOldTag();
-        final CustomTag newTag = inputData.getNewTag();
-        final String newName = inputData.getNewTagName();
-        final String newIcon = inputData.getNewTagIcon();
-        final String username = inputData.getUsername();
+    public void execute(EditTagInputData inputData) {
 
-        final Map<String, String> existingTags = tagDao.getCustomTags(username);
+        final Boolean status = replacementStrategy.replaceTag(inputData, tagDao);
+        String statusMsg = replacementStrategy.getStatusMsg();
 
-        // Ignore the old tag when checking for duplicates so that editing a tag
-        // to keep the same icon or same name does not trigger a "taken" error
-        final boolean isNameTaken = existingTags.containsKey(newName) && !oldTag.getTagName().equals(newName);
-        final boolean isIconTaken = existingTags.containsValue(newIcon) && !oldTag.getTagIcon().equals(newIcon);
-
-        if (isNameTaken) {
-            final EditTagOutputData failedOutput =
-                    new EditTagOutputData(TagErrorConstants.NAME_TAKEN_ERROR);
+        // check status
+        if (!status) {
+            EditTagOutputData failedOutput = new EditTagOutputData(statusMsg);
             editTagPresenter.prepareFailView(failedOutput);
-        }
-        else if (isIconTaken) {
-            final EditTagOutputData failedOutput =
-                    new EditTagOutputData(TagErrorConstants.ICON_TAKEN_ERROR);
-            editTagPresenter.prepareFailView(failedOutput);
-        }
-        else {
-            tagDao.deleteCustomTag(username, oldTag);
-            tagDao.addCustomTag(username, newTag);
-            final EditTagOutputData successOutput = new EditTagOutputData(newTag);
+            return;
+        } else {
+            CustomTag newTag = replacementStrategy.getCreatedTag();
+            EditTagOutputData successOutput = new EditTagOutputData(newTag);
             editTagPresenter.prepareSuccessView(successOutput);
+
         }
     }
 }

@@ -11,6 +11,7 @@ import use_case.edit_custom_tag.EditTagInputBoundary;
 import use_case.edit_custom_tag.EditTagInteractor;
 import use_case.edit_custom_tag.EditTagOutputBoundary;
 
+import use_case.edit_custom_tag.tagReplacement.TagReplacementStrategy;
 import view.EditTagView;
 
 /**
@@ -35,10 +36,11 @@ public final class EditTagUseCaseFactory {
             final ViewManagerModel viewManagerModel,
             final EditTagViewModel viewModel,
             final ManageTagsViewModel manageTagsViewModel,
-            final CustomTagDataAccessInterface customTagDataAccessInterface
+            final CustomTagDataAccessInterface customTagDataAccessInterface,
+            final TagReplacementStrategy replacementStrategy
     ) {
         final EditTagController controller = createEditTagUseCase(viewManagerModel, viewModel,
-                manageTagsViewModel, customTagDataAccessInterface);
+                manageTagsViewModel, customTagDataAccessInterface, replacementStrategy);
         return new EditTagView(viewManagerModel, manageTagsViewModel, viewModel, controller);
     }
 
@@ -55,10 +57,11 @@ public final class EditTagUseCaseFactory {
             final ViewManagerModel viewManagerModel,
             final EditTagViewModel viewModel,
             final ManageTagsViewModel manageTagsViewModel,
-            final CustomTagDataAccessInterface tagDao
+            final CustomTagDataAccessInterface tagDao,
+            final TagReplacementStrategy replacementStrategy
     ) {
         final EditTagOutputBoundary presenter = new EditTagPresenter(viewManagerModel, viewModel, manageTagsViewModel);
-        final EditTagInputBoundary interactor = new EditTagInteractor(tagDao, presenter);
+        final EditTagInputBoundary interactor = new EditTagInteractor(tagDao, presenter, replacementStrategy);
         return new EditTagController(tagDao, manageTagsViewModel, interactor);
     }
 }
