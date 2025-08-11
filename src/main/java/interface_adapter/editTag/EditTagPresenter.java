@@ -4,8 +4,8 @@ import interface_adapter.ViewManagerModel;
 import interface_adapter.events.TagChangeEventNotifier;
 import interface_adapter.manageTags.ManageTagsViewModel;
 
-import use_case.edit_custom_tag.EditTagOutputBoundary;
-import use_case.edit_custom_tag.EditTagOutputData;
+import use_case.editCustomTag.EditTagOutputBoundary;
+import use_case.editCustomTag.EditTagOutputData;
 
 /**
  * Presenter for Edit Tag feature that updates ViewModels and handles success/failure views.
