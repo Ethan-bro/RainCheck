@@ -1,4 +1,4 @@
-package interface_adapter.editTag;
+package interface_adapter.editCustomTag;
 
 public class EditTagState {
     private String currTagName = "Custom Tag";

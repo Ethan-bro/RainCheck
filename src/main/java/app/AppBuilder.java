@@ -14,7 +14,7 @@ import interface_adapter.ViewManagerModel;
 import interface_adapter.addTask.AddTaskViewModel;
 import interface_adapter.createTag.CreateCustomTagViewModel;
 import interface_adapter.deleteTask.DeleteTaskViewModel;
-import interface_adapter.editTag.EditTagViewModel;
+import interface_adapter.editCustomTag.EditTagViewModel;
 import interface_adapter.editTask.EditTaskController;
 import interface_adapter.editTask.EditTaskViewModel;
 import interface_adapter.logged_in.LoggedInDependencies;

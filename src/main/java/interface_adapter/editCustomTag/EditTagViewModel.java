@@ -1,4 +1,4 @@
-package interface_adapter.editTag;
+package interface_adapter.editCustomTag;
 
 import entity.CustomTag;
 

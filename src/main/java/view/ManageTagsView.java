@@ -4,7 +4,7 @@ import entity.CustomTag;
 
 import interface_adapter.ViewManagerModel;
 import interface_adapter.createTag.CreateCustomTagViewModel;
-import interface_adapter.editTag.EditTagViewModel;
+import interface_adapter.editCustomTag.EditTagViewModel;
 import interface_adapter.events.TagChangeEventNotifier;
 import interface_adapter.manageTags.DeleteTagController;
 import interface_adapter.manageTags.ManageTagsState;

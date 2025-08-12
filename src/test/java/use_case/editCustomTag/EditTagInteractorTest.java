@@ -2,7 +2,7 @@ package use_case.editCustomTag;
 
 import data_access.InMemoryTagDataAccessObject;
 import entity.CustomTag;
-import interface_adapter.editTag.EditTagController;
+import interface_adapter.editCustomTag.EditTagController;
 import interface_adapter.manageTags.ManageTagsViewModel;
 import org.junit.jupiter.api.Test;
 import use_case.createCustomTag.CustomTagDataAccessInterface;

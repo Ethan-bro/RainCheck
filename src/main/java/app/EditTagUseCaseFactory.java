@@ -1,9 +1,9 @@
 package app;
 
 import interface_adapter.ViewManagerModel;
-import interface_adapter.editTag.EditTagController;
-import interface_adapter.editTag.EditTagPresenter;
-import interface_adapter.editTag.EditTagViewModel;
+import interface_adapter.editCustomTag.EditTagController;
+import interface_adapter.editCustomTag.EditTagPresenter;
+import interface_adapter.editCustomTag.EditTagViewModel;
 import interface_adapter.manageTags.ManageTagsViewModel;
 
 import use_case.createCustomTag.CustomTagDataAccessInterface;

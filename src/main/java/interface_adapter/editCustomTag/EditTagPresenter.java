@@ -1,4 +1,4 @@
-package interface_adapter.editTag;
+package interface_adapter.editCustomTag;
 
 import interface_adapter.ViewManagerModel;
 import interface_adapter.events.TagChangeEventNotifier;
