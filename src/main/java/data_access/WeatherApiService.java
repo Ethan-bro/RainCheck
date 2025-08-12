@@ -58,7 +58,7 @@ public class WeatherApiService implements DailyWeatherDataAccessInterface, Hourl
     private final OkHttpClient client = new OkHttpClient();
     private final Map<String, JsonObject> weeklyWeatherCache = new HashMap<>();
 
-    private final boolean useFakeData = false;
+    private final boolean useFakeData = true;
 
     /**
      * Constructs the WeatherApiService by reading the API key from config file.
