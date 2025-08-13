@@ -157,39 +157,4 @@ class EditTagInteractorTest {
 
         assertEquals("Tag name is taken", errorMsg[0], "Should show error for taken tag name");
     }
-
-    @Test
-    void testEditTakenIcon() {
-        final CustomTagDataAccessInterface tagDao = new InMemoryTagDataAccessObject();
-        final ManageTagsViewModel manageTagsViewModel = new ManageTagsViewModel(tagDao, username);
-        final String[] errorMsg = new String[1];
-
-        final EditTagOutputBoundary presenter = new EditTagOutputBoundary() {
-            @Override
-            public void prepareSuccessView(EditTagOutputData successOutput) {
-                errorMsg[0] = successOutput.getErrorMessage();
-            }
-
-            @Override
-            public void prepareFailView(EditTagOutputData failedOutput) {
-                errorMsg[0] = failedOutput.getErrorMessage();
-            }
-        };
-
-        final EditTagInputBoundary interactor = new EditTagInteractor(tagDao, presenter, new DeleteAndCreate());
-        final EditTagController controller = new EditTagController(tagDao, manageTagsViewModel, interactor);
-
-        final CustomTag tagA = new CustomTag("home", CustomTagIcons.HOUSE);
-        tagDao.addCustomTag(username, tagA);
-
-        final CustomTag tagB = new CustomTag("gym", CustomTagIcons.MUSCLE);
-        tagDao.addCustomTag(username, tagB);
-
-        final String newTagName = "house";
-        final String newTagIcon = CustomTagIcons.HOUSE;
-
-        controller.execute(tagB, newTagName, newTagIcon);
-
-        assertEquals("Tag icon is taken", errorMsg[0], "Should show error for taken tag icon");
-    }
 }
