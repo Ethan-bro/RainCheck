@@ -1,5 +1,19 @@
 package app;
 
+import java.awt.CardLayout;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.WindowConstants;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import data_access.EmailNotificationService;
 import data_access.FileNotificationDataAccess;
 import data_access.NotificationScheduler;
@@ -7,9 +21,7 @@ import data_access.SupabaseTagDataAccessObject;
 import data_access.SupabaseTaskDataAccessObject;
 import data_access.SupabaseUserDataAccessObject;
 import data_access.WeatherApiService;
-
 import entity.EmailNotificationConfig;
-
 import interface_adapter.ViewManagerModel;
 import interface_adapter.addTask.AddTaskViewModel;
 import interface_adapter.createTag.CreateCustomTagViewModel;
@@ -25,14 +37,12 @@ import interface_adapter.manageTags.ManageTagsViewModel;
 import interface_adapter.markTaskComplete.MarkTaskCompleteViewModel;
 import interface_adapter.signup.SignupViewModel;
 import interface_adapter.task.TaskBoxDependencies;
-
 import use_case.editCustomTag.TagReplacement.DeleteAndCreate;
 import use_case.editCustomTag.TagReplacement.TagReplacementStrategy;
 import use_case.notification.EmailNotificationServiceInterface;
 import use_case.notification.NotificationDataAccessInterface;
 import use_case.notification.ScheduleNotificationInteractor;
 import use_case.notification.ScheduleNotificationOutputBoundary;
-
 import view.AddTaskView;
 import view.CreateCustomTagView;
 import view.EditTagView;
@@ -43,20 +53,6 @@ import view.LoginView;
 import view.ManageTagsView;
 import view.SignupView;
 import view.ViewManager;
-
-import java.awt.CardLayout;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.WindowConstants;
-
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 /**
  * Builder class for the application views and dependencies.
