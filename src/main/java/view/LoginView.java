@@ -1,10 +1,5 @@
 package view;
 
-import interface_adapter.ViewManagerModel;
-import interface_adapter.login.LoginController;
-import interface_adapter.login.LoginState;
-import interface_adapter.login.LoginViewModel;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -31,6 +26,11 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
+import interface_adapter.ViewManagerModel;
+import interface_adapter.login.LoginController;
+import interface_adapter.login.LoginState;
+import interface_adapter.login.LoginViewModel;
 
 /**
  * Polished Login View matching the Signup View style.
@@ -82,6 +82,14 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
     private JButton cancel;
     private JButton signUp;
 
+    /**
+     * Constructs the LoginView, initializing UI components and listeners for user authentication.
+     * Follows Clean Architecture by separating view logic from business logic via ViewModels and Controllers.
+     *
+     * @param loginViewModel The ViewModel providing login state and data.
+     * @param controller The controller handling login actions.
+     * @param viewManagerModel The model managing view state transitions.
+     */
     public LoginView(
             final LoginViewModel loginViewModel,
             final LoginController controller,
@@ -166,6 +174,11 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
         });
     }
 
+    /**
+     * Creates the title label for the Login view.
+     *
+     * @return JLabel representing the view title.
+     */
     private JLabel buildTitle() {
         final JLabel title = new JLabel("Login");
         title.setFont(new Font(FONT_NAME, Font.BOLD, TITLE_FONT_SIZE));
@@ -173,6 +186,11 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
         return title;
     }
 
+    /**
+     * Constructs the form panel containing username and password fields and error labels.
+     *
+     * @return JPanel containing the login form.
+     */
     private JPanel buildFormPanel() {
         final JPanel formPanel = new JPanel(new GridBagLayout());
         formPanel.setOpaque(false);
@@ -217,6 +235,11 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
         return formPanel;
     }
 
+    /**
+     * Builds the panel containing login, cancel, and signup buttons, as well as Gmail setup.
+     *
+     * @return JPanel with action and signup controls.
+     */
     private JPanel buildButtonsAndSignupPanel() {
         final JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, BUTTON_HGAP, BUTTON_VGAP));
         buttonsPanel.setOpaque(false);
@@ -257,6 +280,12 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
         return combinedPanel;
     }
 
+    /**
+     * Styles an action button with consistent font, color, and border.
+     *
+     * @param button The JButton to style.
+     * @param color The color to apply to the button.
+     */
     private void styleActionButton(final JButton button, final Color color) {
         button.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
         button.setFont(new Font(FONT_NAME, Font.BOLD, BUTTON_FONT_SIZE));
@@ -267,6 +296,11 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
         button.setOpaque(false);
     }
 
+    /**
+     * Handles action events for the cancel button, exiting the application.
+     *
+     * @param evt The ActionEvent triggered by user interaction.
+     */
     @Override
     public void actionPerformed(final ActionEvent evt) {
         if (evt.getSource() == cancel) {
@@ -274,6 +308,11 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
         }
     }
 
+    /**
+     * Responds to property changes in the LoginViewModel, updating UI fields accordingly.
+     *
+     * @param evt The PropertyChangeEvent containing updated login state.
+     */
     @Override
     public void propertyChange(final PropertyChangeEvent evt) {
         if ("state".equals(evt.getPropertyName())) {
@@ -285,6 +324,11 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
         }
     }
 
+    /**
+     * Returns the name of this view for use in view state management.
+     *
+     * @return The view name string.
+     */
     public String getViewName() {
         return viewName;
     }

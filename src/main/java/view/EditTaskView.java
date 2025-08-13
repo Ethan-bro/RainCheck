@@ -1,16 +1,5 @@
 package view;
 
-import entity.CustomTag;
-import entity.Priority;
-import entity.Reminder;
-import entity.Task;
-import entity.TaskInfo;
-
-import interface_adapter.ViewManagerModel;
-import interface_adapter.editTask.EditTaskController;
-import interface_adapter.editTask.EditTaskState;
-import interface_adapter.editTask.EditTaskViewModel;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -21,6 +10,16 @@ import java.util.Date;
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
+
+import entity.CustomTag;
+import entity.Priority;
+import entity.Reminder;
+import entity.Task;
+import entity.TaskInfo;
+import interface_adapter.ViewManagerModel;
+import interface_adapter.editTask.EditTaskController;
+import interface_adapter.editTask.EditTaskState;
+import interface_adapter.editTask.EditTaskViewModel;
 
 public class EditTaskView extends AbstractTaskFormView implements ActionListener, PropertyChangeListener {
 
@@ -33,6 +32,13 @@ public class EditTaskView extends AbstractTaskFormView implements ActionListener
 
     private Task existingTask;
 
+    /**
+     * Constructs the EditTaskView and initializes the UI components.
+     * @param controller the controller for editing tasks
+     * @param viewModel the view model for editing tasks
+     * @param viewManagerModel the model managing view state transitions
+     * @param mainViewKey the key for the main view
+     */
     public EditTaskView(EditTaskController controller,
                         EditTaskViewModel viewModel,
                         ViewManagerModel viewManagerModel,
@@ -53,6 +59,9 @@ public class EditTaskView extends AbstractTaskFormView implements ActionListener
         initializeSpinnersWithDefaults();
     }
 
+    /**
+     * Initializes the start and end date/time spinners with the current date and time.
+     */
     private void initializeSpinnersWithDefaults() {
         final LocalDateTime now = LocalDateTime.now();
         final Date nowDate = Date.from(now.atZone(ZoneId.systemDefault()).toInstant());
@@ -92,10 +101,19 @@ public class EditTaskView extends AbstractTaskFormView implements ActionListener
         return existingTask;
     }
 
+    /**
+     * Converts a Date to a LocalDateTime using the system default time zone.
+     * @param date the Date to convert
+     * @return the corresponding LocalDateTime
+     */
     private LocalDateTime toLocalDateTime(Date date) {
         return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
     }
 
+    /**
+     * Builds a new Task object with updated information from the form fields.
+     * @return the updated Task
+     */
     private Task buildUpdatedTask() {
         final String name = getNameField().getText().trim();
         final LocalDateTime start = toLocalDateTime((Date) getStartSpinner().getValue());
@@ -173,6 +191,10 @@ public class EditTaskView extends AbstractTaskFormView implements ActionListener
         }
     }
 
+    /**
+     * Returns the unique view name identifier for this view.
+     * @return the view name string
+     */
     public static String getViewName() {
         return VIEW_NAME;
     }

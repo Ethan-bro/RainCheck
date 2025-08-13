@@ -1,10 +1,5 @@
 package view;
 
-import interface_adapter.ViewManagerModel;
-import interface_adapter.signup.SignupController;
-import interface_adapter.signup.SignupState;
-import interface_adapter.signup.SignupViewModel;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -32,10 +27,16 @@ import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import interface_adapter.ViewManagerModel;
+import interface_adapter.signup.SignupController;
+import interface_adapter.signup.SignupState;
+import interface_adapter.signup.SignupViewModel;
+
 /**
  * Polished Signup View matching the Login View style.
  */
 public class SignupView extends JPanel implements PropertyChangeListener {
+
     private static final String VIEW_NAME = "SIGN_UP";
 
     private static final String FONT_FAMILY = "Segoe UI";
@@ -81,6 +82,13 @@ public class SignupView extends JPanel implements PropertyChangeListener {
     private final JButton cancel;
     private JButton toLogin;
 
+    /**
+     * Constructs the SignupView and initializes the UI components.
+     *
+     * @param controller the controller for signup actions
+     * @param model the view model for signup
+     * @param viewManagerModel the model managing view state transitions
+     */
     public SignupView(
             final SignupController controller,
             final SignupViewModel model,
@@ -124,6 +132,11 @@ public class SignupView extends JPanel implements PropertyChangeListener {
         attachListeners();
     }
 
+    /**
+     * Creates the title label for the signup view.
+     *
+     * @return the JLabel for the title
+     */
     private JLabel createTitleLabel() {
         final JLabel title = new JLabel(SignupViewModel.TITLE_LABEL);
         title.setFont(new Font(FONT_FAMILY, Font.BOLD, TITLE_FONT_SIZE));
@@ -131,6 +144,11 @@ public class SignupView extends JPanel implements PropertyChangeListener {
         return title;
     }
 
+    /**
+     * Creates the form panel containing all input fields.
+     *
+     * @return the JPanel for the form
+     */
     private JPanel createFormPanel() {
         final JPanel formPanel = new JPanel(new GridBagLayout());
         formPanel.setOpaque(false);
@@ -152,8 +170,17 @@ public class SignupView extends JPanel implements PropertyChangeListener {
         return formPanel;
     }
 
+    /**
+     * Adds a label and field to the form panel at the specified row.
+     *
+     * @param panel the panel to add to
+     * @param gbc the grid bag constraints
+     * @param row the row index
+     * @param labelText the label text
+     * @param field the input field
+     */
     private void addLabelAndField(final JPanel panel, final GridBagConstraints gbc, final int row,
-                                  final String labelText, final JTextField field) {
+            final String labelText, final JTextField field) {
         final JLabel label = new JLabel(labelText);
         label.setFont(new Font(FONT_FAMILY, Font.PLAIN, LABEL_FONT_SIZE));
 
@@ -167,6 +194,13 @@ public class SignupView extends JPanel implements PropertyChangeListener {
         panel.add(field, gbc);
     }
 
+    /**
+     * Creates a styled JButton with the given text and border color.
+     *
+     * @param text the button text
+     * @param borderColor the border color
+     * @return the styled JButton
+     */
     private JButton createStyledButton(final String text, final Color borderColor) {
         final JButton button = new JButton(text);
         button.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
@@ -179,6 +213,11 @@ public class SignupView extends JPanel implements PropertyChangeListener {
         return button;
     }
 
+    /**
+     * Creates the panel containing the signup and cancel buttons.
+     *
+     * @return the JPanel for the buttons
+     */
     private JPanel createButtonsPanel() {
         final JPanel buttonsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, BUTTON_HGAP, BUTTON_VGAP));
         buttonsPanel.setOpaque(false);
@@ -187,6 +226,11 @@ public class SignupView extends JPanel implements PropertyChangeListener {
         return buttonsPanel;
     }
 
+    /**
+     * Creates the panel with the login link/button.
+     *
+     * @return the JPanel for the login link
+     */
     private JPanel createLoginPanel() {
         final JPanel loginPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         loginPanel.setOpaque(false);
@@ -203,6 +247,9 @@ public class SignupView extends JPanel implements PropertyChangeListener {
         return loginPanel;
     }
 
+    /**
+     * Attaches listeners to the buttons and input fields.
+     */
     private void attachListeners() {
         signUp.addActionListener(this::onSignUpClicked);
         cancel.addActionListener(evt -> System.exit(0));
@@ -214,6 +261,11 @@ public class SignupView extends JPanel implements PropertyChangeListener {
         addDocumentListener(repeatPasswordInputField, this::updateRepeatPassword);
     }
 
+    /**
+     * Handles the signup button click event.
+     *
+     * @param evt the action event
+     */
     private void onSignUpClicked(final ActionEvent evt) {
         final SignupState currentState = signupViewModel.getState();
         signupController.execute(
@@ -224,6 +276,12 @@ public class SignupView extends JPanel implements PropertyChangeListener {
         );
     }
 
+    /**
+     * Adds a document listener to a text field to update the view model.
+     *
+     * @param field the text field
+     * @param consumer the consumer to handle text changes
+     */
     private void addDocumentListener(final JTextField field, final TextConsumer consumer) {
         field.getDocument().addDocumentListener(new DocumentListener() {
             private void update() {
@@ -247,6 +305,12 @@ public class SignupView extends JPanel implements PropertyChangeListener {
         });
     }
 
+    /**
+     * Gets the text from a text field, handling password fields appropriately.
+     *
+     * @param field the text field
+     * @return the field text
+     */
     private String getFieldText(final JTextField field) {
         String result = field.getText();
         if (field instanceof JPasswordField) {
@@ -255,24 +319,44 @@ public class SignupView extends JPanel implements PropertyChangeListener {
         return result;
     }
 
+    /**
+     * Updates the email in the signup view model.
+     *
+     * @param email the email to set
+     */
     private void updateEmail(final String email) {
         final SignupState currentState = signupViewModel.getState();
         currentState.setEmail(email);
         signupViewModel.setState(currentState);
     }
 
+    /**
+     * Updates the username in the signup view model.
+     *
+     * @param username the username to set
+     */
     private void updateUsername(final String username) {
         final SignupState currentState = signupViewModel.getState();
         currentState.setUsername(username);
         signupViewModel.setState(currentState);
     }
 
+    /**
+     * Updates the password in the signup view model.
+     *
+     * @param password the password to set
+     */
     private void updatePassword(final String password) {
         final SignupState currentState = signupViewModel.getState();
         currentState.setPassword(password);
         signupViewModel.setState(currentState);
     }
 
+    /**
+     * Updates the repeat password in the signup view model.
+     *
+     * @param repeatPassword the repeat password to set
+     */
     private void updateRepeatPassword(final String repeatPassword) {
         final SignupState currentState = signupViewModel.getState();
         currentState.setRepeatPassword(repeatPassword);
@@ -287,12 +371,37 @@ public class SignupView extends JPanel implements PropertyChangeListener {
         }
     }
 
+    /**
+     * Returns the unique view name identifier for this view.
+     *
+     * @return the view name string
+     */
     public static String getViewName() {
         return VIEW_NAME;
     }
 
+    /**
+     * Functional interface used to abstract text-consuming operations in the signup form.
+     * <p>
+     * This interface allows us to pass lambda expressions or method references that accept a single String argument,
+     * enabling flexible and reusable handling of text input fields (such as username, password, etc.) without tightly coupling
+     * the logic to specific UI components. This is especially useful for wiring up listeners and callbacks in a clean, concise way.
+     * <p>
+     * The {@code @FunctionalInterface} annotation enforces that this interface has exactly one abstract method, making it compatible
+     * with lambda expressions and method references in Java 8 and above. This is a best practice for functional-style programming
+     * and helps ensure code clarity and maintainability. 
+     * <p>
+     * This pattern is used to keep the codebase modular and to adhere to the 
+     * Single Responsibility and Open/Closed principles from SOLID, 
+     * as it decouples input handling from UI logic.
+     */
     @FunctionalInterface
     private interface TextConsumer {
+        /**
+         * Consumes a string of text, typically from a user input field.
+         *
+         * @param text the text to consume
+         */
         void consume(String text);
     }
 }

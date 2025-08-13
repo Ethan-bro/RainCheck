@@ -1,13 +1,5 @@
 package view;
 
-import entity.CustomTag;
-
-import interface_adapter.ViewManagerModel;
-import interface_adapter.createTag.CreateCustomTagController;
-import interface_adapter.createTag.CreateCustomTagViewModel;
-
-import use_case.createCustomTag.CustomTagIcons;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -36,6 +28,12 @@ import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 
 import org.jetbrains.annotations.NotNull;
+
+import entity.CustomTag;
+import interface_adapter.ViewManagerModel;
+import interface_adapter.createTag.CreateCustomTagController;
+import interface_adapter.createTag.CreateCustomTagViewModel;
+import use_case.createCustomTag.CustomTagIcons;
 
 public class CreateCustomTagView extends JPanel implements PropertyChangeListener {
 
@@ -80,10 +78,16 @@ public class CreateCustomTagView extends JPanel implements PropertyChangeListene
     private final JButton createButton = new JButton("Create Tag");
     private final JButton cancelButton = new JButton("Cancel");
 
+    /**
+     * Constructs the CreateCustomTagView and initializes the UI components.
+     * @param viewManagerModel the model managing view state transitions
+     * @param model the view model for creating custom tags
+     * @param controller the controller for creating custom tags
+     */
     public CreateCustomTagView(
-            final ViewManagerModel viewManagerModel,
-            final CreateCustomTagViewModel model,
-            final CreateCustomTagController controller
+        final ViewManagerModel viewManagerModel,
+        final CreateCustomTagViewModel model,
+        final CreateCustomTagController controller
     ) {
         this.viewManagerModel = viewManagerModel;
         this.createCustomTagViewModel = model;
@@ -108,6 +112,9 @@ public class CreateCustomTagView extends JPanel implements PropertyChangeListene
         setPreferredSize(PREFERRED_SIZE);
     }
 
+    /**
+     * Initializes the title panel for the view.
+     */
     private void initTitlePanel() {
         final JLabel titleLabel = new JLabel("Create Custom Tag", SwingConstants.CENTER);
         titleLabel.setFont(new Font(FONT_SANS_SERIF, Font.BOLD, FONT_SIZE_TITLE));
@@ -115,6 +122,9 @@ public class CreateCustomTagView extends JPanel implements PropertyChangeListene
         add(titleLabel, BorderLayout.NORTH);
     }
 
+    /**
+     * Initializes the center panel with tag name and icon selection.
+     */
     private void initCenterPanel() {
         final JPanel centerPanel = new JPanel();
         centerPanel.setBackground(Color.WHITE);
@@ -130,6 +140,10 @@ public class CreateCustomTagView extends JPanel implements PropertyChangeListene
         add(centerPanel, BorderLayout.CENTER);
     }
 
+    /**
+     * Creates the panel for entering the tag name.
+     * @return the JPanel for tag name input
+     */
     private JPanel createTagNamePanel() {
         final JPanel tagNamePanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         tagNamePanel.setBackground(Color.WHITE);
@@ -145,6 +159,10 @@ public class CreateCustomTagView extends JPanel implements PropertyChangeListene
         return tagNamePanel;
     }
 
+    /**
+     * Creates the label for the icon selection section.
+     * @return the JLabel for icon selection
+     */
     private JLabel createIconLabel() {
         final JLabel iconLabel = new JLabel("Select Tag Icon:");
         iconLabel.setFont(new Font(FONT_SANS_SERIF, Font.BOLD, FONT_SIZE_ICON_LABEL));
@@ -153,6 +171,10 @@ public class CreateCustomTagView extends JPanel implements PropertyChangeListene
         return iconLabel;
     }
 
+    /**
+     * Creates the panel containing icon selection buttons.
+     * @return the JPanel for icon selection
+     */
     private JPanel createIconButtonsPanel() {
         final int iconCount = CustomTagIcons.getIconList().size();
         final int cols = (iconCount + 1) / 2;
@@ -172,6 +194,12 @@ public class CreateCustomTagView extends JPanel implements PropertyChangeListene
         return iconPanel;
     }
 
+    /**
+     * Creates a toggle button for selecting a tag icon.
+     * @param icon the icon string
+     * @param emojiFont the font to use for the icon
+     * @return the created JToggleButton
+     */
     @NotNull
     private static JToggleButton createToggleButton(final String icon, final Font emojiFont) {
         final JToggleButton iconButton = new JToggleButton(icon);
@@ -188,6 +216,11 @@ public class CreateCustomTagView extends JPanel implements PropertyChangeListene
         return iconButton;
     }
 
+    /**
+     * Handles the selection and styling of an icon button.
+     * @param iconButton the button to style
+     * @param event the item event
+     */
     private static void handleIconSelection(final JToggleButton iconButton, final ItemEvent event) {
         if (iconButton.isSelected()) {
             iconButton.setBorder(BorderFactory.createLineBorder(COLOR_DODGER_BLUE, ICON_BUTTON_BORDER_THICKNESS));
@@ -201,6 +234,9 @@ public class CreateCustomTagView extends JPanel implements PropertyChangeListene
         }
     }
 
+    /**
+     * Initializes the bottom panel with create and cancel buttons.
+     */
     private void initBottomPanel() {
         final JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
         bottomPanel.setBackground(Color.WHITE);
@@ -214,11 +250,18 @@ public class CreateCustomTagView extends JPanel implements PropertyChangeListene
         add(bottomPanel, BorderLayout.SOUTH);
     }
 
+    /**
+     * Attaches listeners to the create and cancel buttons.
+     */
     private void attachListeners() {
         createButton.addActionListener(this::onCreateButtonClicked);
         cancelButton.addActionListener(event -> onCancelButtonClicked());
     }
 
+    /**
+     * Handles the create button click event.
+     * @param actionEvent the action event
+     */
     private void onCreateButtonClicked(final ActionEvent actionEvent) {
         if (validateForm()) {
             final ButtonModel selectedIcon = iconGroup.getSelection();
@@ -233,6 +276,10 @@ public class CreateCustomTagView extends JPanel implements PropertyChangeListene
         }
     }
 
+    /**
+     * Validates the form fields for tag name and icon selection.
+     * @return true if the form is valid, false otherwise
+     */
     private boolean validateForm() {
         final String tagName = tagNameTextField.getText().trim();
         boolean isValid = true;
@@ -249,6 +296,10 @@ public class CreateCustomTagView extends JPanel implements PropertyChangeListene
         return isValid;
     }
 
+    /**
+     * Shows a validation error message dialog.
+     * @param message the error message to display
+     */
     private void showValidationMessage(final String message) {
         JOptionPane.showMessageDialog(
                 this,
@@ -258,6 +309,9 @@ public class CreateCustomTagView extends JPanel implements PropertyChangeListene
         );
     }
 
+    /**
+     * Handles the cancel button click event, resetting the form and returning to the manage tags view.
+     */
     private void onCancelButtonClicked() {
         resetForm();
         createCustomTagViewModel.setUsername(null);
@@ -265,12 +319,19 @@ public class CreateCustomTagView extends JPanel implements PropertyChangeListene
         viewManagerModel.firePropertyChanged();
     }
 
+    /**
+     * Resets the form fields and enables the create button.
+     */
     private void resetForm() {
         tagNameTextField.setText("");
         iconGroup.clearSelection();
         createButton.setEnabled(true);
     }
 
+    /**
+     * Styles the primary (create) button.
+     * @param button the button to style
+     */
     private void stylePrimaryButton(final JButton button) {
         button.setFont(new Font(FONT_SANS_SERIF, Font.BOLD, FONT_SIZE_BUTTON_PRIMARY));
         button.setBackground(COLOR_DODGER_BLUE);
@@ -285,6 +346,10 @@ public class CreateCustomTagView extends JPanel implements PropertyChangeListene
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }
 
+    /**
+     * Styles the secondary (cancel) button.
+     * @param button the button to style
+     */
     private void styleSecondaryButton(final JButton button) {
         button.setFont(new Font(FONT_SANS_SERIF, Font.PLAIN, FONT_SIZE_BUTTON_SECONDARY));
         button.setBackground(COLOR_SECONDARY_BG);
@@ -299,10 +364,18 @@ public class CreateCustomTagView extends JPanel implements PropertyChangeListene
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }
 
+    /**
+     * Returns the unique view name identifier for this view.
+     * @return the view name string
+     */
     public static String getViewName() {
         return VIEW_NAME;
     }
 
+    /**
+     * Responds to property changes in the view model to update the UI.
+     * @param evt the property change event
+     */
     @Override
     public void propertyChange(final PropertyChangeEvent evt) {
         final String propertyName = evt.getPropertyName();
@@ -316,6 +389,9 @@ public class CreateCustomTagView extends JPanel implements PropertyChangeListene
         }
     }
 
+    /**
+     * Handles the property change event for a successful tag creation.
+     */
     private void handleSuccess() {
         JOptionPane.showMessageDialog(
                 this,
@@ -330,12 +406,19 @@ public class CreateCustomTagView extends JPanel implements PropertyChangeListene
         viewManagerModel.firePropertyChanged();
     }
 
+    /**
+     * Handles the property change event for a failed tag creation.
+     */
     private void handleFailure() {
         final String errorMsg = createCustomTagViewModel.getState().getErrorMsg();
         JOptionPane.showMessageDialog(this, errorMsg, "Error", JOptionPane.ERROR_MESSAGE);
         createButton.setEnabled(true);
     }
 
+    /**
+     * Finds a suitable emoji font available on the system.
+     * @return the Font to use for emoji icons
+     */
     private Font findEmojiFont() {
         final String[] emojiFonts = {"Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji"};
         final GraphicsEnvironment graphicsEnv = GraphicsEnvironment.getLocalGraphicsEnvironment();
