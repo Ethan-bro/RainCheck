@@ -1,22 +1,25 @@
 package use_case.addTask;
 
+import data_access.LocationService;
+import data_access.WeatherApiService;
+
+import entity.Reminder;
+import entity.Task;
+import entity.TaskID;
+import entity.TaskInfo;
+
+import interface_adapter.addTask.Constants;
+import interface_adapter.addTask.TaskIDGenerator;
+
+import use_case.listTasks.TaskDataAccessInterface;
+import use_case.notification.ScheduleNotificationInputData;
+import use_case.notification.ScheduleNotificationInteractor;
+
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-
-import data_access.LocationService;
-import data_access.WeatherApiService;
-import entity.Reminder;
-import entity.Task;
-import entity.TaskID;
-import entity.TaskInfo;
-import interface_adapter.addTask.Constants;
-import interface_adapter.addTask.TaskIDGenerator;
-import use_case.listTasks.TaskDataAccessInterface;
-import use_case.notification.ScheduleNotificationInputData;
-import use_case.notification.ScheduleNotificationInteractor;
 
 public class AddTaskInteractor implements AddTaskInputBoundary {
 
@@ -25,7 +28,6 @@ public class AddTaskInteractor implements AddTaskInputBoundary {
     private final TaskIDGenerator taskIDGenerator;
     private final WeatherApiService weatherApiService;
     private final ScheduleNotificationInteractor notificationInteractor;
-
 
     /**
      * Constructs an AddTaskInteractor with all required dependencies.
@@ -46,7 +48,6 @@ public class AddTaskInteractor implements AddTaskInputBoundary {
         this.notificationInteractor = notificationInteractor;
     }
 
-
     /**
      * Executes the add task use case: validates input, creates the task, and schedules notifications if needed.
      *
@@ -58,7 +59,8 @@ public class AddTaskInteractor implements AddTaskInputBoundary {
         final AddTaskOutputData validationFailure = validateInput(inputData);
         if (validationFailure != null) {
             addTaskPresenter.prepareFailView(validationFailure);
-        } else {
+        }
+        else {
             processNewTaskCreation(inputData, username);
         }
     }

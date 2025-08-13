@@ -6,7 +6,6 @@ public enum CreateCustomTagError {
 
     private final String message;
 
-
     /**
      * Constructs a CreateCustomTagError with the specified error message.
      *
@@ -15,7 +14,6 @@ public enum CreateCustomTagError {
     CreateCustomTagError(String message) {
         this.message = message;
     }
-
 
     /**
      * Returns the error message associated with this error type.

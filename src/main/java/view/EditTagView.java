@@ -1,5 +1,14 @@
 package view;
 
+import entity.CustomTag;
+
+import interface_adapter.ViewManagerModel;
+import interface_adapter.editCustomTag.EditTagController;
+import interface_adapter.editCustomTag.EditTagViewModel;
+import interface_adapter.manageTags.ManageTagsViewModel;
+
+import use_case.createCustomTag.CustomTagIcons;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -31,13 +40,6 @@ import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 
 import org.jetbrains.annotations.NotNull;
-
-import entity.CustomTag;
-import interface_adapter.ViewManagerModel;
-import interface_adapter.editCustomTag.EditTagController;
-import interface_adapter.editCustomTag.EditTagViewModel;
-import interface_adapter.manageTags.ManageTagsViewModel;
-import use_case.createCustomTag.CustomTagIcons;
 
 public class EditTagView extends JPanel implements PropertyChangeListener, ActionListener {
 

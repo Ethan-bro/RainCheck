@@ -1,7 +1,9 @@
 package interface_adapter.manageTags;
 
 import entity.CustomTag;
+
 import interface_adapter.events.TagChangeEventNotifier;
+
 import use_case.createCustomTag.CustomTagDataAccessInterface;
 
 /**
@@ -11,7 +13,6 @@ public class DeleteTagController {
 
     private final CustomTagDataAccessInterface tagDao;
     private final ManageTagsViewModel manageTagsViewModel;
-
 
     /**
      * Constructs a DeleteTagController with the given tag data access and view model.
@@ -23,7 +24,6 @@ public class DeleteTagController {
         this.tagDao = tagDao;
         this.manageTagsViewModel = manageTagsViewModel;
     }
-
 
     /**
      * Deletes a custom tag by name.

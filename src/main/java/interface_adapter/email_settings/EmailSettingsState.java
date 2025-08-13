@@ -10,7 +10,6 @@ public class EmailSettingsState {
     private String emailError;
     private String successMessage;
 
-
     /**
      * Copy constructor for EmailSettingsState.
      *
@@ -23,7 +22,6 @@ public class EmailSettingsState {
         this.successMessage = copy.successMessage;
     }
 
-
     /**
      * Default constructor for EmailSettingsState.
      */
@@ -31,7 +29,6 @@ public class EmailSettingsState {
     }
 
     // Getters and setters
-
 
     /**
      * Returns the email address.
@@ -42,7 +39,6 @@ public class EmailSettingsState {
         return email;
     }
 
-
     /**
      * Sets the email address.
      *
@@ -51,7 +47,6 @@ public class EmailSettingsState {
     public void setEmail(String email) {
         this.email = email;
     }
-
 
     /**
      * Returns whether notifications are enabled.
@@ -62,7 +57,6 @@ public class EmailSettingsState {
         return notificationsEnabled;
     }
 
-
     /**
      * Sets whether notifications are enabled.
      *
@@ -71,7 +65,6 @@ public class EmailSettingsState {
     public void setNotificationsEnabled(boolean notificationsEnabled) {
         this.notificationsEnabled = notificationsEnabled;
     }
-
 
     /**
      * Returns the email error message, if any.
@@ -82,7 +75,6 @@ public class EmailSettingsState {
         return emailError;
     }
 
-
     /**
      * Sets the email error message.
      *
@@ -92,7 +84,6 @@ public class EmailSettingsState {
         this.emailError = emailError;
     }
 
-
     /**
      * Returns the success message, if any.
      *
@@ -101,7 +92,6 @@ public class EmailSettingsState {
     public String getSuccessMessage() {
         return successMessage;
     }
-
 
     /**
      * Sets the success message.

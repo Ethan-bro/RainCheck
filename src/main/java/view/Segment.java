@@ -1,5 +1,9 @@
 package view;
 
+import entity.Task;
+
+import interface_adapter.calendar.TaskClickListener;
+
 import java.awt.Color;
 import java.awt.Insets;
 import java.time.LocalDate;
@@ -7,9 +11,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.swing.JButton;
-
-import entity.Task;
-import interface_adapter.calendar.TaskClickListener;
 
 public class Segment {
 
@@ -49,7 +50,8 @@ public class Segment {
         final int idx = weekDates.indexOf(segmentStart.toLocalDate());
         if (idx >= 0) {
             this.dayIndex = idx;
-        } else {
+        }
+        else {
             this.dayIndex = 0;
         }
 
@@ -81,7 +83,8 @@ public class Segment {
                 default ->
                     button.setBackground(Color.LIGHT_GRAY);
             }
-        } else {
+        }
+        else {
             button.setBackground(Color.LIGHT_GRAY);
         }
 
@@ -133,11 +136,6 @@ public class Segment {
         return slot;
     }
 
-    /**
-     * Sets the slot index for this segment.
-     *
-     * @param slot the slot index
-     */
     /**
      * Sets the slot index for this segment.
      * @param slot the slot index

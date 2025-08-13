@@ -2,6 +2,7 @@ package interface_adapter.createTag;
 
 import interface_adapter.ViewManagerModel;
 import interface_adapter.manageTags.ManageTagsViewModel;
+
 import use_case.createCustomTag.CreateCustomTagOutputBoundary;
 import use_case.createCustomTag.CreateCustomTagOutputData;
 

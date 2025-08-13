@@ -6,7 +6,6 @@ public class CreateCustomTagViewModel extends ViewModel<CreateCustomTagState> {
 
     private String username;
 
-
     /**
      * Constructs a CreateCustomTagViewModel, initializing the view model with a default state.
      */
@@ -14,7 +13,6 @@ public class CreateCustomTagViewModel extends ViewModel<CreateCustomTagState> {
         super("Create Custom Tag");
         setState(new CreateCustomTagState());
     }
-
 
     /**
      * Sets the username associated with this view model.
@@ -24,7 +22,6 @@ public class CreateCustomTagViewModel extends ViewModel<CreateCustomTagState> {
     public void setUsername(String username) {
         this.username = username;
     }
-
 
     /**
      * Returns the username associated with this view model.

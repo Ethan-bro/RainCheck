@@ -5,7 +5,6 @@ public class EditTaskState {
     private boolean success;
     private String error;
 
-
     /**
      * Returns whether the task edit was successful.
      *
@@ -14,7 +13,6 @@ public class EditTaskState {
     public boolean isSuccess() {
         return success;
     }
-
 
     /**
      * Sets the success status of the task edit.
@@ -25,7 +23,6 @@ public class EditTaskState {
         this.success = success;
     }
 
-
     /**
      * Returns the error message associated with the task edit, if any.
      *
@@ -34,7 +31,6 @@ public class EditTaskState {
     public String getError() {
         return error;
     }
-
 
     /**
      * Sets the error message for the task edit.

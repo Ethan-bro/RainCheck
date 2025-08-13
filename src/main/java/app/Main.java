@@ -9,8 +9,6 @@ import javax.swing.JFrame;
  */
 public class Main {
 
-    private static int numOfApiCallsMade;
-
     /**
      * Main method to start the application.
      * @param args command-line arguments (unused)
@@ -42,20 +40,5 @@ public class Main {
         catch (IOException ioEx) {
             ioEx.printStackTrace();
         }
-    }
-
-    /**
-     * Increment the count of API calls made by one.
-     */
-    public static void incrementNumOfApiCallsMade() {
-        numOfApiCallsMade++;
-    }
-
-    /**
-     * Get the current count of API calls made.
-     * @return number of API calls made
-     */
-    public static int getNumOfApiCallsMade() {
-        return numOfApiCallsMade;
     }
 }

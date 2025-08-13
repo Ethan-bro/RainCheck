@@ -10,7 +10,6 @@ public class LogoutController {
 
     private final LogoutInputBoundary logoutUseCaseInteractor;
 
-
     /**
      * Constructs a LogoutController with the given use case interactor.
      *
@@ -19,7 +18,6 @@ public class LogoutController {
     public LogoutController(LogoutInputBoundary logoutUseCaseInteractor) {
         this.logoutUseCaseInteractor = logoutUseCaseInteractor;
     }
-
 
     /**
      * Executes the logout use case for the specified user.

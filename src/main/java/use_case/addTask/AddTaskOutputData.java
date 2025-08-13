@@ -9,7 +9,6 @@ public class AddTaskOutputData {
     private final String errorMessage;
     private final Task newTask;
 
-
     /**
      * Constructs an AddTaskOutputData representing a failed add task operation.
      *
@@ -21,7 +20,6 @@ public class AddTaskOutputData {
         this.errorMessage = errorType.getMessage();
         this.newTask = null;
     }
-
 
     /**
      * Constructs an AddTaskOutputData representing a successful add task operation.
@@ -35,7 +33,6 @@ public class AddTaskOutputData {
         this.newTask = newTask;
     }
 
-
     /**
      * Returns the error message if the add task operation failed.
      *
@@ -45,7 +42,6 @@ public class AddTaskOutputData {
         return errorMessage;
     }
 
-
     /**
      * Indicates whether the add task operation failed.
      *
@@ -54,7 +50,6 @@ public class AddTaskOutputData {
     public boolean isAddTaskFailed() {
         return addTaskFailed;
     }
-
 
     /**
      * Returns the newly created Task if the operation succeeded.

@@ -1,13 +1,15 @@
 package interface_adapter.manageTags;
 
+import entity.CustomTag;
+
+import interface_adapter.ViewModel;
+import interface_adapter.events.TagChangeEventNotifier;
+
+import use_case.createCustomTag.CustomTagDataAccessInterface;
+
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import entity.CustomTag;
-import interface_adapter.ViewModel;
-import interface_adapter.events.TagChangeEventNotifier;
-import use_case.createCustomTag.CustomTagDataAccessInterface;
 
 public class ManageTagsViewModel extends ViewModel<ManageTagsState> {
 

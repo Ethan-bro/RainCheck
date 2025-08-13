@@ -35,7 +35,6 @@ public final class CustomTagIcons {
         // Prevent instantiation
     }
 
-
     /**
      * Returns the list of available custom tag icons.
      *

@@ -1,5 +1,15 @@
 package view;
 
+import entity.CustomTag;
+
+import interface_adapter.ViewManagerModel;
+import interface_adapter.createTag.CreateCustomTagViewModel;
+import interface_adapter.editCustomTag.EditTagViewModel;
+import interface_adapter.events.TagChangeEventNotifier;
+import interface_adapter.manageTags.DeleteTagController;
+import interface_adapter.manageTags.ManageTagsState;
+import interface_adapter.manageTags.ManageTagsViewModel;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -22,15 +32,6 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-
-import entity.CustomTag;
-import interface_adapter.ViewManagerModel;
-import interface_adapter.createTag.CreateCustomTagViewModel;
-import interface_adapter.editCustomTag.EditTagViewModel;
-import interface_adapter.events.TagChangeEventNotifier;
-import interface_adapter.manageTags.DeleteTagController;
-import interface_adapter.manageTags.ManageTagsState;
-import interface_adapter.manageTags.ManageTagsViewModel;
 
 public class ManageTagsView extends JPanel implements ActionListener {
 

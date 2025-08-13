@@ -8,7 +8,6 @@ public class CreateCustomTagInputData {
     private String tagName;
     private String tagEmoji;
 
-
     /**
      * Constructs a CreateCustomTagInputData object with the provided tag name and emoji.
      *
@@ -20,7 +19,6 @@ public class CreateCustomTagInputData {
         this.tagEmoji = tagEmoji;
     }
 
-
     /**
      * Returns the name of the custom tag.
      *
@@ -29,7 +27,6 @@ public class CreateCustomTagInputData {
     public String getTagName() {
         return tagName;
     }
-
 
     /**
      * Returns the emoji/icon for the custom tag.
@@ -40,7 +37,6 @@ public class CreateCustomTagInputData {
         return tagEmoji;
     }
 
-
     /**
      * Sets the emoji/icon for the custom tag.
      *
@@ -49,7 +45,6 @@ public class CreateCustomTagInputData {
     public void setTagEmoji(String tagEmoji) {
         this.tagEmoji = tagEmoji;
     }
-
 
     /**
      * Sets the name of the custom tag.

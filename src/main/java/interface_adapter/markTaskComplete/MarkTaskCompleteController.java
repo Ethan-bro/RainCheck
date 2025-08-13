@@ -1,6 +1,7 @@
 package interface_adapter.markTaskComplete;
 
 import entity.TaskID;
+
 import use_case.markTaskComplete.MarkTaskCompleteInputBoundary;
 import use_case.markTaskComplete.MarkTaskCompleteInputData;
 
@@ -12,7 +13,6 @@ public class MarkTaskCompleteController {
     private final MarkTaskCompleteInputBoundary markTaskCompleteInteractor;
     private String username;
 
-
     /**
      * Constructs a MarkTaskCompleteController with the given interactor.
      *
@@ -22,7 +22,6 @@ public class MarkTaskCompleteController {
         this.markTaskCompleteInteractor = markTaskCompleteInteractor;
     }
 
-
     /**
      * Sets the username for the user performing the operation.
      *
@@ -31,7 +30,6 @@ public class MarkTaskCompleteController {
     public void setUsername(String username) {
         this.username = username;
     }
-
 
     /**
      * Marks the task identified by taskId as complete if username is set.

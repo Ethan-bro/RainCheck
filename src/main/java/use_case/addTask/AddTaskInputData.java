@@ -1,11 +1,11 @@
 package use_case.addTask;
 
-import java.time.LocalDateTime;
-import java.util.Objects;
-
 import entity.CustomTag;
 import entity.Priority;
 import entity.Reminder;
+
+import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class AddTaskInputData {
 
@@ -17,7 +17,6 @@ public class AddTaskInputData {
     private String taskStatus;
     private Reminder reminder;
     private String isDeleted;
-
 
     /**
      * Constructs an AddTaskInputData object with the provided task details.
@@ -43,7 +42,6 @@ public class AddTaskInputData {
         this.reminder = reminder;
     }
 
-
     /**
      * Returns the name of the task.
      *
@@ -52,7 +50,6 @@ public class AddTaskInputData {
     public String getTaskName() {
         return taskName;
     }
-
 
     /**
      * Sets the name of the task.
@@ -63,7 +60,6 @@ public class AddTaskInputData {
         this.taskName = taskName;
     }
 
-
     /**
      * Returns the start date and time of the task.
      *
@@ -72,7 +68,6 @@ public class AddTaskInputData {
     public LocalDateTime getStartDateTime() {
         return startDateTime;
     }
-
 
     /**
      * Sets the start date and time of the task.
@@ -83,7 +78,6 @@ public class AddTaskInputData {
         this.startDateTime = startDateTime;
     }
 
-
     /**
      * Returns the end date and time of the task.
      *
@@ -92,7 +86,6 @@ public class AddTaskInputData {
     public LocalDateTime getEndDateTime() {
         return endDateTime;
     }
-
 
     /**
      * Sets the end date and time of the task.
@@ -103,7 +96,6 @@ public class AddTaskInputData {
         this.endDateTime = endDateTime;
     }
 
-
     /**
      * Returns the priority of the task.
      *
@@ -112,7 +104,6 @@ public class AddTaskInputData {
     public Priority getPriority() {
         return priority;
     }
-
 
     /**
      * Sets the priority of the task.
@@ -123,7 +114,6 @@ public class AddTaskInputData {
         this.priority = priority;
     }
 
-
     /**
      * Returns the custom tag associated with the task.
      *
@@ -132,7 +122,6 @@ public class AddTaskInputData {
     public CustomTag getTag() {
         return customTag;
     }
-
 
     /**
      * Sets the custom tag for the task.
@@ -143,7 +132,6 @@ public class AddTaskInputData {
         this.customTag = tag;
     }
 
-
     /**
      * Returns the status of the task (e.g., "Incomplete").
      *
@@ -152,7 +140,6 @@ public class AddTaskInputData {
     public String getTaskStatus() {
         return taskStatus;
     }
-
 
     /**
      * Sets the status of the task.
@@ -163,7 +150,6 @@ public class AddTaskInputData {
         this.taskStatus = taskStatus;
     }
 
-
     /**
      * Returns the reminder setting for the task.
      *
@@ -172,7 +158,6 @@ public class AddTaskInputData {
     public Reminder getReminder() {
         return reminder;
     }
-
 
     /**
      * Sets the reminder for the task.
@@ -183,7 +168,6 @@ public class AddTaskInputData {
         this.reminder = reminder;
     }
 
-
     /**
      * Sets the deletion status of the task.
      *
@@ -192,7 +176,6 @@ public class AddTaskInputData {
     public void setIsDeleted(String isDeleted) {
         this.isDeleted = isDeleted;
     }
-
 
     /**
      * Returns the deletion status of the task.

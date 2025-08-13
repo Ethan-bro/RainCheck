@@ -5,7 +5,6 @@ public class EditTagState {
     private String currTagEmoji;
     private String errorMsg = "";
 
-
     /**
      * Copy constructor for EditTagState.
      *
@@ -17,14 +16,12 @@ public class EditTagState {
         errorMsg = copy.errorMsg;
     }
 
-
     /**
      * Default constructor for EditTagState.
      */
     public EditTagState() {
 
     }
-
 
     /**
      * Returns the current tag name.
@@ -35,7 +32,6 @@ public class EditTagState {
         return currTagName;
     }
 
-
     /**
      * Sets the current tag name.
      *
@@ -44,7 +40,6 @@ public class EditTagState {
     public void setCurrTagName(String newCurrTagName) {
         this.currTagName = newCurrTagName;
     }
-
 
     /**
      * Sets the current tag emoji.
@@ -55,7 +50,6 @@ public class EditTagState {
         this.currTagEmoji = newCurrTagEmoji;
     }
 
-
     /**
      * Returns the error message, if any.
      *
@@ -64,7 +58,6 @@ public class EditTagState {
     public String getErrorMsg() {
         return errorMsg;
     }
-
 
     /**
      * Sets the error message.

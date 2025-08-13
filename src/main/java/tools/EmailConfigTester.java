@@ -1,15 +1,8 @@
 package tools;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.time.LocalDateTime;
-import java.util.UUID;
-
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
 import data_access.EmailNotificationService;
 import data_access.FileNotificationDataAccess;
+
 import entity.EmailNotificationConfig;
 import entity.Priority;
 import entity.Reminder;
@@ -17,6 +10,14 @@ import entity.ScheduledNotification;
 import entity.Task;
 import entity.TaskID;
 import entity.TaskInfo;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 /**
  * Utility to test the full notification flow including email configuration.

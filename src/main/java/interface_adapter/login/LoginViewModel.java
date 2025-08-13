@@ -7,7 +7,6 @@ import interface_adapter.ViewModel;
  */
 public class LoginViewModel extends ViewModel<LoginState> {
 
-
     /**
      * Constructs a LoginViewModel and initializes its state.
      */

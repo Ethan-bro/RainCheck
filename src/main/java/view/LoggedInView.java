@@ -1,5 +1,33 @@
 package view;
 
+import data_access.LocationService;
+import data_access.SupabaseTaskDataAccessObject;
+import data_access.WeatherApiService;
+
+import entity.Task;
+
+import interface_adapter.ViewManagerModel;
+import interface_adapter.addTask.AddTaskViewModel;
+import interface_adapter.calendar.TaskClickListener;
+import interface_adapter.deleteTask.DeleteTaskController;
+import interface_adapter.deleteTask.DeleteTaskPresenter;
+import interface_adapter.editTask.EditTaskViewModel;
+import interface_adapter.logged_in.LoggedInDependencies;
+import interface_adapter.logged_in.LoggedInState;
+import interface_adapter.logged_in.LoggedInViewModel;
+import interface_adapter.logout.LogoutController;
+import interface_adapter.manageTags.ManageTagsViewModel;
+import interface_adapter.markTaskComplete.MarkTaskCompleteController;
+import interface_adapter.markTaskComplete.MarkTaskCompletePresenter;
+import interface_adapter.task.TaskBoxDependencies;
+import interface_adapter.task.TaskViewModel;
+
+import tools.EnsureEmailConfigForUser;
+
+import use_case.deleteTask.DeleteTaskInteractor;
+import use_case.markTaskComplete.MarkTaskCompleteInteractor;
+import use_case.notification.NotificationDataAccessInterface;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -29,30 +57,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 
 import org.jetbrains.annotations.NotNull;
-
-import data_access.LocationService;
-import data_access.SupabaseTaskDataAccessObject;
-import data_access.WeatherApiService;
-import entity.Task;
-import interface_adapter.ViewManagerModel;
-import interface_adapter.addTask.AddTaskViewModel;
-import interface_adapter.calendar.TaskClickListener;
-import interface_adapter.deleteTask.DeleteTaskController;
-import interface_adapter.deleteTask.DeleteTaskPresenter;
-import interface_adapter.editTask.EditTaskViewModel;
-import interface_adapter.logged_in.LoggedInDependencies;
-import interface_adapter.logged_in.LoggedInState;
-import interface_adapter.logged_in.LoggedInViewModel;
-import interface_adapter.logout.LogoutController;
-import interface_adapter.manageTags.ManageTagsViewModel;
-import interface_adapter.markTaskComplete.MarkTaskCompleteController;
-import interface_adapter.markTaskComplete.MarkTaskCompletePresenter;
-import interface_adapter.task.TaskBoxDependencies;
-import interface_adapter.task.TaskViewModel;
-import tools.EnsureEmailConfigForUser;
-import use_case.deleteTask.DeleteTaskInteractor;
-import use_case.markTaskComplete.MarkTaskCompleteInteractor;
-import use_case.notification.NotificationDataAccessInterface;
 
 public class LoggedInView extends JPanel implements PropertyChangeListener {
 

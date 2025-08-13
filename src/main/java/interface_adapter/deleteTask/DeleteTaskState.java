@@ -5,7 +5,6 @@ public class DeleteTaskState {
     private boolean success;
     private String error;
 
-
     /**
      * Returns whether the task deletion was successful.
      *
@@ -14,7 +13,6 @@ public class DeleteTaskState {
     public boolean isSuccess() {
         return success;
     }
-
 
     /**
      * Sets the success status of the task deletion.
@@ -25,7 +23,6 @@ public class DeleteTaskState {
         this.success = success;
     }
 
-
     /**
      * Returns the error message associated with the task deletion, if any.
      *
@@ -34,7 +31,6 @@ public class DeleteTaskState {
     public String getError() {
         return error;
     }
-
 
     /**
      * Sets the error message for the task deletion.

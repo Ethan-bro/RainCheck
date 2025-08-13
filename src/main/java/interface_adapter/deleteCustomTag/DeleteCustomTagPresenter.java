@@ -2,13 +2,13 @@ package interface_adapter.deleteCustomTag;
 
 import interface_adapter.events.TagChangeEventNotifier;
 import interface_adapter.manageTags.ManageTagsViewModel;
+
 import use_case.deleteCustomTag.DeleteCustomTagOutputBoundary;
 import use_case.deleteCustomTag.DeleteCustomTagOutputData;
 
 public class DeleteCustomTagPresenter implements DeleteCustomTagOutputBoundary {
 
     private final ManageTagsViewModel manageTagsViewModel;
-
 
     /**
      * Constructs a DeleteCustomTagPresenter with the given ManageTagsViewModel.

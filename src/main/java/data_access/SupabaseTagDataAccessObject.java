@@ -1,5 +1,9 @@
 package data_access;
 
+import entity.CustomTag;
+
+import use_case.createCustomTag.CustomTagDataAccessInterface;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,15 +14,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
-import entity.CustomTag;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import use_case.createCustomTag.CustomTagDataAccessInterface;
 
 /**
  * SupabaseTagDataAccessObject implements methods defined in CustomTagDataAccessInterface.

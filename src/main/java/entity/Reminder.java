@@ -19,8 +19,7 @@ public class Reminder {
     /**
      * Constructs a Reminder.
      *
-     * @param minutesBefore the number of minutes before the event to remind, -1
-     * means no reminder. Must be >= -1.
+     * @param minutesBefore the number of minutes before the event to remind, -1 means no reminder. Must be >= -1.
      * @throws IllegalArgumentException if minutesBefore < -1
      */
     public Reminder(int minutesBefore) {
@@ -75,7 +74,8 @@ public class Reminder {
         final boolean result;
         if (!(other instanceof Reminder reminder)) {
             result = false;
-        } else {
+        }
+        else {
             result = reminder.minutesBefore == this.minutesBefore;
         }
         return result;

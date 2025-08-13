@@ -1,18 +1,15 @@
+package use_case.addTask;
+
+import interface_adapter.addTask.Constants;
 
 /**
  * Enum representing possible error states for the Add Task use case.
- * <p>
  * Each constant corresponds to a specific validation or business rule error that can occur
  * when a user attempts to add a new task. This approach centralizes error handling and
  * improves maintainability by providing clear, descriptive error messages for each case.
  * This design follows the Open/Closed Principle by allowing new error types to be added
  * without modifying existing logic.
  */
-package use_case.addTask;
-
-import interface_adapter.addTask.Constants;
-
-
 public enum AddTaskError {
     /**
      * Error when the task name is empty.
@@ -39,12 +36,10 @@ public enum AddTaskError {
      */
     NO_TAG_SELECTED("Please create and select a tag first");
 
-
     /**
      * The error message associated with this error type.
      */
     private final String message;
-
 
     /**
      * Constructs an AddTaskError with the specified error message.
@@ -54,7 +49,6 @@ public enum AddTaskError {
     AddTaskError(String message) {
         this.message = message;
     }
-
 
     /**
      * Returns the error message associated with this error type.

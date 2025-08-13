@@ -1,8 +1,8 @@
 package use_case.createCustomTag;
 
-import java.util.Map;
-
 import entity.CustomTag;
+
+import java.util.Map;
 
 /**
  * Interactor for creating custom tags. Ensures tag name and emoji are unique for the user.
@@ -11,7 +11,6 @@ public class CreateCustomTagInteractor implements CreateCustomTagInputBoundary {
 
     private final CustomTagDataAccessInterface dao;
     private final CreateCustomTagOutputBoundary createCustomTagPresenter;
-
 
     /**
      * Constructs a CreateCustomTagInteractor with the required dependencies.

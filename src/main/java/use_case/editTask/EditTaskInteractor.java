@@ -1,12 +1,14 @@
 package use_case.editTask;
 
-import org.jetbrains.annotations.NotNull;
-
-import constants.Constants;
 import entity.Task;
 import entity.TaskInfo;
 import entity.WeatherInfo;
+
 import use_case.weather.WeatherApiInterface;
+
+import constants.Constants;
+
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Interactor for the editTask use case.

@@ -1,9 +1,9 @@
 package use_case.listTasks;
 
+import entity.Task;
+
 import java.time.LocalDate;
 import java.util.List;
-
-import entity.Task;
 
 public class ListTasksInteractor implements ListTasksInputBoundary {
     private final TaskDataAccessInterface taskDao;

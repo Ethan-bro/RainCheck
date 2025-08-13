@@ -1,8 +1,8 @@
 package interface_adapter.addTask;
 
-import java.util.UUID;
-
 import entity.TaskID;
+
+import java.util.UUID;
 
 public class UuidGenerator implements TaskIDGenerator {
 

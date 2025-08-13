@@ -1,7 +1,9 @@
 package interface_adapter.editTask;
 
 import entity.Task;
+
 import interface_adapter.ViewManagerModel;
+
 import use_case.editTask.EditTaskInputBoundary;
 import use_case.editTask.EditTaskInputData;
 
@@ -11,7 +13,6 @@ public class EditTaskController {
     private String username;
     private Task currentTask;
     private final ViewManagerModel viewManagerModel;
-
 
     /**
      * Constructs an EditTaskController with the given interactor and view manager.
@@ -25,7 +26,6 @@ public class EditTaskController {
         this.viewManagerModel = viewManagerModel;
     }
 
-
     /**
      * Sets the current username.
      *
@@ -34,7 +34,6 @@ public class EditTaskController {
     public void setUsername(String username) {
         this.username = username;
     }
-
 
     /**
      * Executes editing the provided updated task.

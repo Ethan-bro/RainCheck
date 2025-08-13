@@ -4,6 +4,7 @@ import interface_adapter.ViewManagerModel;
 import interface_adapter.logged_in.LoggedInState;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.signup.SignupViewModel;
+
 import use_case.login.LoginOutputBoundary;
 import use_case.login.LoginOutputData;
 
@@ -16,7 +17,6 @@ public class LoginPresenter implements LoginOutputBoundary {
     private final LoggedInViewModel loggedInViewModel;
     private final SignupViewModel signupViewModel;
     private final ViewManagerModel viewManagerModel;
-
 
     /**
      * Constructs a LoginPresenter with the required view models.
@@ -35,7 +35,6 @@ public class LoginPresenter implements LoginOutputBoundary {
         this.loginViewModel = loginViewModel;
         this.signupViewModel = signupViewModel;
     }
-
 
     /**
      * Prepares the view for a successful login.
@@ -57,7 +56,6 @@ public class LoginPresenter implements LoginOutputBoundary {
         this.viewManagerModel.firePropertyChanged();
     }
 
-
     /**
      * Prepares the view for a failed login attempt.
      * Updates the login state with the error message.
@@ -70,7 +68,6 @@ public class LoginPresenter implements LoginOutputBoundary {
         loginState.setLoginError(error);
         loginViewModel.firePropertyChanged();
     }
-
 
     /**
      * Switches the view to the signup screen.

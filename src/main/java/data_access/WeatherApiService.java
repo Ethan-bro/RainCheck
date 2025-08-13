@@ -1,5 +1,8 @@
 package data_access;
 
+import use_case.weather.daily.DailyWeatherDataAccessInterface;
+import use_case.weather.hourly.HourlyWeatherDataAccessInterface;
+
 import java.awt.Image;
 import java.io.FileReader;
 import java.io.IOException;
@@ -14,13 +17,9 @@ import javax.swing.ImageIcon;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
-import app.Main;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import use_case.weather.daily.DailyWeatherDataAccessInterface;
-import use_case.weather.hourly.HourlyWeatherDataAccessInterface;
 
 /**
  * Service to fetch weather data from Visual Crossing Weather API.
@@ -269,13 +268,11 @@ public class WeatherApiService implements DailyWeatherDataAccessInterface, Hourl
             result = weeklyWeatherCache.get(key);
         }
         else {
-            System.out.println("Making an API call for " + location + ", count = " + Main.getNumOfApiCallsMade());
+            System.out.println("Making an API call for " + location);
 
             final String url = String.format(URL_TEMPLATE, location, date, apiKey);
             final Request request = new Request.Builder().url(url).build();
             final Response response = client.newCall(request).execute();
-
-            Main.incrementNumOfApiCallsMade();
 
             if (!response.isSuccessful()) {
                 throw new IOException("Unexpected code: " + response);

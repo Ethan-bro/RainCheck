@@ -1,8 +1,8 @@
 package interface_adapter.addTask;
 
-import java.util.List;
-
 import entity.CustomTag;
+
+import java.util.List;
 
 public class AddTaskState {
     private String errorMessage = "";

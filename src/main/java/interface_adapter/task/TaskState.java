@@ -1,8 +1,8 @@
 package interface_adapter.task;
 
-import java.time.LocalDateTime;
-
 import entity.CustomTag;
+
+import java.time.LocalDateTime;
 
 /**
  * Holds the state for a single Task, used by TaskViewModel.
@@ -22,7 +22,6 @@ public class TaskState {
     private String weatherEmoji;
     private String temperature;
 
-
     /**
      * Constructs a TaskState for the given task ID.
      *
@@ -32,7 +31,6 @@ public class TaskState {
         this.taskId = taskId;
     }
 
-
     /**
      * Gets the task ID.
      * @return the task ID
@@ -40,7 +38,6 @@ public class TaskState {
     public String getTaskId() {
         return taskId;
     }
-
 
     /**
      * Gets the task title.
@@ -50,7 +47,6 @@ public class TaskState {
         return title;
     }
 
-
     /**
      * Sets the task title.
      * @param title the title to set
@@ -58,7 +54,6 @@ public class TaskState {
     public void setTitle(String title) {
         this.title = title;
     }
-
 
     /**
      * Gets the start date and time.
@@ -68,7 +63,6 @@ public class TaskState {
         return start;
     }
 
-
     /**
      * Sets the start date and time.
      * @param start the start date and time to set
@@ -77,7 +71,6 @@ public class TaskState {
         this.start = start;
     }
 
-
     /**
      * Gets the end date and time.
      * @return the end date and time
@@ -85,7 +78,6 @@ public class TaskState {
     public LocalDateTime getEnd() {
         return end;
     }
-
 
     /**
      * Sets the end date and time.

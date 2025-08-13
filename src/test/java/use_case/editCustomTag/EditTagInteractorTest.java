@@ -7,7 +7,7 @@ import interface_adapter.manageTags.ManageTagsViewModel;
 import org.junit.jupiter.api.Test;
 import use_case.createCustomTag.CustomTagDataAccessInterface;
 import use_case.createCustomTag.CustomTagIcons;
-import use_case.editCustomTag.TagReplacement.DeleteAndCreate;
+import use_case.editCustomTag.tagReplacement.DeleteAndCreate;
 
 import java.util.Map;
 

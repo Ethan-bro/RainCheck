@@ -1,5 +1,16 @@
 package view;
 
+import entity.CustomTag;
+import entity.Priority;
+import entity.Reminder;
+import entity.Task;
+import entity.TaskInfo;
+
+import interface_adapter.ViewManagerModel;
+import interface_adapter.editTask.EditTaskController;
+import interface_adapter.editTask.EditTaskState;
+import interface_adapter.editTask.EditTaskViewModel;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -10,16 +21,6 @@ import java.util.Date;
 import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
-
-import entity.CustomTag;
-import entity.Priority;
-import entity.Reminder;
-import entity.Task;
-import entity.TaskInfo;
-import interface_adapter.ViewManagerModel;
-import interface_adapter.editTask.EditTaskController;
-import interface_adapter.editTask.EditTaskState;
-import interface_adapter.editTask.EditTaskViewModel;
 
 public class EditTaskView extends AbstractTaskFormView implements ActionListener, PropertyChangeListener {
 

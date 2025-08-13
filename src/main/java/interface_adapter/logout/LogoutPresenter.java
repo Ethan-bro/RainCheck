@@ -5,6 +5,7 @@ import interface_adapter.logged_in.LoggedInState;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.login.LoginState;
 import interface_adapter.login.LoginViewModel;
+
 import use_case.logout.LogoutOutputBoundary;
 import use_case.logout.LogoutOutputData;
 
@@ -16,7 +17,6 @@ public class LogoutPresenter implements LogoutOutputBoundary {
     private LoggedInViewModel loggedInViewModel;
     private ViewManagerModel viewManagerModel;
     private LoginViewModel loginViewModel;
-
 
     /**
      * Constructs a LogoutPresenter with the required view models.
@@ -32,7 +32,6 @@ public class LogoutPresenter implements LogoutOutputBoundary {
         this.loggedInViewModel = loggedInViewModel;
         this.loginViewModel = loginViewModel;
     }
-
 
     /**
      * Prepares the view for a successful logout.
@@ -57,7 +56,6 @@ public class LogoutPresenter implements LogoutOutputBoundary {
         this.viewManagerModel.setState(loginViewModel.getViewName());
         this.viewManagerModel.firePropertyChanged();
     }
-
 
     /**
      * Prepares the view for a failed logout attempt. (No-op, as logout cannot fail.)

@@ -1,16 +1,17 @@
 package data_access;
 
+import entity.ScheduledNotification;
+import entity.Task;
+
+import use_case.editTask.EditTaskDataAccessInterface;
+import use_case.notification.EmailNotificationServiceInterface;
+import use_case.notification.NotificationDataAccessInterface;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import entity.ScheduledNotification;
-import entity.Task;
-import use_case.editTask.EditTaskDataAccessInterface;
-import use_case.notification.EmailNotificationServiceInterface;
-import use_case.notification.NotificationDataAccessInterface;
 
 /**
  * Background scheduler that processes pending notifications.

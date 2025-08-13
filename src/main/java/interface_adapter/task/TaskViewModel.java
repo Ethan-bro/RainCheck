@@ -2,6 +2,7 @@ package interface_adapter.task;
 
 import entity.CustomTag;
 import entity.Task;
+
 import interface_adapter.ViewModel;
 
 /**
@@ -9,12 +10,6 @@ import interface_adapter.ViewModel;
  */
 public class TaskViewModel extends ViewModel<TaskState> {
     private Task task;
-
-    /**
-     * Constructs TaskViewModel wrapping the given Task.
-     *
-     * @param task the domain task to wrap
-     */
 
     /**
      * Constructs a TaskViewModel wrapping the given Task.
@@ -31,11 +26,6 @@ public class TaskViewModel extends ViewModel<TaskState> {
 
     /**
      * Populate the TaskState from the domain Task, then fire a "state" change.
-     *
-     * @param updatedTask the domain task to load from
-     */
-    /**
-     * Populates the TaskState from the domain Task, then fires a "state" change.
      *
      * @param updatedTask the domain task to load from
      */

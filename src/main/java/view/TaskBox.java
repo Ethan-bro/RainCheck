@@ -1,5 +1,14 @@
 package view;
 
+import entity.Priority;
+import entity.TaskInfo;
+
+import interface_adapter.ViewManagerModel;
+import interface_adapter.deleteTask.DeleteTaskController;
+import interface_adapter.editTask.EditTaskController;
+import interface_adapter.markTaskComplete.MarkTaskCompleteController;
+import interface_adapter.task.TaskViewModel;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -22,14 +31,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-
-import entity.Priority;
-import entity.TaskInfo;
-import interface_adapter.ViewManagerModel;
-import interface_adapter.deleteTask.DeleteTaskController;
-import interface_adapter.editTask.EditTaskController;
-import interface_adapter.markTaskComplete.MarkTaskCompleteController;
-import interface_adapter.task.TaskViewModel;
 
 public class TaskBox extends JPanel implements PropertyChangeListener {
 

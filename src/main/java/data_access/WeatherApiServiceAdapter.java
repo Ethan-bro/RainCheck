@@ -1,11 +1,12 @@
 package data_access;
 
+import entity.WeatherInfo;
+
+import use_case.weather.WeatherApiInterface;
+
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Map;
-
-import entity.WeatherInfo;
-import use_case.weather.WeatherApiInterface;
 
 /**
  * Adapter implementing WeatherApiInterface using WeatherApiService and LocationService.
@@ -19,11 +20,6 @@ public class WeatherApiServiceAdapter implements WeatherApiInterface {
     private final WeatherApiService weatherApiService;
 
     /**
-     * Constructs the adapter with WeatherApiService instance.
-     *
-     * @param weatherApiService the WeatherApiService to delegate weather fetching to
-     */
-    /**
      * Constructs the adapter with a WeatherApiService instance.
      *
      * @param weatherApiService the WeatherApiService to delegate weather fetching to
@@ -32,13 +28,13 @@ public class WeatherApiServiceAdapter implements WeatherApiInterface {
         this.weatherApiService = weatherApiService;
     }
 
-    @Override
     /**
      * Gets weather information for the specified date and time using the user's city.
      *
      * @param dateTime the date and time for which to fetch weather info
      * @return a WeatherInfo object containing weather details
      */
+    @Override
     public WeatherInfo getWeatherInfo(LocalDateTime dateTime) {
         final String location = LocationService.getUserCity();
         WeatherInfo resultWeatherInfo;

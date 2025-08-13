@@ -1,5 +1,10 @@
 package view;
 
+import interface_adapter.ViewManagerModel;
+import interface_adapter.signup.SignupController;
+import interface_adapter.signup.SignupState;
+import interface_adapter.signup.SignupViewModel;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -26,11 +31,6 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-
-import interface_adapter.ViewManagerModel;
-import interface_adapter.signup.SignupController;
-import interface_adapter.signup.SignupState;
-import interface_adapter.signup.SignupViewModel;
 
 /**
  * Polished Signup View matching the Login View style.
@@ -382,17 +382,18 @@ public class SignupView extends JPanel implements PropertyChangeListener {
 
     /**
      * Functional interface used to abstract text-consuming operations in the signup form.
-     * <p>
-     * This interface allows us to pass lambda expressions or method references that accept a single String argument,
-     * enabling flexible and reusable handling of text input fields (such as username, password, etc.) without tightly coupling
-     * the logic to specific UI components. This is especially useful for wiring up listeners and callbacks in a clean, concise way.
-     * <p>
-     * The {@code @FunctionalInterface} annotation enforces that this interface has exactly one abstract method, making it compatible
-     * with lambda expressions and method references in Java 8 and above. This is a best practice for functional-style programming
-     * and helps ensure code clarity and maintainability. 
-     * <p>
-     * This pattern is used to keep the codebase modular and to adhere to the 
-     * Single Responsibility and Open/Closed principles from SOLID, 
+     *
+     * <p>This interface allows us to pass lambda expressions or method references that accept a
+     * single String argument, enabling flexible and reusable handling of text input fields
+     * (such as username, password, etc.) without tightly coupling the logic to specific UI components.
+     * This is especially useful for wiring up listeners and callbacks in a clean, concise way.
+     *
+     * <p>The {@code @FunctionalInterface} annotation enforces that this interface has exactly one abstract method,
+     * making it compatible with lambda expressions and method references in Java 8 and above.
+     * This is a best practice for functional-style programming and helps ensure code clarity and maintainability.
+     *
+     * <p>This pattern is used to keep the codebase modular and to adhere to the
+     * Single Responsibility and Open/Closed principles from SOLID,
      * as it decouples input handling from UI logic.
      */
     @FunctionalInterface

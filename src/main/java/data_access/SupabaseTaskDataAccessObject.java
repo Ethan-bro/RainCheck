@@ -1,5 +1,17 @@
 package data_access;
 
+import entity.CustomTag;
+import entity.Priority;
+import entity.Reminder;
+import entity.Task;
+import entity.TaskID;
+import entity.TaskInfo;
+
+import use_case.deleteTask.DeleteTaskDataAccessInterface;
+import use_case.editTask.EditTaskDataAccessInterface;
+import use_case.listTasks.TaskDataAccessInterface;
+import use_case.markTaskComplete.MarkTaskCompleteDataAccessInterface;
+
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,23 +25,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
-import entity.CustomTag;
-import entity.Priority;
-import entity.Reminder;
-import entity.Task;
-import entity.TaskID;
-import entity.TaskInfo;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import use_case.deleteTask.DeleteTaskDataAccessInterface;
-import use_case.editTask.EditTaskDataAccessInterface;
-import use_case.listTasks.TaskDataAccessInterface;
-import use_case.markTaskComplete.MarkTaskCompleteDataAccessInterface;
 
 public class SupabaseTaskDataAccessObject implements
         TaskDataAccessInterface,
@@ -68,19 +69,18 @@ public class SupabaseTaskDataAccessObject implements
         this.apiKey = apiKey;
     }
 
-    @Override
     /**
      * Adds a task for the specified username.
      * @param username the username
      * @param task the task to add
      */
+    @Override
     public void addTask(String username, Task task) {
         final List<Task> tasks = getTasks(username);
         tasks.add(task);
         patchTasks(username, tasks);
     }
 
-    @Override
     /**
      * Gets tasks for a user within a date range.
      * @param username the username
@@ -88,6 +88,7 @@ public class SupabaseTaskDataAccessObject implements
      * @param end the end date
      * @return list of tasks in the date range
      */
+    @Override
     public List<Task> getTasksByDateRange(String username, LocalDate start, LocalDate end) {
         final List<Task> filtered = new ArrayList<>();
         final List<Task> all = getTasks(username);
@@ -183,13 +184,13 @@ public class SupabaseTaskDataAccessObject implements
         }
     }
 
-    @Override
     /**
      * Gets a task by username and task ID.
      * @param username the username
      * @param taskId the task ID
      * @return the found task, or null if not found
      */
+    @Override
     public Task getTaskById(String username, TaskID taskId) {
         Task foundTask = null;
 
@@ -203,13 +204,13 @@ public class SupabaseTaskDataAccessObject implements
         return foundTask;
     }
 
-    @Override
     /**
      * Gets a task by user email and task ID.
      * @param email the user's email
      * @param id the task ID
      * @return the found task, or null if not found
      */
+    @Override
     public Task getTaskByIdAndEmail(String email, TaskID id) {
         Task foundTask = null;
 
@@ -258,12 +259,12 @@ public class SupabaseTaskDataAccessObject implements
         return foundTask;
     }
 
-    @Override
     /**
      * Updates a task for the given username.
      * @param username the username
      * @param updatedTask the updated task
      */
+    @Override
     public void updateTask(String username, Task updatedTask) {
         final List<Task> tasks = getTasks(username);
 
@@ -276,12 +277,12 @@ public class SupabaseTaskDataAccessObject implements
         patchTasks(username, tasks);
     }
 
-    @Override
     /**
      * Marks a task as complete for the given username and task ID.
      * @param username the username
      * @param taskId the task ID
      */
+    @Override
     public void markAsComplete(String username, TaskID taskId) {
         final Task task = getTaskById(username, taskId);
 
@@ -293,12 +294,12 @@ public class SupabaseTaskDataAccessObject implements
         updateTask(username, task);
     }
 
-    @Override
     /**
      * Deletes a task for the given username and task ID.
      * @param username the username
      * @param taskId the task ID
      */
+    @Override
     public void deleteTask(String username, TaskID taskId) {
         final List<Task> tasks = getTasks(username);
         tasks.removeIf(task -> task.getTaskInfo().getId().equals(taskId));

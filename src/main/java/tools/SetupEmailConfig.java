@@ -1,13 +1,14 @@
 package tools;
 
+import data_access.FileNotificationDataAccess;
+
+import entity.EmailNotificationConfig;
+
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
-import data_access.FileNotificationDataAccess;
-import entity.EmailNotificationConfig;
 
 /**
  * Utility to set up email configuration for a user.

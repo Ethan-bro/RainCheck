@@ -1,6 +1,7 @@
 package interface_adapter.markTaskComplete;
 
 import interface_adapter.task.TaskViewModel;
+
 import use_case.markTaskComplete.MarkTaskCompleteOutputBoundary;
 import use_case.markTaskComplete.MarkTaskCompleteOutputData;
 
@@ -8,7 +9,6 @@ public class MarkTaskCompletePresenter implements MarkTaskCompleteOutputBoundary
 
     private final MarkTaskCompleteViewModel viewModel;
     private final TaskViewModel taskViewModel;
-
 
     /**
      * Constructs a MarkTaskCompletePresenter with the given view models.
@@ -20,7 +20,6 @@ public class MarkTaskCompletePresenter implements MarkTaskCompleteOutputBoundary
         this.viewModel = viewModel;
         this.taskViewModel = taskViewModel;
     }
-
 
     /**
      * Prepares the view for a successful task completion.
@@ -37,7 +36,6 @@ public class MarkTaskCompletePresenter implements MarkTaskCompleteOutputBoundary
         viewModel.firePropertyChanged("task completed");
         taskViewModel.firePropertyChanged();
     }
-
 
     /**
      * Prepares the view for a failed task completion attempt.

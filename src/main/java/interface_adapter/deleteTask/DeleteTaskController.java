@@ -1,16 +1,16 @@
 package interface_adapter.deleteTask;
 
-import java.io.IOException;
-
 import entity.TaskID;
+
 import use_case.deleteTask.DeleteTaskInputBoundary;
 import use_case.deleteTask.DeleteTaskInputData;
+
+import java.io.IOException;
 
 public class DeleteTaskController {
 
     private final DeleteTaskInputBoundary deleteTaskInputInteractor;
     private String username;
-
 
     /**
      * Constructs a DeleteTaskController with the given input boundary interactor.
@@ -20,7 +20,6 @@ public class DeleteTaskController {
     public DeleteTaskController(DeleteTaskInputBoundary deleteTaskInputInteractor) {
         this.deleteTaskInputInteractor = deleteTaskInputInteractor;
     }
-
 
     /**
      * Sets the username for the user performing the deletion.

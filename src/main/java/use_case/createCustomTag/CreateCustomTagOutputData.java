@@ -12,7 +12,6 @@ public class CreateCustomTagOutputData {
     private final String errorMessage;
     private final CustomTag createdTag;
 
-
     /**
      * Constructs a CreateCustomTagOutputData representing a failed use case execution.
      *
@@ -24,7 +23,6 @@ public class CreateCustomTagOutputData {
         this.errorMessage = errorType.getMessage();
         this.createdTag = null;
     }
-
 
     /**
      * Constructs a CreateCustomTagOutputData representing a successful use case execution.
@@ -38,7 +36,6 @@ public class CreateCustomTagOutputData {
         this.createdTag = createdTag;
     }
 
-
     /**
      * Returns the error message if the use case failed.
      *
@@ -48,7 +45,6 @@ public class CreateCustomTagOutputData {
         return errorMessage;
     }
 
-
     /**
      * Indicates whether the use case execution failed.
      *
@@ -57,7 +53,6 @@ public class CreateCustomTagOutputData {
     public boolean isUseCaseFailed() {
         return useCaseFailed;
     }
-
 
     /**
      * Returns the newly created CustomTag if the use case succeeded.

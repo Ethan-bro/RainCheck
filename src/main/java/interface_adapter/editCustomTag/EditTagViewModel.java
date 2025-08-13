@@ -1,12 +1,12 @@
 package interface_adapter.editCustomTag;
 
 import entity.CustomTag;
+
 import interface_adapter.ViewModel;
 
 public class EditTagViewModel extends ViewModel<EditTagState> {
 
     private String username;
-
 
     /**
      * Constructs an EditTagViewModel with initial state and view name.
@@ -15,7 +15,6 @@ public class EditTagViewModel extends ViewModel<EditTagState> {
         super("Edit Custom Tag");
         setState(new EditTagState());
     }
-
 
     /**
      * Sets the username associated with this ViewModel.
@@ -26,7 +25,6 @@ public class EditTagViewModel extends ViewModel<EditTagState> {
         this.username = username;
     }
 
-
     /**
      * Returns the username associated with this ViewModel.
      *
@@ -35,7 +33,6 @@ public class EditTagViewModel extends ViewModel<EditTagState> {
     public String getUsername() {
         return username;
     }
-
 
     /**
      * Triggers loading of the specified tag into the view.

@@ -10,7 +10,6 @@ public class SignupController {
 
     private final SignupInputBoundary userSignupUseCaseInteractor;
 
-
     /**
      * Constructs a SignupController with the given use case interactor.
      *
@@ -19,7 +18,6 @@ public class SignupController {
     public SignupController(SignupInputBoundary userSignupUseCaseInteractor) {
         this.userSignupUseCaseInteractor = userSignupUseCaseInteractor;
     }
-
 
     /**
      * Executes the signup use case.
@@ -34,7 +32,6 @@ public class SignupController {
                 username, password1, password2, email);
         userSignupUseCaseInteractor.execute(signupInputData);
     }
-
 
     /**
      * Executes the switch to login view use case.

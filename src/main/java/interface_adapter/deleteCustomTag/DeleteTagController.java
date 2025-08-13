@@ -1,7 +1,9 @@
 package interface_adapter.deleteCustomTag;
 
 import entity.CustomTag;
+
 import interface_adapter.manageTags.ManageTagsViewModel;
+
 import use_case.createCustomTag.CustomTagDataAccessInterface;
 import use_case.deleteCustomTag.DeleteCustomTagInputBoundary;
 import use_case.deleteCustomTag.DeleteCustomTagInputData;
@@ -11,7 +13,6 @@ public class DeleteTagController {
     private final CustomTagDataAccessInterface tagDao;
     private final ManageTagsViewModel manageTagsViewModel;
     private final DeleteCustomTagInputBoundary interactor;
-
 
     /**
      * Constructs a DeleteTagController with the required dependencies for tag deletion.

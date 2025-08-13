@@ -1,5 +1,9 @@
 package view;
 
+import entity.Task;
+
+import interface_adapter.calendar.TaskClickListener;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -12,9 +16,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.JLayeredPane;
-
-import entity.Task;
-import interface_adapter.calendar.TaskClickListener;
 
 /**
  * A layered pane that:

@@ -1,5 +1,7 @@
 package view;
 
+import interface_adapter.ViewManagerModel;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -18,8 +20,6 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.HyperlinkEvent;
-
-import interface_adapter.ViewManagerModel;
 
 /**
  * View displaying Gmail setup instructions with a go back button.

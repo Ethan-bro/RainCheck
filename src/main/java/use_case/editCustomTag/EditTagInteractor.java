@@ -1,8 +1,9 @@
 package use_case.editCustomTag;
 
 import entity.CustomTag;
+
 import use_case.createCustomTag.CustomTagDataAccessInterface;
-import use_case.editCustomTag.TagReplacement.TagReplacementStrategy;
+import use_case.editCustomTag.tagReplacement.TagReplacementStrategy;
 
 /**
  * Interactor class implementing the EditTagInputBoundary.
@@ -37,15 +38,16 @@ public class EditTagInteractor implements EditTagInputBoundary {
     @Override
     public void execute(EditTagInputData inputData) {
         final Boolean status = replacementStrategy.replaceTag(inputData, tagDao);
-        String statusMsg = replacementStrategy.getStatusMsg();
+        final String statusMsg = replacementStrategy.getStatusMsg();
 
         // check status
-        if (!status) {
-            EditTagOutputData failedOutput = new EditTagOutputData(statusMsg);
+        if (Boolean.FALSE.equals(status)) {
+            final EditTagOutputData failedOutput = new EditTagOutputData(statusMsg);
             editTagPresenter.prepareFailView(failedOutput);
-        } else {
-            CustomTag newTag = replacementStrategy.getCreatedTag();
-            EditTagOutputData successOutput = new EditTagOutputData(newTag);
+        }
+        else {
+            final CustomTag newTag = replacementStrategy.getCreatedTag();
+            final EditTagOutputData successOutput = new EditTagOutputData(newTag);
             editTagPresenter.prepareSuccessView(successOutput);
         }
     }

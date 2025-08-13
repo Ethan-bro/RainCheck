@@ -29,10 +29,6 @@ public class TaskInfo {
     private String uvIndex;
 
     /**
-     * Creates an empty TaskInfo.
-     * Use the three initialization methods to set all fields after construction.
-     */
-    /**
      * Constructs an empty TaskInfo.
      * Use the three initialization methods to set all fields after construction.
      */

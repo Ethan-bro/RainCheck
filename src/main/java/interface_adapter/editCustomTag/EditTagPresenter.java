@@ -3,6 +3,7 @@ package interface_adapter.editCustomTag;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.events.TagChangeEventNotifier;
 import interface_adapter.manageTags.ManageTagsViewModel;
+
 import use_case.editCustomTag.EditTagOutputBoundary;
 import use_case.editCustomTag.EditTagOutputData;
 
@@ -14,7 +15,6 @@ public class EditTagPresenter implements EditTagOutputBoundary {
     private ViewManagerModel viewManagerModel;
     private EditTagViewModel editTagViewModel;
     private ManageTagsViewModel manageTagsViewModel;
-
 
     /**
      * Constructs an EditTagPresenter with the given view models.
@@ -31,7 +31,6 @@ public class EditTagPresenter implements EditTagOutputBoundary {
         this.editTagViewModel = editTagViewModel;
     }
 
-
     /**
      * Returns the view manager model.
      *
@@ -40,7 +39,6 @@ public class EditTagPresenter implements EditTagOutputBoundary {
     public ViewManagerModel getViewManagerModel() {
         return viewManagerModel;
     }
-
 
     /**
      * Sets the view manager model.
@@ -51,7 +49,6 @@ public class EditTagPresenter implements EditTagOutputBoundary {
         this.viewManagerModel = viewManagerModel;
     }
 
-
     /**
      * Returns the edit tag view model.
      *
@@ -60,7 +57,6 @@ public class EditTagPresenter implements EditTagOutputBoundary {
     public EditTagViewModel getEditTagViewModel() {
         return editTagViewModel;
     }
-
 
     /**
      * Sets the edit tag view model.
@@ -71,7 +67,6 @@ public class EditTagPresenter implements EditTagOutputBoundary {
         this.editTagViewModel = editTagViewModel;
     }
 
-
     /**
      * Returns the manage tags view model.
      *
@@ -81,7 +76,6 @@ public class EditTagPresenter implements EditTagOutputBoundary {
         return manageTagsViewModel;
     }
 
-
     /**
      * Sets the manage tags view model.
      *
@@ -90,7 +84,6 @@ public class EditTagPresenter implements EditTagOutputBoundary {
     public void setManageTagsViewModel(ManageTagsViewModel manageTagsViewModel) {
         this.manageTagsViewModel = manageTagsViewModel;
     }
-
 
     /**
      * Prepares the view for a successful tag edit.
@@ -113,7 +106,6 @@ public class EditTagPresenter implements EditTagOutputBoundary {
 
         TagChangeEventNotifier.fire();
     }
-
 
     /**
      * Prepares the view for a failed tag edit.

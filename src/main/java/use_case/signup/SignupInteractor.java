@@ -1,10 +1,11 @@
 package use_case.signup;
 
-import java.util.Set;
-
 import data_access.DuplicateEmailException;
+
 import entity.User;
 import entity.UserFactory;
+
+import java.util.Set;
 
 /**
  * The Signup Interactor.

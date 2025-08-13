@@ -1,7 +1,9 @@
 package interface_adapter.editCustomTag;
 
 import entity.CustomTag;
+
 import interface_adapter.manageTags.ManageTagsViewModel;
+
 import use_case.createCustomTag.CustomTagDataAccessInterface;
 import use_case.editCustomTag.EditTagInputBoundary;
 import use_case.editCustomTag.EditTagInputData;
@@ -11,7 +13,6 @@ public class EditTagController {
     private final CustomTagDataAccessInterface tagDao;
     private final ManageTagsViewModel manageTagsViewModel;
     private final EditTagInputBoundary interactor;
-
 
     /**
      * Constructs an EditTagController with the required dependencies.
@@ -27,7 +28,6 @@ public class EditTagController {
         this.manageTagsViewModel = manageTagsViewModel;
         this.interactor = interactor;
     }
-
 
     /**
      * Executes the edit tag operation.

@@ -38,11 +38,6 @@ public final class TaskID {
     }
 
     /**
-     * Returns the UUID value wrapped by this TaskID.
-     *
-     * @return the UUID value
-     */
-    /**
      * Gets the UUID value wrapped by this TaskID.
      * @return the UUID value
      */

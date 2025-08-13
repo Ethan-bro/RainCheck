@@ -1,6 +1,7 @@
 package interface_adapter.email_settings;
 
 import entity.EmailNotificationConfig;
+
 import use_case.notification.NotificationDataAccessInterface;
 
 /**
@@ -11,7 +12,6 @@ public class EmailSettingsController {
     private static final String USERNAME_PLACEHOLDER = "current_user";
     private final NotificationDataAccessInterface notificationDataAccess;
     private final EmailSettingsViewModel viewModel;
-
 
     /**
      * Constructs an EmailSettingsController with the given data access and view model.
@@ -25,9 +25,12 @@ public class EmailSettingsController {
         this.viewModel = viewModel;
     }
 
-
     /**
-     * Processes the input email settings state, validates the email, saves the configuration, and updates the view model state.
+     * This method:
+     * 1) processes the input email settings state
+     * 2) validates the email
+     * 3) saves the configuration
+     * 4) Finally, it updates the view model state.
      *
      * @param inputState the input state from the view
      */
@@ -53,7 +56,6 @@ public class EmailSettingsController {
         }
     }
 
-
     /**
      * Sends a test email to the given address and updates the view model state accordingly.
      *
@@ -73,7 +75,6 @@ public class EmailSettingsController {
         }
     }
 
-
     /**
      * Checks if the provided email address is invalid.
      *
@@ -83,7 +84,6 @@ public class EmailSettingsController {
     private boolean isInvalidEmail(String email) {
         return email == null || !email.matches("^[A-Za-z0-9+_.-]+@([A-Za-z0-9.-]+\\.[A-Za-z]{2,})$");
     }
-
 
     /**
      * Gets the current username from session or context.

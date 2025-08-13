@@ -1,9 +1,9 @@
 package interface_adapter.email_settings;
 
+import interface_adapter.ViewModel;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-
-import interface_adapter.ViewModel;
 
 /**
  * View model for email settings.
@@ -15,14 +15,12 @@ public class EmailSettingsViewModel extends ViewModel<EmailSettingsState> {
     private EmailSettingsState state = new EmailSettingsState();
     private final PropertyChangeSupport support = new PropertyChangeSupport(this);
 
-
     /**
      * Constructs an EmailSettingsViewModel and initializes its state.
      */
     public EmailSettingsViewModel() {
         super("email settings");
     }
-
 
     /**
      * Returns the title label for the email settings view.
@@ -32,7 +30,6 @@ public class EmailSettingsViewModel extends ViewModel<EmailSettingsState> {
     public String getTitleLabel() {
         return TITLE_LABEL;
     }
-
 
     /**
      * Sets the email settings state and fires a property change event.
@@ -45,7 +42,6 @@ public class EmailSettingsViewModel extends ViewModel<EmailSettingsState> {
         support.firePropertyChange("state", oldState, state);
     }
 
-
     /**
      * Returns the current email settings state.
      *
@@ -55,7 +51,6 @@ public class EmailSettingsViewModel extends ViewModel<EmailSettingsState> {
         return state;
     }
 
-
     /**
      * Fires a property change event for the current state.
      */
@@ -63,7 +58,6 @@ public class EmailSettingsViewModel extends ViewModel<EmailSettingsState> {
     public void firePropertyChanged() {
         support.firePropertyChange("state", null, this.state);
     }
-
 
     /**
      * Adds a property change listener to this view model.

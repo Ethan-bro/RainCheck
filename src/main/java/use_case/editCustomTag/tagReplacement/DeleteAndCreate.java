@@ -1,12 +1,12 @@
-package use_case.editCustomTag.TagReplacement;
-
-import java.util.Map;
+package use_case.editCustomTag.tagReplacement;
 
 import entity.CustomTag;
+
 import use_case.createCustomTag.CustomTagDataAccessInterface;
 import use_case.editCustomTag.EditTagInputData;
-import static use_case.editCustomTag.TagErrorConstants.ICON_TAKEN_ERROR;
-import static use_case.editCustomTag.TagErrorConstants.NAME_TAKEN_ERROR;
+import use_case.editCustomTag.TagErrorConstants;
+
+import java.util.Map;
 
 public class DeleteAndCreate implements TagReplacementStrategy {
 
@@ -29,38 +29,42 @@ public class DeleteAndCreate implements TagReplacementStrategy {
      */
     @Override
     public Boolean replaceTag(EditTagInputData inputData, CustomTagDataAccessInterface tagDao) {
-        CustomTag oldTag = inputData.getOldTag();
-        CustomTag newTag = inputData.getNewTag();
-        String username = inputData.getUsername();
+        final CustomTag oldTag = inputData.getOldTag();
+        final CustomTag newTag = inputData.getNewTag();
+        final String username = inputData.getUsername();
 
         // new fields
-        String newName = newTag.getTagName();
-        String newIcon = newTag.getTagIcon();
+        final String newName = newTag.getTagName();
+        final String newIcon = newTag.getTagIcon();
 
         // delete the old tag
         tagDao.deleteCustomTag(username, oldTag);
 
         // fetch tag data
-        Map<String, String> existingTags = tagDao.getCustomTags(username);
+        final Map<String, String> existingTags = tagDao.getCustomTags(username);
+
+        final boolean success;
 
         // check if new tag name is already taken
         if (existingTags.containsKey(newName)) {
-            statusMsg = NAME_TAKEN_ERROR;
-            return false;
+            statusMsg = TagErrorConstants.getNameTakenError();
+            success = false;
+        }
+        else if (existingTags.containsValue(newIcon)) {
+            // check if emoji is already in use
+            statusMsg = TagErrorConstants.getIconTakenError();
+            success = false;
+        }
+        else {
+            // otherwise, create the new tag
+            tagDao.addCustomTag(username, newTag);
+            createdTag = newTag;
+
+            // indicate that replacement process was a success
+            success = true;
         }
 
-        // check if emoji is already in use
-        if (existingTags.containsValue(newIcon)) {
-            statusMsg = ICON_TAKEN_ERROR;
-            return false;
-        }
-
-        // create the new tag
-        tagDao.addCustomTag(username, newTag);
-        createdTag = newTag;
-
-        // indicate that replacement process was a success
-        return true;
+        return success;
     }
 
     /**
