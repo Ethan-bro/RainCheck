@@ -5,56 +5,30 @@ import entity.CustomTag;
 public class EditTagInputData {
 
     private CustomTag oldTag;
-    private CustomTag newTag;
+    private String newName;
+    private String newIcon;
     private String username;
 
     /**
      * Constructs an EditTagInputData object.
-     *
-     * @param oldTag the original custom tag
-     * @param newTag the new custom tag to replace the old one
+     * @param oldTag the existing tag
+     * @param newName the modified tag name
+     * @param newIcon the modified tag icon
      * @param username the username associated with the tag edit
      */
-    public EditTagInputData(CustomTag oldTag, CustomTag newTag, String username) {
+    public EditTagInputData(CustomTag oldTag,
+                            String newName,
+                            String newIcon,
+                            String username) {
+
         this.oldTag = oldTag;
-        this.newTag = newTag;
+        this.newName = newName;
+        this.newIcon = newIcon;
         this.username = username;
     }
 
-    /**
-     * Gets the original custom tag.
-     *
-     * @return the old custom tag
-     */
     public CustomTag getOldTag() {
         return oldTag;
-    }
-
-    /**
-     * Sets the original custom tag.
-     *
-     * @param oldTag the old custom tag
-     */
-    public void setOldTag(CustomTag oldTag) {
-        this.oldTag = oldTag;
-    }
-
-    /**
-     * Gets the new custom tag to replace the old one.
-     *
-     * @return the new custom tag
-     */
-    public CustomTag getNewTag() {
-        return newTag;
-    }
-
-    /**
-     * Sets the new custom tag to replace the old one.
-     *
-     * @param newTag the new custom tag
-     */
-    public void setNewTag(CustomTag newTag) {
-        this.newTag = newTag;
     }
 
     /**
@@ -72,7 +46,7 @@ public class EditTagInputData {
      * @return the name of the new custom tag
      */
     public String getNewTagName() {
-        return newTag.getTagName();
+        return newName;
     }
 
     /**
@@ -90,7 +64,7 @@ public class EditTagInputData {
      * @return the icon of the new custom tag
      */
     public String getNewTagIcon() {
-        return newTag.getTagIcon();
+        return newIcon;
     }
 
     /**

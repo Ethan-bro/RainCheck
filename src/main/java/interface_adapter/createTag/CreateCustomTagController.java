@@ -19,12 +19,12 @@ public class CreateCustomTagController {
     /**
      * Executes the process to create a new custom tag for the specified user.
      *
-     * @param customTag the custom tag to be created
+     * @param tagName the name of the tag to be created
+     * @param tagIcon the icon of the tag to be created
      * @param username  the username of the user creating the tag
      */
-    public void execute(CustomTag customTag, String username) {
-        final CreateCustomTagInputData inputData = new CreateCustomTagInputData(
-                customTag.getTagName(), customTag.getTagIcon()
+    public void execute(String tagName,  String tagIcon, String username) {
+        final CreateCustomTagInputData inputData = new CreateCustomTagInputData(tagName, tagIcon
         );
         createCustomTagInteractor.execute(inputData, username);
     }

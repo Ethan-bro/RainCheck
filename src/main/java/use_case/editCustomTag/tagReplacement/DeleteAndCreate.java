@@ -29,13 +29,13 @@ public class DeleteAndCreate implements TagReplacementStrategy {
      */
     @Override
     public Boolean replaceTag(EditTagInputData inputData, CustomTagDataAccessInterface tagDao) {
-        final CustomTag oldTag = inputData.getOldTag();
-        final CustomTag newTag = inputData.getNewTag();
+
         final String username = inputData.getUsername();
+        final CustomTag oldTag = inputData.getOldTag();
 
         // new fields
-        final String newName = newTag.getTagName();
-        final String newIcon = newTag.getTagIcon();
+        final String newName = inputData.getNewTagName();
+        final String newIcon = inputData.getNewTagIcon();
 
         // delete the old tag
         tagDao.deleteCustomTag(username, oldTag);
@@ -57,6 +57,7 @@ public class DeleteAndCreate implements TagReplacementStrategy {
         }
         else {
             // otherwise, create the new tag
+            CustomTag newTag = new CustomTag(newName, newIcon);
             tagDao.addCustomTag(username, newTag);
             createdTag = newTag;
 

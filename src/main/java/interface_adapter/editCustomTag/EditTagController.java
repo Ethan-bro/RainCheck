@@ -32,13 +32,20 @@ public class EditTagController {
     /**
      * Executes the edit tag operation.
      *
-     * @param oldTag the existing tag to edit
-     * @param newTag the updated tag data
+     * @param oldTag existing tag to be edited
+     * @param newName the modified tag name
+     * @param newIcon the modified tag icon
      */
-    public void execute(CustomTag oldTag, CustomTag newTag) {
+    public void execute(CustomTag oldTag,
+                        String newName,
+                        String newIcon) {
         final String username = manageTagsViewModel.getUsername();
 
-        final EditTagInputData input = new EditTagInputData(oldTag, newTag, username);
+        final EditTagInputData input = new EditTagInputData(oldTag,
+                newName,
+                newIcon,
+                username);
+
         interactor.execute(input);
     }
 }

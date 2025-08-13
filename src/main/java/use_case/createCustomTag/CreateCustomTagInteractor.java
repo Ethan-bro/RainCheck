@@ -33,7 +33,7 @@ public class CreateCustomTagInteractor implements CreateCustomTagInputBoundary {
     @Override
     public void execute(CreateCustomTagInputData customTagInputData, String username) {
         final String tagName = customTagInputData.getTagName();
-        final String tagEmoji = customTagInputData.getTagEmoji();
+        final String tagIcon = customTagInputData.getTagEmoji();
 
         // Fetch all existing tags for this user
         final Map<String, String> existingTags = dao.getCustomTags(username);
@@ -45,13 +45,13 @@ public class CreateCustomTagInteractor implements CreateCustomTagInputBoundary {
             outputData = new CreateCustomTagOutputData(CreateCustomTagError.NAME_TAKEN);
             isFailure = true;
         }
-        else if (existingTags.containsValue(tagEmoji)) {
+        else if (existingTags.containsValue(tagIcon)) {
             outputData = new CreateCustomTagOutputData(CreateCustomTagError.ICON_TAKEN);
             isFailure = true;
         }
         else {
             // If valid, create the tag and save it
-            final CustomTag finalTag = new CustomTag(tagName, tagEmoji);
+            final CustomTag finalTag = new CustomTag(tagName, tagIcon);
             dao.addCustomTag(username, finalTag);
             outputData = new CreateCustomTagOutputData(finalTag);
             isFailure = false;

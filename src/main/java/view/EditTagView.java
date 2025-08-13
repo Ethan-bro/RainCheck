@@ -398,9 +398,13 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
             final String selectedIcon = selectedButton.getActionCommand();
 
             final CustomTag supposedTag = new CustomTag(tagName, selectedIcon);
+
             final CustomTag currentTag = manageTagsViewModel.getState().getCurrTag();
 
-            editTagController.execute(currentTag, supposedTag);
+            final String currentTagName = currentTag.getTagName();
+            final String currentTagIcon = currentTag.getTagIcon();
+
+            editTagController.execute(currentTag, tagName, currentTagIcon);
 
             resetForm();
         }
