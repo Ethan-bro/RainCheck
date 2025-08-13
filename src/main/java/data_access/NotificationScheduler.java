@@ -1,17 +1,16 @@
 package data_access;
 
-import entity.ScheduledNotification;
-import entity.Task;
-
-import use_case.editTask.EditTaskDataAccessInterface;
-import use_case.notification.EmailNotificationServiceInterface;
-import use_case.notification.NotificationDataAccessInterface;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import entity.ScheduledNotification;
+import entity.Task;
+import use_case.editTask.EditTaskDataAccessInterface;
+import use_case.notification.EmailNotificationServiceInterface;
+import use_case.notification.NotificationDataAccessInterface;
 
 /**
  * Background scheduler that processes pending notifications.
@@ -22,6 +21,12 @@ public class NotificationScheduler {
     private final EditTaskDataAccessInterface taskDataAccess;
     private final ScheduledExecutorService scheduler;
 
+    /**
+     * Constructs a NotificationScheduler with the required dependencies.
+     * @param notificationDataAccess the notification data access interface
+     * @param emailService the email notification service
+     * @param taskDataAccess the task data access interface
+     */
     public NotificationScheduler(NotificationDataAccessInterface notificationDataAccess,
                                  EmailNotificationServiceInterface emailService,
                                  EditTaskDataAccessInterface taskDataAccess) {
@@ -47,6 +52,7 @@ public class NotificationScheduler {
         System.out.println("Notification scheduler stopped.");
     }
 
+    // Processes all pending notifications and sends them if needed.
     private void processPendingNotifications() {
         final LocalDateTime now = LocalDateTime.now();
         final List<ScheduledNotification> pendingNotifications =
@@ -59,6 +65,7 @@ public class NotificationScheduler {
         }
     }
 
+    // Sends a single notification if the associated task exists.
     private void sendNotification(ScheduledNotification notification) {
         final Task task = taskDataAccess.getTaskByIdAndEmail(
                 notification.getUserEmail(),

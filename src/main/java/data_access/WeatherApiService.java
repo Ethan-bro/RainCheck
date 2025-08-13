@@ -1,10 +1,5 @@
 package data_access;
 
-import app.Main;
-
-import use_case.weather.daily.DailyWeatherDataAccessInterface;
-import use_case.weather.hourly.HourlyWeatherDataAccessInterface;
-
 import java.awt.Image;
 import java.io.FileReader;
 import java.io.IOException;
@@ -19,9 +14,13 @@ import javax.swing.ImageIcon;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import app.Main;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import use_case.weather.daily.DailyWeatherDataAccessInterface;
+import use_case.weather.hourly.HourlyWeatherDataAccessInterface;
 
 /**
  * Service to fetch weather data from Visual Crossing Weather API.
@@ -139,6 +138,7 @@ public class WeatherApiService implements DailyWeatherDataAccessInterface, Hourl
         map.put(KEY_ICON_NAME, iconName);
     }
 
+    // Loads and scales a weather icon image for the given icon name.
     private ImageIcon getWeatherImageIcon(final String iconName) {
         final String iconPath = "/weatherIcons/" + iconName + ".png";
         ImageIcon icon = null;

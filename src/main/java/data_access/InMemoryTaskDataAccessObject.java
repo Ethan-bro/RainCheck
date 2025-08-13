@@ -1,14 +1,13 @@
 package data_access;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import entity.Task;
 import entity.TaskID;
-
 import use_case.deleteTask.DeleteTaskDataAccessInterface;
 import use_case.editTask.EditTaskDataAccessInterface;
 import use_case.markTaskComplete.MarkTaskCompleteDataAccessInterface;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A fake in-memory DAO used only for unit tests. No external I/O.
@@ -20,6 +19,13 @@ public class InMemoryTaskDataAccessObject implements
 
     private final Map<TaskID, Task> taskMap = new HashMap<>();
     private String currentUsername;
+
+    /**
+     * Constructs an in-memory task data access object.
+     */
+    public InMemoryTaskDataAccessObject() {
+        this.currentUsername = null;
+    }
 
     /**
      * Adds a task for the specified username.

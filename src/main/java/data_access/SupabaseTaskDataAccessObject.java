@@ -1,17 +1,5 @@
 package data_access;
 
-import entity.CustomTag;
-import entity.Priority;
-import entity.Reminder;
-import entity.Task;
-import entity.TaskID;
-import entity.TaskInfo;
-
-import use_case.deleteTask.DeleteTaskDataAccessInterface;
-import use_case.editTask.EditTaskDataAccessInterface;
-import use_case.listTasks.TaskDataAccessInterface;
-import use_case.markTaskComplete.MarkTaskCompleteDataAccessInterface;
-
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -25,12 +13,23 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import entity.CustomTag;
+import entity.Priority;
+import entity.Reminder;
+import entity.Task;
+import entity.TaskID;
+import entity.TaskInfo;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import use_case.deleteTask.DeleteTaskDataAccessInterface;
+import use_case.editTask.EditTaskDataAccessInterface;
+import use_case.listTasks.TaskDataAccessInterface;
+import use_case.markTaskComplete.MarkTaskCompleteDataAccessInterface;
 
 public class SupabaseTaskDataAccessObject implements
         TaskDataAccessInterface,
@@ -59,12 +58,22 @@ public class SupabaseTaskDataAccessObject implements
     private final OkHttpClient client = new OkHttpClient();
     private final Gson gson = new Gson();
 
+    /**
+     * Constructs a SupabaseTaskDataAccessObject with the given base URL and API key.
+     * @param baseUrl the base URL for the Supabase API
+     * @param apiKey the API key for authentication
+     */
     public SupabaseTaskDataAccessObject(String baseUrl, String apiKey) {
         this.baseUrl = baseUrl;
         this.apiKey = apiKey;
     }
 
     @Override
+    /**
+     * Adds a task for the specified username.
+     * @param username the username
+     * @param task the task to add
+     */
     public void addTask(String username, Task task) {
         final List<Task> tasks = getTasks(username);
         tasks.add(task);
@@ -72,6 +81,13 @@ public class SupabaseTaskDataAccessObject implements
     }
 
     @Override
+    /**
+     * Gets tasks for a user within a date range.
+     * @param username the username
+     * @param start the start date
+     * @param end the end date
+     * @return list of tasks in the date range
+     */
     public List<Task> getTasksByDateRange(String username, LocalDate start, LocalDate end) {
         final List<Task> filtered = new ArrayList<>();
         final List<Task> all = getTasks(username);
@@ -85,6 +101,7 @@ public class SupabaseTaskDataAccessObject implements
         return filtered;
     }
 
+    // Gets all tasks for a user from Supabase.
     private List<Task> getTasks(String username) {
         final List<Task> result = new ArrayList<>();
 
@@ -110,6 +127,7 @@ public class SupabaseTaskDataAccessObject implements
         return result;
     }
 
+    // Fetches user data from Supabase as a JsonArray.
     private JsonArray fetchUserData(String username) throws IOException {
         final HttpUrl url = Objects.requireNonNull(HttpUrl.parse(baseUrl + "/rest/v1/users"))
                 .newBuilder()
@@ -136,6 +154,7 @@ public class SupabaseTaskDataAccessObject implements
         return result;
     }
 
+    // Updates the user's tasks in Supabase with the provided list.
     private void patchTasks(String username, List<Task> tasks) {
         final JsonArray taskArray = new JsonArray();
 
@@ -165,6 +184,12 @@ public class SupabaseTaskDataAccessObject implements
     }
 
     @Override
+    /**
+     * Gets a task by username and task ID.
+     * @param username the username
+     * @param taskId the task ID
+     * @return the found task, or null if not found
+     */
     public Task getTaskById(String username, TaskID taskId) {
         Task foundTask = null;
 
@@ -179,6 +204,12 @@ public class SupabaseTaskDataAccessObject implements
     }
 
     @Override
+    /**
+     * Gets a task by user email and task ID.
+     * @param email the user's email
+     * @param id the task ID
+     * @return the found task, or null if not found
+     */
     public Task getTaskByIdAndEmail(String email, TaskID id) {
         Task foundTask = null;
 
@@ -228,6 +259,11 @@ public class SupabaseTaskDataAccessObject implements
     }
 
     @Override
+    /**
+     * Updates a task for the given username.
+     * @param username the username
+     * @param updatedTask the updated task
+     */
     public void updateTask(String username, Task updatedTask) {
         final List<Task> tasks = getTasks(username);
 
@@ -241,6 +277,11 @@ public class SupabaseTaskDataAccessObject implements
     }
 
     @Override
+    /**
+     * Marks a task as complete for the given username and task ID.
+     * @param username the username
+     * @param taskId the task ID
+     */
     public void markAsComplete(String username, TaskID taskId) {
         final Task task = getTaskById(username, taskId);
 
@@ -253,12 +294,18 @@ public class SupabaseTaskDataAccessObject implements
     }
 
     @Override
+    /**
+     * Deletes a task for the given username and task ID.
+     * @param username the username
+     * @param taskId the task ID
+     */
     public void deleteTask(String username, TaskID taskId) {
         final List<Task> tasks = getTasks(username);
         tasks.removeIf(task -> task.getTaskInfo().getId().equals(taskId));
         patchTasks(username, tasks);
     }
 
+    // Converts a Task object to a JsonObject for Supabase storage.
     private JsonObject taskToJson(Task task) {
         final TaskInfo info = task.getTaskInfo();
         final JsonObject json = new JsonObject();
@@ -296,6 +343,7 @@ public class SupabaseTaskDataAccessObject implements
         return json;
     }
 
+    // Converts a JsonObject from Supabase to a Task object.
     private Task jsonToTask(JsonObject json) {
         final String idStr = getString(json, "id");
         final String taskName = getString(json, "taskName");
@@ -390,6 +438,7 @@ public class SupabaseTaskDataAccessObject implements
         return returnString;
     }
 
+    // Gets a nullable string value from a JsonObject by member name.
     private String getNullableString(JsonObject json, String memberName) {
         return getString(json, memberName);
     }

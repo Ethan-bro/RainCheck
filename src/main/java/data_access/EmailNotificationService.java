@@ -1,13 +1,5 @@
 package data_access;
 
-import entity.Reminder;
-import entity.ScheduledNotification;
-import entity.Task;
-import entity.TaskInfo;
-import entity.User;
-
-import use_case.notification.EmailNotificationServiceInterface;
-
 import java.util.Properties;
 
 import javax.mail.Message;
@@ -17,6 +9,13 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+
+import entity.Reminder;
+import entity.ScheduledNotification;
+import entity.Task;
+import entity.TaskInfo;
+import entity.User;
+import use_case.notification.EmailNotificationServiceInterface;
 
 /**
  * Implementation of email notification service using JavaMail API.
@@ -30,6 +29,13 @@ public class EmailNotificationService implements EmailNotificationServiceInterfa
     private final String senderEmail;
     private final String senderPassword;
 
+    /**
+     * Constructs an EmailNotificationService with SMTP configuration and sender credentials.
+     * @param smtpHost the SMTP host
+     * @param smtpPort the SMTP port
+     * @param senderEmail the sender's email address
+     * @param senderPassword the sender's email password
+     */
     public EmailNotificationService(final String smtpHost, final String smtpPort,
                                     final String senderEmail, final String senderPassword) {
         this.smtpHost = smtpHost;
@@ -39,6 +45,12 @@ public class EmailNotificationService implements EmailNotificationServiceInterfa
     }
 
     @Override
+    /**
+     * Sends a task reminder email to the specified user.
+     * @param user the user to notify
+     * @param task the task for which to send a reminder
+     * @param userEmail the recipient's email address
+     */
     public void sendTaskReminder(final User user, final Task task, final String userEmail) {
         try {
             final Message message = createEmailMessage(userEmail, task);
@@ -52,6 +64,13 @@ public class EmailNotificationService implements EmailNotificationServiceInterfa
     }
 
     @Override
+    /**
+     * Schedules an email reminder for a task.
+     * @param task the task to schedule a reminder for
+     * @param userEmail the recipient's email address
+     * @param reminder the reminder configuration
+     * @return the scheduled notification
+     */
     public ScheduledNotification scheduleEmailReminder(final Task task, final String userEmail,
                                                        final Reminder reminder) {
         return new ScheduledNotification(
@@ -62,11 +81,18 @@ public class EmailNotificationService implements EmailNotificationServiceInterfa
     }
 
     @Override
+    /**
+     * Cancels a scheduled email reminder by notification ID.
+     * @param notificationId the ID of the notification to cancel
+     */
     public void cancelEmailReminder(final String notificationId) {
         System.out.println("Cancelled email reminder: " + notificationId);
     }
 
     @Override
+    /**
+     * Processes all pending email notifications.
+     */
     public void processPendingNotifications() {
         System.out.println("Processing pending notifications...");
     }

@@ -1,10 +1,5 @@
 package data_access;
 
-import entity.EmailNotificationConfig;
-import entity.ScheduledNotification;
-
-import use_case.notification.NotificationDataAccessInterface;
-
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -17,6 +12,10 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import entity.EmailNotificationConfig;
+import entity.ScheduledNotification;
+import use_case.notification.NotificationDataAccessInterface;
+
 /**
  * File-based implementation of notification data access.
  */
@@ -26,6 +25,11 @@ public class FileNotificationDataAccess implements NotificationDataAccessInterfa
     private final String scheduledNotificationsFile;
     private final ObjectMapper objectMapper;
 
+    /**
+     * Constructs a FileNotificationDataAccess with file paths for configs and notifications.
+     * @param emailConfigsFile the file for email configs
+     * @param scheduledNotificationsFile the file for scheduled notifications
+     */
     public FileNotificationDataAccess(String emailConfigsFile, String scheduledNotificationsFile) {
         this.emailConfigsFile = emailConfigsFile;
         this.scheduledNotificationsFile = scheduledNotificationsFile;
@@ -37,6 +41,11 @@ public class FileNotificationDataAccess implements NotificationDataAccessInterfa
     }
 
     @Override
+    /**
+     * Saves the email notification config for a user.
+     * @param username the username
+     * @param config the email notification config
+     */
     public void saveEmailConfig(String username, EmailNotificationConfig config) {
         try {
             final Map<String, EmailNotificationConfig> configs = loadEmailConfigs();
@@ -49,6 +58,11 @@ public class FileNotificationDataAccess implements NotificationDataAccessInterfa
     }
 
     @Override
+    /**
+     * Gets the email notification config for a user.
+     * @param username the username
+     * @return the email notification config, or null if not found
+     */
     public EmailNotificationConfig getEmailConfig(String username) {
         EmailNotificationConfig config = null;
         try {
@@ -64,6 +78,10 @@ public class FileNotificationDataAccess implements NotificationDataAccessInterfa
     }
 
     @Override
+    /**
+     * Saves a scheduled notification.
+     * @param notification the scheduled notification to save
+     */
     public void saveScheduledNotification(ScheduledNotification notification) {
         try {
             final List<ScheduledNotification> notifications = loadScheduledNotifications();
@@ -76,6 +94,11 @@ public class FileNotificationDataAccess implements NotificationDataAccessInterfa
     }
 
     @Override
+    /**
+     * Gets all pending notifications scheduled before the given time.
+     * @param beforeTime the cutoff time
+     * @return list of pending notifications
+     */
     public List<ScheduledNotification> getPendingNotifications(LocalDateTime beforeTime) {
         try {
             final List<ScheduledNotification> notifications = loadScheduledNotifications();
@@ -93,6 +116,10 @@ public class FileNotificationDataAccess implements NotificationDataAccessInterfa
     }
 
     @Override
+    /**
+     * Marks a notification as sent by its ID.
+     * @param notificationId the notification ID
+     */
     public void markNotificationAsSent(String notificationId) {
         try {
             final List<ScheduledNotification> notifications = loadScheduledNotifications();
@@ -113,6 +140,10 @@ public class FileNotificationDataAccess implements NotificationDataAccessInterfa
     }
 
     @Override
+    /**
+     * Deletes a scheduled notification by its ID.
+     * @param notificationId the notification ID
+     */
     public void deleteScheduledNotification(String notificationId) {
         try {
             final List<ScheduledNotification> notifications = loadScheduledNotifications();
@@ -127,6 +158,11 @@ public class FileNotificationDataAccess implements NotificationDataAccessInterfa
     }
 
     @Override
+    /**
+     * Gets all notifications for a specific task ID.
+     * @param taskId the task ID
+     * @return list of notifications for the task
+     */
     public List<ScheduledNotification> getNotificationsForTask(String taskId) {
         try {
             final List<ScheduledNotification> notifications = loadScheduledNotifications();
@@ -142,6 +178,7 @@ public class FileNotificationDataAccess implements NotificationDataAccessInterfa
 
     // Helper methods
 
+    // Creates the file if it does not exist.
     private void createFileIfNotExists(String filename) {
         final File file = new File(filename);
         if (!file.exists()) {
@@ -165,6 +202,7 @@ public class FileNotificationDataAccess implements NotificationDataAccessInterfa
         }
     }
 
+    // Loads email notification configs from file.
     private Map<String, EmailNotificationConfig> loadEmailConfigs() throws IOException {
         final File file = new File(emailConfigsFile);
         final Map<String, EmailNotificationConfig> result;
@@ -181,10 +219,12 @@ public class FileNotificationDataAccess implements NotificationDataAccessInterfa
         return result;
     }
 
+    // Saves email notification configs to file.
     private void saveEmailConfigs(Map<String, EmailNotificationConfig> configs) throws IOException {
         objectMapper.writeValue(new File(emailConfigsFile), configs);
     }
 
+    // Loads scheduled notifications from file.
     private List<ScheduledNotification> loadScheduledNotifications() throws IOException {
         final File file = new File(scheduledNotificationsFile);
         final List<ScheduledNotification> result;
@@ -201,6 +241,7 @@ public class FileNotificationDataAccess implements NotificationDataAccessInterfa
         return result;
     }
 
+    // Saves scheduled notifications to file.
     private void saveScheduledNotifications(List<ScheduledNotification> notifications) throws IOException {
         objectMapper.writeValue(new File(scheduledNotificationsFile), notifications);
     }

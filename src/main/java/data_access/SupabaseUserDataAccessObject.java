@@ -1,12 +1,5 @@
 package data_access;
 
-import entity.CommonUser;
-import entity.User;
-
-import use_case.login.LoginUserDataAccessInterface;
-import use_case.logout.LogoutUserDataAccessInterface;
-import use_case.signup.SignupUserDataAccessInterface;
-
 import java.io.IOException;
 import java.util.Collections;
 
@@ -14,11 +7,17 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import entity.CommonUser;
+import entity.User;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import use_case.login.LoginUserDataAccessInterface;
+import use_case.logout.LogoutUserDataAccessInterface;
+import use_case.signup.SignupUserDataAccessInterface;
 
 public class SupabaseUserDataAccessObject implements
         LoginUserDataAccessInterface,
@@ -41,6 +40,13 @@ public class SupabaseUserDataAccessObject implements
     private final String apiKey;
     private String currentUser;
 
+    /**
+     * Constructs a SupabaseUserDataAccessObject with the given base URL and API key.
+     *
+     * @param baseUrl the base URL of the Supabase instance
+     * @param apiKey the API key for authentication
+     * @throws IllegalArgumentException if the baseUrl does not start with http or https
+     */
     public SupabaseUserDataAccessObject(String baseUrl, String apiKey) {
         if (!baseUrl.startsWith("http")) {
             throw new IllegalArgumentException("Supabase base URL must start with http or https");
@@ -50,6 +56,13 @@ public class SupabaseUserDataAccessObject implements
     }
 
     @Override
+    /**
+     * Checks if a user exists by username.
+     *
+     * @param username the username to check
+     * @return true if the user exists, false otherwise
+     * @throws RuntimeException if the check fails due to an IO error
+     */
     public boolean existsByName(String username) {
         final String url = baseUrl + "/rest/v1/users?username=eq." + username + "&select=username";
         final Request request = new Request.Builder()
@@ -79,6 +92,13 @@ public class SupabaseUserDataAccessObject implements
     }
 
     @Override
+    /**
+     * Retrieves a user by username.
+     *
+     * @param username the username of the user to retrieve
+     * @return the User object if found, null otherwise
+     * @throws RuntimeException if the retrieval fails due to an IO error
+     */
     public User get(String username) {
         final String url = baseUrl + "/rest/v1/users?username=eq." + username + "&select=username,password,email";
         final Request request = new Request.Builder()
@@ -109,6 +129,13 @@ public class SupabaseUserDataAccessObject implements
     }
 
     @Override
+    /**
+     * Saves a new user to the database.
+     *
+     * @param user the User object to save
+     * @throws DuplicateEmailException if the email already exists
+     * @throws RuntimeException if the save fails due to an IO error or other error
+     */
     public void save(User user) throws DuplicateEmailException {
         final JsonObject newUser = new JsonObject();
         newUser.addProperty("username", user.getName());
@@ -157,26 +184,52 @@ public class SupabaseUserDataAccessObject implements
     }
 
     @Override
+    /**
+     * Sets the current user by username.
+     *
+     * @param username the username to set as current user
+     */
     public void setCurrentUser(String username) {
         this.currentUser = username;
     }
 
     @Override
+    /**
+     * Gets the current user's username.
+     *
+     * @return the current user's username
+     */
     public String getCurrentUser() {
         return currentUser;
     }
 
     @Override
+    /**
+     * Checks if a username is valid (not already taken).
+     *
+     * @param username the username to validate
+     * @return true if the username is valid, false otherwise
+     */
     public boolean isUsernameValid(String username) {
         return !existsByName(username);
     }
 
     @Override
+    /**
+     * Sets the current username (alias for setCurrentUser).
+     *
+     * @param username the username to set as current
+     */
     public void setCurrentUsername(String username) {
         setCurrentUser(username);
     }
 
     @Override
+    /**
+     * Gets the current username (alias for getCurrentUser).
+     *
+     * @return the current user's username
+     */
     public String getCurrentUsername() {
         return getCurrentUser();
     }
