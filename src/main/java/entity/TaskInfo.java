@@ -125,14 +125,6 @@ public class TaskInfo {
     }
 
     /**
-     * Sets the task name.
-     * @param taskName the task name to set
-     */
-    public void setTaskName(String taskName) {
-        this.taskName = taskName;
-    }
-
-    /**
      * Gets the start date and time.
      * @return the start date and time
      */
@@ -141,27 +133,11 @@ public class TaskInfo {
     }
 
     /**
-     * Sets the start date and time.
-     * @param startDateTime the start date and time to set
-     */
-    public void setStartDateTime(LocalDateTime startDateTime) {
-        this.startDateTime = startDateTime;
-    }
-
-    /**
      * Gets the end date and time.
      * @return the end date and time
      */
     public LocalDateTime getEndDateTime() {
         return endDateTime;
-    }
-
-    /**
-     * Sets the end date and time.
-     * @param endDateTime the end date and time to set
-     */
-    public void setEndDateTime(LocalDateTime endDateTime) {
-        this.endDateTime = endDateTime;
     }
 
     /**
@@ -237,27 +213,11 @@ public class TaskInfo {
     }
 
     /**
-     * Sets the weather description.
-     * @param weatherDescription the weather description to set
-     */
-    public void setWeatherDescription(String weatherDescription) {
-        this.weatherDescription = weatherDescription;
-    }
-
-    /**
      * Gets the weather icon name.
      * @return the weather icon name
      */
     public String getWeatherIconName() {
         return weatherIconName;
-    }
-
-    /**
-     * Sets the weather icon name.
-     * @param weatherIconName the weather icon name to set
-     */
-    public void setWeatherIconName(String weatherIconName) {
-        this.weatherIconName = weatherIconName;
     }
 
     /**

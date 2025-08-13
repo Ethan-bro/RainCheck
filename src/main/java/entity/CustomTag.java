@@ -40,14 +40,6 @@ public class CustomTag {
     }
 
     /**
-     * Sets the tag icon.
-     * @param tagEmoji the tag icon to set
-     */
-    public void setTagIcon(String tagEmoji) {
-        this.tagIcon = tagEmoji;
-    }
-
-    /**
      * Returns a string representation of the custom tag.
      * @return the tag icon and name as a string
      */

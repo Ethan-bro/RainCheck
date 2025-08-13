@@ -34,28 +34,12 @@ public class EmailNotificationConfig {
     }
 
     /**
-     * Sets the user email.
-     * @param userEmail the user email to set
-     */
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
-    }
-
-    /**
      * Checks if email notifications are enabled.
      * @return true if enabled, false otherwise
      */
     @JsonProperty("emailNotificationsEnabled")
     public boolean isEmailNotificationsEnabled() {
         return emailNotificationsEnabled;
-    }
-
-    /**
-     * Sets whether email notifications are enabled.
-     * @param emailNotificationsEnabled true to enable, false to disable
-     */
-    public void setEmailNotificationsEnabled(boolean emailNotificationsEnabled) {
-        this.emailNotificationsEnabled = emailNotificationsEnabled;
     }
 
     /**
