@@ -8,7 +8,6 @@ public class ManageTagsState {
     private CustomTag currTag;
     private String errorMsg;
 
-
     /**
      * Copy constructor for ManageTagsState.
      *
@@ -35,7 +34,6 @@ public class ManageTagsState {
     public String getCurrUsername() {
         return currUsername;
     }
-
 
     /**
      * Returns the current tag.
@@ -71,4 +69,5 @@ public class ManageTagsState {
      */
     public void setCurrTag(CustomTag selectedTag) {
         currTag = selectedTag;
+    }
 }
