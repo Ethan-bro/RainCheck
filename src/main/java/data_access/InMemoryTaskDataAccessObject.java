@@ -6,19 +6,25 @@ import entity.TaskID;
 import use_case.deleteTask.DeleteTaskDataAccessInterface;
 import use_case.editTask.EditTaskDataAccessInterface;
 import use_case.markTaskComplete.MarkTaskCompleteDataAccessInterface;
+import use_case.listTasks.TaskDataAccessInterface;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.time.LocalDate;
+import java.util.*;
 
 /**
  * A fake in-memory DAO used only for unit tests. No external I/O.
+ * Now stores tasks per-username so it can be used by both EditTask tests
+ * and AddTask tests (which call getTasksByDateRange).
  */
 public class InMemoryTaskDataAccessObject implements
         EditTaskDataAccessInterface,
         DeleteTaskDataAccessInterface,
-        MarkTaskCompleteDataAccessInterface {
+        MarkTaskCompleteDataAccessInterface,
+        TaskDataAccessInterface {
 
-    private final Map<TaskID, Task> taskMap = new HashMap<>();
+    // per-username storage: username -> (taskId -> Task)
+    private final Map<String, Map<TaskID, Task>> tasksByUser = new HashMap<>();
+
     private String currentUsername;
 
     /**
@@ -32,22 +38,29 @@ public class InMemoryTaskDataAccessObject implements
      * Adds a task for the specified username.
      *
      * @param username the username to associate the task with
-     * @param task the task to add
+     * @param task     the task to add
      */
+    @Override
     public void addTask(String username, Task task) {
+        Objects.requireNonNull(username);
+        Objects.requireNonNull(task);
+        tasksByUser
+                .computeIfAbsent(username, _ -> new HashMap<>())
+                .put(task.getTaskInfo().getId(), task);
         this.currentUsername = username;
-        taskMap.put(task.getTaskInfo().getId(), task);
     }
 
     /**
      * Marks the task as complete for the given username and task ID.
      *
      * @param username the username of the user
-     * @param taskId the ID of the task to mark complete
+     * @param taskId   the ID of the task to mark complete
      */
     @Override
     public void markAsComplete(String username, TaskID taskId) {
-        final Task task = taskMap.get(taskId);
+        Map<TaskID, Task> userMap = tasksByUser.get(username);
+        if (userMap == null) return;
+        final Task task = userMap.get(taskId);
         if (task != null) {
             task.getTaskInfo().setTaskStatus("Complete");
         }
@@ -57,46 +70,55 @@ public class InMemoryTaskDataAccessObject implements
      * Deletes the task with the specified task ID for the given username.
      *
      * @param username the username of the user
-     * @param taskId the ID of the task to delete
+     * @param taskId   the ID of the task to delete
      */
     @Override
     public void deleteTask(String username, TaskID taskId) {
-        taskMap.remove(taskId);
+        Map<TaskID, Task> userMap = tasksByUser.get(username);
+        if (userMap != null) {
+            userMap.remove(taskId);
+        }
     }
 
     /**
      * Retrieves a task by email and ID.
+     * (For tests that call this signature; in this in-memory dao we treat email same as username.)
      *
-     * @param email the email of the user
-     * @param id the task ID
+     * @param email the email (treated as username here)
+     * @param id    the task ID
      * @return the task if found, null otherwise
      */
     @Override
     public Task getTaskByIdAndEmail(String email, TaskID id) {
-        return taskMap.get(id);
+        Map<TaskID, Task> userMap = tasksByUser.get(email);
+        if (userMap == null) return null;
+        return userMap.get(id);
     }
 
     /**
      * Retrieves a task by username and task ID.
      *
      * @param username the username of the user
-     * @param taskId the task ID
+     * @param taskId   the task ID
      * @return the task if found, null otherwise
      */
     @Override
     public Task getTaskById(String username, TaskID taskId) {
-        return taskMap.get(taskId);
+        Map<TaskID, Task> userMap = tasksByUser.get(username);
+        if (userMap == null) return null;
+        return userMap.get(taskId);
     }
 
     /**
      * Updates an existing task.
      *
      * @param username the username of the user
-     * @param task the updated task
+     * @param task     the updated task
      */
     @Override
     public void updateTask(String username, Task task) {
-        taskMap.put(task.getTaskInfo().getId(), task);
+        Map<TaskID, Task> userMap = tasksByUser.computeIfAbsent(username, _ -> new HashMap<>());
+        userMap.put(task.getTaskInfo().getId(), task);
     }
 
     /**
@@ -115,5 +137,30 @@ public class InMemoryTaskDataAccessObject implements
      */
     public void setCurrentUsername(String currentUsername) {
         this.currentUsername = currentUsername;
+    }
+
+    /**
+     * Returns tasks that start within the given date range (inclusive) for the given username.
+     * This implements the TaskDataAccessInterface required by AddTaskInteractor.
+     * NOTE: filtering is based on task.getTaskInfo().getStartDateTime().toLocalDate()
+     *
+     * @param username  the username
+     * @param startDate inclusive start date
+     * @param endDate   inclusive end date
+     * @return list of matching tasks (empty list if none)
+     */
+    @Override
+    public synchronized List<Task> getTasksByDateRange(String username, LocalDate startDate, LocalDate endDate) {
+        Map<TaskID, Task> userMap = tasksByUser.get(username);
+        if (userMap == null || userMap.isEmpty()) return Collections.emptyList();
+
+        List<Task> out = new ArrayList<>();
+        for (Task t : userMap.values()) {
+            LocalDate s = t.getTaskInfo().getStartDateTime().toLocalDate();
+            if ((!s.isBefore(startDate)) && (!s.isAfter(endDate))) {
+                out.add(t);
+            }
+        }
+        return out;
     }
 }
