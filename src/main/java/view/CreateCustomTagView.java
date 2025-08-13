@@ -270,9 +270,9 @@ public class CreateCustomTagView extends JPanel implements PropertyChangeListene
             final String icon = selectedIcon.getActionCommand();
 
             final String tagName = tagNameTextField.getText().trim();
-            final CustomTag tag = new CustomTag(tagName, icon);
+            // final CustomTag tag = new CustomTag(tagName, icon);
 
-            createCustomTagController.execute(tag, createCustomTagViewModel.getUsername());
+            createCustomTagController.execute(tagName, icon, createCustomTagViewModel.getUsername());
 
             createButton.setEnabled(false);
         }

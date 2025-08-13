@@ -39,9 +39,11 @@ class EditTagInteractorTest {
         final EditTagController controller = new EditTagController(tagDao, manageTagsViewModel, interactor);
 
         final CustomTag oldTag = new CustomTag("home", CustomTagIcons.HOUSE);
-        final CustomTag newTag = new CustomTag("gym", CustomTagIcons.MUSCLE);
+        final String newTagName = "gym";
+        final String newTagIcon = CustomTagIcons.MUSCLE;
 
-        controller.execute(oldTag, newTag);
+
+        controller.execute(oldTag, newTagName, newTagIcon);
 
         final Map<String, String> tags = tagDao.getCustomTags(username);
 
@@ -74,9 +76,10 @@ class EditTagInteractorTest {
         final EditTagController controller = new EditTagController(tagDao, manageTagsViewModel, interactor);
 
         final CustomTag oldTag = new CustomTag("home", CustomTagIcons.HOUSE);
-        final CustomTag newTag = new CustomTag("home", CustomTagIcons.MUSCLE);
+        final String newTagName = "home";
+        final String newTagIcon = CustomTagIcons.MUSCLE;
 
-        controller.execute(oldTag, newTag);
+        controller.execute(oldTag, newTagName, newTagIcon);
 
         final Map<String, String> tags = tagDao.getCustomTags(username);
 
@@ -107,9 +110,10 @@ class EditTagInteractorTest {
 
         final CustomTag oldTag = new CustomTag("home", CustomTagIcons.HOUSE);
         tagDao.addCustomTag(username, oldTag);
-        final CustomTag newTag = new CustomTag("house", CustomTagIcons.HOUSE);
+        final String newTagName = "house";
+        final String newTagIcon = CustomTagIcons.HOUSE;
 
-        controller.execute(oldTag, newTag);
+        controller.execute(oldTag, newTagName, newTagIcon);
 
         final Map<String, String> tags = tagDao.getCustomTags(username);
 
@@ -145,9 +149,11 @@ class EditTagInteractorTest {
         final CustomTag tagB = new CustomTag("gym", CustomTagIcons.MUSCLE);
         tagDao.addCustomTag(username, tagB);
 
-        final CustomTag tagC = new CustomTag("home", CustomTagIcons.FOOD);
+        final String newTagName = "home";
+        final String newTagIcon = CustomTagIcons.FOOD;
 
-        controller.execute(tagB, tagC);
+
+        controller.execute(tagB, newTagName, newTagIcon);
 
         assertEquals("Tag name is taken", errorMsg[0], "Should show error for taken tag name");
     }
@@ -179,9 +185,10 @@ class EditTagInteractorTest {
         final CustomTag tagB = new CustomTag("gym", CustomTagIcons.MUSCLE);
         tagDao.addCustomTag(username, tagB);
 
-        final CustomTag tagC = new CustomTag("house", CustomTagIcons.HOUSE);
+        final String newTagName = "house";
+        final String newTagIcon = CustomTagIcons.HOUSE;
 
-        controller.execute(tagB, tagC);
+        controller.execute(tagB, newTagName, newTagIcon);
 
         assertEquals("Tag icon is taken", errorMsg[0], "Should show error for taken tag icon");
     }

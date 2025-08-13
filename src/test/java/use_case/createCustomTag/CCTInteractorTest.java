@@ -34,14 +34,13 @@ class CCTInteractorTest {
             }
         };
 
-        final CustomTag tag = new CustomTag("school", BOOKS);
-        final String tagName = tag.getTagName();
-        final String tagIcon = tag.getTagIcon();
+        final String tagName = "school";
+        final String tagIcon = BOOKS;
 
         final CreateCustomTagInputBoundary interactor = new CreateCustomTagInteractor(tagDao, presenter);
         final CreateCustomTagController controller = new CreateCustomTagController(interactor);
 
-        controller.execute(tag, username);
+        controller.execute(tagName, tagIcon, username);
 
         final Map<String, String> tags = tagDao.getCustomTags(username);
 
@@ -67,14 +66,17 @@ class CCTInteractorTest {
             }
         };
 
-        final CustomTag tagA = new CustomTag("school", BOOKS);
-        final CustomTag tagB = new CustomTag("school", RING);
+        String tagAName = "school";
+        String tagAIcon = BOOKS;
+
+        String tagBName = "school";
+        String tagBIcon = RING;
 
         final CreateCustomTagInputBoundary interactor = new CreateCustomTagInteractor(tagDao, presenter);
         final CreateCustomTagController controller = new CreateCustomTagController(interactor);
 
-        controller.execute(tagA, username);
-        controller.execute(tagB, username);
+        controller.execute(tagAName, tagAIcon, username);
+        controller.execute(tagBName, tagBIcon, username);
 
         assertEquals("Tag name is already in use!", errorMsg[0], "Expected error message for taken tag name");
     }
