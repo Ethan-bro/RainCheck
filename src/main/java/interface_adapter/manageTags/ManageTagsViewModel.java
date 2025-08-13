@@ -1,21 +1,26 @@
 package interface_adapter.manageTags;
 
-import entity.CustomTag;
-
-import interface_adapter.ViewModel;
-import interface_adapter.events.TagChangeEventNotifier;
-
-import use_case.createCustomTag.CustomTagDataAccessInterface;
-
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import entity.CustomTag;
+import interface_adapter.ViewModel;
+import interface_adapter.events.TagChangeEventNotifier;
+import use_case.createCustomTag.CustomTagDataAccessInterface;
 
 public class ManageTagsViewModel extends ViewModel<ManageTagsState> {
 
     private final CustomTagDataAccessInterface tagDao;
     private String username;
 
+    /**
+     * Constructs a ManageTagsViewModel with the given tag data access object
+     * and username.
+     *
+     * @param tagDao the data access object for custom tags
+     * @param username the username associated with this view model
+     */
     public ManageTagsViewModel(CustomTagDataAccessInterface tagDao, String username) {
         super("Manage Tags");
         setState(new ManageTagsState());
@@ -25,9 +30,9 @@ public class ManageTagsViewModel extends ViewModel<ManageTagsState> {
     }
 
     /**
-     * Returns the username associated with this ViewModel.
+     * Returns the username associated with this view model.
      *
-     * @return the current username as a String
+     * @return the current username
      */
     public String getUsername() {
         return username;
@@ -46,9 +51,9 @@ public class ManageTagsViewModel extends ViewModel<ManageTagsState> {
     }
 
     /**
-     * Gets a list of CustomTag objects for the current username.
+     * Returns a list of CustomTag objects for the current username.
      *
-     * @return a List of CustomTag representing the user's tags
+     * @return a list of CustomTag representing the user's tags
      */
     public List<CustomTag> getTagOptions() {
         final Map<String, String> raw = tagDao.getCustomTags(username);
@@ -58,13 +63,13 @@ public class ManageTagsViewModel extends ViewModel<ManageTagsState> {
     }
 
     /**
-     * Gets the emoji associated with a given tag name for the current user.
+     * Returns the emoji for a given tag name, or null if not found.
      *
-     * @param tagName the name of the tag
-     * @return the emoji string associated with the tag, or empty string if none
+     * @param tagName the tag name to look up
+     * @return the emoji string, or null if not found
      */
     public String getTagEmojiFor(String tagName) {
         final Map<String, String> raw = tagDao.getCustomTags(username);
-        return raw.getOrDefault(tagName, "");
+        return raw.get(tagName);
     }
 }

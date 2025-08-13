@@ -1,23 +1,26 @@
 package interface_adapter.deleteTask;
 
-import entity.TaskID;
+import java.io.IOException;
 
+import entity.TaskID;
 import use_case.deleteTask.DeleteTaskInputBoundary;
 import use_case.deleteTask.DeleteTaskInputData;
 
-import java.io.IOException;
-
-/**
- * Controller class for deleting a task.
- */
 public class DeleteTaskController {
 
     private final DeleteTaskInputBoundary deleteTaskInputInteractor;
     private String username;
 
+
+    /**
+     * Constructs a DeleteTaskController with the given input boundary interactor.
+     *
+     * @param deleteTaskInputInteractor the interactor responsible for deleting tasks
+     */
     public DeleteTaskController(DeleteTaskInputBoundary deleteTaskInputInteractor) {
         this.deleteTaskInputInteractor = deleteTaskInputInteractor;
     }
+
 
     /**
      * Sets the username for the user performing the deletion.

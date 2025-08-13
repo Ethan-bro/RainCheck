@@ -1,7 +1,6 @@
 package interface_adapter.email_settings;
 
 import entity.EmailNotificationConfig;
-
 import use_case.notification.NotificationDataAccessInterface;
 
 /**
@@ -13,14 +12,23 @@ public class EmailSettingsController {
     private final NotificationDataAccessInterface notificationDataAccess;
     private final EmailSettingsViewModel viewModel;
 
+
+    /**
+     * Constructs an EmailSettingsController with the given data access and view model.
+     *
+     * @param notificationDataAccess the data access interface for notifications
+     * @param viewModel the view model for email settings
+     */
     public EmailSettingsController(NotificationDataAccessInterface notificationDataAccess,
                                    EmailSettingsViewModel viewModel) {
         this.notificationDataAccess = notificationDataAccess;
         this.viewModel = viewModel;
     }
 
+
     /**
-     * Processes the input email settings state, validates, saves config, and updates ViewModel state.
+     * Processes the input email settings state, validates the email, saves the configuration, and updates the view model state.
+     *
      * @param inputState the input state from the view
      */
     public void execute(EmailSettingsState inputState) {
@@ -45,8 +53,10 @@ public class EmailSettingsController {
         }
     }
 
+
     /**
-     * Sends a test email to the given address and updates ViewModel state accordingly.
+     * Sends a test email to the given address and updates the view model state accordingly.
+     *
      * @param email the email address to send a test email to
      */
     public void sendTestEmail(String email) {
@@ -63,17 +73,21 @@ public class EmailSettingsController {
         }
     }
 
+
     /**
-     * Validates an email address format.
+     * Checks if the provided email address is invalid.
+     *
      * @param email the email string to validate
-     * @return true if valid, false otherwise
+     * @return true if the email is invalid, false otherwise
      */
     private boolean isInvalidEmail(String email) {
         return email == null || !email.matches("^[A-Za-z0-9+_.-]+@([A-Za-z0-9.-]+\\.[A-Za-z]{2,})$");
     }
 
+
     /**
      * Gets the current username from session or context.
+     *
      * @return the current username (placeholder implementation)
      */
     private String getCurrentUsername() {

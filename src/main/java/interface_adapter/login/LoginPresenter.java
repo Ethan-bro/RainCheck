@@ -4,7 +4,6 @@ import interface_adapter.ViewManagerModel;
 import interface_adapter.logged_in.LoggedInState;
 import interface_adapter.logged_in.LoggedInViewModel;
 import interface_adapter.signup.SignupViewModel;
-
 import use_case.login.LoginOutputBoundary;
 import use_case.login.LoginOutputData;
 
@@ -18,6 +17,15 @@ public class LoginPresenter implements LoginOutputBoundary {
     private final SignupViewModel signupViewModel;
     private final ViewManagerModel viewManagerModel;
 
+
+    /**
+     * Constructs a LoginPresenter with the required view models.
+     *
+     * @param viewManagerModel the view manager model
+     * @param loggedInViewModel the view model for the logged-in state
+     * @param loginViewModel the view model for the login state
+     * @param signupViewModel the view model for the signup state
+     */
     public LoginPresenter(ViewManagerModel viewManagerModel,
                           LoggedInViewModel loggedInViewModel,
                           LoginViewModel loginViewModel,
@@ -28,6 +36,13 @@ public class LoginPresenter implements LoginOutputBoundary {
         this.signupViewModel = signupViewModel;
     }
 
+
+    /**
+     * Prepares the view for a successful login.
+     * Updates the logged-in state and switches the view.
+     *
+     * @param response the output data from the login use case
+     */
     @Override
     public void prepareSuccessView(LoginOutputData response) {
         // On success, switch to the logged in view.
@@ -42,6 +57,13 @@ public class LoginPresenter implements LoginOutputBoundary {
         this.viewManagerModel.firePropertyChanged();
     }
 
+
+    /**
+     * Prepares the view for a failed login attempt.
+     * Updates the login state with the error message.
+     *
+     * @param error the error message to display
+     */
     @Override
     public void prepareFailView(String error) {
         final LoginState loginState = loginViewModel.getState();
@@ -49,6 +71,10 @@ public class LoginPresenter implements LoginOutputBoundary {
         loginViewModel.firePropertyChanged();
     }
 
+
+    /**
+     * Switches the view to the signup screen.
+     */
     @Override
     public void switchToSignupView() {
         viewManagerModel.setState(signupViewModel.getViewName());

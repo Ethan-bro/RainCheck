@@ -18,6 +18,9 @@ public class SignupViewModel extends ViewModel<SignupState> {
 
     public static final String TO_LOGIN_BUTTON_LABEL = "Go to Login";
 
+    /**
+     * Constructs a SignupViewModel and initializes its state.
+     */
     public SignupViewModel() {
         super("SIGN_UP");
         setState(new SignupState());
