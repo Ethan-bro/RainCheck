@@ -80,4 +80,36 @@ class CCTInteractorTest {
 
         assertEquals("Tag name is already in use!", errorMsg[0], "Expected error message for taken tag name");
     }
+    @Test
+    void testIconTaken() {
+        final CustomTagDataAccessInterface tagDao = new InMemoryTagDataAccessObject();
+        final String[] errorMsg = new String[1];
+
+        final CreateCustomTagOutputBoundary presenter = new CreateCustomTagOutputBoundary() {
+            @Override
+            public void prepareFailView(CreateCustomTagOutputData failedOutputData) {
+                errorMsg[0] = failedOutputData.getErrorMessage();
+            }
+
+            @Override
+            public void prepareSuccessView(CreateCustomTagOutputData createCustomTagOutputData) {
+                errorMsg[0] = createCustomTagOutputData.getErrorMessage();
+            }
+        };
+
+        String tagAName = "school";
+        String tagAIcon = BOOKS;
+
+        String tagBName = "books";
+        String tagBIcon = BOOKS;
+
+        final CreateCustomTagInputBoundary interactor = new CreateCustomTagInteractor(tagDao, presenter);
+        final CreateCustomTagController controller = new CreateCustomTagController(interactor);
+
+        controller.execute(tagAName, tagAIcon, username);
+        controller.execute(tagBName, tagBIcon, username);
+
+        assertEquals("Tag icon is already in use!", errorMsg[0],
+                "Expected error message for taken tag icon");
+    }
 }
