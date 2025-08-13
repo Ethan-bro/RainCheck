@@ -18,18 +18,34 @@ public class ViewModel<T> {
 
     private T state;
 
+    /**
+     * Constructs a ViewModel with the given view name.
+     * @param viewName the name of the view
+     */
     public ViewModel(String viewName) {
         this.viewName = viewName;
     }
 
+    /**
+     * Gets the name of the view.
+     * @return the view name
+     */
     public String getViewName() {
         return this.viewName;
     }
 
+    /**
+     * Gets the current state.
+     * @return the state
+     */
     public T getState() {
         return this.state;
     }
 
+    /**
+     * Sets the current state.
+     * @param state the state to set
+     */
     public void setState(T state) {
         this.state = state;
     }
@@ -42,11 +58,7 @@ public class ViewModel<T> {
     }
 
     /**
-     * Fires a property changed event for the state of this ViewModel, which
-     * allows the user to specify a different propertyName. This can be useful
-     * when a class is listening for multiple kinds of property changes.
-     * For example, the LoggedInView listens for two kinds of property changes;
-     * it can use the property name to distinguish which property has changed.
+     * Fires a property changed event for the state of this ViewModel with a custom property name.
      * @param propertyName the label for the property that was changed
      */
     public void firePropertyChanged(String propertyName) {
@@ -55,13 +67,9 @@ public class ViewModel<T> {
 
     /**
      * Fires a property change event with the specified property name and value change.
-     * This method allows precise control over what is considered changed by providing both
-     * the old and new values. Property change listeners can use this information to determine
-     * whether and how to respond to the change.
-     *
      * @param propertyName the name of the property that changed
-     * @param oldValue     the old value of the property (may be {@code null})
-     * @param newValue     the new value of the property (may be {@code null})
+     * @param oldValue the old value of the property (may be {@code null})
+     * @param newValue the new value of the property (may be {@code null})
      */
     public void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
         this.support.firePropertyChange(propertyName, oldValue, newValue);
@@ -69,7 +77,7 @@ public class ViewModel<T> {
 
     /**
      * Adds a PropertyChangeListener to this ViewModel.
-     * @param listener The PropertyChangeListener to be added
+     * @param listener the PropertyChangeListener to add
      */
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         this.support.addPropertyChangeListener(listener);

@@ -26,6 +26,11 @@ public class FileNotificationDataAccess implements NotificationDataAccessInterfa
     private final String scheduledNotificationsFile;
     private final ObjectMapper objectMapper;
 
+    /**
+     * Constructs a FileNotificationDataAccess with file paths for configs and notifications.
+     * @param emailConfigsFile the file for email configs
+     * @param scheduledNotificationsFile the file for scheduled notifications
+     */
     public FileNotificationDataAccess(String emailConfigsFile, String scheduledNotificationsFile) {
         this.emailConfigsFile = emailConfigsFile;
         this.scheduledNotificationsFile = scheduledNotificationsFile;
@@ -36,6 +41,11 @@ public class FileNotificationDataAccess implements NotificationDataAccessInterfa
         createFileIfNotExists(scheduledNotificationsFile);
     }
 
+    /**
+     * Saves the email notification config for a user.
+     * @param username the username
+     * @param config the email notification config
+     */
     @Override
     public void saveEmailConfig(String username, EmailNotificationConfig config) {
         try {
@@ -48,6 +58,11 @@ public class FileNotificationDataAccess implements NotificationDataAccessInterfa
         }
     }
 
+    /**
+     * Gets the email notification config for a user.
+     * @param username the username
+     * @return the email notification config, or null if not found
+     */
     @Override
     public EmailNotificationConfig getEmailConfig(String username) {
         EmailNotificationConfig config = null;
@@ -63,6 +78,10 @@ public class FileNotificationDataAccess implements NotificationDataAccessInterfa
         return config;
     }
 
+    /**
+     * Saves a scheduled notification.
+     * @param notification the scheduled notification to save
+     */
     @Override
     public void saveScheduledNotification(ScheduledNotification notification) {
         try {
@@ -75,6 +94,11 @@ public class FileNotificationDataAccess implements NotificationDataAccessInterfa
         }
     }
 
+    /**
+     * Gets all pending notifications scheduled before the given time.
+     * @param beforeTime the cutoff time
+     * @return list of pending notifications
+     */
     @Override
     public List<ScheduledNotification> getPendingNotifications(LocalDateTime beforeTime) {
         try {
@@ -92,6 +116,10 @@ public class FileNotificationDataAccess implements NotificationDataAccessInterfa
         return !notification.isSent() && notification.getScheduledTime().isBefore(beforeTime);
     }
 
+    /**
+     * Marks a notification as sent by its ID.
+     * @param notificationId the notification ID
+     */
     @Override
     public void markNotificationAsSent(String notificationId) {
         try {
@@ -112,6 +140,10 @@ public class FileNotificationDataAccess implements NotificationDataAccessInterfa
         }
     }
 
+    /**
+     * Deletes a scheduled notification by its ID.
+     * @param notificationId the notification ID
+     */
     @Override
     public void deleteScheduledNotification(String notificationId) {
         try {
@@ -126,6 +158,11 @@ public class FileNotificationDataAccess implements NotificationDataAccessInterfa
         }
     }
 
+    /**
+     * Gets all notifications for a specific task ID.
+     * @param taskId the task ID
+     * @return list of notifications for the task
+     */
     @Override
     public List<ScheduledNotification> getNotificationsForTask(String taskId) {
         try {
@@ -142,6 +179,7 @@ public class FileNotificationDataAccess implements NotificationDataAccessInterfa
 
     // Helper methods
 
+    // Creates the file if it does not exist.
     private void createFileIfNotExists(String filename) {
         final File file = new File(filename);
         if (!file.exists()) {
@@ -165,6 +203,7 @@ public class FileNotificationDataAccess implements NotificationDataAccessInterfa
         }
     }
 
+    // Loads email notification configs from file.
     private Map<String, EmailNotificationConfig> loadEmailConfigs() throws IOException {
         final File file = new File(emailConfigsFile);
         final Map<String, EmailNotificationConfig> result;
@@ -181,10 +220,12 @@ public class FileNotificationDataAccess implements NotificationDataAccessInterfa
         return result;
     }
 
+    // Saves email notification configs to file.
     private void saveEmailConfigs(Map<String, EmailNotificationConfig> configs) throws IOException {
         objectMapper.writeValue(new File(emailConfigsFile), configs);
     }
 
+    // Loads scheduled notifications from file.
     private List<ScheduledNotification> loadScheduledNotifications() throws IOException {
         final File file = new File(scheduledNotificationsFile);
         final List<ScheduledNotification> result;
@@ -201,6 +242,7 @@ public class FileNotificationDataAccess implements NotificationDataAccessInterfa
         return result;
     }
 
+    // Saves scheduled notifications to file.
     private void saveScheduledNotifications(List<ScheduledNotification> notifications) throws IOException {
         objectMapper.writeValue(new File(scheduledNotificationsFile), notifications);
     }

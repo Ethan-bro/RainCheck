@@ -41,6 +41,13 @@ public class SupabaseUserDataAccessObject implements
     private final String apiKey;
     private String currentUser;
 
+    /**
+     * Constructs a SupabaseUserDataAccessObject with the given base URL and API key.
+     *
+     * @param baseUrl the base URL of the Supabase instance
+     * @param apiKey the API key for authentication
+     * @throws IllegalArgumentException if the baseUrl does not start with http or https
+     */
     public SupabaseUserDataAccessObject(String baseUrl, String apiKey) {
         if (!baseUrl.startsWith("http")) {
             throw new IllegalArgumentException("Supabase base URL must start with http or https");
@@ -49,6 +56,13 @@ public class SupabaseUserDataAccessObject implements
         this.apiKey = apiKey;
     }
 
+    /**
+     * Checks if a user exists by username.
+     *
+     * @param username the username to check
+     * @return true if the user exists, false otherwise
+     * @throws RuntimeException if the check fails due to an IO error
+     */
     @Override
     public boolean existsByName(String username) {
         final String url = baseUrl + "/rest/v1/users?username=eq." + username + "&select=username";
@@ -78,6 +92,13 @@ public class SupabaseUserDataAccessObject implements
         return exists;
     }
 
+    /**
+     * Retrieves a user by username.
+     *
+     * @param username the username of the user to retrieve
+     * @return the User object if found, null otherwise
+     * @throws RuntimeException if the retrieval fails due to an IO error
+     */
     @Override
     public User get(String username) {
         final String url = baseUrl + "/rest/v1/users?username=eq." + username + "&select=username,password,email";
@@ -108,6 +129,13 @@ public class SupabaseUserDataAccessObject implements
         return user;
     }
 
+    /**
+     * Saves a new user to the database.
+     *
+     * @param user the User object to save
+     * @throws DuplicateEmailException if the email already exists
+     * @throws RuntimeException if the save fails due to an IO error or other error
+     */
     @Override
     public void save(User user) throws DuplicateEmailException {
         final JsonObject newUser = new JsonObject();
@@ -156,26 +184,52 @@ public class SupabaseUserDataAccessObject implements
         }
     }
 
+    /**
+     * Sets the current user by username.
+     *
+     * @param username the username to set as current user
+     */
     @Override
     public void setCurrentUser(String username) {
         this.currentUser = username;
     }
 
+    /**
+     * Gets the current user's username.
+     *
+     * @return the current user's username
+     */
     @Override
     public String getCurrentUser() {
         return currentUser;
     }
 
+    /**
+     * Checks if a username is valid (not already taken).
+     *
+     * @param username the username to validate
+     * @return true if the username is valid, false otherwise
+     */
     @Override
     public boolean isUsernameValid(String username) {
         return !existsByName(username);
     }
 
+    /**
+     * Sets the current username (alias for setCurrentUser).
+     *
+     * @param username the username to set as current
+     */
     @Override
     public void setCurrentUsername(String username) {
         setCurrentUser(username);
     }
 
+    /**
+     * Gets the current username (alias for getCurrentUser).
+     *
+     * @return the current user's username
+     */
     @Override
     public String getCurrentUsername() {
         return getCurrentUser();

@@ -59,11 +59,21 @@ public class SupabaseTaskDataAccessObject implements
     private final OkHttpClient client = new OkHttpClient();
     private final Gson gson = new Gson();
 
+    /**
+     * Constructs a SupabaseTaskDataAccessObject with the given base URL and API key.
+     * @param baseUrl the base URL for the Supabase API
+     * @param apiKey the API key for authentication
+     */
     public SupabaseTaskDataAccessObject(String baseUrl, String apiKey) {
         this.baseUrl = baseUrl;
         this.apiKey = apiKey;
     }
 
+    /**
+     * Adds a task for the specified username.
+     * @param username the username
+     * @param task the task to add
+     */
     @Override
     public void addTask(String username, Task task) {
         final List<Task> tasks = getTasks(username);
@@ -71,6 +81,13 @@ public class SupabaseTaskDataAccessObject implements
         patchTasks(username, tasks);
     }
 
+    /**
+     * Gets tasks for a user within a date range.
+     * @param username the username
+     * @param start the start date
+     * @param end the end date
+     * @return list of tasks in the date range
+     */
     @Override
     public List<Task> getTasksByDateRange(String username, LocalDate start, LocalDate end) {
         final List<Task> filtered = new ArrayList<>();
@@ -85,6 +102,7 @@ public class SupabaseTaskDataAccessObject implements
         return filtered;
     }
 
+    // Gets all tasks for a user from Supabase.
     private List<Task> getTasks(String username) {
         final List<Task> result = new ArrayList<>();
 
@@ -110,6 +128,7 @@ public class SupabaseTaskDataAccessObject implements
         return result;
     }
 
+    // Fetches user data from Supabase as a JsonArray.
     private JsonArray fetchUserData(String username) throws IOException {
         final HttpUrl url = Objects.requireNonNull(HttpUrl.parse(baseUrl + "/rest/v1/users"))
                 .newBuilder()
@@ -136,6 +155,7 @@ public class SupabaseTaskDataAccessObject implements
         return result;
     }
 
+    // Updates the user's tasks in Supabase with the provided list.
     private void patchTasks(String username, List<Task> tasks) {
         final JsonArray taskArray = new JsonArray();
 
@@ -164,6 +184,12 @@ public class SupabaseTaskDataAccessObject implements
         }
     }
 
+    /**
+     * Gets a task by username and task ID.
+     * @param username the username
+     * @param taskId the task ID
+     * @return the found task, or null if not found
+     */
     @Override
     public Task getTaskById(String username, TaskID taskId) {
         Task foundTask = null;
@@ -178,6 +204,12 @@ public class SupabaseTaskDataAccessObject implements
         return foundTask;
     }
 
+    /**
+     * Gets a task by user email and task ID.
+     * @param email the user's email
+     * @param id the task ID
+     * @return the found task, or null if not found
+     */
     @Override
     public Task getTaskByIdAndEmail(String email, TaskID id) {
         Task foundTask = null;
@@ -227,6 +259,11 @@ public class SupabaseTaskDataAccessObject implements
         return foundTask;
     }
 
+    /**
+     * Updates a task for the given username.
+     * @param username the username
+     * @param updatedTask the updated task
+     */
     @Override
     public void updateTask(String username, Task updatedTask) {
         final List<Task> tasks = getTasks(username);
@@ -240,6 +277,11 @@ public class SupabaseTaskDataAccessObject implements
         patchTasks(username, tasks);
     }
 
+    /**
+     * Marks a task as complete for the given username and task ID.
+     * @param username the username
+     * @param taskId the task ID
+     */
     @Override
     public void markAsComplete(String username, TaskID taskId) {
         final Task task = getTaskById(username, taskId);
@@ -252,6 +294,11 @@ public class SupabaseTaskDataAccessObject implements
         updateTask(username, task);
     }
 
+    /**
+     * Deletes a task for the given username and task ID.
+     * @param username the username
+     * @param taskId the task ID
+     */
     @Override
     public void deleteTask(String username, TaskID taskId) {
         final List<Task> tasks = getTasks(username);
@@ -259,6 +306,7 @@ public class SupabaseTaskDataAccessObject implements
         patchTasks(username, tasks);
     }
 
+    // Converts a Task object to a JsonObject for Supabase storage.
     private JsonObject taskToJson(Task task) {
         final TaskInfo info = task.getTaskInfo();
         final JsonObject json = new JsonObject();
@@ -296,6 +344,7 @@ public class SupabaseTaskDataAccessObject implements
         return json;
     }
 
+    // Converts a JsonObject from Supabase to a Task object.
     private Task jsonToTask(JsonObject json) {
         final String idStr = getString(json, "id");
         final String taskName = getString(json, "taskName");
@@ -390,6 +439,7 @@ public class SupabaseTaskDataAccessObject implements
         return returnString;
     }
 
+    // Gets a nullable string value from a JsonObject by member name.
     private String getNullableString(JsonObject json, String memberName) {
         return getString(json, memberName);
     }

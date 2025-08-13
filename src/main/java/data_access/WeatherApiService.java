@@ -1,7 +1,5 @@
 package data_access;
 
-import app.Main;
-
 import use_case.weather.daily.DailyWeatherDataAccessInterface;
 import use_case.weather.hourly.HourlyWeatherDataAccessInterface;
 
@@ -139,6 +137,7 @@ public class WeatherApiService implements DailyWeatherDataAccessInterface, Hourl
         map.put(KEY_ICON_NAME, iconName);
     }
 
+    // Loads and scales a weather icon image for the given icon name.
     private ImageIcon getWeatherImageIcon(final String iconName) {
         final String iconPath = "/weatherIcons/" + iconName + ".png";
         ImageIcon icon = null;
@@ -269,13 +268,11 @@ public class WeatherApiService implements DailyWeatherDataAccessInterface, Hourl
             result = weeklyWeatherCache.get(key);
         }
         else {
-            System.out.println("Making an API call for " + location + ", count = " + Main.getNumOfApiCallsMade());
+            System.out.println("Making an API call for " + location);
 
             final String url = String.format(URL_TEMPLATE, location, date, apiKey);
             final Request request = new Request.Builder().url(url).build();
             final Response response = client.newCall(request).execute();
-
-            Main.incrementNumOfApiCallsMade();
 
             if (!response.isSuccessful()) {
                 throw new IOException("Unexpected code: " + response);

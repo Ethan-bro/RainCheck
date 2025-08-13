@@ -13,7 +13,6 @@ import entity.TaskInfo;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -36,6 +35,7 @@ public class EmailConfigTester {
 
     /**
      * Entry point to run the email notification flow test.
+     *
      * @param args optional first arg is username to test
      */
     public static void main(String[] args) {
@@ -84,12 +84,16 @@ public class EmailConfigTester {
             System.err.println("Config file not found: " + ex.getMessage());
             ex.printStackTrace();
         }
-        catch (IOException ex) {
-            System.err.println("IO error: " + ex.getMessage());
-            ex.printStackTrace();
-        }
     }
 
+    /**
+     * Gets the user's email configuration, or creates one if it does not exist.
+     *
+     * @param username the username to look up or create config for
+     * @param email the user's email address
+     * @param notificationDataAccess the notification data access object
+     * @return the user's email notification configuration
+     */
     private static EmailNotificationConfig getOrCreateUserEmailConfig(
             String username, String email, FileNotificationDataAccess notificationDataAccess
     ) {
@@ -108,18 +112,39 @@ public class EmailConfigTester {
         return userConfig;
     }
 
+    /**
+     * Creates and prints a test task for email notification testing.
+     *
+     * @return the created test Task
+     */
     private static Task createAndPrintTestTask() {
         System.out.println("Creating test task...");
         final LocalDateTime startTime = LocalDateTime.now().plusMinutes(2);
         return createTestTask(startTime);
     }
 
+    /**
+     * Sends an immediate test email for the given task and recipient.
+     *
+     * @param emailService the email notification service
+     * @param task the task to send a reminder for
+     * @param recipientEmail the recipient's email address
+     */
     private static void sendImmediateEmail(EmailNotificationService emailService, Task task, String recipientEmail) {
         System.out.println("Sending immediate test email...");
         emailService.sendTaskReminder(null, task, recipientEmail);
         System.out.println("✓ Immediate test email sent successfully to " + recipientEmail);
     }
 
+    /**
+     * Schedules and saves a notification for the given task and recipient.
+     *
+     * @param emailService the email notification service
+     * @param task the task to schedule a notification for
+     * @param recipientEmail the recipient's email address
+     * @param reminder the reminder configuration
+     * @param notificationDataAccess the notification data access object
+     */
     private static void scheduleAndSaveNotification(
             EmailNotificationService emailService,
             Task task,

@@ -26,8 +26,8 @@ import interface_adapter.markTaskComplete.MarkTaskCompleteViewModel;
 import interface_adapter.signup.SignupViewModel;
 import interface_adapter.task.TaskBoxDependencies;
 
-import use_case.editCustomTag.TagReplacement.DeleteAndCreate;
-import use_case.editCustomTag.TagReplacement.TagReplacementStrategy;
+import use_case.editCustomTag.tagReplacement.DeleteAndCreate;
+import use_case.editCustomTag.tagReplacement.TagReplacementStrategy;
 import use_case.notification.EmailNotificationServiceInterface;
 import use_case.notification.NotificationDataAccessInterface;
 import use_case.notification.ScheduleNotificationInteractor;

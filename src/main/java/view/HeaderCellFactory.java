@@ -44,9 +44,13 @@ public final class HeaderCellFactory {
     private static final int ORDINAL_ND = 2;
     private static final int ORDINAL_RD = 3;
 
+    /**
+     * Private constructor to prevent instantiation.
+     */
     private HeaderCellFactory() {
         // hiding the public empty constructor
     }
+    
     /**
      * Creates a JPanel representing a header cell with date info and weather.
      *
@@ -106,6 +110,11 @@ public final class HeaderCellFactory {
         return header;
     }
 
+    /**
+     * Creates a JLabel for displaying a temperature value.
+     * @param tempObj the temperature value (Number or null)
+     * @return a JLabel with formatted temperature or placeholder
+     */
     private static JLabel makeTempLabel(final Object tempObj) {
         final String text;
         if (tempObj instanceof Number) {
@@ -120,6 +129,11 @@ public final class HeaderCellFactory {
         return lbl;
     }
 
+    /**
+     * Returns the ordinal string for a given day of the month (e.g., 1st, 2nd, 3rd, 4th).
+     * @param dayOfMonth the day of the month
+     * @return the ordinal string
+     */
     private static String getOrdinal(final int dayOfMonth) {
         final String suffix;
         if (dayOfMonth >= ORDINAL_TEEN_START && dayOfMonth <= ORDINAL_TEEN_END) {

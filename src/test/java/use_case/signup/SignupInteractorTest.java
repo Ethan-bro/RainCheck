@@ -13,7 +13,7 @@ class SignupInteractorTest {
         SignupUserDataAccessInterface dao = new InMemoryUserDataAccessObject();
         UserFactory userFactory = new CommonUserFactory();
 
-        SignupInputData inputData = new SignupInputData("Alice", "pass123", "pass123", "alice@mail.utoronto.ca");
+        SignupInputData inputData = new SignupInputData("Alice", "pass123", "pass123", "alice@gmail.com");
 
         SignupOutputBoundary presenter = new SignupOutputBoundary() {
             @Override
@@ -69,9 +69,9 @@ class SignupInteractorTest {
     void userAlreadyExistsFails() {
         InMemoryUserDataAccessObject dao = new InMemoryUserDataAccessObject();
         UserFactory factory = new CommonUserFactory();
-        dao.save(factory.create("Charlie", "existing", "charlie@mail.utoronto.ca"));
+        dao.save(factory.create("Charlie", "existing", "charlie@gmail.com"));
 
-        SignupInputData inputData = new SignupInputData("Charlie", "pass123", "pass123", "charlie@mail.utoronto.ca");
+        SignupInputData inputData = new SignupInputData("Charlie", "pass123", "pass123", "charlie@gmail.com");
 
         SignupOutputBoundary presenter = new SignupOutputBoundary() {
             @Override

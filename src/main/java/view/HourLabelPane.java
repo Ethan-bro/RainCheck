@@ -36,6 +36,10 @@ public class HourLabelPane extends JLayeredPane {
     private static final double LUMINANCE_DIVISOR = 255.0;
     private static final double LUMINANCE_THRESHOLD = 0.5;
 
+    /**
+     * Constructs an HourLabelPane with hour labels and background gradients.
+     * @param labelColumnWidth the width of the label column
+     */
     public HourLabelPane(final int labelColumnWidth) {
         setLayout(null);
         setPreferredSize(new Dimension(labelColumnWidth, TOTAL_QUARTERS * LABEL_HEIGHT_PER_QUARTER));
@@ -49,6 +53,9 @@ public class HourLabelPane extends JLayeredPane {
         }
     }
 
+    /**
+     * Lays out the hour labels and applies background color gradients.
+     */
     @Override
     public void doLayout() {
         final int height = getHeight();
@@ -116,8 +123,7 @@ public class HourLabelPane extends JLayeredPane {
     }
 
     /**
-     * Determine if a color is "dark" for text contrast.
-     *
+     * Determines if a color is "dark" for text contrast.
      * @param color color to test
      * @return true if dark, false otherwise
      */

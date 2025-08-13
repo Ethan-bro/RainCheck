@@ -14,6 +14,15 @@ public class DeleteTagController {
     private final ManageTagsViewModel manageTagsViewModel;
     private final DeleteCustomTagInputBoundary interactor;
 
+    /**
+     * Constructs a DeleteTagController with the required dependencies for tag deletion.
+     * This controller coordinates the interaction between the view model, data access, and use case interactor,
+     * adhering to Clean Architecture by separating concerns and promoting dependency inversion.
+     *
+     * @param tagDao the data access object for custom tags
+     * @param manageTagsViewModel the view model managing tag-related UI state
+     * @param interactor the input boundary for the delete custom tag use case
+     */
     public DeleteTagController(CustomTagDataAccessInterface tagDao,
                                ManageTagsViewModel manageTagsViewModel,
                                DeleteCustomTagInputBoundary interactor) {

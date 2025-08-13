@@ -19,6 +19,13 @@ public class EditTaskInteractor implements EditTaskInputBoundary {
     private final EditTaskOutputBoundary presenter;
     private final WeatherApiInterface weatherApiService;
 
+    /**
+     * Constructs an EditTaskInteractor.
+     *
+     * @param dataAccess the data access interface for editing tasks
+     * @param presenter the output boundary to present results
+     * @param weatherApiService the weather API service for weather info
+     */
     public EditTaskInteractor(EditTaskDataAccessInterface dataAccess,
                               EditTaskOutputBoundary presenter,
                               WeatherApiInterface weatherApiService) {
@@ -27,6 +34,12 @@ public class EditTaskInteractor implements EditTaskInputBoundary {
         this.weatherApiService = weatherApiService;
     }
 
+    /**
+     * Executes the use case for editing a task.
+     *
+     * @param username the username of the user editing the task
+     * @param inputData the input data for the task edit
+     */
     @Override
     public void execute(String username, EditTaskInputData inputData) {
         final Task updatedTask = inputData.updatedTask();
@@ -78,6 +91,13 @@ public class EditTaskInteractor implements EditTaskInputBoundary {
         }
     }
 
+    /**
+     * Creates a new Task object with updated information and weather details.
+     *
+     * @param info the updated task information
+     * @param weatherInfo the weather information to associate with the task
+     * @return the updated Task object
+     */
     @NotNull
     private static Task getTask(TaskInfo info, WeatherInfo weatherInfo) {
         final TaskInfo updatedTaskInfo = new TaskInfo();

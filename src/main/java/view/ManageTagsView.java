@@ -70,6 +70,16 @@ public class ManageTagsView extends JPanel implements ActionListener {
 
     private final PropertyChangeListener tagListener = this::onTagUpdate;
 
+    /**
+     * Constructs the ManageTagsView, initializing UI components and listeners for tag management.
+     * Adheres to Clean Architecture by separating view logic from business logic via ViewModels and Controllers.
+     *
+     * @param viewManagerModel The model managing view state transitions.
+     * @param manageTagsViewModel The ViewModel providing tag data and state.
+     * @param createCustomTagViewModel The ViewModel for creating custom tags.
+     * @param editTagViewModel The ViewModel for editing tags.
+     * @param deleteTagController The controller handling tag deletion.
+     */
     public ManageTagsView(
             final ViewManagerModel viewManagerModel,
             final ManageTagsViewModel manageTagsViewModel,
@@ -102,6 +112,11 @@ public class ManageTagsView extends JPanel implements ActionListener {
         setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
     }
 
+    /**
+     * Creates the title label for the Manage Tags view.
+     *
+     * @return JLabel representing the view title.
+     */
     private JLabel createTitleLabel() {
         final JLabel title = new JLabel(VIEW_NAME);
         title.setFont(new Font(FONT_FAMILY, Font.BOLD, TITLE_FONT_SIZE));
@@ -109,6 +124,11 @@ public class ManageTagsView extends JPanel implements ActionListener {
         return title;
     }
 
+    /**
+     * Constructs the central panel containing tag selection, edit/delete, and create controls.
+     *
+     * @return JPanel containing the main controls for tag management.
+     */
     private JPanel createCenterPanel() {
         final JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
@@ -124,6 +144,11 @@ public class ManageTagsView extends JPanel implements ActionListener {
         return centerPanel;
     }
 
+    /**
+     * Builds the panel for selecting a tag from the available options.
+     *
+     * @return JPanel for tag selection.
+     */
     private JPanel createSelectionPanel() {
         final JPanel selectionPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         selectionPanel.setBackground(Color.WHITE);
@@ -153,6 +178,11 @@ public class ManageTagsView extends JPanel implements ActionListener {
         return selectionPanel;
     }
 
+    /**
+     * Creates the panel containing Edit and Delete buttons for tag operations.
+     *
+     * @return JPanel with edit and delete controls.
+     */
     private JPanel createEditDeletePanel() {
         editTagButton = new JButton("Edit");
         deleteTagButton = new JButton("Delete");
@@ -167,6 +197,11 @@ public class ManageTagsView extends JPanel implements ActionListener {
         return editDeletePanel;
     }
 
+    /**
+     * Constructs the panel for creating a new custom tag.
+     *
+     * @return JPanel with the create tag button.
+     */
     private JPanel createCreatePanel() {
         createTagButton = new JButton("Create Custom Tag");
         final JPanel createPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -175,6 +210,11 @@ public class ManageTagsView extends JPanel implements ActionListener {
         return createPanel;
     }
 
+    /**
+     * Builds the panel containing the Done button to exit tag management.
+     *
+     * @return JPanel with the done button.
+     */
     private JPanel createDonePanel() {
         doneButton = new JButton("Done");
         styleButton(doneButton);
@@ -185,12 +225,22 @@ public class ManageTagsView extends JPanel implements ActionListener {
         return donePanel;
     }
 
+    /**
+     * Handles tag update events to refresh the tag list when tags are modified.
+     *
+     * @param evt The property change event indicating tag updates.
+     */
     private void onTagUpdate(final PropertyChangeEvent evt) {
         if ("tagsUpdated".equals(evt.getPropertyName())) {
             refreshTags();
         }
     }
 
+    /**
+     * Styles a JButton with consistent font, background, and padding.
+     *
+     * @param button The JButton to style.
+     */
     private void styleButton(final JButton button) {
         button.setFont(new Font(FONT_FAMILY, Font.PLAIN, BUTTON_FONT_SIZE));
         button.setBackground(COLOR_BG);
@@ -201,6 +251,12 @@ public class ManageTagsView extends JPanel implements ActionListener {
                 BUTTON_PADDING_VERTICAL, BUTTON_PADDING_HORIZONTAL));
     }
 
+    /**
+     * Handles action events for all tag management buttons, delegating to the appropriate handler.
+     * Implements the Open/Closed Principle by delegating specific actions to separate methods.
+     *
+     * @param e The ActionEvent triggered by user interaction.
+     */
     @Override
     public void actionPerformed(final ActionEvent e) {
         final Object source = e.getSource();
@@ -230,17 +286,28 @@ public class ManageTagsView extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * Handles the creation of a new custom tag by updating the ViewModel and changing the view state.
+     */
     private void handleCreateTag() {
         createCustomTagViewModel.setUsername(manageTagsViewModel.getUsername());
         viewManagerModel.setState(CreateCustomTagView.getViewName());
         viewManagerModel.firePropertyChanged();
     }
 
+    /**
+     * Handles the Done action, returning the user to the main logged-in view.
+     */
     private void handleDone() {
         viewManagerModel.setState(LoggedInView.getViewName());
         viewManagerModel.firePropertyChanged();
     }
 
+    /**
+     * Handles the editing of a selected tag by updating the ViewModel and changing the view state.
+     *
+     * @param selectedTag The tag selected for editing.
+     */
     private void handleEditTag(final CustomTag selectedTag) {
         final ManageTagsState state = manageTagsViewModel.getState();
         state.setCurrTag(selectedTag);
@@ -252,6 +319,11 @@ public class ManageTagsView extends JPanel implements ActionListener {
         viewManagerModel.firePropertyChanged();
     }
 
+    /**
+     * Handles the deletion of a selected tag, confirming with the user before invoking the controller.
+     *
+     * @param selectedTag The tag selected for deletion.
+     */
     private void handleDeleteTag(final CustomTag selectedTag) {
         final int confirm = JOptionPane.showConfirmDialog(
                 this,
@@ -263,6 +335,9 @@ public class ManageTagsView extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * Refreshes the tag combo box with the latest tag options from the ViewModel.
+     */
     private void refreshTags() {
         final List<CustomTag> newTags = manageTagsViewModel.getTagOptions();
         final CustomTag selected = (CustomTag) customTagCombo.getSelectedItem();
@@ -289,6 +364,11 @@ public class ManageTagsView extends JPanel implements ActionListener {
         TagChangeEventNotifier.removeListener(tagListener);
     }
 
+    /**
+     * Returns the name of this view for use in view state management.
+     *
+     * @return The view name string.
+     */
     public static String getViewName() {
         return VIEW_NAME;
     }

@@ -94,6 +94,18 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     private final TaskBoxDependencies taskBoxDependencies;
     private final NotificationDataAccessInterface notificationDataAccess;
 
+    /**
+     * Constructs the LoggedInView, initializing UI components and listeners for the main calendar/dashboard.
+     * Adheres to Clean Architecture by separating view logic from business logic via ViewModels and Controllers.
+     *
+     * @param loggedInDependencies The dependencies required for logged-in operations.
+     * @param taskDao The data access object for tasks.
+     * @param addTaskViewModel The ViewModel for adding tasks.
+     * @param taskBoxDependencies The dependencies for task box operations.
+     * @param manageTagsViewModel The ViewModel for managing tags.
+     * @param notificationDataAccess The data access interface for notifications.
+     * @throws IOException If weather data cannot be loaded.
+     */
     public LoggedInView(
             LoggedInDependencies loggedInDependencies,
             SupabaseTaskDataAccessObject taskDao,
@@ -139,6 +151,9 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         initBottomPanel();
     }
 
+    /**
+     * Initializes the top panel with the title, username, and month/year labels.
+     */
     private void initTopPanel() {
         final JPanel topPanel = new JPanel();
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
@@ -164,6 +179,9 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         add(topPanel, BorderLayout.NORTH);
     }
 
+    /**
+     * Initializes the bottom panel with logout, add task, and Gmail setup buttons.
+     */
     private void initBottomPanel() {
         final JButton logoutButton = new JButton("Log Out");
         final JButton addTaskButton = new JButton("+ Add Task");
@@ -191,6 +209,9 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         addTaskButton.addActionListener(addTaskListener);
     }
 
+    /**
+     * Sets up action listeners for logout, add task, and manage tags actions.
+     */
     private void setupActionListeners() {
         logoutListener = event -> {
             logoutController.execute(this.username);
@@ -207,6 +228,13 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         };
     }
 
+    /**
+     * Retrieves the daily weather map for the current week.
+     *
+     * @param calendar The calendar data for the week.
+     * @return Map of LocalDate to weather data.
+     * @throws IOException If weather data cannot be loaded.
+     */
     private Map<LocalDate, Map<String, Object>> getDailyWeatherMap(final CalendarData calendar) throws IOException {
         final Map<LocalDate, Map<String, Object>> map = new HashMap<>();
 
@@ -220,6 +248,13 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         return map;
     }
 
+    /**
+     * Retrieves the hourly weather map for the current week.
+     *
+     * @param calendar The calendar data for the week.
+     * @return Map of LocalDate to list of hourly weather data.
+     * @throws IOException If weather data cannot be loaded.
+     */
     private Map<LocalDate, List<Map<String, String>>> getHourlyWeatherMap(CalendarData calendar) throws IOException {
         final Map<LocalDate, List<Map<String, String>>> map = new HashMap<>();
 
@@ -239,6 +274,11 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         return map;
     }
 
+    /**
+     * Rebuilds the calendar UI with the provided list of tasks.
+     *
+     * @param tasks The list of tasks to display in the calendar.
+     */
     private void rebuildCalendarWithTasks(final List<Task> tasks) {
         centerPanel.removeAll();
 
@@ -280,6 +320,11 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         centerPanel.repaint();
     }
 
+    /**
+     * Displays the side menu for additional actions such as add task, manage tags, and logout.
+     *
+     * @param invoker The component that triggers the menu.
+     */
     private void showSideMenu(final Component invoker) {
         final JPopupMenu sideMenu = new JPopupMenu();
         final JMenuItem addTaskItem = new JMenuItem("Add Task");
@@ -297,6 +342,12 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         sideMenu.show(invoker, 0, invoker.getHeight());
     }
 
+    /**
+     * Creates a TaskBox UI component for the given TaskViewModel, wiring up controllers and presenters.
+     *
+     * @param taskViewModel The ViewModel for the task.
+     * @return TaskBox component for displaying task details.
+     */
     @NotNull
     private TaskBox getTaskBox(final TaskViewModel taskViewModel) {
         final MarkTaskCompletePresenter presenter = new MarkTaskCompletePresenter(
@@ -325,6 +376,11 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         );
     }
 
+    /**
+     * Responds to property changes in the ViewModels, updating the UI as needed.
+     *
+     * @param evt The PropertyChangeEvent containing updated state.
+     */
     @Override
     public void propertyChange(final PropertyChangeEvent evt) {
         final String prop = evt.getPropertyName();
@@ -355,6 +411,11 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         }
     }
 
+    /**
+     * Sets the username in all relevant ViewModels and controllers for context consistency.
+     *
+     * @param name The username to set.
+     */
     private void setViewModelsUsername(final String name) {
         taskBoxDependencies.editTaskController().setUsername(name);
         addTaskViewModel.setUsername(name);
@@ -362,12 +423,20 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         manageTagsViewModel.setUsername(name);
     }
 
+    /**
+     * Reloads the tasks for the current week by querying the ViewModel.
+     */
     private void reloadTasksForCurrentWeek() {
         final LocalDate startOfWeek = calendarData.getWeekDates().getFirst();
         final LocalDate endOfWeek = startOfWeek.plusDays(6);
         loggedInViewModel.loadTasksForWeek(startOfWeek, endOfWeek);
     }
 
+    /**
+     * Returns the name of this view for use in view state management.
+     *
+     * @return The view name string.
+     */
     public static String getViewName() {
         return VIEW_NAME;
     }

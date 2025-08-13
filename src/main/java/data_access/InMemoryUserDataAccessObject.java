@@ -20,45 +20,83 @@ public class InMemoryUserDataAccessObject implements
     private final Map<String, User> users = new HashMap<>();
     private String currentUser;
 
+    /**
+     * Constructs an in-memory user data access object.
+     */
     public InMemoryUserDataAccessObject() {
         this.currentUser = null;
     }
 
+    /**
+     * Saves a user to the in-memory store.
+     * @param user the user to save
+     */
     @Override
     public void save(User user) {
         users.put(user.getName(), user);
     }
 
+    /**
+     * Gets a user by username.
+     * @param username the username
+     * @return the user, or null if not found
+     */
     @Override
     public User get(String username) {
         return users.get(username);
     }
 
+    /**
+     * Checks if a user exists by username.
+     * @param username the username
+     * @return true if the user exists, false otherwise
+     */
     @Override
     public boolean existsByName(String username) {
         return users.containsKey(username);
     }
 
+    /**
+     * Checks if a username is valid (not already taken).
+     * @param username the username to check
+     * @return true if valid, false otherwise
+     */
     @Override
     public boolean isUsernameValid(String username) {
         return !existsByName(username);
     }
 
+    /**
+     * Sets the current user by username.
+     * @param username the username to set as current
+     */
     @Override
     public void setCurrentUser(String username) {
         this.currentUser = username;
     }
 
+    /**
+     * Gets the current user.
+     * @return the current user
+     */
     @Override
     public String getCurrentUser() {
         return currentUser;
     }
 
+    /**
+     * Sets the current username.
+     * @param username the username to set as current
+     */
     @Override
     public void setCurrentUsername(String username) {
         this.currentUser = username;
     }
 
+    /**
+     * Gets the current username.
+     * @return the current username
+     */
     @Override
     public String getCurrentUsername() {
         return currentUser;

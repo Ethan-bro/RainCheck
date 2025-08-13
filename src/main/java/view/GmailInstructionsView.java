@@ -52,6 +52,10 @@ public class GmailInstructionsView extends JPanel {
 
     private String previousViewName;
 
+    /**
+     * Constructs the GmailInstructionsView and initializes the UI components.
+     * @param viewManagerModel the model managing view state transitions
+     */
     public GmailInstructionsView(ViewManagerModel viewManagerModel) {
         setLayout(new BorderLayout());
         setBorder(new EmptyBorder(BORDER_TOP, BORDER_LEFT, BORDER_BOTTOM, BORDER_RIGHT));
@@ -62,6 +66,9 @@ public class GmailInstructionsView extends JPanel {
         addBottomPanel(viewManagerModel);
     }
 
+    /**
+     * Adds the title label to the view.
+     */
     private void addTitleLabel() {
         final JLabel titleLabel = new JLabel("Gmail Setup for RainCheck Notifications");
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, TITLE_FONT_SIZE));
@@ -70,6 +77,9 @@ public class GmailInstructionsView extends JPanel {
         add(titleLabel, BorderLayout.NORTH);
     }
 
+    /**
+     * Adds the instructions pane containing Gmail setup steps and troubleshooting.
+     */
     private void addInstructionsPane() {
         final JEditorPane instructionsPane = new JEditorPane();
         instructionsPane.setContentType("text/html");
@@ -130,6 +140,10 @@ public class GmailInstructionsView extends JPanel {
         add(scrollPane, BorderLayout.CENTER);
     }
 
+    /**
+     * Adds the bottom panel with a go back button, enabling navigation to the previous view.
+     * @param viewManagerModel the model managing view state transitions
+     */
     private void addBottomPanel(ViewManagerModel viewManagerModel) {
         final JButton goBack = new JButton("← Go Back");
         goBack.setFont(new Font("Segoe UI", Font.PLAIN, BUTTON_FONT_SIZE));
@@ -165,10 +179,18 @@ public class GmailInstructionsView extends JPanel {
         add(bottomPanel, BorderLayout.SOUTH);
     }
 
+    /**
+     * Sets the name of the previous view for navigation purposes.
+     * @param previousViewName the name of the previous view
+     */
     public void setPreviousViewName(String previousViewName) {
         this.previousViewName = previousViewName;
     }
 
+    /**
+     * Returns the unique view name identifier for this view.
+     * @return the view name string
+     */
     public static String getViewName() {
         return VIEW_NAME;
     }

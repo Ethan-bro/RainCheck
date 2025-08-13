@@ -10,8 +10,8 @@ import use_case.createCustomTag.CustomTagDataAccessInterface;
 import use_case.editCustomTag.EditTagInputBoundary;
 import use_case.editCustomTag.EditTagInteractor;
 import use_case.editCustomTag.EditTagOutputBoundary;
+import use_case.editCustomTag.tagReplacement.TagReplacementStrategy;
 
-import use_case.editCustomTag.TagReplacement.TagReplacementStrategy;
 import view.EditTagView;
 
 /**
@@ -30,6 +30,7 @@ public final class EditTagUseCaseFactory {
      * @param viewModel the EditTagViewModel instance
      * @param manageTagsViewModel the ManageTagsViewModel instance
      * @param customTagDataAccessInterface the data access interface
+     * @param replacementStrategy a TagReplacementStrategy instance
      * @return a new EditTagView instance
      */
     public static EditTagView create(
@@ -51,6 +52,7 @@ public final class EditTagUseCaseFactory {
      * @param viewModel the EditTagViewModel instance
      * @param manageTagsViewModel the ManageTagsViewModel instance
      * @param tagDao the data access interface
+     * @param replacementStrategy the TagReplacementStrategy instance
      * @return a new EditTagController instance
      */
     public static EditTagController createEditTagUseCase(

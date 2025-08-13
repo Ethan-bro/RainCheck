@@ -7,9 +7,6 @@ import interface_adapter.ViewManagerModel;
 import use_case.editTask.EditTaskInputBoundary;
 import use_case.editTask.EditTaskInputData;
 
-/**
- * Controller for editing a task, handling user interaction and communicating with the interactor.
- */
 public class EditTaskController {
 
     private final EditTaskInputBoundary editTaskInputInteractor;
@@ -21,7 +18,7 @@ public class EditTaskController {
      * Constructs an EditTaskController with the given interactor and view manager.
      *
      * @param editTaskInputInteractor the input boundary interactor for editing tasks
-     * @param viewManagerModel        the view manager model to switch views
+     * @param viewManagerModel the view manager model to switch views
      */
     public EditTaskController(EditTaskInputBoundary editTaskInputInteractor,
                               ViewManagerModel viewManagerModel) {

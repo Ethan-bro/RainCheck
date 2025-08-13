@@ -4,10 +4,6 @@ import entity.CustomTag;
 
 import interface_adapter.ViewModel;
 
-/**
- * ViewModel for the Edit Tag view.
- * Holds the current state of the view and the username of the logged-in user.
- */
 public class EditTagViewModel extends ViewModel<EditTagState> {
 
     private String username;

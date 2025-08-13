@@ -35,6 +35,11 @@ public final class CustomTagIcons {
         // Prevent instantiation
     }
 
+    /**
+     * Returns the list of available custom tag icons.
+     *
+     * @return a list of icon strings
+     */
     public static List<String> getIconList() {
         return ICON_LIST;
     }

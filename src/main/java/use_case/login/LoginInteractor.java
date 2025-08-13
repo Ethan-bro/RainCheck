@@ -9,12 +9,23 @@ public class LoginInteractor implements LoginInputBoundary {
     private final LoginUserDataAccessInterface userDataAccessObject;
     private final LoginOutputBoundary loginPresenter;
 
+    /**
+     * Constructs a LoginInteractor.
+     *
+     * @param userDataAccessInterface the data access interface for user data
+     * @param loginOutputBoundary the output boundary to present results
+     */
     public LoginInteractor(LoginUserDataAccessInterface userDataAccessInterface,
                            LoginOutputBoundary loginOutputBoundary) {
         this.userDataAccessObject = userDataAccessInterface;
         this.loginPresenter = loginOutputBoundary;
     }
 
+    /**
+     * Executes the use case for user login.
+     *
+     * @param loginInputData the input data containing username and password
+     */
     @Override
     public void execute(LoginInputData loginInputData) {
         final String username = loginInputData.getUsername();
@@ -39,6 +50,9 @@ public class LoginInteractor implements LoginInputBoundary {
         }
     }
 
+    /**
+     * Switches the view to the signup screen.
+     */
     @Override
     public void switchToSignupView() {
         loginPresenter.switchToSignupView();

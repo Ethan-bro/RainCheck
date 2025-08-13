@@ -55,6 +55,13 @@ public class SetupEmailConfig {
         }
     }
 
+    /**
+     * Sets up the email notification configuration for a user.
+     *
+     * @param dataAccess the notification data access object
+     * @param username the username to configure
+     * @param email the user's email address
+     */
     private static void setupUserEmail(
             FileNotificationDataAccess dataAccess, String username, String email) {
         final EmailNotificationConfig existingConfig = dataAccess.getEmailConfig(username);

@@ -12,7 +12,7 @@ public class TaskViewModel extends ViewModel<TaskState> {
     private Task task;
 
     /**
-     * Constructs TaskViewModel wrapping the given Task.
+     * Constructs a TaskViewModel wrapping the given Task.
      *
      * @param task the domain task to wrap
      */

@@ -20,7 +20,7 @@ public class WeatherApiServiceAdapter implements WeatherApiInterface {
     private final WeatherApiService weatherApiService;
 
     /**
-     * Constructs the adapter with WeatherApiService instance.
+     * Constructs the adapter with a WeatherApiService instance.
      *
      * @param weatherApiService the WeatherApiService to delegate weather fetching to
      */
@@ -28,6 +28,12 @@ public class WeatherApiServiceAdapter implements WeatherApiInterface {
         this.weatherApiService = weatherApiService;
     }
 
+    /**
+     * Gets weather information for the specified date and time using the user's city.
+     *
+     * @param dateTime the date and time for which to fetch weather info
+     * @return a WeatherInfo object containing weather details
+     */
     @Override
     public WeatherInfo getWeatherInfo(LocalDateTime dateTime) {
         final String location = LocationService.getUserCity();

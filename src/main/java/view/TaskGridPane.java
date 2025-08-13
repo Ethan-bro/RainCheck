@@ -7,7 +7,6 @@ import interface_adapter.calendar.TaskClickListener;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Insets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -16,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.swing.JButton;
 import javax.swing.JLayeredPane;
 
 /**
@@ -33,14 +31,17 @@ public class TaskGridPane extends JLayeredPane {
     private static final int CELL_HEIGHT = 20;
     private static final int DAYS_IN_WEEK = 7;
     private static final int DAY_COLUMN_WIDTH = 50;
-    private static final float FONT_SIZE = 12f;
     private static final int MIN_QUARTER_SPAN = 1;
-    private static final int MINUTES_IN_QUARTER = 15;
-    private static final int MINUTES_ROUNDING_OFFSET = 7;
 
     private final List<LocalDate> weekDates;
     private final List<Segment> segments = new ArrayList<>();
 
+    /**
+     * Constructs a TaskGridPane to display tasks in a weekly grid layout.
+     * @param data the calendar data containing week dates
+     * @param tasks the list of tasks to display
+     * @param onClick the listener for task button clicks
+     */
     public TaskGridPane(final CalendarData data, final List<Task> tasks, final TaskClickListener onClick) {
         this.weekDates = data.getWeekDates();
 
@@ -93,6 +94,10 @@ public class TaskGridPane extends JLayeredPane {
         }
     }
 
+    /**
+     * Paints the grid and positions task segments in the pane.
+     * @param g the Graphics context
+     */
     @Override
     protected void paintComponent(final Graphics g) {
         super.paintComponent(g);
@@ -110,6 +115,16 @@ public class TaskGridPane extends JLayeredPane {
         layoutAndPositionSegments(cols, cellWidth, cellHeight);
     }
 
+    /**
+     * Draws the grid lines for the calendar view.
+     * @param graphics the Graphics context
+     * @param width the width of the grid
+     * @param height the height of the grid
+     * @param cols the number of columns (days)
+     * @param rows the number of rows (quarters)
+     * @param cellWidth the width of each cell
+     * @param cellHeight the height of each cell
+     */
     private void drawGridLines(final Graphics graphics, final int width, final int height,
                                final int cols, final int rows,
                                final int cellWidth, final int cellHeight) {
@@ -126,6 +141,12 @@ public class TaskGridPane extends JLayeredPane {
         }
     }
 
+    /**
+     * Lays out and positions all task segments in the grid.
+     * @param cols the number of columns (days)
+     * @param cellWidth the width of each column
+     * @param cellHeight the height of each row
+     */
     private void layoutAndPositionSegments(final int cols, final int cellWidth, final int cellHeight) {
         for (int dayCol = 0; dayCol < cols; dayCol++) {
             final int dc = dayCol;
@@ -170,96 +191,6 @@ public class TaskGridPane extends JLayeredPane {
 
                 segment.getButton().setBounds(x, y, w, h);
             }
-        }
-    }
-
-    private static class Segment {
-
-        private static final int MINUTES_PER_HOUR = 60;
-        private static final int MINUTES_PER_QUARTER = 15;
-        private static final int ROUNDING_OFFSET = 7;
-        private static final int BUTTON_MARGIN_TOP = 2;
-        private static final int BUTTON_MARGIN_LEFT = 4;
-        private static final int BUTTON_MARGIN_BOTTOM = 2;
-        private static final int BUTTON_MARGIN_RIGHT = 4;
-
-        private final JButton button;
-        private final int startQ;
-        private final int endQ;
-        private final int dayIndex;
-        private int slot;
-
-        Segment(final Task task, final LocalDateTime segmentStart, final LocalDateTime segmentEnd,
-                final List<LocalDate> weekDates, final TaskClickListener listener) {
-
-            this.startQ = segmentStart.getHour() * QUARTERS_PER_HOUR
-                    + (segmentStart.getMinute() + ROUNDING_OFFSET) / MINUTES_PER_QUARTER;
-
-            this.endQ = segmentEnd.getHour() * QUARTERS_PER_HOUR
-                    + (segmentEnd.getMinute() + ROUNDING_OFFSET) / MINUTES_PER_QUARTER;
-
-            final int idx = weekDates.indexOf(segmentStart.toLocalDate());
-            if (idx >= 0) {
-                this.dayIndex = idx;
-            }
-            else {
-                this.dayIndex = 0;
-            }
-
-            String text = task.getTaskInfo().getTaskName();
-            if (task.getTaskInfo().getTag() != null) {
-                text += " " + task.getTaskInfo().getTag().getTagIcon();
-            }
-
-            this.button = new JButton(text);
-            button.setMargin(new Insets(
-                    BUTTON_MARGIN_TOP,
-                    BUTTON_MARGIN_LEFT,
-                    BUTTON_MARGIN_BOTTOM,
-                    BUTTON_MARGIN_RIGHT
-            ));
-            button.setFont(button.getFont().deriveFont(FONT_SIZE));
-            button.setOpaque(true);
-            button.setBorderPainted(false);
-
-            final boolean incomplete = "Incomplete".equals(task.getTaskInfo().getTaskStatus());
-            if (incomplete) {
-                switch (task.getTaskInfo().getPriority()) {
-                    case HIGH -> button.setBackground(Color.RED);
-                    case MEDIUM -> button.setBackground(Color.ORANGE);
-                    case LOW -> button.setBackground(Color.YELLOW);
-                    default -> button.setBackground(Color.LIGHT_GRAY);
-                }
-            }
-            else {
-                button.setBackground(Color.LIGHT_GRAY);
-            }
-
-            button.addActionListener(event -> listener.onTaskClick(task));
-        }
-
-        public JButton getButton() {
-            return button;
-        }
-
-        public int getStartQ() {
-            return startQ;
-        }
-
-        public int getEndQ() {
-            return endQ;
-        }
-
-        public int getDayIndex() {
-            return dayIndex;
-        }
-
-        public int getSlot() {
-            return slot;
-        }
-
-        public void setSlot(final int slot) {
-            this.slot = slot;
         }
     }
 }

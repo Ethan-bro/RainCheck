@@ -24,6 +24,11 @@ public final class DeleteCustomTagInteractor implements DeleteCustomTagInputBoun
         this.tagDao = tagDao;
     }
 
+    /**
+     * Executes the use case for deleting a custom tag.
+     *
+     * @param inputData the input data containing username and tag to delete
+     */
     @Override
     public void execute(DeleteCustomTagInputData inputData) {
         final CustomTag oldTag = inputData.getTag();

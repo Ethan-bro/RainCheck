@@ -22,6 +22,13 @@ public class InMemoryTaskDataAccessObject implements
     private String currentUsername;
 
     /**
+     * Constructs an in-memory task data access object.
+     */
+    public InMemoryTaskDataAccessObject() {
+        this.currentUsername = null;
+    }
+
+    /**
      * Adds a task for the specified username.
      *
      * @param username the username to associate the task with

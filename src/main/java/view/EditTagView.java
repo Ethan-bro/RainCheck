@@ -91,6 +91,13 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
     private final JButton confirmButton = new JButton("Confirm Edit");
     private final JButton cancelButton = new JButton("Cancel");
 
+    /**
+     * Constructs the EditTagView and initializes the UI components.
+     * @param viewManagerModel the model managing view state transitions
+     * @param manageTagsViewModel the view model for managing tags
+     * @param model the view model for editing tags
+     * @param controller the controller for editing tags
+     */
     public EditTagView(final ViewManagerModel viewManagerModel,
                        final ManageTagsViewModel manageTagsViewModel,
                        final EditTagViewModel model,
@@ -114,6 +121,9 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
         setPreferredSize(PREFERRED_SIZE);
     }
 
+    /**
+     * Sets up the layout and border for the view.
+     */
     private void setupLayout() {
         setLayout(new BorderLayout());
         setBackground(COLOR_WHITE);
@@ -125,6 +135,9 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
         ));
     }
 
+    /**
+     * Adds the title label to the view.
+     */
     private void setupTitle() {
         final JLabel titleLabel = new JLabel(VIEW_NAME, SwingConstants.CENTER);
         titleLabel.setFont(new Font(FONT_SANS_SERIF, Font.BOLD, TITLE_FONT_SIZE));
@@ -132,6 +145,9 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
         add(titleLabel, BorderLayout.NORTH);
     }
 
+    /**
+     * Sets up the center panel with tag name and icon selection.
+     */
     private void setupCenterPanel() {
         final JPanel centerPanel = new JPanel();
         centerPanel.setBackground(COLOR_WHITE);
@@ -147,6 +163,10 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
         add(centerPanel, BorderLayout.CENTER);
     }
 
+    /**
+     * Creates the panel for entering the tag name.
+     * @return the JPanel for tag name input
+     */
     private JPanel createTagNamePanel() {
         final JPanel tagNamePanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         tagNamePanel.setBackground(COLOR_WHITE);
@@ -162,6 +182,10 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
         return tagNamePanel;
     }
 
+    /**
+     * Creates the label for the icon selection section.
+     * @return the JLabel for icon selection
+     */
     private JLabel createIconLabel() {
         final JLabel iconLabel = new JLabel("Select Tag Icon:");
         iconLabel.setFont(new Font(FONT_SANS_SERIF, Font.BOLD, ICON_LABEL_FONT_SIZE));
@@ -170,6 +194,10 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
         return iconLabel;
     }
 
+    /**
+     * Creates the panel containing icon selection buttons.
+     * @return the JPanel for icon selection
+     */
     private JPanel createIconPanel() {
         final int iconCount = CustomTagIcons.getIconList().size();
         final int rows = 2;
@@ -190,6 +218,9 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
         return iconPanel;
     }
 
+    /**
+     * Sets up the bottom panel with confirm and cancel buttons.
+     */
     private void setupBottomPanel() {
         final JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
         bottomPanel.setBackground(COLOR_WHITE);
@@ -203,6 +234,9 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
         add(bottomPanel, BorderLayout.SOUTH);
     }
 
+    /**
+     * Registers listeners for the confirm and cancel buttons.
+     */
     private void registerListeners() {
         confirmButton.addActionListener(this);
         cancelButton.addActionListener(this);
@@ -215,6 +249,12 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
         });
     }
 
+    /**
+     * Creates a toggle button for selecting a tag icon.
+     * @param icon the icon string
+     * @param emojiFont the font to use for the icon
+     * @return the created JToggleButton
+     */
     @NotNull
     private JToggleButton createToggleButton(final String icon, final Font emojiFont) {
         final JToggleButton iconButton = new JToggleButton(icon);
@@ -234,6 +274,11 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
         return iconButton;
     }
 
+    /**
+     * Applies or removes the selected style for an icon button.
+     * @param iconButton the button to style
+     * @param selected whether the button is selected
+     */
     private void toggleIconButtonStyle(final JToggleButton iconButton, final boolean selected) {
         if (selected) {
             iconButton.setBorder(BorderFactory.createLineBorder(COLOR_DODGER_BLUE, ICON_BUTTON_BORDER_THICKNESS));
@@ -247,6 +292,10 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
         }
     }
 
+    /**
+     * Finds a suitable emoji font available on the system.
+     * @return the Font to use for emoji icons
+     */
     private Font findEmojiFont() {
         final String[] emojiFonts = {"Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji"};
         final GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -273,12 +322,19 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
         return emojiFont;
     }
 
+    /**
+     * Resets the form fields and enables the confirm button.
+     */
     private void resetForm() {
         tagNameTextField.setText("");
         iconGroup.clearSelection();
         confirmButton.setEnabled(true);
     }
 
+    /**
+     * Styles the primary (confirm) button.
+     * @param button the button to style
+     */
     private void stylePrimaryButton(final JButton button) {
         button.setFont(new Font(FONT_SANS_SERIF, Font.BOLD, LABEL_FONT_SIZE));
         button.setBackground(COLOR_DODGER_BLUE);
@@ -293,6 +349,10 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }
 
+    /**
+     * Styles the secondary (cancel) button.
+     * @param button the button to style
+     */
     private void styleSecondaryButton(final JButton button) {
         button.setFont(new Font(FONT_SANS_SERIF, Font.PLAIN, LABEL_FONT_SIZE));
         button.setBackground(COLOR_LIGHT_GRAY);
@@ -307,6 +367,10 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
         button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }
 
+    /**
+     * Returns the unique view name identifier for this view.
+     * @return the view name string
+     */
     public static String getViewName() {
         return VIEW_NAME;
     }
@@ -323,6 +387,9 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
         }
     }
 
+    /**
+     * Handles the confirm action for editing a tag.
+     */
     private void handleConfirmAction() {
         final String tagName = tagNameTextField.getText().trim();
         final AbstractButton selectedButton = getSelectedButton(iconGroup);
@@ -339,6 +406,12 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
         }
     }
 
+    /**
+     * Validates the form fields for tag name and icon selection.
+     * @param tagName the tag name entered
+     * @param selectedButton the selected icon button
+     * @return true if the form is valid, false otherwise
+     */
     private boolean validateForm(final String tagName, final AbstractButton selectedButton) {
         boolean result = true;
         if (tagName.isEmpty()) {
@@ -353,6 +426,10 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
         return result;
     }
 
+    /**
+     * Shows a validation error message dialog.
+     * @param message the error message to display
+     */
     private void showValidationError(String message) {
         JOptionPane.showMessageDialog(this,
                 message,
@@ -360,6 +437,9 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
                 JOptionPane.WARNING_MESSAGE);
     }
 
+    /**
+     * Handles the cancel action, resetting the form and returning to the manage tags view.
+     */
     private void handleCancelAction() {
         resetForm();
         editTagViewModel.setUsername(null);
@@ -367,6 +447,11 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
         viewManagerModel.firePropertyChanged();
     }
 
+    /**
+     * Gets the selected button from a ButtonGroup.
+     * @param group the ButtonGroup to check
+     * @return the selected AbstractButton, or null if none selected
+     */
     private AbstractButton getSelectedButton(final ButtonGroup group) {
         AbstractButton selected = null;
         for (final Enumeration<AbstractButton> buttons = group.getElements(); buttons.hasMoreElements();) {
@@ -399,6 +484,9 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
         }
     }
 
+    /**
+     * Handles the property change event for a successful tag edit.
+     */
     private void handleSuccessProperty() {
         JOptionPane.showMessageDialog(this,
                 "Custom tag edited successfully!",
@@ -409,6 +497,9 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
         viewManagerModel.firePropertyChanged();
     }
 
+    /**
+     * Handles the property change event for a failed tag edit.
+     */
     private void handleFailedProperty() {
         final String errorMsg = editTagViewModel.getState().getErrorMsg();
         JOptionPane.showMessageDialog(this,
@@ -418,6 +509,9 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
         confirmButton.setEnabled(true);
     }
 
+    /**
+     * Handles the property change event for loading a tag's data into the form.
+     */
     private void handleLoadTagProperty() {
         oldTag = manageTagsViewModel.getState().getCurrTag();
         if (oldTag != null) {

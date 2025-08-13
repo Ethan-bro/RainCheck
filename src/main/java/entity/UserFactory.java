@@ -6,11 +6,10 @@ package entity;
 public interface UserFactory {
     /**
      * Creates a new User.
-     *
-     * @param username The username.
-     * @param password The password.
-     * @param email The email.
-     * @return A new User.
+     * @param username the username
+     * @param password the password
+     * @param email the email
+     * @return a new User
      */
     User create(String username, String password, String email);
 }

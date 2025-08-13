@@ -76,6 +76,14 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
     private JLabel uvIndexLabel;
     private final TaskViewModel taskViewModel;
 
+    /**
+     * Constructs a TaskBox and initializes the UI components for a task.
+     * @param taskViewModel the view model for the task
+     * @param markTaskCompleteController the controller for marking tasks complete
+     * @param deleteTaskController the controller for deleting tasks
+     * @param editTaskController the controller for editing tasks
+     * @param viewManagerModel the model managing view state transitions
+     */
     public TaskBox(final TaskViewModel taskViewModel,
                    final MarkTaskCompleteController markTaskCompleteController,
                    final DeleteTaskController deleteTaskController,
@@ -92,6 +100,9 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         updateContents();
     }
 
+    /**
+     * Sets up the panel layout, border, and background color.
+     */
     private void setupPanel() {
         setLayout(new BorderLayout(0, PANEL_GAP));
         setBorder(BorderFactory.createCompoundBorder(
@@ -103,6 +114,9 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         updateDisplayColour();
     }
 
+    /**
+     * Adds the weather panel to the top of the TaskBox.
+     */
     private void addWeatherPanel() {
         final JPanel weatherPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, PANEL_GAP, 0));
         weatherPanel.setOpaque(false);
@@ -121,6 +135,9 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         add(weatherPanel, BorderLayout.NORTH);
     }
 
+    /**
+     * Adds the center panel with task title and tag information.
+     */
     private void addCenterPanel() {
         final JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
@@ -145,6 +162,13 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         add(centerPanel, BorderLayout.CENTER);
     }
 
+    /**
+     * Adds the button panel with complete, edit, and delete buttons.
+     * @param markTaskCompleteController the controller for marking tasks complete
+     * @param deleteTaskController the controller for deleting tasks
+     * @param editTaskController the controller for editing tasks
+     * @param viewManagerModel the model managing view state transitions
+     */
     private void addButtonPanel(final MarkTaskCompleteController markTaskCompleteController,
                                 final DeleteTaskController deleteTaskController,
                                 final EditTaskController editTaskController,
@@ -163,6 +187,11 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
+    /**
+     * Creates the complete button for marking a task as complete.
+     * @param markTaskCompleteController the controller for marking tasks complete
+     * @return the complete JButton
+     */
     private JButton createCompleteButton(final MarkTaskCompleteController markTaskCompleteController) {
         return createImageButton("complete.png", "Complete", COMPLETE_BG, evt -> {
             markTaskCompleteController.markAsComplete(taskViewModel.getTask().getTaskInfo().getId());
@@ -170,6 +199,12 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         });
     }
 
+    /**
+     * Creates the edit button for editing a task.
+     * @param editTaskController the controller for editing tasks
+     * @param viewManagerModel the model managing view state transitions
+     * @return the edit JButton
+     */
     private JButton createEditButton(final EditTaskController editTaskController,
                                      final ViewManagerModel viewManagerModel) {
         return createImageButton("edit.png", "Edit", EDIT_BG, evt -> {
@@ -178,6 +213,11 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         });
     }
 
+    /**
+     * Handles the edit action for a task.
+     * @param editTaskController the controller for editing tasks
+     * @param viewManagerModel the model managing view state transitions
+     */
     private void handleEditAction(final EditTaskController editTaskController,
                                   final ViewManagerModel viewManagerModel) {
         editTaskController.setCurrentTask(taskViewModel.getTask());
@@ -191,6 +231,11 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         editTaskController.switchToEditTaskView(viewManagerModel);
     }
 
+    /**
+     * Creates the delete button for deleting a task.
+     * @param deleteTaskController the controller for deleting tasks
+     * @return the delete JButton
+     */
     private JButton createDeleteButton(final DeleteTaskController deleteTaskController) {
         return createImageButton("delete.png", "Delete", DELETE_BG, evt -> {
             try {
@@ -203,6 +248,14 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         });
     }
 
+    /**
+     * Creates a JButton with an icon, tooltip, background color, and action listener.
+     * @param iconName the icon file name
+     * @param tooltip the tooltip text
+     * @param bgColor the background color
+     * @param action the action listener
+     * @return the configured JButton
+     */
     private JButton createImageButton(final String iconName, final String tooltip,
                                       final Color bgColor,
                                       final java.awt.event.ActionListener action) {
@@ -245,6 +298,11 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         return button;
     }
 
+    /**
+     * Loads an icon from the given path and scales it to the button icon size.
+     * @param path the path to the icon resource
+     * @return the loaded ImageIcon, or null if not found
+     */
     private ImageIcon loadIcon(final String path) {
         ImageIcon icon = null;
 
@@ -258,6 +316,9 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         return icon;
     }
 
+    /**
+     * Updates the background color of the TaskBox based on task status and priority.
+     */
     private void updateDisplayColour() {
         final String status = taskViewModel.getTask().getTaskInfo().getTaskStatus();
         final Priority priority = taskViewModel.getTask().getTaskInfo().getPriority();
@@ -279,6 +340,9 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         }
     }
 
+    /**
+     * Updates the contents of the TaskBox with the latest task information.
+     */
     private void updateContents() {
         final TaskInfo taskInfo = taskViewModel.getTask().getTaskInfo();
 
@@ -293,6 +357,10 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         repaint();
     }
 
+    /**
+     * Updates the tag labels in the TaskBox.
+     * @param taskInfo the TaskInfo object
+     */
     private void updateTagLabels(final TaskInfo taskInfo) {
         if (taskInfo.getTag() != null) {
             tagNameLabel.setText(taskInfo.getTag().getTagName());
@@ -305,10 +373,18 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         }
     }
 
+    /**
+     * Updates the title label in the TaskBox.
+     * @param taskInfo the TaskInfo object
+     */
     private void updateTitleLabel(final TaskInfo taskInfo) {
         titleLabel.setText(taskInfo.getTaskName());
     }
 
+    /**
+     * Updates the weather labels in the TaskBox.
+     * @param taskInfo the TaskInfo object
+     */
     private void updateWeatherLabels(final TaskInfo taskInfo) {
         weatherDescriptionLabel.setText(taskInfo.getWeatherDescription());
 
@@ -330,6 +406,10 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         }
     }
 
+    /**
+     * Updates the UV index label in the TaskBox.
+     * @param taskInfo the TaskInfo object
+     */
     private void updateUvLabel(final TaskInfo taskInfo) {
         final String uvIndex = taskInfo.getUvIndex();
         if (uvIndex != null && !uvIndex.isEmpty()) {
@@ -343,6 +423,10 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         }
     }
 
+    /**
+     * Sets the color of the UV index label based on the UV value.
+     * @param uvIndex the UV index string
+     */
     private void setUvLabelColor(final String uvIndex) {
         Color color;
         try {
@@ -363,6 +447,11 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         uvIndexLabel.setForeground(color);
     }
 
+    /**
+     * Loads a weather icon by name and scales it to the icon size.
+     * @param iconName the name of the weather icon
+     * @return the loaded ImageIcon, or null if not found
+     */
     private ImageIcon loadWeatherIcon(final String iconName) {
         ImageIcon icon = null;
 
@@ -378,6 +467,10 @@ public class TaskBox extends JPanel implements PropertyChangeListener {
         return icon;
     }
 
+    /**
+     * Closes the dialog window containing the source of the given event.
+     * @param event the action event
+     */
     private void closeDialog(final java.awt.event.ActionEvent event) {
         final Component source = (Component) event.getSource();
         final Window window = SwingUtilities.getWindowAncestor(source);

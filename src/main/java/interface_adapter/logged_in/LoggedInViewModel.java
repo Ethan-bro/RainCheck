@@ -13,6 +13,9 @@ public class LoggedInViewModel extends ViewModel<LoggedInState> {
 
     private ListTasksInputBoundary listTasksInteractor;
 
+    /**
+     * Constructs a LoggedInViewModel and initializes its state.
+     */
     public LoggedInViewModel() {
         super("logged in");
         setState(new LoggedInState());

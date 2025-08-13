@@ -11,18 +11,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- * ViewModel for editing tasks, manages state and tag options.
- */
 public class EditTaskViewModel extends ViewModel<EditTaskState> {
 
     private final CustomTagDataAccessInterface tagDao;
     private String username;
 
     /**
-     * Constructs an EditTaskViewModel with given tag DAO and username.
+     * Constructs an EditTaskViewModel with the given tag data access object and username.
      *
-     * @param tagDao   the data access interface for custom tags
+     * @param tagDao the data access interface for custom tags
      * @param username the current username
      */
     public EditTaskViewModel(CustomTagDataAccessInterface tagDao, String username) {
@@ -38,6 +35,11 @@ public class EditTaskViewModel extends ViewModel<EditTaskState> {
         });
     }
 
+    /**
+     * Sets the state of the view model and fires a property change event.
+     *
+     * @param state the new state to set
+     */
     @Override
     public void setState(EditTaskState state) {
         super.setState(state);

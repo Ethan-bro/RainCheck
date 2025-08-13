@@ -29,6 +29,15 @@ public class AddTaskInteractor implements AddTaskInputBoundary {
     private final WeatherApiService weatherApiService;
     private final ScheduleNotificationInteractor notificationInteractor;
 
+    /**
+     * Constructs an AddTaskInteractor with all required dependencies.
+     *
+     * @param dao the data access interface for tasks
+     * @param taskIDGenerator the generator for unique task IDs
+     * @param addTaskPresenter the output boundary for presenting results
+     * @param weatherApiService the service for retrieving weather data
+     * @param notificationInteractor the interactor for scheduling notifications
+     */
     public AddTaskInteractor(TaskDataAccessInterface dao, TaskIDGenerator taskIDGenerator,
                              AddTaskOutputBoundary addTaskPresenter, WeatherApiService weatherApiService,
                              ScheduleNotificationInteractor notificationInteractor) {
@@ -39,20 +48,29 @@ public class AddTaskInteractor implements AddTaskInputBoundary {
         this.notificationInteractor = notificationInteractor;
     }
 
+    /**
+     * Executes the add task use case: validates input, creates the task, and schedules notifications if needed.
+     *
+     * @param inputData the input data for the new task
+     * @param username the username of the user adding the task
+     */
     @Override
     public void execute(AddTaskInputData inputData, String username) {
-
         final AddTaskOutputData validationFailure = validateInput(inputData);
-
         if (validationFailure != null) {
             addTaskPresenter.prepareFailView(validationFailure);
         }
         else {
             processNewTaskCreation(inputData, username);
         }
-
     }
 
+    /**
+     * Handles the creation of a new task, including weather lookup and notification scheduling.
+     *
+     * @param inputData the validated input data for the new task
+     * @param username the username of the user adding the task
+     */
     private void processNewTaskCreation(AddTaskInputData inputData, String username) {
         final TaskID newID = taskIDGenerator.generateTaskID();
 
@@ -127,6 +145,12 @@ public class AddTaskInteractor implements AddTaskInputBoundary {
         addTaskPresenter.prepareSuccessView(outputData);
     }
 
+    /**
+     * Validates the input data for adding a new task, returning an error output if validation fails.
+     *
+     * @param inputData the input data to validate
+     * @return an AddTaskOutputData with error details, or null if validation passes
+     */
     private AddTaskOutputData validateInput(AddTaskInputData inputData) {
         AddTaskOutputData error = null;
 
