@@ -5,8 +5,8 @@ package use_case.logout;
  */
 public class LogoutOutputData {
 
-    private String username;
-    private boolean useCaseFailed;
+    private final String username;
+    private final boolean useCaseFailed;
 
     /**
      * Constructor LogoutOutputData with username and whether the use case failed.     *

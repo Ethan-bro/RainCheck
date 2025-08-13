@@ -9,7 +9,9 @@ public final class TagErrorConstants {
 
     public static final String ICON_TAKEN_ERROR = "Tag icon is taken";
 
+    /**
+     * Private constructor to prevent instantiation of this utility class.
+     */
     private TagErrorConstants() {
-
     }
 }

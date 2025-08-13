@@ -1,11 +1,10 @@
 package use_case.signup;
 
-import data_access.DuplicateEmailException;
+import java.util.Set;
 
+import data_access.DuplicateEmailException;
 import entity.User;
 import entity.UserFactory;
-
-import java.util.Set;
 
 /**
  * The Signup Interactor.
@@ -25,6 +24,13 @@ public class SignupInteractor implements SignupInputBoundary {
     private final SignupOutputBoundary userPresenter;
     private final UserFactory userFactory;
 
+    /**
+     * Constructs a SignupInteractor.
+     *
+     * @param signupDataAccessInterface the data access interface for user data
+     * @param signupOutputBoundary the output boundary to present results
+     * @param userFactory the factory for creating User objects
+     */
     public SignupInteractor(final SignupUserDataAccessInterface signupDataAccessInterface,
                             final SignupOutputBoundary signupOutputBoundary,
                             final UserFactory userFactory) {
@@ -33,6 +39,11 @@ public class SignupInteractor implements SignupInputBoundary {
         this.userFactory = userFactory;
     }
 
+    /**
+     * Executes the use case for user signup.
+     *
+     * @param signupInputData the input data containing username, password, and email
+     */
     @Override
     public void execute(final SignupInputData signupInputData) {
         final StringBuilder errorMessages = new StringBuilder();
@@ -63,11 +74,20 @@ public class SignupInteractor implements SignupInputBoundary {
         }
     }
 
+    /**
+     * Switches the view to the login screen.
+     */
     @Override
     public void switchToLoginView() {
         userPresenter.switchToLoginView();
     }
 
+    /**
+     * Validates the email address for format and allowed domain.
+     *
+     * @param email the email address to validate
+     * @return an error message if invalid, otherwise an empty string
+     */
     private String validateEmail(final String email) {
         String errorMessage = "";
 
@@ -87,6 +107,12 @@ public class SignupInteractor implements SignupInputBoundary {
         return errorMessage;
     }
 
+    /**
+     * Validates the username for non-emptiness.
+     *
+     * @param username the username to validate
+     * @return an error message if invalid, otherwise an empty string
+     */
     private String validateUsername(final String username) {
         String usernameErrorMessage = "";
         if (username == null || username.isEmpty()) {
@@ -95,6 +121,13 @@ public class SignupInteractor implements SignupInputBoundary {
         return usernameErrorMessage;
     }
 
+    /**
+     * Validates the password and repeated password for non-emptiness and match.
+     *
+     * @param password the password to validate
+     * @param repeatPassword the repeated password to validate
+     * @return an error message if invalid, otherwise an empty string
+     */
     private String validatePassword(final String password, final String repeatPassword) {
         String passwordsErrorMessage = "";
         if (password == null || password.isEmpty()) {
@@ -106,6 +139,12 @@ public class SignupInteractor implements SignupInputBoundary {
         return passwordsErrorMessage;
     }
 
+    /**
+     * Checks if a user already exists by username.
+     *
+     * @param username the username to check
+     * @return an error message if user exists, otherwise an empty string
+     */
     private String checkUserExists(final String username) {
         String errorMessage = "";
         if (userDataAccessObject.existsByName(username)) {
