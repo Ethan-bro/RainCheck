@@ -38,15 +38,6 @@ public class CreateCustomTagInputData {
     }
 
     /**
-     * Sets the emoji/icon for the custom tag.
-     *
-     * @param tagEmoji the new tag emoji
-     */
-    public void setTagEmoji(String tagEmoji) {
-        this.tagEmoji = tagEmoji;
-    }
-
-    /**
      * Sets the name of the custom tag.
      *
      * @param tagName the new tag name

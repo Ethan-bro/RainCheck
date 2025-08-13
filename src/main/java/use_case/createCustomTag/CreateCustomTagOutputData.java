@@ -46,15 +46,6 @@ public class CreateCustomTagOutputData {
     }
 
     /**
-     * Indicates whether the use case execution failed.
-     *
-     * @return true if the use case failed, false otherwise
-     */
-    public boolean isUseCaseFailed() {
-        return useCaseFailed;
-    }
-
-    /**
      * Returns the newly created CustomTag if the use case succeeded.
      *
      * @return the created CustomTag, or null if the use case failed
