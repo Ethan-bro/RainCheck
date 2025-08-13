@@ -10,6 +10,11 @@ public class EmailNotificationConfig {
     private String userEmail;
     private boolean emailNotificationsEnabled;
 
+    /**
+     * Constructs an EmailNotificationConfig with the given user email and notification flag.
+     * @param userEmail the user's email
+     * @param emailNotificationsEnabled true if notifications are enabled
+     */
     @JsonCreator
     public EmailNotificationConfig(
             @JsonProperty("userEmail") String userEmail,
@@ -19,24 +24,45 @@ public class EmailNotificationConfig {
     }
 
     // Getters and setters
+    /**
+     * Gets the user email.
+     * @return the user email
+     */
     @JsonProperty("userEmail")
     public String getUserEmail() {
         return userEmail;
     }
 
+    /**
+     * Sets the user email.
+     * @param userEmail the user email to set
+     */
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
     }
 
+    /**
+     * Checks if email notifications are enabled.
+     * @return true if enabled, false otherwise
+     */
     @JsonProperty("emailNotificationsEnabled")
     public boolean isEmailNotificationsEnabled() {
         return emailNotificationsEnabled;
     }
 
+    /**
+     * Sets whether email notifications are enabled.
+     * @param emailNotificationsEnabled true to enable, false to disable
+     */
     public void setEmailNotificationsEnabled(boolean emailNotificationsEnabled) {
         this.emailNotificationsEnabled = emailNotificationsEnabled;
     }
 
+    /**
+     * Checks equality with another object.
+     * @param o the object to compare
+     * @return true if equal, false otherwise
+     */
     @Override
     public boolean equals(Object o) {
         final boolean result;
@@ -53,6 +79,10 @@ public class EmailNotificationConfig {
         return result;
     }
 
+    /**
+     * Returns the hash code for this config.
+     * @return the hash code
+     */
     @Override
     public int hashCode() {
         return userEmail.hashCode() + Boolean.hashCode(emailNotificationsEnabled);

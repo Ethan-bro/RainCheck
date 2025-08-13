@@ -1,7 +1,8 @@
 package entity;
 
 /**
- * Represents a reminder for a task specifying how many minutes before the event the reminder occurs.
+ * Represents a reminder for a task specifying how many minutes before the event
+ * the reminder occurs.
  */
 public class Reminder {
 
@@ -18,8 +19,8 @@ public class Reminder {
     /**
      * Constructs a Reminder.
      *
-     * @param minutesBefore the number of minutes before the event to remind, -1 means no reminder.
-     *                      Must be >= -1.
+     * @param minutesBefore the number of minutes before the event to remind, -1
+     * means no reminder. Must be >= -1.
      * @throws IllegalArgumentException if minutesBefore < -1
      */
     public Reminder(int minutesBefore) {
@@ -29,20 +30,37 @@ public class Reminder {
         this.minutesBefore = minutesBefore;
     }
 
+    /**
+     * Gets the number of minutes before the event for the reminder.
+     *
+     * @return the minutes before the event
+     */
     public int getMinutesBefore() {
         return minutesBefore;
     }
 
+    /**
+     * Returns a string representation of the reminder.
+     *
+     * @return a string describing the reminder time
+     */
     @Override
     public String toString() {
         return switch (minutesBefore) {
-            case -1 -> "No reminder";
-            case REMINDER_AT_EVENT -> "At event (0 minutes)";
-            case REMINDER_10_MIN -> "10 minutes";
-            case REMINDER_30_MIN -> "30 minutes";
-            case REMINDER_1_HOUR -> "1 hour";
-            case REMINDER_1_DAY -> "1 day";
-            default -> minutesBefore + " min before";
+            case -1 ->
+                "No reminder";
+            case REMINDER_AT_EVENT ->
+                "At event (0 minutes)";
+            case REMINDER_10_MIN ->
+                "10 minutes";
+            case REMINDER_30_MIN ->
+                "30 minutes";
+            case REMINDER_1_HOUR ->
+                "1 hour";
+            case REMINDER_1_DAY ->
+                "1 day";
+            default ->
+                minutesBefore + " min before";
         };
     }
 
@@ -52,12 +70,12 @@ public class Reminder {
      * @param other the object to compare to
      * @return true if other is a Reminder with the same minutesBefore value
      */
+    @Override
     public boolean equals(Object other) {
         final boolean result;
         if (!(other instanceof Reminder reminder)) {
             result = false;
-        }
-        else {
+        } else {
             result = reminder.minutesBefore == this.minutesBefore;
         }
         return result;

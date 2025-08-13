@@ -55,22 +55,42 @@ public class ScheduledNotification {
         this.sent = sent;
     }
 
+    /**
+     * Gets the notification ID.
+     * @return the notification ID
+     */
     public String getNotificationId() {
         return notificationId;
     }
 
+    /**
+     * Gets the associated task ID.
+     * @return the task ID
+     */
     public String getTaskId() {
         return taskId;
     }
 
+    /**
+     * Gets the scheduled notification time.
+     * @return the scheduled time
+     */
     public LocalDateTime getScheduledTime() {
         return scheduledTime;
     }
 
+    /**
+     * Gets the user email address for the notification.
+     * @return the user email
+     */
     public String getUserEmail() {
         return userEmail;
     }
 
+    /**
+     * Checks if the notification has been sent.
+     * @return true if sent, false otherwise
+     */
     public boolean isSent() {
         return sent;
     }
