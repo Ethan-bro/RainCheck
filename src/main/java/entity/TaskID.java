@@ -19,15 +19,6 @@ public final class TaskID {
     }
 
     /**
-     * Creates a new TaskID with a random UUID.
-     *
-     * @return a new TaskID instance with a randomly generated UUID
-     */
-    public static TaskID random() {
-        return new TaskID(UUID.randomUUID());
-    }
-
-    /**
      * Creates a TaskID from an existing UUID.
      *
      * @param existing the existing UUID
