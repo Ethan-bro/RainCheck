@@ -1,5 +1,6 @@
 package use_case.login;
 
+import data_access.DuplicateEmailException;
 import data_access.InMemoryUserDataAccessObject;
 import entity.CommonUserFactory;
 import entity.UserFactory;
@@ -9,7 +10,7 @@ import org.junit.jupiter.api.Test;
 class LoginInteractorTest {
 
     @Test
-    void successfulLogin() {
+    void successfulLogin() throws DuplicateEmailException {
         InMemoryUserDataAccessObject dao = new InMemoryUserDataAccessObject();
         UserFactory factory = new CommonUserFactory();
         dao.save(factory.create("Bob", "abc123", "bob@example.com"));
@@ -39,7 +40,7 @@ class LoginInteractorTest {
     }
 
     @Test
-    void wrongPasswordFails() {
+    void wrongPasswordFails() throws DuplicateEmailException {
         InMemoryUserDataAccessObject dao = new InMemoryUserDataAccessObject();
         UserFactory factory = new CommonUserFactory();
         dao.save(factory.create("Bob", "abc123", "bob@example.com"));

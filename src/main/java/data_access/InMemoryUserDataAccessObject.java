@@ -32,7 +32,7 @@ public class InMemoryUserDataAccessObject implements
      * @param user the user to save
      */
     @Override
-    public void save(User user) {
+    public void save(User user) throws DuplicateEmailException {
         users.put(user.getName(), user);
     }
 

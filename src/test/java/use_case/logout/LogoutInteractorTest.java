@@ -1,5 +1,6 @@
 package use_case.logout;
 
+import data_access.DuplicateEmailException;
 import data_access.InMemoryUserDataAccessObject;
 import entity.CommonUserFactory;
 import entity.UserFactory;
@@ -9,7 +10,7 @@ import org.junit.jupiter.api.Test;
 class LogoutInteractorTest {
 
     @Test
-    void successfulLogout() {
+    void successfulLogout() throws DuplicateEmailException {
         InMemoryUserDataAccessObject dao = new InMemoryUserDataAccessObject();
         UserFactory factory = new CommonUserFactory();
         dao.save(factory.create("Carol", "pass", "caroline.stevens@gmail.com"));
