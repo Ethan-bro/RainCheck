@@ -242,7 +242,7 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
         cancelButton.addActionListener(this);
 
         cancelButton.addActionListener(event -> {
-            resetForm();
+            EditTagView.this.resetForm();
             editTagViewModel.setUsername(null);
             viewManagerModel.setState(ManageTagsView.getViewName());
             viewManagerModel.firePropertyChanged();
@@ -268,8 +268,7 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
 
         iconButton.addItemListener(event -> {
             toggleIconButtonStyle(iconButton, event.getStateChange() == ItemEvent.SELECTED);
-            }
-        );
+        });
 
         return iconButton;
     }
@@ -395,13 +394,10 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
         final AbstractButton selectedButton = getSelectedButton(iconGroup);
 
         if (validateForm(tagName, selectedButton)) {
-            final String selectedIcon = selectedButton.getActionCommand();
-
-            final CustomTag supposedTag = new CustomTag(tagName, selectedIcon);
+            selectedButton.getActionCommand();
 
             final CustomTag currentTag = manageTagsViewModel.getState().getCurrTag();
 
-            final String currentTagName = currentTag.getTagName();
             final String currentTagIcon = currentTag.getTagIcon();
 
             editTagController.execute(currentTag, tagName, currentTagIcon);

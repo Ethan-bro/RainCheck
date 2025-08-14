@@ -57,7 +57,7 @@ public class DeleteAndCreate implements TagReplacementStrategy {
         }
         else {
             // otherwise, create the new tag
-            CustomTag newTag = new CustomTag(newName, newIcon);
+            final CustomTag newTag = new CustomTag(newName, newIcon);
             tagDao.addCustomTag(username, newTag);
             createdTag = newTag;
 

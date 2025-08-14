@@ -5,11 +5,16 @@ import entity.TaskID;
 
 import use_case.deleteTask.DeleteTaskDataAccessInterface;
 import use_case.editTask.EditTaskDataAccessInterface;
-import use_case.markTaskComplete.MarkTaskCompleteDataAccessInterface;
 import use_case.listTasks.TaskDataAccessInterface;
+import use_case.markTaskComplete.MarkTaskCompleteDataAccessInterface;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * A fake in-memory DAO used only for unit tests. No external I/O.
@@ -45,7 +50,7 @@ public class InMemoryTaskDataAccessObject implements
         Objects.requireNonNull(username);
         Objects.requireNonNull(task);
         tasksByUser
-                .computeIfAbsent(username, _ -> new HashMap<>())
+                .computeIfAbsent(username, str -> new HashMap<>())
                 .put(task.getTaskInfo().getId(), task);
         this.currentUsername = username;
     }
@@ -58,11 +63,12 @@ public class InMemoryTaskDataAccessObject implements
      */
     @Override
     public void markAsComplete(String username, TaskID taskId) {
-        Map<TaskID, Task> userMap = tasksByUser.get(username);
-        if (userMap == null) return;
-        final Task task = userMap.get(taskId);
-        if (task != null) {
-            task.getTaskInfo().setTaskStatus("Complete");
+        final Map<TaskID, Task> userMap = tasksByUser.get(username);
+        if (userMap != null) {
+            final Task task = userMap.get(taskId);
+            if (task != null) {
+                task.getTaskInfo().setTaskStatus("Complete");
+            }
         }
     }
 
@@ -74,7 +80,7 @@ public class InMemoryTaskDataAccessObject implements
      */
     @Override
     public void deleteTask(String username, TaskID taskId) {
-        Map<TaskID, Task> userMap = tasksByUser.get(username);
+        final Map<TaskID, Task> userMap = tasksByUser.get(username);
         if (userMap != null) {
             userMap.remove(taskId);
         }
@@ -90,9 +96,12 @@ public class InMemoryTaskDataAccessObject implements
      */
     @Override
     public Task getTaskByIdAndEmail(String email, TaskID id) {
-        Map<TaskID, Task> userMap = tasksByUser.get(email);
-        if (userMap == null) return null;
-        return userMap.get(id);
+        Task result = null;
+        final Map<TaskID, Task> userMap = tasksByUser.get(email);
+        if (userMap != null) {
+            result = userMap.get(id);
+        }
+        return result;
     }
 
     /**
@@ -104,9 +113,12 @@ public class InMemoryTaskDataAccessObject implements
      */
     @Override
     public Task getTaskById(String username, TaskID taskId) {
-        Map<TaskID, Task> userMap = tasksByUser.get(username);
-        if (userMap == null) return null;
-        return userMap.get(taskId);
+        Task result = null;
+        final Map<TaskID, Task> userMap = tasksByUser.get(username);
+        if (userMap != null) {
+            result = userMap.get(taskId);
+        }
+        return result;
     }
 
     /**
@@ -117,7 +129,7 @@ public class InMemoryTaskDataAccessObject implements
      */
     @Override
     public void updateTask(String username, Task task) {
-        Map<TaskID, Task> userMap = tasksByUser.computeIfAbsent(username, _ -> new HashMap<>());
+        final Map<TaskID, Task> userMap = tasksByUser.computeIfAbsent(username, str -> new HashMap<>());
         userMap.put(task.getTaskInfo().getId(), task);
     }
 
@@ -151,16 +163,22 @@ public class InMemoryTaskDataAccessObject implements
      */
     @Override
     public synchronized List<Task> getTasksByDateRange(String username, LocalDate startDate, LocalDate endDate) {
-        Map<TaskID, Task> userMap = tasksByUser.get(username);
-        if (userMap == null || userMap.isEmpty()) return Collections.emptyList();
-
-        List<Task> out = new ArrayList<>();
-        for (Task t : userMap.values()) {
-            LocalDate s = t.getTaskInfo().getStartDateTime().toLocalDate();
-            if ((!s.isBefore(startDate)) && (!s.isAfter(endDate))) {
-                out.add(t);
-            }
+        List<Task> result = null;
+        final Map<TaskID, Task> userMap = tasksByUser.get(username);
+        if (userMap == null || userMap.isEmpty()) {
+            result = Collections.emptyList();
         }
-        return out;
+        else {
+            final List<Task> out = new ArrayList<>();
+            for (Task t : userMap.values()) {
+                final LocalDate s = t.getTaskInfo().getStartDateTime().toLocalDate();
+                if (!s.isBefore(startDate) && !s.isAfter(endDate)) {
+                    out.add(t);
+                }
+            }
+
+            result = out;
+        }
+        return result;
     }
 }

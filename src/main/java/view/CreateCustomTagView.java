@@ -1,7 +1,5 @@
 package view;
 
-import entity.CustomTag;
-
 import interface_adapter.ViewManagerModel;
 import interface_adapter.createTag.CreateCustomTagController;
 import interface_adapter.createTag.CreateCustomTagViewModel;
@@ -70,6 +68,7 @@ public class CreateCustomTagView extends JPanel implements PropertyChangeListene
     private static final int ICON_BUTTON_BORDER_THICKNESS = 3;
 
     private static final Dimension PREFERRED_SIZE = new Dimension(560, 400);
+    private static ItemEvent event;
 
     private final ViewManagerModel viewManagerModel;
     private final CreateCustomTagViewModel createCustomTagViewModel;
@@ -112,6 +111,14 @@ public class CreateCustomTagView extends JPanel implements PropertyChangeListene
         attachListeners();
 
         setPreferredSize(PREFERRED_SIZE);
+    }
+
+    public static ItemEvent getEvent() {
+        return event;
+    }
+
+    public static void setEvent(ItemEvent event) {
+        CreateCustomTagView.event = event;
     }
 
     /**
@@ -213,7 +220,7 @@ public class CreateCustomTagView extends JPanel implements PropertyChangeListene
         iconButton.setContentAreaFilled(false);
         iconButton.setOpaque(false);
 
-        iconButton.addItemListener(event -> handleIconSelection(iconButton, event));
+        iconButton.addItemListener(evt -> handleIconSelection(iconButton, evt));
 
         return iconButton;
     }
@@ -221,9 +228,10 @@ public class CreateCustomTagView extends JPanel implements PropertyChangeListene
     /**
      * Handles the selection and styling of an icon button.
      * @param iconButton the button to style
-     * @param event the item event
+     * @param evt the item event
      */
-    private static void handleIconSelection(final JToggleButton iconButton, final ItemEvent event) {
+    private static void handleIconSelection(final JToggleButton iconButton, final ItemEvent evt) {
+        CreateCustomTagView.event = evt;
         if (iconButton.isSelected()) {
             iconButton.setBorder(BorderFactory.createLineBorder(COLOR_DODGER_BLUE, ICON_BUTTON_BORDER_THICKNESS));
             iconButton.setOpaque(true);
@@ -257,7 +265,7 @@ public class CreateCustomTagView extends JPanel implements PropertyChangeListene
      */
     private void attachListeners() {
         createButton.addActionListener(this::onCreateButtonClicked);
-        cancelButton.addActionListener(event -> onCancelButtonClicked());
+        cancelButton.addActionListener(evt -> onCancelButtonClicked());
     }
 
     /**
