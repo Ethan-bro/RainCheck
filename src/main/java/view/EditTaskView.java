@@ -57,6 +57,9 @@ public class EditTaskView extends AbstractTaskFormView implements ActionListener
         getSaveButton().addActionListener(this);
         getCancelButton().addActionListener(this);
 
+        // Disable Save button until a task is set
+        getSaveButton().setEnabled(false);
+
         initializeSpinnersWithDefaults();
     }
 
@@ -77,6 +80,10 @@ public class EditTaskView extends AbstractTaskFormView implements ActionListener
      */
     public void setExistingTask(Task task) {
         this.existingTask = task;
+
+        // Enable Save only if a task is loaded
+        getSaveButton().setEnabled(task != null);
+
         if (task != null) {
             final TaskInfo info = task.getTaskInfo();
 

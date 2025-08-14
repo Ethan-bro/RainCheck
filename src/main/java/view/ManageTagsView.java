@@ -158,6 +158,7 @@ public class ManageTagsView extends JPanel implements ActionListener {
         customTagCombo = new JComboBox<>(tagOptions.toArray(new CustomTag[0]));
         customTagCombo.setPreferredSize(new Dimension(COMBOBOX_WIDTH, COMBOBOX_HEIGHT));
         customTagCombo.setFont(new Font(FONT_FAMILY, Font.PLAIN, BUTTON_FONT_SIZE));
+
         customTagCombo.setRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(
@@ -166,11 +167,22 @@ public class ManageTagsView extends JPanel implements ActionListener {
                     final int index,
                     final boolean isSelected,
                     final boolean cellHasFocus) {
-                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                if (value instanceof CustomTag tag) {
-                    setText(tag.getTagName() + " " + tag.getTagIcon());
+
+                JLabel label = (JLabel) super.getListCellRendererComponent(
+                        list, value, index, isSelected, cellHasFocus);
+
+                if (value == null) {
+                    label.setText("No tags available - create one first");
+                    label.setForeground(Color.GRAY);
                 }
-                return this;
+                else if (value instanceof CustomTag tag) {
+                    label.setText(tag.getTagName() + " " + tag.getTagIcon());
+                }
+                else {
+                    label.setText(value.toString());
+                }
+
+                return label;
             }
         });
 
