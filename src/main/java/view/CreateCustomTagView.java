@@ -282,7 +282,7 @@ public class CreateCustomTagView extends JPanel implements PropertyChangeListene
 
             createCustomTagController.execute(tagName, icon, createCustomTagViewModel.getUsername());
 
-            createButton.setEnabled(false);
+            createButton.setEnabled(true);
         }
     }
 
