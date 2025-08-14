@@ -50,7 +50,7 @@ public class InMemoryTaskDataAccessObject implements
         Objects.requireNonNull(username);
         Objects.requireNonNull(task);
         tasksByUser
-                .computeIfAbsent(username, _ -> new HashMap<>())
+                .computeIfAbsent(username, str -> new HashMap<>())
                 .put(task.getTaskInfo().getId(), task);
         this.currentUsername = username;
     }
@@ -64,12 +64,11 @@ public class InMemoryTaskDataAccessObject implements
     @Override
     public void markAsComplete(String username, TaskID taskId) {
         final Map<TaskID, Task> userMap = tasksByUser.get(username);
-        if (userMap == null) {
-            return;
-        }
-        final Task task = userMap.get(taskId);
-        if (task != null) {
-            task.getTaskInfo().setTaskStatus("Complete");
+        if (userMap != null) {
+            final Task task = userMap.get(taskId);
+            if (task != null) {
+                task.getTaskInfo().setTaskStatus("Complete");
+            }
         }
     }
 
@@ -97,11 +96,12 @@ public class InMemoryTaskDataAccessObject implements
      */
     @Override
     public Task getTaskByIdAndEmail(String email, TaskID id) {
+        Task result = null;
         final Map<TaskID, Task> userMap = tasksByUser.get(email);
-        if (userMap == null) {
-            return null;
+        if (userMap != null) {
+            result = userMap.get(id);
         }
-        return userMap.get(id);
+        return result;
     }
 
     /**
@@ -113,11 +113,12 @@ public class InMemoryTaskDataAccessObject implements
      */
     @Override
     public Task getTaskById(String username, TaskID taskId) {
+        Task result = null;
         final Map<TaskID, Task> userMap = tasksByUser.get(username);
-        if (userMap == null) {
-            return null;
+        if (userMap != null) {
+            result = userMap.get(taskId);
         }
-        return userMap.get(taskId);
+        return result;
     }
 
     /**
@@ -128,7 +129,7 @@ public class InMemoryTaskDataAccessObject implements
      */
     @Override
     public void updateTask(String username, Task task) {
-        final Map<TaskID, Task> userMap = tasksByUser.computeIfAbsent(username, _ -> new HashMap<>());
+        final Map<TaskID, Task> userMap = tasksByUser.computeIfAbsent(username, str -> new HashMap<>());
         userMap.put(task.getTaskInfo().getId(), task);
     }
 
@@ -162,18 +163,22 @@ public class InMemoryTaskDataAccessObject implements
      */
     @Override
     public synchronized List<Task> getTasksByDateRange(String username, LocalDate startDate, LocalDate endDate) {
+        List<Task> result = null;
         final Map<TaskID, Task> userMap = tasksByUser.get(username);
         if (userMap == null || userMap.isEmpty()) {
-            return Collections.emptyList();
+            result = Collections.emptyList();
         }
-
-        final List<Task> out = new ArrayList<>();
-        for (Task t : userMap.values()) {
-            final LocalDate s = t.getTaskInfo().getStartDateTime().toLocalDate();
-            if (!s.isBefore(startDate) && !s.isAfter(endDate)) {
-                out.add(t);
+        else {
+            final List<Task> out = new ArrayList<>();
+            for (Task t : userMap.values()) {
+                final LocalDate s = t.getTaskInfo().getStartDateTime().toLocalDate();
+                if (!s.isBefore(startDate) && !s.isAfter(endDate)) {
+                    out.add(t);
+                }
             }
+
+            result = out;
         }
-        return out;
+        return result;
     }
 }

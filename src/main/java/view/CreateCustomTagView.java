@@ -220,7 +220,7 @@ public class CreateCustomTagView extends JPanel implements PropertyChangeListene
         iconButton.setContentAreaFilled(false);
         iconButton.setOpaque(false);
 
-        iconButton.addItemListener(event -> handleIconSelection(iconButton, event));
+        iconButton.addItemListener(evt -> handleIconSelection(iconButton, evt));
 
         return iconButton;
     }
@@ -228,10 +228,10 @@ public class CreateCustomTagView extends JPanel implements PropertyChangeListene
     /**
      * Handles the selection and styling of an icon button.
      * @param iconButton the button to style
-     * @param event the item event
+     * @param evt the item event
      */
-    private static void handleIconSelection(final JToggleButton iconButton, final ItemEvent event) {
-        CreateCustomTagView.event = event;
+    private static void handleIconSelection(final JToggleButton iconButton, final ItemEvent evt) {
+        CreateCustomTagView.event = evt;
         if (iconButton.isSelected()) {
             iconButton.setBorder(BorderFactory.createLineBorder(COLOR_DODGER_BLUE, ICON_BUTTON_BORDER_THICKNESS));
             iconButton.setOpaque(true);
@@ -265,7 +265,7 @@ public class CreateCustomTagView extends JPanel implements PropertyChangeListene
      */
     private void attachListeners() {
         createButton.addActionListener(this::onCreateButtonClicked);
-        cancelButton.addActionListener(event -> onCancelButtonClicked());
+        cancelButton.addActionListener(evt -> onCancelButtonClicked());
     }
 
     /**

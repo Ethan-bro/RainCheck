@@ -266,9 +266,9 @@ public class EditTagView extends JPanel implements PropertyChangeListener, Actio
         iconButton.setContentAreaFilled(false);
         iconButton.setOpaque(false);
 
-        iconButton.addItemListener(event ->
-                toggleIconButtonStyle(iconButton, event.getStateChange() == ItemEvent.SELECTED)
-        );
+        iconButton.addItemListener(event -> {
+            toggleIconButtonStyle(iconButton, event.getStateChange() == ItemEvent.SELECTED);
+        });
 
         return iconButton;
     }
